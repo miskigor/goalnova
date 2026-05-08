@@ -38,7 +38,7 @@ export async function createSupportTicket(args: {
       : primary;
   if (error) {
     logFullSupabaseError("[support] create_support_ticket rpc", error);
-    return { id: null, error: error.message };
+    return { id: null, error: error.message ?? null };
   }
   return { id: (data as string) ?? null, error: null };
 }
