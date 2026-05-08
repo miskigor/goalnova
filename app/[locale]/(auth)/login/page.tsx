@@ -1,0 +1,19 @@
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { LoginCard } from "@/components/auth/LoginCard";
+
+type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  // Keep metadata translated; UI text is handled by client components.
+  const t = await getTranslations({ locale, namespace: "metadata" });
+  return { title: t("loginTitle") };
+}
+
+export default async function LoginPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  return <LoginCard />;
+}

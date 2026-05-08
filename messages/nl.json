@@ -1,0 +1,78 @@
+{
+  "billing": {
+    "title": "Prijzen",
+    "subtitle": "Kies het abonnement dat bij je rol past.",
+    "freePrice": "0 EUR",
+    "playerPremiumPrice": "4.99 EUR / maand",
+    "scoutProPrice": "9.99 EUR / maand",
+    "clubPrice": "29.99 EUR / maand",
+    "subscribe": "Abonneren",
+    "currentFree": "Huidig gratis plan",
+    "loadingCheckout": "Checkout openen…",
+    "checkoutError": "Checkout kon niet worden gestart. Probeer opnieuw.",
+    "manageSubscription": "Abonnement beheren",
+    "loadingPortal": "Billing portal openen…",
+    "portalError": "Billing portal kon niet worden geopend.",
+    "freePlayer": {
+      "title": "Free Player",
+      "f1": "Basic profile",
+      "f2": "3 videos",
+      "f3": "Basic visibility"
+    },
+    "playerPremium": {
+      "title": "Player Premium",
+      "f1": "Up to 20 videos",
+      "f2": "Priority scout visibility",
+      "f3": "Premium badge",
+      "f4": "Featured video",
+      "f5": "Profile statistics"
+    },
+    "freeScout": {
+      "title": "Free Scout",
+      "f1": "10 profiles/day",
+      "f2": "Basic search",
+      "f3": "Limited video access"
+    },
+    "scoutPro": {
+      "title": "Scout Pro",
+      "f1": "Unlimited profiles",
+      "f2": "Advanced search",
+      "f3": "Talent Map",
+      "f4": "Shortlists",
+      "f5": "Direct messaging"
+    },
+    "club": {
+      "title": "Club / Academy",
+      "f1": "Everything in Scout Pro",
+      "f2": "Multiple scouts",
+      "f3": "Shared shortlists",
+      "f4": "Club dashboard",
+      "f5": "PDF reports"
+    }
+  },
+  "payment": {
+    "successTitle": "Betaling geslaagd",
+    "successBody": "Betaling geslaagd. Je abonnement wordt geactiveerd.",
+    "cancelTitle": "Betaling geannuleerd",
+    "cancelBody": "De betaling is geannuleerd. Je kunt het altijd opnieuw proberen.",
+    "goToDashboard": "Ga naar dashboard",
+    "activationLoading": "Je abonnement wordt geactiveerd…",
+    "activationDone": "Abonnement succesvol geactiveerd.",
+    "activationFailed": "Activering mislukt. Neem contact op met support.",
+    "activationMissingSession": "Checkout-sessie-ID ontbreekt. Neem contact op met support."
+  },
+  "language": {
+    "en": "English",
+    "hr": "Hrvatski",
+    "de": "Deutsch",
+    "bs": "Bosanski",
+    "es": "Español",
+    "pt": "Português",
+    "sr": "Srpski",
+    "fr": "Français",
+    "it": "Italiano",
+    "nl": "Nederlands",
+    "tr": "Türkçe",
+    "ar": "العربية"
+  }
+}

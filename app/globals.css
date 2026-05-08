@@ -1,26 +1,191 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gn-bg: #000000;
+  --gn-surface: #0a0b0c;
+  --gn-surface-elevated: #121314;
+  --gn-border: #262626;
+  --gn-border-subtle: #1c1c1e;
+  --gn-text: #fafafa;
+  --gn-text-secondary: #a3a3a3;
+  --gn-text-tertiary: #737373;
+  --gn-accent: #f97316;
+  --gn-accent-hover: #fb923c;
+  --gn-accent-pressed: #ea580c;
+  /** Smooth deceleration — use with transition-timing-function */
+  --gn-ease-smooth: cubic-bezier(0.32, 0.72, 0, 1);
+  --gn-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-bebas);
+
+  --color-gn-bg: var(--gn-bg);
+  --color-gn-surface: var(--gn-surface);
+  --color-gn-surface-elevated: var(--gn-surface-elevated);
+  --color-gn-border: var(--gn-border);
+  --color-gn-border-subtle: var(--gn-border-subtle);
+  --color-gn-text: var(--gn-text);
+  --color-gn-text-secondary: var(--gn-text-secondary);
+  --color-gn-text-tertiary: var(--gn-text-tertiary);
+  --color-gn-accent: var(--gn-accent);
+  --color-gn-accent-hover: var(--gn-accent-hover);
+  --color-gn-accent-pressed: var(--gn-accent-pressed);
+
+  --ease-gn-smooth: var(--gn-ease-smooth);
+  --ease-gn-out: var(--gn-ease-out);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {
+  scroll-behavior: smooth;
+  width: 100%;
+  max-width: 100%;
+  /* Hard lock horizontal movement on all screens. */
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
+  background-color: var(--gn-bg);
+  color: var(--gn-text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Very subtle warm spotlight — reads as premium without noise */
+  background-image: radial-gradient(
+    ellipse 100% 45% at 50% -8%,
+    color-mix(in srgb, var(--gn-accent) 7%, transparent),
+    transparent 58%
+  );
+  background-attachment: fixed;
+}
+
+html[dir="rtl"] body {
+  font-family: var(--font-arabic), var(--font-geist-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--gn-accent) 35%, transparent);
+  color: var(--gn-text);
+}
+
+/* Make writable form fields more visible with a thin orange outline. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="file"]):not([type="hidden"]),
+textarea,
+select {
+  border-color: color-mix(in srgb, var(--gn-accent) 52%, var(--gn-border)) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gn-accent) 16%, transparent);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="file"]):not([type="hidden"]):focus,
+textarea:focus,
+select:focus {
+  border-color: color-mix(in srgb, var(--gn-accent) 80%, #ffffff 20%) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--gn-accent) 55%, transparent),
+    0 0 0 3px color-mix(in srgb, var(--gn-accent) 20%, transparent);
+}
+
+@keyframes gn-share-toast {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/** Toast / banner enter: keeps horizontal centering at -50% */
+@keyframes gn-toast-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, 0.6rem, 0) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+}
+
+/** Challenge leaderboard: subtle emphasis on the user’s new submission */
+@keyframes gn-highlight-pulse {
+  0% {
+    box-shadow:
+      0 0 0 1px rgba(250, 204, 21, 0.2),
+      0 8px 28px -10px rgba(250, 204, 21, 0.45);
+  }
+  40% {
+    box-shadow:
+      0 0 0 1px rgba(250, 204, 21, 0.45),
+      0 16px 44px -12px rgba(250, 204, 21, 0.55);
+  }
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(250, 204, 21, 0.25),
+      0 12px 40px -12px rgba(250, 204, 21, 0.35);
+  }
+}
+
+/** Indeterminate storage upload bar (ScoutApplyForm proof document) */
+@keyframes gn-upload-indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(350%);
+  }
+}
+
+.gn-upload-indeterminate-bar {
+  animation: gn-upload-indeterminate 1.25s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gn-upload-indeterminate-bar {
+    animation: none;
+    width: 100% !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes gn-share-toast {
+    from,
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes gn-toast-enter {
+    from,
+    to {
+      opacity: 1;
+      transform: translate3d(-50%, 0, 0) scale(1);
+    }
+  }
+
+  @keyframes gn-highlight-pulse {
+    from,
+    to {
+      box-shadow: none;
+    }
+  }
+
 }

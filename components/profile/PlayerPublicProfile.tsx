@@ -1,0 +1,265 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
+import {
+  fetchPlayerProfileBySlug,
+  fetchVideosForPlayer,
+  type PlayerProfileRow,
+  type VideoRow,
+} from "@/lib/supabase/playerPublicProfile";
+import { usePremium } from "@/components/premium/PremiumProvider";
+import { useScoutVerification } from "@/hooks/useScoutVerification";
+import { userMayMessagePlayers } from "@/lib/scoutVerification";
+import { PlayerFollowSection } from "./PlayerFollowSection";
+import { ScoutShortlistButton } from "./ScoutShortlistButton";
+import { ProfileVideoGrid } from "@/components/profile/ProfileVideoGrid";
+import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
+import { PlayerPremiumBadge } from "@/components/premium/PremiumBadges";
+import { isPlayerPremium } from "@/lib/premium/playerPremium";
+
+function Spinner({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg
+      className={`${className} animate-spin text-gn-accent`}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v4l3-3-3-3v4a12 12 0 00-12 12h4z"
+      />
+    </svg>
+  );
+}
+
+type Props = { playerSlug: string };
+
+export function PlayerPublicProfile({ playerSlug }: Props) {
+  const t = useTranslations("playerProfile");
+  const tProfile = useTranslations("profile");
+  const tSv = useTranslations("scoutVerification");
+  const td = useTranslations("discover");
+  const { userId } = usePremium();
+  const scoutGate = useScoutVerification();
+  const uploadEligibility = useVideoUploadEligibility();
+
+  const unknownPlayer = td("unknownPlayer");
+
+  const [profile, setProfile] = useState<PlayerProfileRow | null | undefined>(
+    undefined
+  );
+  const [videos, setVideos] = useState<VideoRow[]>([]);
+  const [videosNote, setVideosNote] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [userAvatarUrl, setUserAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      setLoadError(null);
+      setVideosNote(null);
+      setProfile(undefined);
+      setVideos([]);
+
+      const {
+        profile: p,
+        userAvatarUrl: av,
+        errorMessage: profileErr,
+      } = await fetchPlayerProfileBySlug(playerSlug);
+
+      if (cancelled) return;
+
+      if (profileErr) {
+        setLoadError(profileErr);
+        setProfile(null);
+        setUserAvatarUrl(null);
+        return;
+      }
+
+      if (!p) {
+        setProfile(null);
+        setUserAvatarUrl(null);
+        return;
+      }
+
+      setProfile(p);
+      setUserAvatarUrl(av);
+
+      const { videos: v, errorMessage: vErr } = await fetchVideosForPlayer(p.id);
+      if (cancelled) return;
+      setVideos(v);
+      if (vErr) {
+        setVideosNote(vErr);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [playerSlug]);
+
+  if (profile === undefined) {
+    return (
+      <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 px-4 text-sm text-gn-text-secondary">
+        <Spinner className="h-8 w-8" />
+        {t("loading")}
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="mx-auto w-full min-w-0 max-w-lg space-y-4 px-1">
+        <p role="alert" className="break-words text-sm text-red-300/90">
+          {t("loadFailed")} {loadError}
+        </p>
+        <Link
+          href="/discover"
+          className="inline-block text-sm font-medium text-gn-accent hover:underline"
+        >
+          {t("backToDiscover")}
+        </Link>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="mx-auto w-full min-w-0 max-w-lg space-y-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-10 text-center">
+        <h1 className="text-lg font-semibold text-gn-text-primary">
+          {t("notFoundTitle")}
+        </h1>
+        <p className="text-sm text-gn-text-secondary">{t("notFoundBody")}</p>
+        <Link
+          href="/discover"
+          className="inline-block pt-2 text-sm font-medium text-gn-accent hover:underline"
+        >
+          {t("backToDiscover")}
+        </Link>
+      </div>
+    );
+  }
+
+  const displayName =
+    profile.full_name?.trim() ||
+    profile.username?.trim() ||
+    unknownPlayer;
+  const displayUsername = profile.username?.trim() || unknownPlayer;
+
+  const canUseScoutMessaging =
+    !scoutGate.loaded ||
+    !scoutGate.row ||
+    userMayMessagePlayers(scoutGate.row);
+
+  return (
+    <div className="mx-auto w-full max-w-lg space-y-6 pb-8 lg:max-w-2xl">
+      <header className="space-y-3">
+        <div className="flex items-start gap-3">
+          <ProfileAvatar
+            name={displayName}
+            imageUrl={userAvatarUrl?.trim() || undefined}
+          />
+          <div className="min-w-0 flex-1 space-y-1">
+            <h1 className="truncate text-2xl font-semibold tracking-tight text-gn-text-primary">
+              {displayName}
+            </h1>
+            <p className="min-w-0 break-words text-sm text-gn-text-secondary">
+              @{displayUsername}
+            </p>
+            {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
+          </div>
+        </div>
+        {userId && profile.id === userId ? (
+          <div className="mt-3">
+            <Link
+              href="/settings/profile"
+              className="inline-flex items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
+            >
+              Edit profile
+            </Link>
+          </div>
+        ) : null}
+        {userId && profile.id !== userId ? (
+          <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start">
+            {canUseScoutMessaging ? (
+              <Link
+                href={`/messages/${profile.id}`}
+                className="inline-flex items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
+              >
+                {t("messageUser")}
+              </Link>
+            ) : (
+              <p
+                className="rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3 text-sm text-gn-text-secondary sm:max-w-md"
+                role="status"
+              >
+                {tSv("messagingLockedHint")}{" "}
+                <Link
+                  href="/scout-apply"
+                  className="font-medium text-gn-accent hover:underline"
+                >
+                  {tSv("applyCta")}
+                </Link>
+              </p>
+            )}
+            {scoutGate.loaded && scoutGate.isApprovedScout ? (
+              <ScoutShortlistButton scoutUserId={userId} playerUserId={profile.id} />
+            ) : null}
+          </div>
+        ) : null}
+      </header>
+
+      <PlayerFollowSection profileUserId={profile.id} />
+
+      <section aria-label={t("videosSectionAria")}>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gn-text-tertiary">
+          {t("videosHeading")}
+        </h2>
+        {videosNote ? (
+          <p role="status" className="mb-3 text-xs text-gn-text-tertiary">
+            {t("videosPartialError")} {videosNote}
+          </p>
+        ) : null}
+        {videos.length === 0 ? (
+          <div className="rounded-2xl border border-white/[0.1] bg-gradient-to-b from-gn-surface/45 to-gn-bg/40 px-5 py-10 text-center">
+            <p className="text-base font-semibold text-gn-text">
+              {tProfile("noVideosTitle")}
+            </p>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-gn-text-secondary">
+              {tProfile("noVideosDescription")}
+            </p>
+            {profile &&
+            userId &&
+            userId === profile.id &&
+            uploadEligibility === "player" ? (
+              <Link
+                href="/upload"
+                className="mt-5 inline-flex min-h-[2.75rem] items-center justify-center rounded-full bg-gn-accent px-5 text-sm font-semibold text-black transition-opacity hover:opacity-90"
+              >
+                {tProfile("noVideosCTA")}
+              </Link>
+            ) : null}
+          </div>
+        ) : (
+          <ProfileVideoGrid videos={videos} />
+        )}
+      </section>
+
+    </div>
+  );
+}

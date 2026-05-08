@@ -1,0 +1,429 @@
+import { supabase, assertSupabaseConfigured, type Database } from "./client";
+
+type Role = "player";
+
+export type SignupResult = {
+  userId: string | null;
+  userEmail: string | null;
+  // When Supabase requires email confirmation, `user` may be present but no session.
+  // We still consider signup successful from a UX perspective.
+  requiresEmailConfirmation: boolean;
+};
+
+/** Email already registered (maps from Supabase `user_already_exists`, `email_exists`, etc.). */
+export class SignupEmailAlreadyExistsError extends Error {
+  constructor() {
+    super("SignupEmailAlreadyExists");
+    this.name = "SignupEmailAlreadyExistsError";
+  }
+}
+
+/** Other signup failures; UI should show a generic message — details stay in console. */
+export class SignupGenericError extends Error {
+  constructor() {
+    super("SignupGeneric");
+    this.name = "SignupGenericError";
+  }
+}
+
+/**
+ * Prefer this over `instanceof SignupEmailAlreadyExistsError` in client components: Turbopack
+ * can duplicate the class across chunks, which breaks `instanceof` and shows a generic error.
+ */
+export function isSignupEmailAlreadyExistsError(err: unknown): boolean {
+  if (err instanceof SignupEmailAlreadyExistsError) return true;
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    (err as { name?: string }).name === "SignupEmailAlreadyExistsError"
+  );
+}
+
+function isSignUpEmailAlreadyExistsError(error: {
+  code?: string;
+  message?: string;
+}): boolean {
+  const code = (error.code ?? "").toLowerCase();
+  if (code === "user_already_exists" || code === "email_exists") {
+    return true;
+  }
+  const msg = (error.message ?? "").toLowerCase();
+  return (
+    msg.includes("user already registered") ||
+    msg.includes("already been registered") ||
+    msg.includes("email address is already registered") ||
+    msg.includes("a user with this email address has already been registered")
+  );
+}
+
+type UserRow = Database["public"]["Tables"]["users"]["Row"];
+
+type SupabaseErrorInfo = {
+  message: string;
+  code?: string | null;
+  details?: string | null;
+  hint?: string | null;
+};
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  const timeoutPromise = new Promise<T>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(new Error(`${label} timed out after ${Math.floor(timeoutMs / 1000)}s`));
+    }, timeoutMs);
+  });
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    if (timeoutId) clearTimeout(timeoutId);
+  });
+}
+
+export type EnsureUserRowResult =
+  | { success: true; userRow: UserRow }
+  | { success: false; userRow: null; error: SupabaseErrorInfo };
+
+function toSupabaseErrorInfo(err: unknown): SupabaseErrorInfo {
+  const e = err as
+    | {
+        message?: string;
+        code?: string | null;
+        details?: string | null;
+        hint?: string | null;
+      }
+    | undefined;
+
+  return {
+    message: e?.message ? String(e.message) : "Supabase request failed.",
+    code: e?.code ?? null,
+    details: e?.details ?? null,
+    hint: e?.hint ?? null,
+  };
+}
+
+function logSupabaseError(label: string, err: unknown) {
+  if (!err || typeof err !== "object") return;
+
+  const info = toSupabaseErrorInfo(err);
+
+  const hasMeaningfulInfo = Boolean(
+    (typeof info.message === "string" &&
+      info.message !== "Supabase request failed." &&
+      info.message.trim().length > 0) ||
+      (typeof info.code === "string" && info.code.trim().length > 0) ||
+      (typeof info.details === "string" && info.details.trim().length > 0) ||
+      (typeof info.hint === "string" && info.hint.trim().length > 0)
+  );
+
+  let rawIsEmpty = false;
+  try {
+    rawIsEmpty = JSON.stringify(err) === "{}";
+  } catch {
+    rawIsEmpty = false;
+  }
+
+  // If there's no meaningful info and raw serializes to `{}`, skip logging.
+  if (!hasMeaningfulInfo && rawIsEmpty) return;
+
+  // Log as a string to avoid Chrome showing `{}` for objects with
+  // non-enumerable properties.
+  console.error(
+    `${label} | message=${info.message} code=${info.code ?? "null"} details=${info.details ?? "null"} hint=${info.hint ?? "null"}`
+  );
+
+  // Only log the full raw error object when it isn't `{}` noise.
+  if (!rawIsEmpty) {
+    const raw = err as Record<string, unknown>;
+    console.error(label + " (raw)", {
+      ...raw,
+      message: info.message,
+      code: info.code,
+      details: info.details,
+      hint: info.hint,
+    });
+  }
+}
+
+async function ensureUserRow({
+  role,
+  providedAuthUser,
+}: {
+  role: Role;
+  // Optional: if signup returns a user but there's no session yet (e.g. email confirmation),
+  // we can still create the row. We still "first get" from Supabase Auth inside this function.
+  providedAuthUser?: { id: string; email: string | null };
+}): Promise<EnsureUserRowResult> {
+  // 1) First get authenticated user from Supabase Auth
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+
+  const sessionUser = authData.user;
+  const authUser =
+    sessionUser?.id
+      ? { id: sessionUser.id, email: sessionUser.email ?? null }
+      : providedAuthUser;
+
+  if (authError) {
+    // Don't crash yet; if providedAuthUser exists we can still proceed.
+    logSupabaseError("Supabase: getUser error", authError);
+  }
+
+  // Requirement: if there is no authenticated user, stop and return clear error.
+  if (!authUser?.id) {
+    return {
+      success: false,
+      userRow: null,
+      error: {
+        message:
+          "You need to be signed in to create your account profile. Please try again.",
+        code: null,
+        details: null,
+        hint: null,
+      },
+    };
+  }
+
+  const createPayload = {
+    id: authUser.id,
+    email: authUser.email,
+    role,
+    language_preference: "en",
+  };
+
+  // 2) Query public.users by id using a safe "maybeSingle" pattern.
+  // We only fetch `id` here to avoid strict selection issues when no row exists.
+  const { data: existingIdRow, error: selectIdError } = await supabase
+    .from("users")
+    .select("id")
+    .eq("id", authUser.id)
+    .maybeSingle();
+
+  // If the id row exists, fetch the full row and return.
+  if (existingIdRow?.id) {
+    const { data: fullRow, error: fullSelectError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", authUser.id)
+      .maybeSingle();
+
+    if (fullRow?.id) {
+      return { success: true, userRow: fullRow as UserRow };
+    }
+
+    // If full row fetch failed, attempt recovery below (do NOT fail early).
+    if (fullSelectError) {
+      logSupabaseError("Supabase: users full select error", fullSelectError);
+    }
+  } else {
+    // Requirement: if select returns no row, do NOT treat as fatal.
+    if (selectIdError) {
+      const code = toSupabaseErrorInfo(selectIdError).code;
+      if (code === "PGRST205") {
+        return {
+          success: false,
+          userRow: null,
+          error: {
+            message:
+              "PitchRusch is not configured yet. Missing `public.users` table in Supabase.",
+            code: null,
+            details: null,
+            hint: null,
+          },
+        };
+      }
+      logSupabaseError("Supabase: users id select error", selectIdError);
+    }
+  }
+
+  // 3) Insert new row (safe logic via upsert to prevent duplicates)
+  const { error: upsertError } = await supabase
+    .from("users")
+    .upsert(createPayload, { onConflict: "id" });
+
+  if (upsertError) {
+    // Requirement: log exact error object and do not log just "{}"
+    const code = toSupabaseErrorInfo(upsertError).code;
+    if (code === "PGRST205") {
+      return {
+        success: false,
+        userRow: null,
+        error: {
+          message:
+            "PitchRusch is not configured yet. Missing `public.users` table in Supabase.",
+          code: null,
+          details: null,
+          hint: null,
+        },
+      };
+    }
+    logSupabaseError("Supabase: users upsert error", upsertError);
+  }
+
+  // 4) Verify that the row exists after recovery attempt
+  const { data: recoveredRow, error: recoveredSelectError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", authUser.id)
+    .maybeSingle();
+
+  if (recoveredRow?.id) return { success: true, userRow: recoveredRow as UserRow };
+
+  // If recovery failed, return a structured error.
+  if (recoveredSelectError) {
+    const code = toSupabaseErrorInfo(recoveredSelectError).code;
+    if (code === "PGRST205") {
+      return {
+        success: false,
+        userRow: null,
+        error: {
+          message:
+            "PitchRusch is not configured yet. Missing `public.users` table in Supabase.",
+          code: null,
+          details: null,
+          hint: null,
+        },
+      };
+    }
+    logSupabaseError(
+      "Supabase: users recovered select error",
+      recoveredSelectError
+    );
+  }
+  return {
+    success: false,
+    userRow: null,
+    error: toSupabaseErrorInfo(upsertError ?? recoveredSelectError),
+  };
+}
+
+export async function signUpWithEmailPassword({
+  email,
+  password,
+  role = "player",
+}: {
+  email: string;
+  password: string;
+  role?: Role;
+}): Promise<SignupResult> {
+  assertSupabaseConfigured();
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
+
+  if (error) {
+    // Full error (code, message, status) logged here — never shown raw in signup UI.
+    logSupabaseError("Supabase: signUp error", error);
+
+    if (isSignUpEmailAlreadyExistsError(error as { code?: string; message?: string })) {
+      throw new SignupEmailAlreadyExistsError();
+    }
+
+    const rawMessage =
+      typeof (error as { message?: unknown }).message === "string"
+        ? (error as { message: string }).message
+        : "";
+    const normalized = rawMessage.toLowerCase();
+
+    // GoTrue rate limiting (commonly: "email rate limit exceeded")
+    if (
+      normalized.includes("email rate limit exceeded") ||
+      normalized.includes("rate limit exceeded")
+    ) {
+      throw new Error(
+        "Too many signup attempts. Please wait a bit and try again, or log in if you already created an account."
+      );
+    }
+
+    throw new SignupGenericError();
+  }
+
+  const authUser = data.user;
+  const requiresEmailConfirmation = !data.session;
+
+  if (!authUser?.id) {
+    // Requirement: do not silently continue if auth user is null.
+    const details = {
+      hasUser: Boolean(authUser),
+      userId: authUser?.id ?? null,
+      hasSession: Boolean(data.session),
+    };
+    console.error("Supabase: signUp succeeded but auth user is missing", details);
+    throw new SignupGenericError();
+  }
+
+  const userId = authUser.id;
+  const userEmail = authUser.email ?? email;
+
+  // Requirement: always create a matching row after successful Supabase signup.
+  const ensureResult = await ensureUserRow({
+    role,
+    providedAuthUser: { id: userId, email: userEmail ?? null },
+  });
+
+  if (!ensureResult.success) {
+    console.error("Supabase: ensureUserRow after signUp failed", ensureResult.error);
+    throw new SignupGenericError();
+  }
+
+  return {
+    userId,
+    userEmail,
+    requiresEmailConfirmation,
+  };
+}
+
+export async function signInWithEmailPassword({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  assertSupabaseConfigured();
+
+  const { data, error } = await withTimeout(
+    supabase.auth.signInWithPassword({
+      email,
+      password,
+    }),
+    15000,
+    "Sign in request",
+  );
+
+  if (error) {
+    const info = toSupabaseErrorInfo(error);
+    const isExpectedInvalidCredentials =
+      info.code === "invalid_credentials" ||
+      /invalid login credentials|invalid email or password/i.test(info.message);
+
+    // Wrong email/password is a normal auth outcome; avoid noisy console errors.
+    if (!isExpectedInvalidCredentials) {
+      logSupabaseError("Supabase: signIn error", error);
+    }
+    throw error;
+  }
+
+  // Do not block navigation on profile sync (multiple DB round-trips + getUser); runs in background.
+  void withTimeout(ensureUserRow({ role: "player" }), 20000, "Post-login profile sync")
+    .then((ensureResult) => {
+      if (!ensureResult.success) {
+        console.error("Supabase: ensureUserRow after signIn failed", ensureResult.error);
+      }
+    })
+    .catch((err) => {
+      console.error("Supabase: ensureUserRow after signIn error", err);
+    });
+
+  return data;
+}
+
+export async function signOut() {
+  assertSupabaseConfigured();
+
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    logSupabaseError("Supabase: signOut error", error);
+    throw error;
+  }
+}
+

@@ -1,0 +1,78 @@
+{
+  "billing": {
+    "title": "Fiyatlandırma",
+    "subtitle": "Rolüne uygun aboneliği seç.",
+    "freePrice": "0 EUR",
+    "playerPremiumPrice": "4.99 EUR / ay",
+    "scoutProPrice": "9.99 EUR / ay",
+    "clubPrice": "29.99 EUR / ay",
+    "subscribe": "Abone ol",
+    "currentFree": "Mevcut ücretsiz plan",
+    "loadingCheckout": "Ödeme sayfası açılıyor…",
+    "checkoutError": "Ödeme başlatılamadı. Lütfen tekrar dene.",
+    "manageSubscription": "Aboneliği yönet",
+    "loadingPortal": "Billing portal açılıyor…",
+    "portalError": "Billing portal açılamadı.",
+    "freePlayer": {
+      "title": "Free Player",
+      "f1": "Basic profile",
+      "f2": "3 videos",
+      "f3": "Basic visibility"
+    },
+    "playerPremium": {
+      "title": "Player Premium",
+      "f1": "Up to 20 videos",
+      "f2": "Priority scout visibility",
+      "f3": "Premium badge",
+      "f4": "Featured video",
+      "f5": "Profile statistics"
+    },
+    "freeScout": {
+      "title": "Free Scout",
+      "f1": "10 profiles/day",
+      "f2": "Basic search",
+      "f3": "Limited video access"
+    },
+    "scoutPro": {
+      "title": "Scout Pro",
+      "f1": "Unlimited profiles",
+      "f2": "Advanced search",
+      "f3": "Talent Map",
+      "f4": "Shortlists",
+      "f5": "Direct messaging"
+    },
+    "club": {
+      "title": "Club / Academy",
+      "f1": "Everything in Scout Pro",
+      "f2": "Multiple scouts",
+      "f3": "Shared shortlists",
+      "f4": "Club dashboard",
+      "f5": "PDF reports"
+    }
+  },
+  "payment": {
+    "successTitle": "Ödeme başarılı",
+    "successBody": "Ödeme başarılı. Aboneliğin etkinleştiriliyor.",
+    "cancelTitle": "Ödeme iptal edildi",
+    "cancelBody": "Ödeme iptal edildi. İstediğin zaman tekrar deneyebilirsin.",
+    "goToDashboard": "Panele git",
+    "activationLoading": "Aboneliğin etkinleştiriliyor…",
+    "activationDone": "Abonelik başarıyla etkinleştirildi.",
+    "activationFailed": "Etkinleştirme başarısız. Destek ile iletişime geçin.",
+    "activationMissingSession": "Checkout session kimliği eksik. Destek ile iletişime geçin."
+  },
+  "language": {
+    "en": "English",
+    "hr": "Hrvatski",
+    "de": "Deutsch",
+    "bs": "Bosanski",
+    "es": "Español",
+    "pt": "Português",
+    "sr": "Srpski",
+    "fr": "Français",
+    "it": "Italiano",
+    "nl": "Nederlands",
+    "tr": "Türkçe",
+    "ar": "العربية"
+  }
+}

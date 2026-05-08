@@ -1,0 +1,78 @@
+{
+  "billing": {
+    "title": "Cjenovnik",
+    "subtitle": "Odaberite pretplatu koja odgovara vašoj ulozi.",
+    "freePrice": "0 EUR",
+    "playerPremiumPrice": "4.99 EUR / mjesec",
+    "scoutProPrice": "9.99 EUR / mjesec",
+    "clubPrice": "29.99 EUR / mjesec",
+    "subscribe": "Pretplati se",
+    "currentFree": "Trenutni besplatni plan",
+    "loadingCheckout": "Otvaranje naplate…",
+    "checkoutError": "Nije moguće pokrenuti naplatu. Pokušajte ponovo.",
+    "manageSubscription": "Upravljaj pretplatom",
+    "loadingPortal": "Otvaranje billing portala…",
+    "portalError": "Nije moguće otvoriti billing portal.",
+    "freePlayer": {
+      "title": "Free Player",
+      "f1": "Basic profile",
+      "f2": "3 videos",
+      "f3": "Basic visibility"
+    },
+    "playerPremium": {
+      "title": "Player Premium",
+      "f1": "Up to 20 videos",
+      "f2": "Priority scout visibility",
+      "f3": "Premium badge",
+      "f4": "Featured video",
+      "f5": "Profile statistics"
+    },
+    "freeScout": {
+      "title": "Free Scout",
+      "f1": "10 profiles/day",
+      "f2": "Basic search",
+      "f3": "Limited video access"
+    },
+    "scoutPro": {
+      "title": "Scout Pro",
+      "f1": "Unlimited profiles",
+      "f2": "Advanced search",
+      "f3": "Talent Map",
+      "f4": "Shortlists",
+      "f5": "Direct messaging"
+    },
+    "club": {
+      "title": "Club / Academy",
+      "f1": "Everything in Scout Pro",
+      "f2": "Multiple scouts",
+      "f3": "Shared shortlists",
+      "f4": "Club dashboard",
+      "f5": "PDF reports"
+    }
+  },
+  "payment": {
+    "successTitle": "Plaćanje uspješno",
+    "successBody": "Plaćanje uspješno. Vaša pretplata se aktivira.",
+    "cancelTitle": "Plaćanje otkazano",
+    "cancelBody": "Plaćanje je otkazano. Možete pokušati ponovo bilo kada.",
+    "goToDashboard": "Idi na kontrolnu ploču",
+    "activationLoading": "Aktiviramo tvoju pretplatu…",
+    "activationDone": "Pretplata je uspješno aktivirana.",
+    "activationFailed": "Aktivacija pretplate nije uspjela. Kontaktiraj podršku.",
+    "activationMissingSession": "Nedostaje checkout session ID. Kontaktiraj podršku."
+  },
+  "language": {
+    "en": "English",
+    "hr": "Hrvatski",
+    "de": "Deutsch",
+    "bs": "Bosanski",
+    "es": "Español",
+    "pt": "Português",
+    "sr": "Srpski",
+    "fr": "Français",
+    "it": "Italiano",
+    "nl": "Nederlands",
+    "tr": "Türkçe",
+    "ar": "العربية"
+  }
+}

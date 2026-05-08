@@ -1,0 +1,31 @@
+diff --git a/node_modules/next/dist/esm/server/lib/router-utils/block-cross-site-dev.js b/node_modules/next/dist/esm/server/lib/router-utils/block-cross-site-dev.js
+index 4530896..6857c05 100644
+--- a/node_modules/next/dist/esm/server/lib/router-utils/block-cross-site-dev.js
++++ b/node_modules/next/dist/esm/server/lib/router-utils/block-cross-site-dev.js
+@@ -65,6 +65,10 @@ function isInternalEndpoint(req) {
+     }
+ }
+ export const blockCrossSiteDEV = (req, res, allowedDevOrigins, hostname)=>{
++    // PitchRusch: iOS Safari on LAN often fails `allowedDevOrigins` heuristics (Referer / Sec-Fetch).
++    if (process.env.NEXT_DISABLE_CROSS_SITE_DEV_BLOCK === "1") {
++        return false;
++    }
+     const allowedOrigins = [
+         '*.localhost',
+         'localhost',
+diff --git a/node_modules/next/dist/server/lib/router-utils/block-cross-site-dev.js b/node_modules/next/dist/server/lib/router-utils/block-cross-site-dev.js
+index b197263..7bc71de 100644
+--- a/node_modules/next/dist/server/lib/router-utils/block-cross-site-dev.js
++++ b/node_modules/next/dist/server/lib/router-utils/block-cross-site-dev.js
+@@ -75,6 +75,11 @@ function isInternalEndpoint(req) {
+     }
+ }
+ const blockCrossSiteDEV = (req, res, allowedDevOrigins, hostname)=>{
++    // PitchRusch: iOS Safari on LAN often fails `allowedDevOrigins` heuristics (Referer / Sec-Fetch).
++    // Set NEXT_DISABLE_CROSS_SITE_DEV_BLOCK=1 in dev only (see package.json scripts).
++    if (process.env.NEXT_DISABLE_CROSS_SITE_DEV_BLOCK === "1") {
++        return false;
++    }
+     const allowedOrigins = [
+         '*.localhost',
+         'localhost',

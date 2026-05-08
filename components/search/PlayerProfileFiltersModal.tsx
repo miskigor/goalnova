@@ -1,0 +1,215 @@
+"use client";
+
+import { useEffect, useId, useState } from "react";
+import { createPortal } from "react-dom";
+import { useTranslations } from "next-intl";
+import {
+  EMPTY_PLAYER_PROFILE_EXTRA,
+  type PlayerProfileExtraFilters,
+} from "@/lib/playerProfileSearchFilters";
+import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import type { ExploreSort } from "@/lib/supabase/exploreFeed";
+
+export function PlayerProfileFiltersModal({
+  open,
+  initial,
+  onClose,
+  onApply,
+  exploreSort,
+  onExploreSortChange,
+  exploreSortDisabled,
+}: {
+  open: boolean;
+  initial: PlayerProfileExtraFilters;
+  onClose: () => void;
+  onApply: (next: PlayerProfileExtraFilters) => void;
+  exploreSort?: ExploreSort;
+  onExploreSortChange?: (sort: ExploreSort) => void;
+  exploreSortDisabled?: boolean;
+}) {
+  const t = useTranslations("search");
+  const te = useTranslations("explore");
+  const titleId = useId();
+  const [draft, setDraft] = useState<PlayerProfileExtraFilters>(initial);
+
+  useEffect(() => {
+    if (open) setDraft(initial);
+  }, [open, initial]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  if (!open || typeof document === "undefined") return null;
+
+  const field = (
+    key: keyof PlayerProfileExtraFilters,
+    labelKey: string,
+    placeholderKey: string,
+  ) => (
+    <label className="block">
+      <span className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
+        {t(labelKey)}
+      </span>
+      <input
+        suppressHydrationWarning
+        type="text"
+        value={draft[key]}
+        onChange={(e) => setDraft((d) => ({ ...d, [key]: e.target.value }))}
+        placeholder={t(placeholderKey)}
+        className="mt-1.5 w-full rounded-xl border border-gn-border bg-gn-bg px-3 py-2.5 text-sm text-gn-text outline-none focus:border-gn-accent/50 focus:ring-2 focus:ring-gn-accent/20"
+        autoComplete="off"
+      />
+    </label>
+  );
+
+  const modal = (
+    <div
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/75 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      role="presentation"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className="box-border max-h-[min(92dvh,40rem)] w-full max-w-lg overflow-y-auto rounded-t-2xl border border-gn-border-subtle bg-gn-surface p-4 shadow-2xl sm:rounded-2xl sm:p-6"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <h2 id={titleId} className="text-lg font-semibold text-gn-text">
+          {t("detailedTitle")}
+        </h2>
+        <p className="mt-1 text-sm text-gn-text-secondary">{t("detailedSubtitle")}</p>
+
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          {field("position", "fieldPosition", "positionPlaceholder")}
+          {field("country", "fieldCountry", "countryPlaceholder")}
+          {field("city", "fieldCity", "cityPlaceholder")}
+          {field("preferredFoot", "fieldPreferredFoot", "preferredFootPlaceholder")}
+          {field("club", "fieldClub", "clubPlaceholder")}
+          <label className="block sm:col-span-1">
+            <span className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
+              {t("fieldAgeMin")}
+            </span>
+            <input
+              suppressHydrationWarning
+              type="text"
+              inputMode="numeric"
+              value={draft.ageMinStr}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, ageMinStr: e.target.value }))
+              }
+              placeholder={t("agePlaceholder")}
+              className="mt-1.5 w-full rounded-xl border border-gn-border bg-gn-bg px-3 py-2.5 text-sm text-gn-text outline-none focus:border-gn-accent/50 focus:ring-2 focus:ring-gn-accent/20"
+              autoComplete="off"
+            />
+          </label>
+          <label className="block sm:col-span-1">
+            <span className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
+              {t("fieldAgeMax")}
+            </span>
+            <input
+              suppressHydrationWarning
+              type="text"
+              inputMode="numeric"
+              value={draft.ageMaxStr}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, ageMaxStr: e.target.value }))
+              }
+              placeholder={t("agePlaceholder")}
+              className="mt-1.5 w-full rounded-xl border border-gn-border bg-gn-bg px-3 py-2.5 text-sm text-gn-text outline-none focus:border-gn-accent/50 focus:ring-2 focus:ring-gn-accent/20"
+              autoComplete="off"
+            />
+          </label>
+        </div>
+
+        {onExploreSortChange != null && exploreSort != null ? (
+          <fieldset className="mt-6 border-t border-gn-border-subtle pt-4">
+            <legend className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
+              {te("sort")}
+            </legend>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button
+                type="button"
+                disabled={exploreSortDisabled}
+                onClick={() => onExploreSortChange("newest")}
+                className={`rounded-xl px-3 py-2 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                  exploreSort === "newest"
+                    ? "bg-gn-accent text-black"
+                    : "border border-gn-border-subtle bg-gn-bg text-gn-text-secondary hover:border-gn-accent/30"
+                }`}
+              >
+                {te("newest")}
+              </button>
+              <button
+                type="button"
+                disabled={exploreSortDisabled}
+                onClick={() => onExploreSortChange("most_liked")}
+                className={`rounded-xl px-3 py-2 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                  exploreSort === "most_liked"
+                    ? "bg-gn-accent text-black"
+                    : "border border-gn-border-subtle bg-gn-bg text-gn-text-secondary hover:border-gn-accent/30"
+                }`}
+              >
+                {te("mostLiked")}
+              </button>
+              <button
+                type="button"
+                disabled={exploreSortDisabled}
+                onClick={() => onExploreSortChange("leaderboard")}
+                className={`rounded-xl px-3 py-2 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                  exploreSort === "leaderboard"
+                    ? "bg-gn-accent text-black"
+                    : "border border-gn-border-subtle bg-gn-bg text-gn-text-secondary hover:border-gn-accent/30"
+                }`}
+              >
+                {te("highestAi")}
+              </button>
+            </div>
+          </fieldset>
+        ) : null}
+
+        <div className="mt-6 flex flex-wrap gap-2 border-t border-gn-border-subtle pt-4">
+          <button
+            type="button"
+            className={`${GN_PRIMARY_BUTTON_CLASS} min-h-[2.75rem] px-5`}
+            onClick={() => {
+              onApply(draft);
+              onClose();
+            }}
+          >
+            {t("applyDetailed")}
+          </button>
+          <button
+            type="button"
+            className="min-h-[2.75rem] rounded-xl border border-gn-border-subtle bg-gn-bg px-4 py-2 text-sm font-semibold text-gn-text-secondary hover:border-gn-accent/30 hover:text-gn-text"
+            onClick={() => {
+              setDraft({ ...EMPTY_PLAYER_PROFILE_EXTRA });
+              onApply({ ...EMPTY_PLAYER_PROFILE_EXTRA });
+              onExploreSortChange?.("newest");
+              onClose();
+            }}
+          >
+            {t("resetDetailed")}
+          </button>
+          <button
+            type="button"
+            className="min-h-[2.75rem] rounded-xl px-4 py-2 text-sm font-medium text-gn-text-tertiary hover:text-gn-text"
+            onClick={onClose}
+          >
+            {t("cancelDetailed")}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  return createPortal(modal, document.body);
+}
