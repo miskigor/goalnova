@@ -24,11 +24,209 @@ type SupportedLocale =
 type LocaleCopy = {
   invalidReason: string;
   invalidFeedback: string;
+  strictModeReason: string;
+  strictModeFeedback: string;
   feedbackGeneric: string;
+  recommendationPrefix: string;
   clipSummary: string;
   cameraNote: string;
   evidence: string;
   notAssessable: string;
+};
+
+const METRIC_LABELS: Record<SupportedLocale, Record<string, string>> = {
+  en: {
+    ball_control: "ball control",
+    close_control: "close control",
+    dribbling: "dribbling",
+    acceleration: "acceleration",
+    agility: "agility",
+    first_touch: "first touch",
+    passing: "passing",
+    shooting: "shooting",
+    finishing: "finishing",
+    coordination: "coordination",
+    balance: "balance",
+    composure: "composure",
+    defending: "defending",
+    decision_making: "decision making",
+  },
+  hr: {
+    ball_control: "kontrola lopte",
+    close_control: "bliska kontrola",
+    dribbling: "dribling",
+    acceleration: "ubrzanje",
+    agility: "agilnost",
+    first_touch: "prvi dodir",
+    passing: "dodavanje",
+    shooting: "šut",
+    finishing: "završnica",
+    coordination: "koordinacija",
+    balance: "ravnoteža",
+    composure: "smirenost",
+    defending: "obrana",
+    decision_making: "donošenje odluka",
+  },
+  de: {
+    ball_control: "Ballkontrolle",
+    close_control: "enge Ballführung",
+    dribbling: "Dribbling",
+    acceleration: "Beschleunigung",
+    agility: "Agilität",
+    first_touch: "erster Kontakt",
+    passing: "Passspiel",
+    shooting: "Abschluss",
+    finishing: "Torabschluss",
+    coordination: "Koordination",
+    balance: "Balance",
+    composure: "Ruhe",
+    defending: "Verteidigen",
+    decision_making: "Entscheidungsfindung",
+  },
+  bs: {
+    ball_control: "kontrola lopte",
+    close_control: "bliska kontrola",
+    dribbling: "dribling",
+    acceleration: "ubrzanje",
+    agility: "agilnost",
+    first_touch: "prvi dodir",
+    passing: "dodavanje",
+    shooting: "šut",
+    finishing: "završnica",
+    coordination: "koordinacija",
+    balance: "ravnoteža",
+    composure: "smirenost",
+    defending: "odbrana",
+    decision_making: "donošenje odluka",
+  },
+  es: {
+    ball_control: "control de balón",
+    close_control: "control corto",
+    dribbling: "regate",
+    acceleration: "aceleración",
+    agility: "agilidad",
+    first_touch: "primer toque",
+    passing: "pase",
+    shooting: "tiro",
+    finishing: "definición",
+    coordination: "coordinación",
+    balance: "equilibrio",
+    composure: "templanza",
+    defending: "defensa",
+    decision_making: "toma de decisiones",
+  },
+  pt: {
+    ball_control: "controlo de bola",
+    close_control: "controlo curto",
+    dribbling: "drible",
+    acceleration: "aceleração",
+    agility: "agilidade",
+    first_touch: "primeiro toque",
+    passing: "passe",
+    shooting: "remate",
+    finishing: "finalização",
+    coordination: "coordenação",
+    balance: "equilíbrio",
+    composure: "compostura",
+    defending: "defesa",
+    decision_making: "tomada de decisão",
+  },
+  sr: {
+    ball_control: "kontrola lopte",
+    close_control: "bliska kontrola",
+    dribbling: "dribling",
+    acceleration: "ubrzanje",
+    agility: "agilnost",
+    first_touch: "prvi dodir",
+    passing: "dodavanje",
+    shooting: "šut",
+    finishing: "završnica",
+    coordination: "koordinacija",
+    balance: "ravnoteža",
+    composure: "smirenost",
+    defending: "odbrana",
+    decision_making: "donošenje odluka",
+  },
+  fr: {
+    ball_control: "contrôle du ballon",
+    close_control: "contrôle rapproché",
+    dribbling: "dribble",
+    acceleration: "accélération",
+    agility: "agilité",
+    first_touch: "première touche",
+    passing: "passe",
+    shooting: "tir",
+    finishing: "finition",
+    coordination: "coordination",
+    balance: "équilibre",
+    composure: "sang-froid",
+    defending: "défense",
+    decision_making: "prise de décision",
+  },
+  it: {
+    ball_control: "controllo palla",
+    close_control: "controllo stretto",
+    dribbling: "dribbling",
+    acceleration: "accelerazione",
+    agility: "agilità",
+    first_touch: "primo tocco",
+    passing: "passaggio",
+    shooting: "tiro",
+    finishing: "finalizzazione",
+    coordination: "coordinazione",
+    balance: "equilibrio",
+    composure: "freddezza",
+    defending: "difesa",
+    decision_making: "decision making",
+  },
+  nl: {
+    ball_control: "balcontrole",
+    close_control: "nauwe controle",
+    dribbling: "dribbelen",
+    acceleration: "acceleratie",
+    agility: "wendbaarheid",
+    first_touch: "eerste aanname",
+    passing: "passen",
+    shooting: "schieten",
+    finishing: "afwerking",
+    coordination: "coördinatie",
+    balance: "balans",
+    composure: "rust onder druk",
+    defending: "verdedigen",
+    decision_making: "besluitvorming",
+  },
+  tr: {
+    ball_control: "top kontrolü",
+    close_control: "yakın kontrol",
+    dribbling: "dripling",
+    acceleration: "hızlanma",
+    agility: "çeviklik",
+    first_touch: "ilk dokunuş",
+    passing: "pas",
+    shooting: "şut",
+    finishing: "bitiricilik",
+    coordination: "koordinasyon",
+    balance: "denge",
+    composure: "soğukkanlılık",
+    defending: "savunma",
+    decision_making: "karar verme",
+  },
+  ar: {
+    ball_control: "التحكم بالكرة",
+    close_control: "التحكم القريب",
+    dribbling: "المراوغة",
+    acceleration: "التسارع",
+    agility: "الرشاقة",
+    first_touch: "اللمسة الأولى",
+    passing: "التمرير",
+    shooting: "التسديد",
+    finishing: "الإنهاء",
+    coordination: "التناسق",
+    balance: "التوازن",
+    composure: "الهدوء",
+    defending: "الدفاع",
+    decision_making: "اتخاذ القرار",
+  },
 };
 
 const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
@@ -37,8 +235,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "No football action detected — the footage does not clearly show a ball, pitch, or football-specific movement.",
     invalidFeedback:
       "PitchRusch only scores football highlights. This clip appears to be non-football content (or the camera never shows enough football context). Upload a clip where both the player and the ball are clearly visible in a football setting.",
+    strictModeReason:
+      "Precision mode is active: demo AI scoring is disabled to avoid unreliable football metrics.",
+    strictModeFeedback:
+      "Demo scoring is turned off in precision mode. Connect a production vision model to analyze player, ball, and movement accurately.",
     feedbackGeneric:
       "This score is based only on clearly visible football actions in the clip. Hidden or unclear moments are marked as not assessable.",
+    recommendationPrefix: "Recommended focus areas:",
     clipSummary:
       "Football actions are visible in this clip and were assessed only where evidence is clear.",
     cameraNote:
@@ -51,8 +254,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Nije prepoznata nogometna akcija — snimka ne prikazuje jasno loptu, teren ili nogometni pokret.",
     invalidFeedback:
       "PitchRusch ocjenjuje samo nogometne isječke. Ovaj video izgleda kao sadržaj koji nije nogomet (ili nema dovoljno jasnog nogometnog konteksta). Učitajte isječak gdje su igrač i lopta jasno vidljivi.",
+    strictModeReason:
+      "Aktivan je precizni način rada: demo AI ocjenjivanje je isključeno kako bi se izbjegle nepouzdane nogometne metrike.",
+    strictModeFeedback:
+      "Demo ocjenjivanje je isključeno u preciznom načinu rada. Povežite produkcijski vision model za točnu analizu igrača, lopte i kretanja.",
     feedbackGeneric:
       "Ocjena je temeljena samo na jasno vidljivim nogometnim akcijama u isječku. Nejasni trenuci označeni su kao neocjenjivi.",
+    recommendationPrefix: "Preporučeni fokus za napredak:",
     clipSummary:
       "Nogometne akcije su vidljive i ocijenjene samo gdje postoji jasan dokaz.",
     cameraNote:
@@ -65,8 +273,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Keine klare Fußballaktion erkannt — im Video sind Ball, Platz oder fußballspezifische Bewegung nicht eindeutig sichtbar.",
     invalidFeedback:
       "PitchRusch bewertet nur Fußball-Highlights. Dieser Clip wirkt nicht wie Fußballinhalt (oder zeigt zu wenig klaren Fußballkontext). Lade einen Clip hoch, in dem Spieler und Ball klar sichtbar sind.",
+    strictModeReason:
+      "Präzisionsmodus aktiv: Demo-KI-Bewertung ist deaktiviert, um unzuverlässige Fußballmetriken zu vermeiden.",
+    strictModeFeedback:
+      "Demo-Bewertung ist im Präzisionsmodus deaktiviert. Verbinde ein produktives Vision-Modell für eine präzise Analyse von Spieler, Ball und Bewegungen.",
     feedbackGeneric:
       "Diese Bewertung basiert nur auf klar sichtbaren Fußballaktionen im Clip. Unklare Szenen werden als nicht bewertbar markiert.",
+    recommendationPrefix: "Empfohlene Schwerpunkte:",
     clipSummary:
       "Fußballaktionen sind sichtbar und wurden nur bei klarer Evidenz bewertet.",
     cameraNote:
@@ -79,8 +292,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Nije otkrivena nogometna akcija — snimak ne prikazuje jasno loptu, teren ili nogometno kretanje.",
     invalidFeedback:
       "PitchRusch ocjenjuje samo nogometne highlighte. Ovaj klip izgleda kao sadržaj koji nije nogomet (ili nema dovoljno jasnog nogometnog konteksta). Učitaj klip gdje su igrač i lopta jasno vidljivi.",
+    strictModeReason:
+      "Aktivan je precizni režim: demo AI ocjenjivanje je isključeno da bi se izbjegle nepouzdane metrike.",
+    strictModeFeedback:
+      "Demo ocjenjivanje je isključeno u preciznom režimu. Poveži produkcijski vision model za tačnu analizu igrača, lopte i kretanja.",
     feedbackGeneric:
       "Ocjena je zasnovana samo na jasno vidljivim nogometnim akcijama u klipu. Nejasni momenti su označeni kao neocjenjivi.",
+    recommendationPrefix: "Preporučeni fokus:",
     clipSummary:
       "Nogometne akcije su vidljive i ocijenjene samo kada postoji jasan dokaz.",
     cameraNote:
@@ -93,8 +311,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "No se detectó una acción de fútbol clara: el video no muestra claramente balón, campo o movimiento específico de fútbol.",
     invalidFeedback:
       "PitchRusch solo puntúa highlights de fútbol. Este clip parece no ser contenido de fútbol (o no muestra contexto suficiente). Sube un clip donde jugador y balón se vean claramente.",
+    strictModeReason:
+      "Modo de precisión activo: la puntuación demo de IA está desactivada para evitar métricas poco fiables.",
+    strictModeFeedback:
+      "La puntuación demo está desactivada en modo de precisión. Conecta un modelo de visión en producción para analizar jugador, balón y movimientos con precisión.",
     feedbackGeneric:
       "Esta puntuación se basa solo en acciones de fútbol claramente visibles en el clip. Los momentos no claros se marcan como no evaluables.",
+    recommendationPrefix: "Áreas recomendadas para mejorar:",
     clipSummary:
       "Hay acciones de fútbol visibles y se evaluaron solo donde la evidencia es clara.",
     cameraNote:
@@ -107,8 +330,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Nenhuma ação de futebol foi detetada com clareza — o vídeo não mostra claramente bola, campo ou movimento específico de futebol.",
     invalidFeedback:
       "O PitchRusch só avalia destaques de futebol. Este clipe parece não ser conteúdo de futebol (ou não mostra contexto suficiente). Carregue um clipe em que jogador e bola estejam claramente visíveis.",
+    strictModeReason:
+      "Modo de precisão ativo: a pontuação demo de IA está desativada para evitar métricas pouco fiáveis.",
+    strictModeFeedback:
+      "A pontuação demo está desativada no modo de precisão. Ligue um modelo de visão em produção para analisar jogador, bola e movimentos com precisão.",
     feedbackGeneric:
       "Esta pontuação baseia-se apenas em ações de futebol claramente visíveis no clipe. Momentos pouco claros são marcados como não avaliáveis.",
+    recommendationPrefix: "Focos recomendados:",
     clipSummary:
       "Há ações de futebol visíveis e a avaliação foi feita apenas onde há evidência clara.",
     cameraNote:
@@ -121,8 +349,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Nije detektovana jasna fudbalska akcija — snimak ne prikazuje jasno loptu, teren ili fudbalsko kretanje.",
     invalidFeedback:
       "PitchRusch ocenjuje samo fudbalske highlight snimke. Ovaj klip deluje kao sadržaj koji nije fudbal (ili nema dovoljno jasnog konteksta). Otpremi klip gde su igrač i lopta jasno vidljivi.",
+    strictModeReason:
+      "Aktivan je precizan režim: demo AI ocenjivanje je isključeno da bi se izbegle nepouzdane metrike.",
+    strictModeFeedback:
+      "Demo ocenjivanje je isključeno u preciznom režimu. Poveži produkcioni vision model za tačnu analizu igrača, lopte i kretanja.",
     feedbackGeneric:
       "Ocena je zasnovana samo na jasno vidljivim fudbalskim akcijama u klipu. Nejasni momenti su označeni kao neocenjivi.",
+    recommendationPrefix: "Preporučeni fokus:",
     clipSummary:
       "Fudbalske akcije su vidljive i ocenjene samo gde postoji jasan dokaz.",
     cameraNote:
@@ -135,8 +368,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Aucune action de football claire détectée : la vidéo ne montre pas clairement le ballon, le terrain ou un mouvement spécifique au football.",
     invalidFeedback:
       "PitchRusch évalue uniquement des highlights de football. Ce clip semble ne pas être du contenu football (ou manque de contexte clair). Importez un clip où le joueur et le ballon sont clairement visibles.",
+    strictModeReason:
+      "Mode précision actif : le scoring IA de démonstration est désactivé pour éviter des métriques peu fiables.",
+    strictModeFeedback:
+      "Le scoring démo est désactivé en mode précision. Connectez un modèle de vision en production pour analyser précisément joueur, ballon et mouvements.",
     feedbackGeneric:
       "Cette note est basée uniquement sur les actions de football clairement visibles dans le clip. Les moments incertains sont marqués comme non évaluables.",
+    recommendationPrefix: "Axes de progression recommandés :",
     clipSummary:
       "Des actions de football sont visibles et évaluées uniquement quand la preuve est claire.",
     cameraNote:
@@ -149,8 +387,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Nessuna azione calcistica chiara rilevata: il video non mostra chiaramente palla, campo o movimento tipico del calcio.",
     invalidFeedback:
       "PitchRusch valuta solo highlight calcistici. Questo clip sembra non essere contenuto calcistico (o manca contesto chiaro). Carica un clip in cui giocatore e palla siano chiaramente visibili.",
+    strictModeReason:
+      "Modalità precisione attiva: il punteggio demo AI è disattivato per evitare metriche non affidabili.",
+    strictModeFeedback:
+      "Il punteggio demo è disattivato in modalità precisione. Collega un modello vision in produzione per analizzare con precisione giocatore, palla e movimenti.",
     feedbackGeneric:
       "Questo punteggio si basa solo su azioni calcistiche chiaramente visibili nel clip. I momenti non chiari sono segnati come non valutabili.",
+    recommendationPrefix: "Aree consigliate su cui lavorare:",
     clipSummary:
       "Sono visibili azioni calcistiche e la valutazione è fatta solo dove l’evidenza è chiara.",
     cameraNote:
@@ -163,8 +406,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Geen duidelijke voetbalactie gedetecteerd: de video toont geen bal, veld of voetbalspecifieke beweging duidelijk genoeg.",
     invalidFeedback:
       "PitchRusch beoordeelt alleen voetbalhighlights. Deze clip lijkt geen voetbalcontent te zijn (of mist duidelijke context). Upload een clip waarin speler en bal duidelijk zichtbaar zijn.",
+    strictModeReason:
+      "Precisie-modus actief: demo AI-score is uitgeschakeld om onbetrouwbare metrieken te vermijden.",
+    strictModeFeedback:
+      "Demo-score staat uit in precisie-modus. Koppel een productie vision-model om speler, bal en bewegingen nauwkeurig te analyseren.",
     feedbackGeneric:
       "Deze score is alleen gebaseerd op duidelijk zichtbare voetbalacties in de clip. Onduidelijke momenten zijn gemarkeerd als niet beoordeelbaar.",
+    recommendationPrefix: "Aanbevolen focuspunten:",
     clipSummary:
       "Voetbalacties zijn zichtbaar en alleen beoordeeld waar het bewijs duidelijk is.",
     cameraNote:
@@ -177,8 +425,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Net bir futbol aksiyonu tespit edilemedi; görüntüde top, saha veya futbola özgü hareketler yeterince açık değil.",
     invalidFeedback:
       "PitchRusch yalnızca futbol özetlerini puanlar. Bu klip futbol içeriği gibi görünmüyor (veya yeterli futbol bağlamı yok). Oyuncu ve topun net göründüğü bir klip yükleyin.",
+    strictModeReason:
+      "Hassas mod aktif: güvenilir olmayan metrikleri önlemek için demo AI puanlama kapatıldı.",
+    strictModeFeedback:
+      "Demo puanlama hassas modda kapalı. Oyuncu, top ve hareketleri doğru analiz etmek için üretim vision modeli bağlayın.",
     feedbackGeneric:
       "Bu puan sadece klipte açıkça görülen futbol aksiyonlarına dayanır. Belirsiz anlar değerlendirilemez olarak işaretlenir.",
+    recommendationPrefix: "Önerilen gelişim odakları:",
     clipSummary:
       "Klipte futbol aksiyonları görülüyor ve sadece açık kanıt olan kısımlar değerlendirildi.",
     cameraNote:
@@ -191,8 +444,13 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "لم يتم اكتشاف لقطة كرة قدم واضحة؛ الفيديو لا يُظهر الكرة أو الملعب أو حركة كروية بشكل كافٍ.",
     invalidFeedback:
       "PitchRusch يقيّم فقط لقطات كرة القدم. هذا المقطع يبدو غير متعلق بكرة القدم (أو لا يحتوي سياقًا واضحًا). ارفع مقطعًا يظهر فيه اللاعب والكرة بوضوح.",
+    strictModeReason:
+      "وضع الدقة مفعّل: تم إيقاف التقييم التجريبي للذكاء الاصطناعي لتجنب مقاييس غير موثوقة.",
+    strictModeFeedback:
+      "التقييم التجريبي متوقف في وضع الدقة. اربط نموذج رؤية إنتاجي لتحليل اللاعب والكرة والحركة بدقة.",
     feedbackGeneric:
       "هذه الدرجة مبنية فقط على اللقطات الكروية الواضحة في الفيديو. اللحظات غير الواضحة تُصنّف كغير قابلة للتقييم.",
+    recommendationPrefix: "نقاط التركيز المقترحة:",
     clipSummary:
       "تظهر لقطات كرة قدم في هذا المقطع وتم تقييم ما لديه دليل واضح فقط.",
     cameraNote:
@@ -206,6 +464,10 @@ function normalizeLocale(locale?: string): SupportedLocale {
   const base = String(locale ?? "en").toLowerCase().split("-")[0];
   if (base in LOCALIZED_COPY) return base as SupportedLocale;
   return "en";
+}
+
+function formatMetricLabel(locale: SupportedLocale, key: string): string {
+  return METRIC_LABELS[locale]?.[key] ?? key.replace(/_/g, " ");
 }
 
 function localizeVisibilityPayload(
@@ -273,6 +535,21 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
   async analyzeVideo({ videoId, locale }) {
     await new Promise((r) => setTimeout(r, 900));
     const copy = LOCALIZED_COPY[normalizeLocale(locale)];
+    const demoScoringEnabled =
+      process.env.NEXT_PUBLIC_ALLOW_DEMO_AI_SCORING === "true";
+
+    if (!demoScoringEnabled) {
+      return {
+        valid_for_football_analysis: false,
+        clip_type: "unclear",
+        invalid_reason: copy.strictModeReason,
+        overall_score: 0,
+        overall_confidence: 0,
+        feedback_text: copy.strictModeFeedback,
+        visibility_analysis: null,
+        legacy: null,
+      };
+    }
 
     const scenario = Math.floor(hashToUnit(videoId, 0) * 8);
 
@@ -744,13 +1021,24 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
     };
     const localizedPayload = localizeVisibilityPayload(payload, copy);
 
+    const weakest = Object.entries(localizedPayload.metrics)
+      .filter(([, value]) => value?.status === "assessable")
+      .map(([key, value]) => ({ key, score: (value as MetricAssessment & { score: number }).score }))
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 3)
+      .map((entry) => formatMetricLabel(normalizeLocale(locale), entry.key));
+    const recText =
+      weakest.length > 0
+        ? ` ${copy.recommendationPrefix} ${weakest.join(", ")}.`
+        : "";
+
     const result: VideoAnalysisScores = {
       valid_for_football_analysis: true,
       clip_type: draft.clip_type,
       invalid_reason: null,
       overall_score,
       overall_confidence,
-      feedback_text: copy.feedbackGeneric,
+      feedback_text: `${copy.feedbackGeneric}${recText}`.trim(),
       visibility_analysis: localizedPayload,
       legacy: null,
     };
