@@ -20,7 +20,7 @@ function inboxNavActive(pathname: string): boolean {
 function bottomItemClass(pathname: string, href: string) {
   const active = navItemActive(pathname, href);
   return [
-    "group flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 py-2 text-[10px] font-semibold leading-tight transition-[color,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors sm:text-[11px]",
+    "group flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 text-[9px] font-semibold leading-[1.05] tracking-tight transition-[color,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors sm:text-[10px]",
     active
       ? "text-gn-accent"
       : "text-gn-text-tertiary hover:text-gn-text-secondary motion-safe:hover:scale-105",
@@ -32,13 +32,14 @@ export function AppMobileBottomNav() {
   const tNav = useTranslations("nav");
   const tMessages = useTranslations("messages");
   const { unreadCount } = useNotificationsInbox();
+  const items = APP_SHELL_MAIN_NAV.filter((item) => item.href !== "/premium");
 
   return (
     <nav
       className="fixed inset-x-0 bottom-0 z-50 flex min-w-0 overflow-x-clip border-t border-gn-border-subtle bg-gn-bg/95 pb-[max(0.35rem,env(safe-area-inset-bottom))] pt-1 shadow-[0_-8px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:hidden"
       aria-label={tNav("primary")}
     >
-      {APP_SHELL_MAIN_NAV.map((item) => {
+      {items.map((item) => {
         if (item.href === "/notifications") {
           const active = inboxNavActive(pathname);
           const ariaLabel =
@@ -54,7 +55,7 @@ export function AppMobileBottomNav() {
               aria-current={active ? "page" : undefined}
             >
               <span className="relative inline-flex">
-                <NavIcon name="messages" className="size-6" />
+                <NavIcon name="messages" className="size-[22px]" />
                 <UnreadNotificationBadge count={unreadCount} variant="navCompact" />
               </span>
               <span className="max-w-full truncate px-0.5 text-center">
@@ -75,7 +76,7 @@ export function AppMobileBottomNav() {
           >
             <NavIcon
               name={item.icon}
-              className="size-6 shrink-0 transition-transform duration-300 ease-gn-smooth motion-safe:group-hover:scale-110"
+              className="size-[22px] shrink-0 transition-transform duration-300 ease-gn-smooth motion-safe:group-hover:scale-110"
             />
             <span className="max-w-full truncate px-0.5 text-center">
               {tNav(item.labelKey)}

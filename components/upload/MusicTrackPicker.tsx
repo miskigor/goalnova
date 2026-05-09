@@ -131,9 +131,9 @@ export function MusicTrackPicker({ value, onChange, disabled }: Props) {
             onChange={(e) => setSearch(e.target.value)}
             disabled={disabled}
             placeholder={t("searchPlaceholder")}
-            className="w-full rounded-xl border border-white/10 bg-black/50 px-3 py-2.5 text-sm text-white placeholder:text-white/35 outline-none focus:border-gn-accent/50 focus:ring-1 focus:ring-gn-accent/30"
+            className="mx-auto block w-full max-w-sm rounded-xl border border-white/10 bg-black/50 px-3 py-2.5 text-sm text-white placeholder:text-white/35 outline-none focus:border-gn-accent/50 focus:ring-1 focus:ring-gn-accent/30"
           />
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <div className="mx-auto grid w-full max-w-sm grid-cols-1 gap-2 sm:grid-cols-2">
             <label className="block">
               <span className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-wider text-white/40">
                 {t("genre")}

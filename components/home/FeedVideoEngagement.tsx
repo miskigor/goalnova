@@ -447,10 +447,10 @@ export function FeedVideoEngagement({
           }
           className={[
             rail
-              ? "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-0.5 rounded-full border font-semibold shadow-[0_4px_20px_rgba(0,0,0,0.4)] backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              ? "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-0.5 rounded-full border font-semibold shadow-[0_6px_26px_rgba(0,0,0,0.55)] backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               : "inline-flex shrink-0 items-center rounded-full border font-semibold transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50",
             rail
-              ? "border-white/12 bg-black/30 p-0.5 text-base"
+              ? "border-white/25 bg-black/55 p-0.5 text-base ring-1 ring-white/10"
               : compactUi
                 ? "h-7 gap-0.5 px-1.5 py-0 text-[11px] leading-none"
                 : "min-h-[2.75rem] gap-2 px-4 py-2 text-sm",
@@ -464,7 +464,7 @@ export function FeedVideoEngagement({
             {liked ? "♥" : "♡"}
           </span>
           {rail ? (
-            <span className="text-[10px] font-bold tabular-nums text-white/80">
+            <span className="text-[10px] font-bold tabular-nums text-white/90">
               {formatCount(likeCount)}
             </span>
           ) : compactUi ? null : (
@@ -494,7 +494,7 @@ export function FeedVideoEngagement({
           }
           className={[
             rail
-              ? "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-0.5 rounded-full border border-white/12 bg-black/30 p-0.5 font-semibold text-white/85 shadow-[0_4px_20px_rgba(0,0,0,0.4)] backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+              ? "flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-0.5 rounded-full border border-white/25 bg-black/55 p-0.5 font-semibold text-white/90 shadow-[0_6px_26px_rgba(0,0,0,0.55)] ring-1 ring-white/10 backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out hover:border-white/35 hover:bg-white/[0.12] hover:text-white"
               : "inline-flex shrink-0 items-center rounded-full border border-white/[0.12] bg-white/[0.06] font-semibold text-white/85 transition-[color,background-color,border-color,transform] duration-200 ease-out hover:border-gn-accent/35 hover:bg-white/[0.09] hover:text-white",
             !rail && compactUi
               ? "h-7 gap-0.5 px-1.5 py-0 text-[11px] leading-none"
@@ -513,7 +513,7 @@ export function FeedVideoEngagement({
             t("comment")
           )}
           {rail ? (
-            <span className="text-[10px] font-bold tabular-nums text-white/80">
+            <span className="text-[10px] font-bold tabular-nums text-white/90">
               {formatCount(commentCount)}
             </span>
           ) : (
@@ -533,7 +533,7 @@ export function FeedVideoEngagement({
           <div
             className={
               rail
-                ? "flex flex-col items-center [&_button]:h-10 [&_button]:w-10 [&_button]:min-h-0 [&_button]:shrink-0 [&_button]:rounded-full [&_button]:border-0 [&_button]:shadow-[0_4px_20px_rgba(0,0,0,0.4)] [&_button]:backdrop-blur-md"
+                ? "flex flex-col items-center [&_button]:h-10 [&_button]:w-10 [&_button]:min-h-0 [&_button]:shrink-0 [&_button]:rounded-full [&_button]:border [&_button]:border-white/25 [&_button]:bg-black/55 [&_button]:text-white/90 [&_button]:shadow-[0_6px_26px_rgba(0,0,0,0.55)] [&_button]:ring-1 [&_button]:ring-white/10 [&_button]:backdrop-blur-md [&_button:hover]:border-white/35 [&_button:hover]:bg-white/[0.12]"
                 : "flex shrink-0 items-center"
             }
           >

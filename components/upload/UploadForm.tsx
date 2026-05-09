@@ -1300,25 +1300,27 @@ export function UploadForm() {
                 ) : null}
               </div>
 
-              <MusicTrackPicker
-                value={selectedMusicTrackId}
-                onChange={(id, track) => {
-                  setSelectedMusicTrackId(id);
-                  if (id && track) {
-                    setSelectedMusicTitle((track.title ?? "").trim());
-                    setSelectedMusicArtist((track.artist ?? "").trim());
-                  } else {
-                    setSelectedMusicTitle("");
-                    setSelectedMusicArtist("");
-                  }
-                  const md =
-                    track && typeof track.duration_seconds === "number"
-                      ? track.duration_seconds
-                      : null;
-                  setMusicTrackDurationSec(md);
-                }}
-                disabled={isUploadBusy}
-              />
+              <div className="mx-auto w-full max-w-xl">
+                <MusicTrackPicker
+                  value={selectedMusicTrackId}
+                  onChange={(id, track) => {
+                    setSelectedMusicTrackId(id);
+                    if (id && track) {
+                      setSelectedMusicTitle((track.title ?? "").trim());
+                      setSelectedMusicArtist((track.artist ?? "").trim());
+                    } else {
+                      setSelectedMusicTitle("");
+                      setSelectedMusicArtist("");
+                    }
+                    const md =
+                      track && typeof track.duration_seconds === "number"
+                        ? track.duration_seconds
+                        : null;
+                    setMusicTrackDurationSec(md);
+                  }}
+                  disabled={isUploadBusy}
+                />
+              </div>
 
               <p className="text-center text-[0.7rem] leading-snug text-gn-text-secondary sm:text-xs sm:leading-relaxed">
                 {t("copyrightConfirmation")}
@@ -1377,7 +1379,7 @@ export function UploadForm() {
                   disabled={isUploadBusy}
                 />
               ) : (
-                <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3 text-center text-sm text-gn-text-secondary">
+                <div className="mx-auto w-full max-w-xl rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3 text-center text-sm text-gn-text-secondary">
                   {t("uploadStep2NoMusic")}
                 </div>
               )}

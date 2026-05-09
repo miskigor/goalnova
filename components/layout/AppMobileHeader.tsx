@@ -9,6 +9,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { InlineLogoutButton } from "@/components/auth/InlineLogoutButton";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { NavIcon } from "@/components/icons/NavIcons";
 
 /**
  * Fixed top bar on small screens so account menu (profile, settings, logout) is always reachable.
@@ -34,6 +35,14 @@ export function AppMobileHeader() {
       <header className="fixed inset-x-0 top-0 z-[45] shrink-0 overflow-x-clip border-b border-gn-border-subtle bg-gn-bg/95 pt-[env(safe-area-inset-top,0px)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:hidden">
         <div className="mx-auto flex h-14 w-full min-w-0 max-w-lg items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 md:max-w-2xl">
           <Logo href="/home" variant="header" className="min-w-0 shrink" />
+          <Link
+            href="/premium"
+            className="inline-flex min-w-0 shrink items-center gap-1.5 rounded-xl border border-gn-accent/35 bg-gn-accent/10 px-2.5 py-1.5 text-xs font-semibold tracking-tight text-gn-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] active:scale-[0.98]"
+            aria-label={tNav("premium")}
+          >
+            <NavIcon name="premium" className="size-[18px] shrink-0" />
+            <span className="truncate">{tNav("premium")}</span>
+          </Link>
           <div className="flex min-w-0 shrink-0 items-center justify-end gap-2">
             {authed && user ? (
               <button

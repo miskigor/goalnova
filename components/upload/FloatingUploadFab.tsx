@@ -11,7 +11,7 @@ const fabBaseClass =
 const fabEnabledClass = `${fabBaseClass} hover:bg-gn-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg`;
 
 const fabPositionClass =
-  "pointer-events-none fixed z-[55] end-4 bottom-[max(1rem,calc(5.75rem+env(safe-area-inset-bottom,0px)))] lg:bottom-10 lg:end-10";
+  "pointer-events-none fixed z-[55] end-[max(1rem,calc(env(safe-area-inset-right,0px)+1rem))] bottom-[max(1rem,calc(5.75rem+env(safe-area-inset-bottom,0px)))] lg:bottom-10 lg:end-10";
 
 /**
  * Fixed upload FAB for authenticated app chrome. Hidden on `/upload` and while eligibility is loading, signed out, or unknown.
