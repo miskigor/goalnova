@@ -33,10 +33,8 @@ export function AppMobileHeader() {
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-[45] shrink-0 overflow-x-clip border-b border-gn-border-subtle bg-gn-bg/95 pt-[env(safe-area-inset-top,0px)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:hidden">
-        <div className="mx-auto flex h-14 w-full min-w-0 max-w-lg items-center justify-between gap-2 sm:gap-3 md:max-w-2xl pl-[max(0.75rem,env(safe-area-inset-left,0px))] pr-[max(0.75rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.25rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.25rem,env(safe-area-inset-right,0px))]">
-          <div className="min-w-0 shrink ps-1">
-            <Logo href="/home" variant="header" className="min-w-0 shrink" />
-          </div>
+        <div className="mx-auto flex h-14 w-full min-w-0 max-w-lg items-center justify-between gap-1.5 sm:gap-3 md:max-w-2xl pl-[max(0.75rem,env(safe-area-inset-left,0px))] pr-[max(0.75rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.25rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.25rem,env(safe-area-inset-right,0px))]">
+          <Logo href="/home" variant="header" className="min-w-0 shrink" />
           <Link
             href="/premium"
             className="inline-flex min-w-0 shrink items-center gap-1.5 rounded-xl border border-gn-accent/35 bg-gn-accent/10 px-2.5 py-1.5 text-xs font-semibold tracking-tight text-gn-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] active:scale-[0.98]"
@@ -120,22 +118,13 @@ export function AppMobileHeader() {
               </button>
             </div>
             <nav className="space-y-1">
-              <div className="mb-1 flex items-center justify-between gap-3 rounded-xl border border-gn-border-subtle bg-gn-surface/40 px-3 py-2">
-                <Link
-                  href="/profile"
-                  className="text-sm font-semibold text-gn-text hover:text-gn-accent"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {tNav("profile")}
-                </Link>
-                <Link
-                  href="/home"
-                  className="text-sm font-semibold text-gn-text hover:text-gn-accent"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {tNav("home")}
-                </Link>
-              </div>
+              <Link
+                href="/profile"
+                className="block rounded-xl px-3 py-2.5 text-sm text-gn-text-secondary hover:bg-gn-surface-elevated hover:text-gn-text"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {tNav("profile")}
+              </Link>
               <Link
                 href="/settings"
                 className="block rounded-xl px-3 py-2.5 text-sm text-gn-text-secondary hover:bg-gn-surface-elevated hover:text-gn-text"

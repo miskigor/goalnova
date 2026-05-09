@@ -277,7 +277,7 @@ export function PlayerFollowSection({ profileUserId }: Props) {
   );
 
   return (
-    <div className="min-w-0 max-w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4 text-end sm:text-start">
+    <div className="min-w-0 max-w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4">
       {loading ? (
         <p className="text-sm text-gn-text-secondary" role="status">
           {t("loading")}
@@ -323,7 +323,7 @@ export function PlayerFollowSection({ profileUserId }: Props) {
           </p>
 
           {showFollowButton ? (
-            <div className="mt-3 space-y-2 sm:text-start">
+            <div className="mt-3 space-y-2">
               <button
                 type="button"
                 disabled={buttonDisabled}
@@ -347,7 +347,7 @@ export function PlayerFollowSection({ profileUserId }: Props) {
           ) : null}
 
           {showLoginToFollow ? (
-            <p className="mt-3 break-words text-start text-sm text-gn-text-secondary">
+            <p className="mt-3 break-words text-sm text-gn-text-secondary">
               {t("loginToFollowPrefix")}{" "}
               <Link
                 href="/login"

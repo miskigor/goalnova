@@ -11,7 +11,7 @@ const fabBaseClass =
 const fabEnabledClass = `${fabBaseClass} hover:bg-gn-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg`;
 
 const fabPositionClass =
-  "pointer-events-none fixed z-[55] end-[max(1rem,calc(env(safe-area-inset-right,0px)+1rem))] bottom-[max(1rem,calc(5.75rem+env(safe-area-inset-bottom,0px)))] lg:bottom-10 lg:end-10";
+  "pointer-events-none fixed z-[55] end-[max(0.75rem,calc(env(safe-area-inset-right,0px)+0.75rem))] bottom-[max(0.75rem,calc(5.5rem+env(safe-area-inset-bottom,0px)))] lg:bottom-10 lg:end-10";
 
 /**
  * Fixed upload FAB for authenticated app chrome. Hidden on `/upload` and while eligibility is loading, signed out, or unknown.
@@ -34,10 +34,7 @@ export function FloatingUploadFab() {
   }
 
   return (
-    <div
-      data-gn-debug="floating-upload-fab-fixed-z55-blue-outline"
-      className={`${fabPositionClass} rounded-full ring-4 ring-blue-500/70 ring-offset-2 ring-offset-transparent`}
-    >
+    <div className={`${fabPositionClass} rounded-full`}>
       <Link
         href="/upload"
         className={fabEnabledClass}
