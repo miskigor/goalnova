@@ -43,9 +43,10 @@ const FEED_BLEED = "w-full min-w-0 max-w-full";
  * so slide height matches the scrollport (avoids `100cqh` resolving to 0 in some WebKit layouts).
  */
 const FEED_SCROLLPORT =
-  "touch-pan-y snap-y snap-mandatory overflow-y-auto overflow-x-clip scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
+  "touch-pan-y overflow-y-auto overflow-x-clip scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
   "[container-type:size] min-h-0 min-w-0 " +
-  "max-lg:h-[calc(100svh-14rem)] max-lg:min-h-[24rem] max-lg:max-h-[34rem] " +
+  "max-lg:h-auto max-lg:max-h-none max-lg:overflow-y-visible max-lg:[scroll-snap-type:none] " +
+  "lg:snap-y lg:snap-mandatory " +
   "lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
 /** Card fills its snap `li`; desktop keeps a subtle framed tile. */
@@ -105,7 +106,7 @@ function HomeFeedSnapList({
               item.video.id ??
               `${item.video.user_id}-${item.video.created_at ?? ""}-${index}`
             }
-            className="min-h-0 min-w-0 w-full shrink-0 grow-0 basis-auto snap-start snap-always overflow-x-clip"
+            className="min-h-0 min-w-0 w-full shrink-0 grow-0 overflow-x-clip max-lg:basis-auto max-lg:h-[68svh] max-lg:min-h-[26rem] lg:basis-full lg:snap-start lg:snap-always"
           >
             <FeedItemCard
               item={item}
