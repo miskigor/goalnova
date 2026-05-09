@@ -1225,31 +1225,6 @@ export function UploadForm() {
 
       {uploadFormRendered ? (
         <div className="space-y-5">
-          {initError ? (
-            <div
-              role="alert"
-              className="rounded-xl border border-gn-accent/30 bg-gn-surface/40 px-4 py-3 text-sm text-gn-text-secondary"
-            >
-              {initError}
-            </div>
-          ) : null}
-
-          <div
-            role="status"
-            aria-live="polite"
-            className={`rounded-2xl border px-4 py-3 text-sm font-medium ${
-              uploadPhase === "failed"
-                ? "border-gn-accent/40 bg-gn-accent/10 text-gn-text"
-                : uploadPhase === "success"
-                  ? "border-white/15 bg-white/[0.06] text-gn-text-secondary"
-                  : isUploadBusy
-                    ? "border-gn-accent/30 bg-gn-surface/50 text-gn-text-secondary"
-                    : "border-gn-border-subtle bg-gn-surface/30 text-gn-text-secondary"
-            }`}
-          >
-            {statusBannerText}
-          </div>
-
           {wizardStep === 1 ? (
             <>
               <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-6 text-center">
@@ -1326,6 +1301,30 @@ export function UploadForm() {
                 {t("copyrightConfirmation")}
               </p>
 
+              {initError ? (
+                <div
+                  role="alert"
+                  className="rounded-xl border border-gn-accent/30 bg-gn-surface/40 px-4 py-3 text-sm text-gn-text-secondary"
+                >
+                  {initError}
+                </div>
+              ) : null}
+              <div
+                role="status"
+                aria-live="polite"
+                className={`rounded-2xl border px-4 py-3 text-sm font-medium ${
+                  uploadPhase === "failed"
+                    ? "border-gn-accent/40 bg-gn-accent/10 text-gn-text"
+                    : uploadPhase === "success"
+                      ? "border-white/15 bg-white/[0.06] text-gn-text-secondary"
+                      : isUploadBusy
+                        ? "border-gn-accent/30 bg-gn-surface/50 text-gn-text-secondary"
+                        : "border-gn-border-subtle bg-gn-surface/30 text-gn-text-secondary"
+                }`}
+              >
+                {statusBannerText}
+              </div>
+
               <button
                 type="button"
                 onClick={continueToPreviewStep}
@@ -1387,6 +1386,30 @@ export function UploadForm() {
               <p className="text-center text-[0.7rem] leading-snug text-gn-text-secondary sm:text-xs sm:leading-relaxed">
                 {t("copyrightConfirmation")}
               </p>
+
+              {initError ? (
+                <div
+                  role="alert"
+                  className="rounded-xl border border-gn-accent/30 bg-gn-surface/40 px-4 py-3 text-sm text-gn-text-secondary"
+                >
+                  {initError}
+                </div>
+              ) : null}
+              <div
+                role="status"
+                aria-live="polite"
+                className={`rounded-2xl border px-4 py-3 text-sm font-medium ${
+                  uploadPhase === "failed"
+                    ? "border-gn-accent/40 bg-gn-accent/10 text-gn-text"
+                    : uploadPhase === "success"
+                      ? "border-white/15 bg-white/[0.06] text-gn-text-secondary"
+                      : isUploadBusy
+                        ? "border-gn-accent/30 bg-gn-surface/50 text-gn-text-secondary"
+                        : "border-gn-border-subtle bg-gn-surface/30 text-gn-text-secondary"
+                }`}
+              >
+                {statusBannerText}
+              </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
                 <button
