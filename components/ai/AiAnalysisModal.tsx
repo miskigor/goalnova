@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { FlexibleMetricKey, VideoAnalysisScores } from "@/lib/ai/types";
 import { FLEXIBLE_METRIC_ORDER, isAssessable } from "@/lib/ai/visibilityAnalysis";
@@ -59,6 +60,159 @@ function formatActionChip(s: string): string {
   return s
     .replace(/_/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+type UiLocale =
+  | "en"
+  | "hr"
+  | "de"
+  | "bs"
+  | "es"
+  | "pt"
+  | "sr"
+  | "fr"
+  | "it"
+  | "nl"
+  | "tr"
+  | "ar";
+
+const AI_UI_FALLBACK_TEXT: Record<
+  UiLocale,
+  {
+    clipSummary: string;
+    cameraNote: string;
+    evidence: string;
+    notAssessable: string;
+    feedback: string;
+    quality: { strong: string; adequate: string; limited: string };
+  }
+> = {
+  en: {
+    clipSummary: "Football actions are visible and assessed only where evidence is clear.",
+    cameraNote: "Camera quality and angle affect confidence; unclear moments are not scored.",
+    evidence: "Visible football action in this clip supports this score.",
+    notAssessable: "This action is not clearly visible enough in this clip.",
+    feedback:
+      "This analysis is based only on clearly visible football actions. Focus on your lowest-rated metrics to improve your next clip.",
+    quality: { strong: "strong", adequate: "adequate", limited: "limited" },
+  },
+  hr: {
+    clipSummary: "Nogometne akcije su vidljive i ocijenjene samo gdje postoji jasan dokaz.",
+    cameraNote: "Kvaliteta i kut kamere utječu na pouzdanost; nejasni dijelovi se ne ocjenjuju.",
+    evidence: "Jasno vidljiva nogometna akcija podupire ovu ocjenu.",
+    notAssessable: "Ova akcija nije dovoljno jasno vidljiva u ovom isječku.",
+    feedback:
+      "Analiza se temelji samo na jasno vidljivim nogometnim akcijama. Fokusiraj se na metrike s najnižom ocjenom za idući napredak.",
+    quality: { strong: "jako", adequate: "solidno", limited: "ograničeno" },
+  },
+  de: {
+    clipSummary: "Fußballaktionen sind sichtbar und wurden nur bei klarer Evidenz bewertet.",
+    cameraNote: "Kameraqualität und Perspektive beeinflussen die Sicherheit; unklare Momente werden nicht bewertet.",
+    evidence: "Sichtbare Fußballaktion im Clip stützt diese Bewertung.",
+    notAssessable: "Diese Aktion ist in diesem Clip nicht klar genug sichtbar.",
+    feedback:
+      "Die Analyse basiert nur auf klar sichtbaren Fußballaktionen. Konzentriere dich auf die niedrigsten Metriken, um dich zu verbessern.",
+    quality: { strong: "stark", adequate: "ausreichend", limited: "begrenzt" },
+  },
+  bs: {
+    clipSummary: "Nogometne akcije su vidljive i ocijenjene samo kada postoji jasan dokaz.",
+    cameraNote: "Kvalitet i ugao kamere utiču na pouzdanost; nejasni dijelovi se ne ocjenjuju.",
+    evidence: "Jasno vidljiva nogometna akcija podržava ovu ocjenu.",
+    notAssessable: "Ova akcija nije dovoljno jasno vidljiva u ovom klipu.",
+    feedback:
+      "Analiza je zasnovana samo na jasno vidljivim nogometnim akcijama. Fokusiraj se na metrike s najnižom ocjenom za napredak.",
+    quality: { strong: "jako", adequate: "solidno", limited: "ograničeno" },
+  },
+  es: {
+    clipSummary: "Las acciones de fútbol son visibles y se evaluaron solo donde la evidencia es clara.",
+    cameraNote: "La calidad y el ángulo de cámara afectan la confianza; los momentos poco claros no se puntúan.",
+    evidence: "La acción de fútbol visible en el clip respalda esta puntuación.",
+    notAssessable: "Esta acción no se ve con suficiente claridad en este clip.",
+    feedback:
+      "Este análisis se basa solo en acciones de fútbol claramente visibles. Enfócate en las métricas más bajas para mejorar.",
+    quality: { strong: "alta", adequate: "aceptable", limited: "limitada" },
+  },
+  pt: {
+    clipSummary: "As ações de futebol estão visíveis e foram avaliadas apenas quando há evidência clara.",
+    cameraNote: "A qualidade e o ângulo da câmara afetam a confiança; momentos pouco claros não são pontuados.",
+    evidence: "A ação de futebol visível no clipe sustenta esta pontuação.",
+    notAssessable: "Esta ação não está suficientemente visível neste clipe.",
+    feedback:
+      "Esta análise baseia-se apenas em ações de futebol claramente visíveis. Foque-se nas métricas mais baixas para evoluir.",
+    quality: { strong: "forte", adequate: "adequada", limited: "limitada" },
+  },
+  sr: {
+    clipSummary: "Fudbalske akcije su vidljive i ocenjene samo gde postoji jasan dokaz.",
+    cameraNote: "Kvalitet i ugao kamere utiču na pouzdanost; nejasni delovi se ne ocenjuju.",
+    evidence: "Jasno vidljiva fudbalska akcija podržava ovu ocenu.",
+    notAssessable: "Ova akcija nije dovoljno jasno vidljiva u ovom klipu.",
+    feedback:
+      "Analiza je zasnovana samo na jasno vidljivim fudbalskim akcijama. Fokusiraj se na metrike sa najnižom ocenom za napredak.",
+    quality: { strong: "jako", adequate: "solidno", limited: "ograničeno" },
+  },
+  fr: {
+    clipSummary: "Les actions de football sont visibles et évaluées uniquement quand la preuve est claire.",
+    cameraNote: "La qualité et l’angle de caméra influencent la confiance ; les moments flous ne sont pas notés.",
+    evidence: "Une action de football visible dans le clip justifie cette note.",
+    notAssessable: "Cette action n’est pas suffisamment visible dans ce clip.",
+    feedback:
+      "Cette analyse se base uniquement sur les actions clairement visibles. Concentre-toi sur les métriques les plus faibles pour progresser.",
+    quality: { strong: "forte", adequate: "correcte", limited: "limitée" },
+  },
+  it: {
+    clipSummary: "Le azioni calcistiche sono visibili e valutate solo dove l’evidenza è chiara.",
+    cameraNote: "Qualità e angolo della camera influenzano la confidenza; i momenti poco chiari non vengono valutati.",
+    evidence: "L’azione calcistica visibile nel clip supporta questo punteggio.",
+    notAssessable: "Questa azione non è abbastanza visibile in questo clip.",
+    feedback:
+      "Questa analisi si basa solo su azioni calcistiche chiaramente visibili. Concentrati sulle metriche più basse per migliorare.",
+    quality: { strong: "alta", adequate: "adeguata", limited: "limitata" },
+  },
+  nl: {
+    clipSummary: "Voetbalacties zijn zichtbaar en alleen beoordeeld waar het bewijs duidelijk is.",
+    cameraNote: "Camerakwaliteit en hoek beïnvloeden de betrouwbaarheid; onduidelijke momenten worden niet gescoord.",
+    evidence: "Zichtbare voetbalactie in de clip ondersteunt deze score.",
+    notAssessable: "Deze actie is niet duidelijk genoeg zichtbaar in deze clip.",
+    feedback:
+      "Deze analyse is alleen gebaseerd op duidelijk zichtbare voetbalacties. Focus op je laagste metrics om te verbeteren.",
+    quality: { strong: "sterk", adequate: "voldoende", limited: "beperkt" },
+  },
+  tr: {
+    clipSummary: "Klipte futbol aksiyonları görülüyor ve sadece açık kanıt olan kısımlar değerlendirildi.",
+    cameraNote: "Kamera kalitesi ve açı güveni etkiler; belirsiz anlar puanlanmaz.",
+    evidence: "Klipte görülen futbol aksiyonu bu puanı destekliyor.",
+    notAssessable: "Bu aksiyon bu klipte yeterince net görünmüyor.",
+    feedback:
+      "Bu analiz yalnızca net görülen futbol aksiyonlarına dayanır. Gelişmek için en düşük metriklere odaklan.",
+    quality: { strong: "yüksek", adequate: "yeterli", limited: "sınırlı" },
+  },
+  ar: {
+    clipSummary: "تظهر لقطات كرة قدم في هذا المقطع وتم تقييم ما لديه دليل واضح فقط.",
+    cameraNote: "جودة وزاوية الكاميرا تؤثران على الثقة؛ اللحظات غير الواضحة لا يتم تقييمها.",
+    evidence: "اللقطة الكروية الظاهرة في الفيديو تدعم هذه الدرجة.",
+    notAssessable: "هذه اللقطة غير واضحة بما يكفي للتقييم في هذا الفيديو.",
+    feedback:
+      "يعتمد هذا التحليل فقط على اللقطات الكروية الواضحة. ركّز على أقل المؤشرات لتحسين الأداء.",
+    quality: { strong: "قوي", adequate: "مقبول", limited: "محدود" },
+  },
+};
+
+function normalizeUiLocale(input: string): UiLocale {
+  const base = input.toLowerCase().split("-")[0] as UiLocale;
+  if (base in AI_UI_FALLBACK_TEXT) return base;
+  return "en";
+}
+
+function shouldUseLocalizedFallback(text: string, locale: UiLocale): boolean {
+  if (locale === "en") return false;
+  const normalized = text.trim().toLowerCase();
+  if (!normalized) return false;
+  const markerMatches =
+    normalized.match(
+      /\b(the|clip|visible|ball|camera|score|only|not|no|appears|shown|through|with|without|pressure|attempt)\b/g,
+    ) ?? [];
+  if (markerMatches.length >= 2) return true;
+  return /^(the|no|only)\b/.test(normalized);
 }
 
 function getLocalizedClipTypeLabel(t: ReturnType<typeof useTranslations>, clipType: string | null): string {
@@ -155,7 +309,9 @@ export function AiAnalysisResultPanel({
   onReanalyze: () => void;
   reanalyzeBusy: boolean;
 }) {
+  const locale = normalizeUiLocale(useLocale());
   const t = useTranslations("ai");
+  const fb = AI_UI_FALLBACK_TEXT[locale];
   const localizedClipType = getLocalizedClipTypeLabel(t, scores.clip_type);
   const localizedInvalidReason =
     scores.clip_type === "non_football"
@@ -239,6 +395,18 @@ export function AiAnalysisResultPanel({
 
   const va = scores.visibility_analysis;
   const legacy = scores.legacy;
+  const localizedClipSummary =
+    va && shouldUseLocalizedFallback(va.clip_summary, locale)
+      ? fb.clipSummary
+      : va?.clip_summary ?? "";
+  const localizedCameraNote =
+    va && shouldUseLocalizedFallback(va.camera.assessment_note, locale)
+      ? fb.cameraNote
+      : va?.camera.assessment_note ?? "";
+  const localizedFeedback =
+    shouldUseLocalizedFallback(scores.feedback_text, locale)
+      ? fb.feedback
+      : scores.feedback_text;
 
   const assessed: FlexibleMetricKey[] = [];
   const skipped: FlexibleMetricKey[] = [];
@@ -281,7 +449,7 @@ export function AiAnalysisResultPanel({
               {t("clipUnderstanding")}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-gn-text">
-              {va.clip_summary}
+              {localizedClipSummary}
             </p>
             <div className="mt-3 flex flex-wrap gap-1.5">
               <span className="rounded-md bg-white/[0.06] px-2 py-1 text-[11px] font-medium text-gn-text-secondary">
@@ -300,9 +468,11 @@ export function AiAnalysisResultPanel({
               {t("cameraLabel")}
             </p>
             <p className="mt-1.5 text-sm text-gn-text-secondary">
-              <span className="font-medium text-gn-text">{va.camera.quality}</span>
+              <span className="font-medium text-gn-text">
+                {fb.quality[va.camera.quality]}
+              </span>
               {" · "}
-              {va.camera.assessment_note}
+              {localizedCameraNote}
             </p>
             <p className="mt-3 text-xs leading-relaxed text-gn-text-tertiary">
               {t("honestyNote")}
@@ -345,7 +515,9 @@ export function AiAnalysisResultPanel({
                         <span className="font-medium text-gn-text-tertiary">
                           {t("evidenceLabel")}{" "}
                         </span>
-                        {m.evidence}
+                        {shouldUseLocalizedFallback(m.evidence, locale)
+                          ? fb.evidence
+                          : m.evidence}
                       </p>
                     </div>
                   );
@@ -375,7 +547,9 @@ export function AiAnalysisResultPanel({
                         {t("notScoredLabel")}
                       </p>
                       <p className="mt-1.5 text-sm leading-relaxed text-gn-text-tertiary">
-                        {m.reason}
+                        {shouldUseLocalizedFallback(m.reason, locale)
+                          ? fb.notAssessable
+                          : m.reason}
                       </p>
                     </div>
                   );
@@ -408,7 +582,7 @@ export function AiAnalysisResultPanel({
           {t("feedback")}
         </p>
         <p className="mt-3 text-sm leading-relaxed text-gn-text">
-          {scores.feedback_text}
+          {localizedFeedback}
         </p>
       </div>
 
