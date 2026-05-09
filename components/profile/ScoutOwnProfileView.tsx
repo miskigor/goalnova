@@ -79,10 +79,10 @@ export function ScoutOwnProfileView({ user, profile }: ScoutOwnProfileViewProps)
   return (
     <div className="mx-auto w-full max-w-lg space-y-6 pb-8 lg:max-w-2xl">
       <header className="space-y-3">
-        <div className="flex items-start gap-3">
+        <div className="flex flex-row-reverse items-start gap-3 sm:flex-row">
           <ProfileAvatar name={displayName} imageUrl={avatarUrl || undefined} />
-          <div className="min-w-0 flex-1 space-y-1">
-            <div className="flex flex-wrap items-center gap-2">
+          <div className="min-w-0 flex-1 space-y-1 text-end sm:text-start">
+            <div className="flex flex-wrap items-center justify-end gap-2 sm:justify-start">
               <h1 className="min-w-0 max-w-full break-words text-2xl font-semibold tracking-tight text-gn-text-primary">
                 {displayName}
               </h1>
@@ -92,7 +92,7 @@ export function ScoutOwnProfileView({ user, profile }: ScoutOwnProfileViewProps)
                 </span>
               ) : null}
             </div>
-            <p className="text-sm text-gn-text-secondary">{subtitle}</p>
+            <p className="text-sm text-gn-text-secondary sm:text-start">{subtitle}</p>
           </div>
         </div>
         {!approved && scoutStatus === "pending" ? (
@@ -100,12 +100,14 @@ export function ScoutOwnProfileView({ user, profile }: ScoutOwnProfileViewProps)
             {tSv("pendingBody")}
           </p>
         ) : null}
-        <Link
-          href="/settings/profile"
-          className="inline-flex items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
-        >
-          {tProfile("editProfile")}
-        </Link>
+        <div className="flex justify-end sm:justify-start">
+          <Link
+            href="/settings/profile"
+            className="inline-flex items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
+          >
+            {tProfile("editProfile")}
+          </Link>
+        </div>
       </header>
 
       <section

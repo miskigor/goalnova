@@ -194,28 +194,33 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
   return (
     <div className="mx-auto w-full max-w-lg space-y-6 pb-8 lg:max-w-2xl">
       <header className="space-y-3">
-        <div className="flex items-start gap-3">
+        {/* Mobile: avatar on the right so it clears the notch/header; desktop: classic left avatar */}
+        <div className="flex flex-row-reverse items-start gap-3 sm:flex-row">
           <ProfileAvatar
             name={displayName}
             imageUrl={userAvatarUrl?.trim() || undefined}
           />
-          <div className="min-w-0 flex-1 space-y-1">
-            <h1 className="truncate text-2xl font-semibold tracking-tight text-gn-text-primary">
+          <div className="min-w-0 flex-1 space-y-1 text-end sm:text-start">
+            <h1 className="truncate text-2xl font-semibold tracking-tight text-gn-text-primary sm:text-start">
               {displayName}
             </h1>
-            <p className="min-w-0 break-words text-sm text-gn-text-secondary">
+            <p className="min-w-0 break-words text-sm text-gn-text-secondary sm:text-start">
               @{displayUsername}
             </p>
-            {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
+            {isPlayerPremium(profile) ? (
+              <div className="flex justify-end sm:justify-start">
+                <PlayerPremiumBadge />
+              </div>
+            ) : null}
           </div>
         </div>
         {userId && profile.id === userId ? (
-          <div className="mt-3">
+          <div className="mt-3 flex justify-end sm:justify-start">
             <Link
               href="/settings/profile"
               className="inline-flex items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
             >
-              Edit profile
+              {tProfile("editProfile")}
             </Link>
           </div>
         ) : null}
@@ -266,23 +271,25 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
           </p>
         ) : null}
         {videos.length === 0 ? (
-          <div className="rounded-2xl border border-white/[0.1] bg-gradient-to-b from-gn-surface/45 to-gn-bg/40 px-5 py-10 text-center">
-            <p className="text-base font-semibold text-gn-text">
+          <div className="rounded-2xl border border-white/[0.1] bg-gradient-to-b from-gn-surface/45 to-gn-bg/40 px-4 py-10 text-start sm:px-5 sm:text-center">
+            <p className="text-base font-semibold text-gn-text sm:text-center">
               {tProfile("noVideosTitle")}
             </p>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-gn-text-secondary">
+            <p className="mt-2 max-w-md text-sm leading-relaxed text-gn-text-secondary sm:mx-auto sm:text-center">
               {tProfile("noVideosDescription")}
             </p>
             {profile &&
             userId &&
             userId === profile.id &&
             uploadEligibility === "player" ? (
-              <Link
-                href="/upload"
-                className="mt-5 inline-flex min-h-[2.75rem] items-center justify-center rounded-full bg-gn-accent px-5 text-sm font-semibold text-black transition-opacity hover:opacity-90"
-              >
-                {tProfile("noVideosCTA")}
-              </Link>
+              <div className="mt-5 flex justify-start sm:justify-center">
+                <Link
+                  href="/upload"
+                  className="inline-flex min-h-[2.75rem] max-w-full items-center justify-center rounded-full bg-gn-accent px-5 pe-6 text-sm font-semibold text-black transition-opacity hover:opacity-90"
+                >
+                  {tProfile("noVideosCTA")}
+                </Link>
+              </div>
             ) : null}
           </div>
         ) : (

@@ -32,7 +32,17 @@ export function AppMobileBottomNav() {
   const tNav = useTranslations("nav");
   const tMessages = useTranslations("messages");
   const { unreadCount } = useNotificationsInbox();
-  const items = APP_SHELL_MAIN_NAV.filter((item) => item.href !== "/premium");
+  const itemsRaw = APP_SHELL_MAIN_NAV.filter((item) => item.href !== "/premium");
+  const profileItem = itemsRaw.find((i) => i.href === "/profile");
+  const homeItem = itemsRaw.find((i) => i.href === "/home");
+  const middle = itemsRaw.filter(
+    (i) => i.href !== "/profile" && i.href !== "/home",
+  );
+  const items = [
+    ...(profileItem ? [profileItem] : []),
+    ...middle,
+    ...(homeItem ? [homeItem] : []),
+  ];
 
   return (
     <nav

@@ -51,8 +51,8 @@ export function ProfilePlayerUploadPrompt({ userId }: { userId: string }) {
       <p className="mx-auto max-w-full min-w-0 break-words text-sm font-medium text-gn-text sm:max-w-sm">
         {tFeed("emptyFirstVideo")}
       </p>
-      <div className="mt-5 flex justify-center">
-        <UploadVideoCtaButton />
+      <div className="mt-5 flex justify-start sm:justify-center">
+        <UploadVideoCtaButton className="!w-auto max-w-[min(100%,calc(100vw-2.5rem))]" />
       </div>
     </div>
   );

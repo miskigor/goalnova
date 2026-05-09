@@ -6,7 +6,7 @@ import { NavIcon } from "@/components/icons/NavIcons";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 
-export const UPLOAD_VIDEO_CTA_BUTTON_CLASS = `${GN_PRIMARY_BUTTON_CLASS} w-full sm:w-auto sm:min-w-[12rem] py-3.5`;
+export const UPLOAD_VIDEO_CTA_BUTTON_CLASS = `${GN_PRIMARY_BUTTON_CLASS} w-full min-w-0 sm:w-auto sm:min-w-[12rem] py-3.5`;
 
 type Props = {
   className?: string;
