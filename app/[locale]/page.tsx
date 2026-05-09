@@ -44,25 +44,28 @@ export default async function LandingPage({ params }: Props) {
         aria-hidden
       />
 
-      <header className="relative z-20 border-b border-white/[0.06] px-4 py-6 sm:px-6 sm:py-8">
-        <div className="mx-auto flex min-w-0 max-w-6xl flex-col items-center gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <header className="relative z-20 border-b border-white/[0.06] px-4 py-4 sm:px-6 sm:py-5">
+        <div className="mx-auto flex min-w-0 max-w-6xl flex-col items-center gap-3 sm:gap-4">
           <a
             href={h("/")}
             className="inline-flex shrink-0 items-center justify-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg"
           >
             <Logo href={null} variant="landing" priority showWordmark={false} />
           </a>
-          <div className="flex w-full min-w-0 flex-1 items-center justify-center gap-2 sm:w-auto sm:justify-end sm:gap-3">
-            <LanguageSwitcher variant="landing" />
+          <LanguageSwitcher
+            variant="landing"
+            className="flex w-full justify-center [&_select]:text-center"
+          />
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
             <a
               href={h("/login")}
-              className="hidden whitespace-nowrap text-sm font-medium text-gn-text-secondary transition-colors hover:text-gn-text sm:inline"
+              className="whitespace-nowrap text-[11px] font-medium text-gn-text-secondary transition-colors hover:text-gn-text sm:text-xs"
             >
               {t("login")}
             </a>
             <a
               href={h("/signup")}
-              className="hidden whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-2 text-sm font-medium text-gn-text transition-colors hover:border-white/20 hover:bg-white/[0.07] sm:inline-flex"
+              className="inline-flex whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-gn-text transition-colors hover:border-white/20 hover:bg-white/[0.07] sm:px-3 sm:py-1.5 sm:text-xs"
             >
               {t("signup")}
             </a>
@@ -70,46 +73,37 @@ export default async function LandingPage({ params }: Props) {
         </div>
       </header>
 
-      <main className="relative z-10 flex flex-1 flex-col px-4 pb-12 pt-10 sm:px-6 sm:pb-16 sm:pt-14 md:pt-20">
+      <main className="relative z-10 flex flex-1 flex-col px-4 pb-10 pt-6 sm:px-6 sm:pb-14 sm:pt-8 md:pt-10">
         <div className="mx-auto flex w-full min-w-0 max-w-3xl flex-1 flex-col items-center text-center">
-          <h1 className="mt-2 text-balance text-[1.75rem] font-semibold leading-[1.12] tracking-tight text-gn-text sm:mt-4 sm:text-4xl sm:leading-[1.1] md:text-5xl md:leading-[1.08]">
+          <h1 className="mt-1 text-balance text-lg font-semibold leading-snug tracking-tight text-gn-text sm:mt-2 sm:text-2xl sm:leading-snug md:text-3xl md:leading-tight">
             {t("headline")}
           </h1>
 
-          <p className="mt-5 max-w-md text-pretty text-base leading-relaxed text-gn-text-secondary sm:mt-6 sm:max-w-lg sm:text-lg sm:leading-relaxed">
+          <p className="mt-3 max-w-md text-pretty text-xs leading-relaxed text-gn-text-secondary sm:mt-5 sm:max-w-lg sm:text-base sm:leading-relaxed">
             {t("subhead")}
           </p>
 
-          <div className="mt-10 flex w-full max-w-md flex-col gap-3 sm:mt-12 sm:flex-row sm:justify-center sm:gap-4">
+          <div className="mt-7 flex w-full max-w-md flex-col gap-2.5 sm:mt-10 sm:flex-row sm:justify-center sm:gap-3">
             <a
               href={h("/signup")}
-              className="inline-flex h-12 min-h-[3rem] w-full items-center justify-center rounded-full bg-gn-accent px-8 text-sm font-semibold text-black shadow-[0_0_0_1px_rgba(255,255,255,0.08)_inset,0_12px_40px_-12px_rgba(249,115,22,0.55)] transition-[transform,background-color,box-shadow] hover:bg-gn-accent-hover active:scale-[0.99] sm:w-auto sm:min-w-[11rem]"
+              className="inline-flex h-9 min-h-9 w-full items-center justify-center rounded-full bg-gn-accent px-5 text-[11px] font-semibold text-black shadow-[0_0_0_1px_rgba(255,255,255,0.08)_inset,0_12px_40px_-12px_rgba(249,115,22,0.55)] transition-[transform,background-color,box-shadow] hover:bg-gn-accent-hover active:scale-[0.99] sm:h-10 sm:min-h-[2.5rem] sm:w-auto sm:min-w-[10rem] sm:text-xs"
             >
               {t("ctaPrimary")}
             </a>
             <a
               href={h("/home")}
-              className="inline-flex h-12 min-h-[3rem] w-full items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-8 text-sm font-semibold text-gn-text backdrop-blur-sm transition-[border-color,background-color] hover:border-white/20 hover:bg-white/[0.06] sm:w-auto sm:min-w-[11rem]"
+              className="inline-flex h-9 min-h-9 w-full items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-5 text-[11px] font-semibold text-gn-text backdrop-blur-sm transition-[border-color,background-color] hover:border-white/20 hover:bg-white/[0.06] sm:h-10 sm:min-h-[2.5rem] sm:w-auto sm:min-w-[10rem] sm:text-xs"
             >
               {t("ctaSecondary")}
             </a>
           </div>
-
-          <p className="mt-auto pt-14 text-center sm:pt-20">
-            <a
-              href={h("/login")}
-              className="text-sm font-medium text-gn-text-tertiary underline-offset-4 transition-colors hover:text-gn-text-secondary sm:hidden"
-            >
-              {t("login")}
-            </a>
-          </p>
         </div>
       </main>
 
-      <footer className="relative z-20 border-t border-white/[0.06] px-4 py-6 sm:px-6">
+      <footer className="relative z-20 border-t border-white/[0.06] px-4 py-5 sm:px-6">
         <div className="mx-auto min-w-0 max-w-6xl">
           <nav
-            className="mb-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-gn-text-secondary"
+            className="mb-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[11px] font-medium text-gn-text-secondary sm:text-xs"
             aria-label={legal("footer.navAriaLabel")}
           >
             <a
@@ -137,7 +131,7 @@ export default async function LandingPage({ params }: Props) {
               {legal("footer.contact")}
             </a>
           </nav>
-          <p className="text-center text-xs text-gn-text-tertiary">
+          <p className="text-center text-[11px] text-gn-text-tertiary sm:text-xs">
             {t("footer", { year })}
           </p>
         </div>

@@ -26,11 +26,11 @@ type LogoProps = {
 const variantClass: Record<LogoVariant, string> = {
   header: "size-10 shrink-0 sm:size-11",
   /**
-   * Hero / first visit — ~4× prior hero size, capped by viewport so it stays on screen.
-   * (Previously ~11rem max; now up to 44rem with vw/dvh clamps.)
+   * Hero / first visit — capped by viewport (≈ half of previous hero scale for desktop publish).
    */
+  /** Mobile base slightly smaller than `sm+` so hero fits comfortably on phones. */
   landing:
-    "size-[min(92vw,44rem,65dvh)] shrink-0 sm:size-[min(80vw,48rem,70dvh)] md:size-[min(72vw,52rem,78dvh)]",
+    "size-[min(34vw,14rem,24dvh)] shrink-0 sm:size-[min(40vw,22rem,32dvh)] md:size-[min(36vw,26rem,39dvh)]",
   inline: "size-10 shrink-0 sm:size-11",
   /** Login / signup — strong mark; tight `dvh` cap keeps the form visible on small phones. */
   entry: "size-[min(100%,15rem,26dvh)] shrink-0 sm:size-[min(100%,18rem,34dvh)]",
