@@ -2,6 +2,7 @@
 
 import {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -65,6 +66,8 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
     ref,
   ) {
     const videoRef = useRef<HTMLVideoElement | null>(null);
+    const loadWatchdogRef = useRef<number | null>(null);
+    const stallFallbackTimerRef = useRef<number | null>(null);
     useEffect(() => {
       const v = videoRef.current;
       if (!v) return;
@@ -76,8 +79,49 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
     );
     const [sourceIndex, setSourceIndex] = useState(0);
     const currentSrc = uniqueSources[sourceIndex] ?? "";
+    const canFallback = sourceIndex + 1 < uniqueSources.length;
+
+    const clearLoadWatchdog = useCallback(() => {
+      if (loadWatchdogRef.current !== null) {
+        window.clearTimeout(loadWatchdogRef.current);
+        loadWatchdogRef.current = null;
+      }
+    }, []);
+
+    const clearStallFallbackTimer = useCallback(() => {
+      if (stallFallbackTimerRef.current !== null) {
+        window.clearTimeout(stallFallbackTimerRef.current);
+        stallFallbackTimerRef.current = null;
+      }
+    }, []);
+
+    const advanceToNextSource = useCallback(() => {
+      clearLoadWatchdog();
+      clearStallFallbackTimer();
+      setSourceIndex((idx) => idx + 1);
+    }, [clearLoadWatchdog, clearStallFallbackTimer]);
 
     useIosInlineVideoFirstFrameBump(videoRef, Boolean(currentSrc), currentSrc);
+
+    useEffect(() => {
+      setSourceIndex(0);
+    }, [uniqueSources]);
+
+    useEffect(() => {
+      clearLoadWatchdog();
+      clearStallFallbackTimer();
+      if (!currentSrc || !canFallback) return;
+
+      // Some URLs never emit `error` but also never reach `loadeddata`.
+      loadWatchdogRef.current = window.setTimeout(() => {
+        advanceToNextSource();
+      }, 4500);
+
+      return () => {
+        clearLoadWatchdog();
+        clearStallFallbackTimer();
+      };
+    }, [advanceToNextSource, canFallback, clearLoadWatchdog, clearStallFallbackTimer, currentSrc]);
 
     useEffect(() => {
       const v = videoRef.current;
@@ -125,19 +169,43 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
         muted={muted}
         {...(fetchPriority ? { fetchPriority } : {})}
         onLoadedData={() => {
+          clearLoadWatchdog();
+          clearStallFallbackTimer();
           onLoadOk?.();
         }}
         onCanPlay={() => {
           onCanPlay?.();
         }}
+        onWaiting={() => {
+          if (!canFallback) return;
+          clearStallFallbackTimer();
+          stallFallbackTimerRef.current = window.setTimeout(() => {
+            advanceToNextSource();
+          }, 2800);
+        }}
+        onStalled={() => {
+          if (!canFallback) return;
+          clearStallFallbackTimer();
+          stallFallbackTimerRef.current = window.setTimeout(() => {
+            advanceToNextSource();
+          }, 1600);
+        }}
+        onTimeUpdate={() => {
+          // Once playback advances, cancel any pending stall fallback switch.
+          clearStallFallbackTimer();
+        }}
         onPlaying={() => {
+          clearLoadWatchdog();
+          clearStallFallbackTimer();
           onPlaying?.();
         }}
         onError={() => {
-          if (sourceIndex + 1 < uniqueSources.length) {
-            setSourceIndex(sourceIndex + 1);
+          if (canFallback) {
+            advanceToNextSource();
             return;
           }
+          clearLoadWatchdog();
+          clearStallFallbackTimer();
           onLoadError?.();
         }}
       />
