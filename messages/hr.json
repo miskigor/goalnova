@@ -938,6 +938,10 @@
     "videoNoUrlCaption": "Video",
     "backToDiscover": "Natrag na Otkrij",
     "messageUser": "Poruka",
+    "deleteVideo": "Obriši",
+    "deletingVideo": "Brisanje…",
+    "deleteVideoConfirm": "Trajno obrisati ovaj video? Ovu radnju nije moguće poništiti.",
+    "deleteVideoFailed": "Nije moguće obrisati video. Pokušajte ponovno.",
     "shortlist": {
       "saveToShortlist": "Spremi na shortlistu",
       "removeFromShortlist": "Ukloni sa shortliste",

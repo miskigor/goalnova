@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import {
+  deleteOwnVideoById,
   fetchPlayerProfileBySlug,
   fetchVideosForPlayer,
   type PlayerProfileRow,
@@ -64,6 +65,8 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
   );
   const [videos, setVideos] = useState<VideoRow[]>([]);
   const [videosNote, setVideosNote] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deletingVideoId, setDeletingVideoId] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [userAvatarUrl, setUserAvatarUrl] = useState<string | null>(null);
 
@@ -73,6 +76,8 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
     (async () => {
       setLoadError(null);
       setVideosNote(null);
+      setDeleteError(null);
+      setDeletingVideoId(null);
       setProfile(undefined);
       setVideos([]);
 
@@ -165,6 +170,22 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
     !scoutGate.loaded ||
     !scoutGate.row ||
     userMayMessagePlayers(scoutGate.row);
+  const isOwnProfile = Boolean(userId && profile.id === userId);
+
+  async function onDeleteVideo(videoId: string) {
+    if (!isOwnProfile) return;
+    const confirmed = window.confirm(t("deleteVideoConfirm"));
+    if (!confirmed) return;
+    setDeleteError(null);
+    setDeletingVideoId(videoId);
+    const result = await deleteOwnVideoById(videoId);
+    setDeletingVideoId(null);
+    if (!result.ok) {
+      setDeleteError(result.errorMessage || t("deleteVideoFailed"));
+      return;
+    }
+    setVideos((prev) => prev.filter((v) => v.id !== videoId));
+  }
 
   return (
     <div className="mx-auto w-full max-w-lg space-y-6 pb-8 lg:max-w-2xl">
@@ -230,6 +251,11 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gn-text-tertiary">
           {t("videosHeading")}
         </h2>
+        {deleteError ? (
+          <p role="alert" className="mb-3 text-xs text-gn-accent">
+            {deleteError}
+          </p>
+        ) : null}
         {videosNote ? (
           <p role="status" className="mb-3 text-xs text-gn-text-tertiary">
             {t("videosPartialError")} {videosNote}
@@ -256,7 +282,12 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
             ) : null}
           </div>
         ) : (
-          <ProfileVideoGrid videos={videos} />
+          <ProfileVideoGrid
+            videos={videos}
+            canDelete={isOwnProfile}
+            deletingVideoId={deletingVideoId}
+            onDelete={onDeleteVideo}
+          />
         )}
       </section>
 

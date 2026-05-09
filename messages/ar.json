@@ -938,6 +938,10 @@
     "videoNoUrlCaption": "فيديو",
     "backToDiscover": "العودة إلى اكتشاف اللاعبين",
     "messageUser": "Message",
+    "deleteVideo": "حذف",
+    "deletingVideo": "جارٍ الحذف…",
+    "deleteVideoConfirm": "هل تريد حذف هذا الفيديو نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteVideoFailed": "تعذر حذف الفيديو. حاول مرة أخرى.",
     "shortlist": {
       "saveToShortlist": "Save to Shortlist",
       "removeFromShortlist": "Remove from Shortlist",

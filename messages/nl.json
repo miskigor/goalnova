@@ -105,6 +105,12 @@
     "tryAgain": "Opnieuw proberen",
     "authStartsInEnglish": "De app is in het Engels tot je hieronder een andere taal kiest."
   },
+  "playerProfile": {
+    "deleteVideo": "Verwijderen",
+    "deletingVideo": "Bezig met verwijderen…",
+    "deleteVideoConfirm": "Deze video permanent verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+    "deleteVideoFailed": "Video kon niet worden verwijderd. Probeer opnieuw."
+  },
   "language": {
     "en": "English",
     "hr": "Hrvatski",

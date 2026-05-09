@@ -100,3 +100,24 @@ export async function fetchVideosForPlayer(
 
   return { videos: data ?? [], errorMessage: null };
 }
+
+/**
+ * Delete a single video by id.
+ * Ownership is enforced by Supabase RLS policies.
+ */
+export async function deleteOwnVideoById(
+  videoId: string
+): Promise<{ ok: true } | { ok: false; errorMessage: string }> {
+  const vid = videoId.trim();
+  if (!vid) {
+    return { ok: false, errorMessage: "Invalid video id." };
+  }
+  const { error } = await supabase.from("videos").delete().eq("id", vid);
+  if (error) {
+    logFullSupabaseError("playerPublicProfile: deleteOwnVideoById", error, {
+      videoId: vid,
+    });
+    return { ok: false, errorMessage: supabaseErrorToUserMessage(error) };
+  }
+  return { ok: true };
+}

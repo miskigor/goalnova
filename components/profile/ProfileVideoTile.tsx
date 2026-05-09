@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useMemo, useRef, useState } from "react";
 import type { VideoRow } from "@/lib/supabase/playerPublicProfile";
 import { hrefWithLocale } from "@/i18n/routing";
@@ -10,6 +11,9 @@ import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
 
 type Props = {
   video: VideoRow;
+  canDelete?: boolean;
+  deleting?: boolean;
+  onDelete?: (videoId: string) => void;
 };
 
 function formatDuration(totalSeconds: number): string {
@@ -27,7 +31,13 @@ function PlayGlyph() {
   );
 }
 
-export function ProfileVideoTile({ video }: Props) {
+export function ProfileVideoTile({
+  video,
+  canDelete = false,
+  deleting = false,
+  onDelete,
+}: Props) {
+  const t = useTranslations("playerProfile");
   const locale = useLocale();
   const src = videoPlaybackUrl(video);
   const href = useMemo(
@@ -90,13 +100,39 @@ export function ProfileVideoTile({ video }: Props) {
     </div>
   );
 
-  if (!resolvedHref) return tile;
+  const deleteButton =
+    canDelete && video.id && onDelete ? (
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onDelete(video.id as string);
+        }}
+        disabled={deleting}
+        className="absolute right-1.5 top-1.5 z-20 rounded-md border border-red-400/45 bg-black/70 px-1.5 py-0.5 text-[10px] font-semibold text-red-200 transition hover:bg-red-900/35 disabled:opacity-50"
+      >
+        {deleting ? t("deletingVideo") : t("deleteVideo")}
+      </button>
+    ) : null;
+
+  if (!resolvedHref) {
+    return (
+      <div className="relative">
+        {tile}
+        {deleteButton}
+      </div>
+    );
+  }
   return (
-    <a
-      href={resolvedHref}
-      className="block h-full w-full outline-none ring-offset-2 ring-offset-gn-bg focus-visible:ring-2 focus-visible:ring-gn-accent/50"
-    >
-      {tile}
-    </a>
+    <div className="relative h-full w-full">
+      <a
+        href={resolvedHref}
+        className="block h-full w-full outline-none ring-offset-2 ring-offset-gn-bg focus-visible:ring-2 focus-visible:ring-gn-accent/50"
+      >
+        {tile}
+      </a>
+      {deleteButton}
+    </div>
   );
 }

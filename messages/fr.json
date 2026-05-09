@@ -938,6 +938,10 @@
     "videoNoUrlCaption": "Vidéo",
     "backToDiscover": "Retour à Découvrir",
     "messageUser": "Message",
+    "deleteVideo": "Supprimer",
+    "deletingVideo": "Suppression…",
+    "deleteVideoConfirm": "Supprimer définitivement cette vidéo ? Cette action est irréversible.",
+    "deleteVideoFailed": "Impossible de supprimer la vidéo. Réessayez.",
     "shortlist": {
       "saveToShortlist": "Save to Shortlist",
       "removeFromShortlist": "Remove from Shortlist",

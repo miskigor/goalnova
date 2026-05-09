@@ -105,6 +105,12 @@
     "tryAgain": "Pokušaj ponovo",
     "authStartsInEnglish": "Aplikacija je na engleskom dok ne odaberete drugi jezik ispod."
   },
+  "playerProfile": {
+    "deleteVideo": "Obriši",
+    "deletingVideo": "Brisanje…",
+    "deleteVideoConfirm": "Trajno obrisati ovaj video? Ovu radnju nije moguće poništiti.",
+    "deleteVideoFailed": "Nije moguće obrisati video. Pokušaj ponovo."
+  },
   "language": {
     "en": "English",
     "hr": "Hrvatski",
