@@ -28,16 +28,15 @@ export function rankingsPreviewVideoCandidates(video: VideoPlaybackFields): stri
 }
 
 /**
- * Home / snap feed: when a merged file exists, play **only** that asset (music baked in).
- * Do not fall back to `source_video_url` / `video_url` while a processed URL is present —
- * fallback would drop the music track and sound wrong.
+ * Home / snap feed candidates:
+ * Prefer merged asset first, but keep fallback URLs so broken/expired processed
+ * links don't result in black/empty slides.
  */
 export function homeFeedPlaybackCandidates(video: VideoPlaybackFields): string[] {
   const processed = (video.processed_video_url ?? "").trim();
-  if (processed.length > 0) return [processed];
   const source = (video.source_video_url ?? "").trim();
   const primary = (video.video_url ?? "").trim();
-  return Array.from(new Set([source, primary].filter(Boolean)));
+  return Array.from(new Set([processed, source, primary].filter(Boolean)));
 }
 
 /**
