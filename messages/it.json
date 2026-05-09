@@ -1557,10 +1557,10 @@
     "unknownPlayer": "Player",
     "branding": "PitchRusch",
     "highlightSubtitle": "Football highlight",
-    "captionLabel": "Caption",
-    "noCaption": "No caption",
-    "joinCta": "Join PitchRusch",
-    "moreHighlights": "Explore more highlights",
+    "captionLabel": "Descrizione",
+    "noCaption": "Nessuna descrizione",
+    "joinCta": "Unisciti a PitchRusch",
+    "moreHighlights": "Esplora altri highlights",
     "shareSectionLabel": "Share this highlight"
   },
   "share": {

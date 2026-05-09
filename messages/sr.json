@@ -111,6 +111,12 @@
     "deleteVideoConfirm": "Trajno obrisati ovaj video? Ovu radnju nije moguće poništiti.",
     "deleteVideoFailed": "Nije moguće obrisati video. Pokušaj ponovo."
   },
+  "publicVideo": {
+    "captionLabel": "Opis",
+    "noCaption": "Nema opisa",
+    "joinCta": "Pridruži se PitchRuschu",
+    "moreHighlights": "Istraži još highlighta"
+  },
   "language": {
     "en": "English",
     "hr": "Hrvatski",

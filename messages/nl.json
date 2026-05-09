@@ -111,6 +111,12 @@
     "deleteVideoConfirm": "Deze video permanent verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
     "deleteVideoFailed": "Video kon niet worden verwijderd. Probeer opnieuw."
   },
+  "publicVideo": {
+    "captionLabel": "Bijschrift",
+    "noCaption": "Geen bijschrift",
+    "joinCta": "Word lid van PitchRusch",
+    "moreHighlights": "Bekijk meer highlights"
+  },
   "language": {
     "en": "English",
     "hr": "Hrvatski",

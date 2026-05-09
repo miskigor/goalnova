@@ -111,6 +111,12 @@
     "deleteVideoConfirm": "Bu videoyu kalıcı olarak silmek istiyor musun? Bu işlem geri alınamaz.",
     "deleteVideoFailed": "Video silinemedi. Lütfen tekrar dene."
   },
+  "publicVideo": {
+    "captionLabel": "Açıklama",
+    "noCaption": "Açıklama yok",
+    "joinCta": "PitchRusch'a katıl",
+    "moreHighlights": "Daha fazla öne çıkan klip keşfet"
+  },
   "language": {
     "en": "English",
     "hr": "Hrvatski",
