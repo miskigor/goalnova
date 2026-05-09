@@ -79,6 +79,13 @@ function isMissingUsersScoutApplyFullNameColumn(error: unknown): boolean {
   return m.includes("scout_apply_full_name") && m.includes("users");
 }
 
+function isMissingUsersIsDeletedColumn(error: unknown): boolean {
+  const e = error as { code?: string | null; message?: string | null };
+  if (e?.code !== "PGRST204") return false;
+  const m = (e.message ?? "").toLowerCase();
+  return m.includes("is_deleted") && m.includes("users");
+}
+
 /** Non-empty trimmed URL on at least one playable column (feeds may rely on processed-only assets). */
 function rowHasPlayableVideoUrl(row: Record<string, unknown>): boolean {
   const uv = typeof row.video_url === "string" ? row.video_url.trim() : "";
@@ -216,11 +223,23 @@ export async function fetchHomeFeedData(
       }>;
       usersErr = fallback.error;
     }
+    if (usersErr && isMissingUsersIsDeletedColumn(usersErr)) {
+      // Backward compatibility for DBs missing users.is_deleted.
+      const fallback = await supabase.from("users").select("id").in("id", initialUserIds);
+      userRows = (fallback.data ?? []) as Array<{
+        id: string;
+      }>;
+      usersErr = fallback.error;
+    }
     if (usersErr) {
       logFullSupabaseError("[PitchRusch home feed] users(is_deleted) filter", usersErr, {
         idsCount: initialUserIds.length,
       });
-      return { items: [], error: supabaseErrorToUserMessage(usersErr) };
+      // Keep feed usable instead of failing the whole page if a non-critical users
+      // projection is unavailable due schema drift.
+      activeUserIds = new Set(initialUserIds);
+      userRows = [];
+      usersErr = null;
     }
     const deletedUserIds = new Set(userRows.filter((u) => u.is_deleted).map((u) => u.id));
     for (const u of userRows) {

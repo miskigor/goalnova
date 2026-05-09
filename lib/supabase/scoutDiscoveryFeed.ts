@@ -92,6 +92,13 @@ function isMissingCityRpcSignature(err: unknown): boolean {
   return text.includes("scout_discovery_feed") && text.includes("p_city");
 }
 
+function isMissingUsersIsDeletedColumn(error: unknown): boolean {
+  const f = extractPostgrestErrorFields(error);
+  if (f.code !== "PGRST204") return false;
+  const text = `${f.message} ${f.details ?? ""} ${f.hint ?? ""}`.toLowerCase();
+  return text.includes("users") && text.includes("is_deleted");
+}
+
 /**
  * Ranked discovery feed for verified scouts (RPC `scout_discovery_feed`).
  * Returns empty + error message if RPC fails (e.g. not a verified scout — caller should fall back).
@@ -158,15 +165,22 @@ export async function fetchScoutDiscoveryFeed(
     ...new Set(mapped.map((m) => m.video.user_id).filter((id): id is string => Boolean(id))),
   ];
   if (allUserIds.length > 0) {
-    const { data: users, error: usersErr } = await client
+    let { data: users, error: usersErr } = await client
       .from("users")
       .select("id,is_deleted")
       .in("id", allUserIds);
+    if (usersErr && isMissingUsersIsDeletedColumn(usersErr)) {
+      // Older DBs may not have users.is_deleted yet.
+      const fallback = await client.from("users").select("id").in("id", allUserIds);
+      users = fallback.data as typeof users;
+      usersErr = fallback.error;
+    }
     if (usersErr) {
       logFullSupabaseError("[PitchRusch scout discovery] users(is_deleted) filter failed", usersErr, {
         idsCount: allUserIds.length,
       });
-      return { items: [], error: supabaseErrorToUserMessage(usersErr) };
+      // Keep the discovery feed available instead of failing hard.
+      users = allUserIds.map((id) => ({ id, is_deleted: false }));
     }
     const active = new Set((users ?? []).filter((u) => !u.is_deleted).map((u) => u.id));
     mapped = mapped.filter((m) => active.has(m.video.user_id));
