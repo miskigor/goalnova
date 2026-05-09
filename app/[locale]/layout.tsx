@@ -106,11 +106,12 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html
       lang={locale}
       dir={dir}
+      style={{ backgroundColor: "#000" }}
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${bebasNeue.variable} ${notoArabic.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="flex min-h-dvh min-w-0 flex-col bg-gn-bg text-gn-text">
+      <body style={{ backgroundColor: "#000" }} className="flex min-h-dvh min-w-0 flex-col bg-gn-bg text-gn-text">
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>

@@ -4,14 +4,18 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { supabase } from "@/lib/supabase/client";
 
-const MIN_HIDDEN_MS_FOR_REAUTH = 1500;
+const ARM_AFTER_MS = 4000;
+const MIN_HIDDEN_MS_FOR_REAUTH = 12000;
 
 export function RequireReauthOnReturn() {
   const router = useRouter();
   const signingOutRef = useRef(false);
   const hiddenAtRef = useRef<number | null>(null);
+  const armedAtRef = useRef<number | null>(null);
 
   useEffect(() => {
+    armedAtRef.current = Date.now();
+
     const forceReauth = async () => {
       if (signingOutRef.current) return;
       signingOutRef.current = true;
@@ -29,6 +33,8 @@ export function RequireReauthOnReturn() {
       hiddenAtRef.current = null;
 
       if (!hiddenAt) return;
+      const armedAt = armedAtRef.current;
+      if (!armedAt || Date.now() - armedAt < ARM_AFTER_MS) return;
       const elapsedMs = Date.now() - hiddenAt;
       if (elapsedMs >= MIN_HIDDEN_MS_FOR_REAUTH) {
         void forceReauth();
