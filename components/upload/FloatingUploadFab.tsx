@@ -12,11 +12,10 @@ const fabEnabledClass = `${fabBaseClass} hover:bg-gn-accent-hover focus-visible:
 
 /**
  * Mobile: sit above the home-feed action rail’s lowest control (sound).
- * Rail anchor is `bottom-[calc(7.5rem+safe)]` + ~h-10 sound button → FAB bottom must clear ~10rem+ from viewport bottom.
- * (Previously ~5.5rem+safe which overlapped the sound button — see FeedItemCard rail.)
+ * Rail anchor is `bottom-[calc(9rem+safe)]` in FeedItemCard + ~h-10 sound → FAB bottom just above ~11.5rem (sound top).
  */
 const fabPositionClass =
-  "pointer-events-none fixed z-[55] end-[max(0.75rem,calc(env(safe-area-inset-right,0px)+0.75rem))] max-lg:bottom-[calc(10.75rem+env(safe-area-inset-bottom,0px))] lg:bottom-10 lg:end-10";
+  "pointer-events-none fixed z-[55] end-[max(0.75rem,calc(env(safe-area-inset-right,0px)+0.75rem))] max-lg:bottom-[calc(11.75rem+env(safe-area-inset-bottom,0px))] lg:bottom-10 lg:end-10";
 
 /**
  * Fixed upload FAB for authenticated app chrome. Hidden on `/upload` and while eligibility is loading, signed out, or unknown.
