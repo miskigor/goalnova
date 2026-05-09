@@ -91,10 +91,7 @@ export default async function LandingPage({ params }: Props) {
               >
                 <Logo href={null} variant="landing" priority showWordmark={false} />
               </a>
-              <LanguageSwitcher
-                variant="landing"
-                className="flex w-full justify-center [&_select]:text-center"
-              />
+              <LanguageSwitcher variant="landing" className="flex w-full justify-center" />
             </div>
           </header>
 
