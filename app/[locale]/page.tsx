@@ -4,6 +4,9 @@ import { Logo } from "@/components/brand/Logo";
 import { LandingScrollLock } from "@/components/landing/LandingScrollLock";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { hrefWithLocale } from "@/i18n/routing";
+import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
+import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
+import { routing } from "@/i18n/routing";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -12,7 +15,32 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
-  return { title: t("landingTitle") };
+  const origin = getServerSiteOrigin();
+  const metadataBase = origin ? new URL(origin) : undefined;
+  const description = t("rootDescription");
+  const localePrefix = locale === routing.defaultLocale ? "" : `/${locale}`;
+
+  return {
+    metadataBase,
+    title: t("landingTitle"),
+    description,
+    alternates: {
+      canonical: localePrefix || "/",
+    },
+    openGraph: {
+      type: "website",
+      siteName: APP_DISPLAY_NAME,
+      title: t("landingTitle"),
+      description,
+      locale,
+      url: localePrefix || "/",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("landingTitle"),
+      description,
+    },
+  };
 }
 
 export default async function LandingPage({ params }: Props) {
@@ -23,11 +51,34 @@ export default async function LandingPage({ params }: Props) {
   const legal = await getTranslations("legal");
   const year = new Date().getFullYear();
   const h = (path: string) => hrefWithLocale(path, locale);
+  const origin = getServerSiteOrigin();
+  const localePrefix = locale === routing.defaultLocale ? "" : `/${locale}`;
+  const pageUrl = origin ? `${origin.replace(/\/$/, "")}${localePrefix || "/"}` : undefined;
+
+  const siteJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        name: APP_DISPLAY_NAME,
+        ...(origin ? { url: origin } : {}),
+      },
+      {
+        "@type": "WebSite",
+        name: APP_DISPLAY_NAME,
+        ...(pageUrl ? { url: pageUrl } : {}),
+      },
+    ],
+  };
 
   return (
     <div
       className="relative flex h-[100dvh] min-h-0 min-w-0 flex-col overflow-hidden overscroll-y-none bg-black text-gn-text"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+      />
       <LandingScrollLock />
 
       <div className="flex min-h-0 flex-1 flex-col justify-center">

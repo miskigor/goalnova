@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 
 export default function robots(): MetadataRoute.Robots {
-  const origin = getServerSiteOrigin() ?? "https://pitchrusch.app";
+  const origin = getServerSiteOrigin() ?? "https://pitchrusch.com";
   return {
     rules: [
       {

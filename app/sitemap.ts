@@ -32,7 +32,7 @@ type SitemapItem = {
 };
 
 async function collectAllItems(): Promise<SitemapItem[]> {
-  const origin = getServerSiteOrigin() ?? "https://pitchrusch.app";
+  const origin = getServerSiteOrigin() ?? "https://pitchrusch.com";
   const now = new Date();
   void origin;
   const items: SitemapItem[] = [];
@@ -110,7 +110,7 @@ export default async function sitemap({
 }: {
   id: number;
 }): Promise<MetadataRoute.Sitemap> {
-  const origin = getServerSiteOrigin() ?? "https://pitchrusch.app";
+  const origin = getServerSiteOrigin() ?? "https://pitchrusch.com";
   const items = await collectAllItems();
   const start = id * SITEMAP_PAGE_SIZE;
   const page = items.slice(start, start + SITEMAP_PAGE_SIZE);

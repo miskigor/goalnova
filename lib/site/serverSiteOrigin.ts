@@ -1,6 +1,6 @@
 /**
  * Absolute site origin for canonical URLs and server-rendered metadata.
- * Prefer NEXT_PUBLIC_SITE_URL in production (e.g. https://pitchrusch.app).
+ * Prefer NEXT_PUBLIC_SITE_URL in production (e.g. https://pitchrusch.com).
  */
 export function getServerSiteOrigin(): string | null {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
