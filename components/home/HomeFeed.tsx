@@ -45,7 +45,7 @@ const FEED_BLEED = "w-full min-w-0 max-w-full";
 const FEED_SCROLLPORT =
   "touch-pan-y snap-y snap-mandatory overflow-y-auto overflow-x-clip scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
   "[container-type:size] min-h-0 min-w-0 " +
-  "max-lg:flex-1 max-lg:h-full max-lg:min-h-0 " +
+  "max-lg:min-h-[62svh] max-lg:max-h-[72svh] " +
   "lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
 /** Card fills its snap `li`; desktop keeps a subtle framed tile. */
@@ -258,12 +258,8 @@ export function HomeFeed() {
     };
   }, []);
 
-  /** Full-viewport feed on small screens (video edge-to-edge; shell chrome overlays). */
-  const liveImmersiveMobile =
-    scoutLoaded &&
-    !loading &&
-    !feedLoadFailed &&
-    items.length > 0;
+  // Keep a stable in-flow layout on mobile so bottom nav/FAB/actions stay visible.
+  const liveImmersiveMobile = false;
 
   function renderFeedBody() {
     if (!scoutLoaded || loading) {
@@ -349,12 +345,7 @@ export function HomeFeed() {
           : "",
       ].join(" ")}
     >
-      <header
-        className={[
-          "space-y-0.5",
-          liveImmersiveMobile ? "max-lg:hidden" : "",
-        ].join(" ")}
-      >
+      <header className="space-y-0.5">
         <h1 className="text-xl font-semibold tracking-tight text-gn-text">
           {tFeed("pageTitle")}
         </h1>
@@ -363,16 +354,13 @@ export function HomeFeed() {
         </p>
       </header>
 
-      <div className={liveImmersiveMobile ? "max-lg:hidden" : ""}>
+      <div>
         <UploadVideoCtaButton />
       </div>
 
       <section
         className={[
           "overflow-hidden rounded-none border-0 bg-transparent shadow-none",
-          liveImmersiveMobile
-            ? "relative z-0 max-lg:flex max-lg:min-h-0 max-lg:min-w-0 max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-clip max-lg:pt-0"
-            : "",
         ].join(" ")}
         aria-busy={loading || !scoutLoaded}
         data-pitchrusch-feed-panel

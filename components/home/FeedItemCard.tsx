@@ -178,7 +178,7 @@ export function FeedItemCard({
       </div>
 
       {/* Floating action rail — must clear fixed bottom nav (z-50) + FAB (bottom ~5.75rem+safe, h-14) on immersive mobile */}
-      <div className="pointer-events-auto absolute z-[42] flex w-11 shrink-0 flex-col items-center justify-end end-[max(0.5rem,env(safe-area-inset-right,0px))] sm:end-[max(0.625rem,env(safe-area-inset-right,0px))] sm:w-12 max-lg:top-[calc(env(safe-area-inset-top,0px)+1.75rem)] max-lg:bottom-[calc(11.25rem+env(safe-area-inset-bottom,0px))] lg:top-12 lg:bottom-44">
+      <div className="pointer-events-auto absolute z-[42] flex w-11 shrink-0 flex-col items-center justify-end end-[max(0.5rem,env(safe-area-inset-right,0px))] sm:end-[max(0.625rem,env(safe-area-inset-right,0px))] sm:w-12 max-lg:top-[calc(env(safe-area-inset-top,0px)+1.5rem)] max-lg:bottom-[calc(7rem+env(safe-area-inset-bottom,0px))] lg:top-12 lg:bottom-44">
         <FeedVideoEngagement
           videoId={video.id}
           initialLikeCount={scoutMetrics?.likesCount ?? null}
