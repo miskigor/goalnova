@@ -108,6 +108,17 @@ function TikTokGlyph({ className }: { className?: string }) {
   );
 }
 
+function PitchRuschBadge() {
+  return (
+    <span
+      className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#ff9f45] via-[#f97316] to-[#c2410c] text-[10px] font-black tracking-wide text-white shadow-[0_6px_18px_rgba(249,115,22,0.45),inset_0_1px_0_rgba(255,255,255,0.18)] ring-1 ring-inset ring-white/20"
+      aria-hidden
+    >
+      PR
+    </span>
+  );
+}
+
 function openShareHref(href: string, onBlocked?: () => void): void {
   if (href.startsWith("mailto:")) {
     window.location.href = href;
@@ -356,6 +367,12 @@ export function VideoShareModal({
                   <CopyLinkGlyph className="size-5 shrink-0 opacity-95" />
                   {copied ? t("linkCopied") : t("copyLink")}
                 </button>
+                <div className="flex min-w-0 items-center gap-3 rounded-xl border border-white/[0.1] bg-white/[0.03] px-3 py-2.5 ring-1 ring-inset ring-white/[0.04]">
+                  <PitchRuschBadge />
+                  <p className="min-w-0 truncate text-xs text-gn-text-secondary">
+                    {shareUrl.trim()}
+                  </p>
+                </div>
                 <button
                   type="button"
                   onClick={openVideoPage}
