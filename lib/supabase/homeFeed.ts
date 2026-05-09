@@ -22,6 +22,8 @@ export type HomeFeedChallenge = ChallengeRow;
 export type HomeFeedItem = {
   video: HomeFeedVideo;
   profile: HomeFeedPlayerProfile | null;
+  /** Fallback display name from users table when profile fields are empty. */
+  userDisplayName: string | null;
   /** Canonical avatar from `public.users.avatar_url` (not `player_profiles.avatar_url`). */
   userAvatarUrl: string | null;
   challenge: HomeFeedChallenge | null;
@@ -179,10 +181,11 @@ export async function fetchHomeFeedData(
     ),
   ];
   let activeUserIds = new Set<string>(initialUserIds);
+  const userDisplayNameByUserId = new Map<string, string | null>();
   if (initialUserIds.length > 0) {
     const { data: users, error: usersErr } = await supabase
       .from("users")
-      .select("id,is_deleted")
+      .select("id,is_deleted,scout_apply_full_name")
       .in("id", initialUserIds);
     if (usersErr) {
       logFullSupabaseError("[PitchRusch home feed] users(is_deleted) filter", usersErr, {
@@ -190,9 +193,14 @@ export async function fetchHomeFeedData(
       });
       return { items: [], error: supabaseErrorToUserMessage(usersErr) };
     }
-    const deletedUserIds = new Set(
-      (users ?? []).filter((u) => u.is_deleted).map((u) => u.id),
-    );
+    const deletedUserIds = new Set((users ?? []).filter((u) => u.is_deleted).map((u) => u.id));
+    for (const u of users ?? []) {
+      const name =
+        typeof u.scout_apply_full_name === "string"
+          ? u.scout_apply_full_name.trim()
+          : "";
+      userDisplayNameByUserId.set(u.id, name || null);
+    }
     activeUserIds = new Set(
       initialUserIds.filter((id) => !deletedUserIds.has(id)),
     );
@@ -231,9 +239,10 @@ export async function fetchHomeFeedData(
   const items: HomeFeedItem[] = visibleNormalized.map(({ video, embedChallenge }) => {
     const profile = profileByUserId.get(video.user_id) ?? null;
     const uid = video.user_id?.trim() || "";
+    const userDisplayName = uid ? (userDisplayNameByUserId.get(uid) ?? null) : null;
     const userAvatarUrl = uid ? (avatarByUserId.get(uid) ?? null) : null;
     const challenge = embedChallenge ?? null;
-    return { video, profile, userAvatarUrl, challenge };
+    return { video, profile, userDisplayName, userAvatarUrl, challenge };
   });
 
   const withChallenges = await attachChallengesToHomeFeedItems(supabase, items);

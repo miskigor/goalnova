@@ -46,7 +46,7 @@ export function FeedItemCard({
   activeFeedIndex,
 }: Props) {
   const t = useTranslations("homeFeed");
-  const { video, profile, userAvatarUrl, challenge, scoutMetrics } = item;
+  const { video, profile, userDisplayName, userAvatarUrl, challenge, scoutMetrics } = item;
   const playbackSources = homeFeedPlaybackCandidates(video);
   const renderedPrimarySrc = playbackSources[0] ?? "";
   const url = renderedPrimarySrc || videoPlaybackUrl(video);
@@ -105,10 +105,14 @@ export function FeedItemCard({
   const displayName =
     profile?.full_name?.trim() ||
     profile?.username?.trim() ||
+    userDisplayName?.trim() ||
     t("unknownPlayer");
 
   const displayUsername =
-    profile?.username?.trim() || t("unknownPlayer");
+    profile?.username?.trim() ||
+    profile?.full_name?.trim() ||
+    userDisplayName?.trim() ||
+    t("unknownPlayer");
 
   const captionText = video.caption?.trim();
 

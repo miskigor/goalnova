@@ -129,9 +129,7 @@ export function RoleSelectionCard() {
           email: authUser.email ?? null,
           role,
           language_preference: "en",
-          ...(role === "scout" && signupFullName
-            ? { scout_apply_full_name: signupFullName }
-            : {}),
+          ...(signupFullName ? { scout_apply_full_name: signupFullName } : {}),
         },
         { onConflict: "id" }
       );
