@@ -506,8 +506,8 @@
   "landing": {
     "headline": "Découvrez la prochaine star du football",
     "subhead": "La scène mondiale des talents football",
-    "ctaPrimary": "Commencer",
-    "ctaSecondary": "Explorer les talents",
+    "ctaPrimary": "Connexion",
+    "ctaSecondary": "Inscription",
     "login": "Connexion",
     "signup": "Inscription",
     "footer": "© {year} PitchRusch. Tous droits réservés."

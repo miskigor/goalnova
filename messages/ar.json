@@ -506,8 +506,8 @@
   "landing": {
     "headline": "اكتشف النجم القادم في كرة القدم",
     "subhead": "المسرح العالمي لمواهب كرة القدم",
-    "ctaPrimary": "ابدأ",
-    "ctaSecondary": "استكشف المواهب",
+    "ctaPrimary": "تسجيل الدخول",
+    "ctaSecondary": "إنشاء حساب",
     "login": "تسجيل الدخول",
     "signup": "إنشاء حساب",
     "footer": "© {year} PitchRusch. جميع الحقوق محفوظة."

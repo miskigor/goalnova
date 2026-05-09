@@ -19,7 +19,7 @@ const defaultSelect =
   "max-w-[9.5rem] cursor-pointer rounded-lg border border-gn-border-subtle bg-gn-surface/80 py-1.5 pe-2 ps-2 text-xs font-medium text-gn-text-secondary outline-none transition-colors hover:border-gn-border hover:text-gn-text focus-visible:ring-2 focus-visible:ring-gn-accent/40 sm:max-w-none sm:text-sm";
 
 const landingSelect =
-  "mx-auto block w-full max-w-[14rem] cursor-pointer rounded-full border border-white/12 bg-white/[0.06] py-2.5 ps-4 pe-4 text-sm font-medium text-gn-text outline-none transition-[border-color,background-color,color] hover:border-white/20 hover:bg-white/[0.09] hover:text-gn-text focus-visible:ring-2 focus-visible:ring-gn-accent/50 [text-align-last:center] sm:max-w-[13rem] sm:text-base";
+  "mx-auto block w-full max-w-[14rem] cursor-pointer rounded-full border border-white/12 bg-white/[0.06] py-2.5 ps-4 pe-4 text-sm font-medium text-gn-text outline-none transition-[border-color,background-color,color] hover:border-white/20 hover:bg-white/[0.09] hover:text-gn-text focus-visible:ring-2 focus-visible:ring-gn-accent/50 [text-align-last:center] sm:max-w-[13rem] sm:text-base md:text-sm";
 
 const authSelect =
   "w-full min-w-0 cursor-pointer rounded-xl border border-gn-border bg-gn-surface py-2.5 pe-3 ps-3 text-sm font-medium text-gn-text outline-none transition-[border-color,box-shadow] hover:border-gn-border focus-visible:border-gn-accent/60 focus-visible:ring-2 focus-visible:ring-gn-accent/25";
