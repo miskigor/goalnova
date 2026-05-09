@@ -46,7 +46,7 @@ export function AppMobileBottomNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 flex min-w-0 overflow-x-clip border-t border-gn-border-subtle bg-gn-bg/95 pb-[max(0.35rem,env(safe-area-inset-bottom))] pt-1 shadow-[0_-8px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 flex min-w-0 overflow-x-clip border-t border-gn-border-subtle bg-gn-bg/95 pb-[max(0.35rem,env(safe-area-inset-bottom))] pl-[max(0px,env(safe-area-inset-left,0px))] pr-[max(0px,env(safe-area-inset-right,0px))] pt-1 shadow-[0_-8px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:hidden"
       aria-label={tNav("primary")}
     >
       {items.map((item) => {

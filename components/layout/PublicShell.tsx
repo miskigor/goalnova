@@ -34,12 +34,14 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex min-h-dvh min-w-0 w-full flex-col overflow-x-clip bg-gn-bg text-gn-text">
         <header className="sticky top-0 z-50 border-b border-gn-border-subtle bg-gn-bg/80 backdrop-blur-xl backdrop-saturate-150 transition-[background-color,box-shadow,border-color] duration-300 ease-gn-smooth">
-          <div className="mx-auto flex h-[3.75rem] min-w-0 max-w-6xl items-center px-4 sm:px-6">
+          <div className="mx-auto flex h-[3.75rem] min-w-0 max-w-6xl items-center pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-6 sm:pr-6">
             <div className="h-9 w-28 animate-pulse rounded-lg bg-gn-surface/40" />
             <div className="ms-auto h-9 w-36 animate-pulse rounded-lg bg-gn-surface/40" />
           </div>
         </header>
-        <div className="min-w-0 flex-1">{children}</div>
+        <div className="mx-auto min-w-0 w-full max-w-6xl flex-1 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-6 sm:pr-6">
+          {children}
+        </div>
       </div>
     );
   }
@@ -104,11 +106,13 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col lg:ps-[15.5rem]">
         <header className="sticky top-0 z-50 border-b border-gn-border-subtle bg-gn-bg/75 shadow-[0_8px_32px_rgba(0,0,0,0.28)] backdrop-blur-xl backdrop-saturate-150 transition-[background-color,box-shadow,border-color] duration-300 ease-gn-smooth supports-[backdrop-filter]:bg-gn-bg/58 lg:hidden">
-          <div className="mx-auto flex h-[3.75rem] min-w-0 max-w-6xl items-center px-4 sm:px-6">
+          <div className="mx-auto flex h-[3.75rem] min-w-0 max-w-6xl items-center pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-6 sm:pr-6">
             <PublicTopNav trailing={<LanguageSwitcher />} />
           </div>
         </header>
-        <div className="min-w-0 flex-1">{children}</div>
+        <div className="mx-auto min-w-0 w-full max-w-6xl flex-1 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-6 sm:pr-6">
+          {children}
+        </div>
       </div>
     </div>
   );

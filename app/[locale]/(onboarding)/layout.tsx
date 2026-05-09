@@ -24,8 +24,8 @@ export default function OnboardingLayout({
 
               <MinimalAppHeader />
 
-              <main className="relative z-10 flex min-w-0 flex-1 items-center justify-center px-4 py-12 sm:px-6">
-                <div className="w-full min-w-0 max-w-sm">{children}</div>
+              <main className="relative z-10 flex min-w-0 flex-1 items-center justify-center py-12 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
+                <div className="mx-auto w-full min-w-0 max-w-sm">{children}</div>
               </main>
             </div>
           </FeedbackProvider>

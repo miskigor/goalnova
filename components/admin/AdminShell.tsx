@@ -95,7 +95,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
             ))}
           </div>
         </aside>
-        <main className="min-w-0 flex-1 px-4 py-6 md:px-8">{children}</main>
+        <main className="min-w-0 flex-1 py-6 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] md:pl-[max(2rem,env(safe-area-inset-left,0px))] md:pr-[max(2rem,env(safe-area-inset-right,0px))]">
+          {children}
+        </main>
       </div>
     </div>
   );

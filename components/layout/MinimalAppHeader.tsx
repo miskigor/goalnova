@@ -11,7 +11,7 @@ export function MinimalAppHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-gn-border-subtle bg-gn-bg/80 shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-gn-bg/65">
-      <div className="mx-auto flex h-[3.75rem] min-w-0 max-w-6xl items-center justify-between gap-3 px-3 sm:gap-4 sm:px-6">
+      <div className="mx-auto flex h-[3.75rem] min-w-0 max-w-6xl items-center justify-between gap-3 sm:gap-4 pl-[max(0.75rem,env(safe-area-inset-left,0px))] pr-[max(0.75rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
         <Logo href="/home" variant="header" className="shrink-0" />
         <div className="flex items-center gap-3">
           <LanguageSwitcher />
