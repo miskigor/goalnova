@@ -43,10 +43,9 @@ const FEED_BLEED = "w-full min-w-0 max-w-full";
  * so slide height matches the scrollport (avoids `100cqh` resolving to 0 in some WebKit layouts).
  */
 const FEED_SCROLLPORT =
-  "touch-pan-y overflow-y-auto overflow-x-clip scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
+  "touch-pan-y snap-y snap-mandatory overflow-y-auto overflow-x-clip scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
   "[container-type:size] min-h-0 min-w-0 " +
-  "max-lg:h-auto max-lg:max-h-none max-lg:overflow-y-visible max-lg:[scroll-snap-type:none] " +
-  "lg:snap-y lg:snap-mandatory " +
+  "max-lg:flex-1 max-lg:h-full max-lg:min-h-0 " +
   "lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
 /** Card fills its snap `li`; desktop keeps a subtle framed tile. */
@@ -97,7 +96,7 @@ function HomeFeedSnapList({
       />
       <ul
         {...feedItemsListProps}
-        className="m-0 flex h-full min-h-0 list-none flex-col gap-3 p-0 lg:gap-0"
+        className="m-0 flex h-full min-h-0 list-none flex-col gap-0 p-0"
       >
         {items.map((item, index) => (
           <li
@@ -106,7 +105,7 @@ function HomeFeedSnapList({
               item.video.id ??
               `${item.video.user_id}-${item.video.created_at ?? ""}-${index}`
             }
-            className="min-h-0 min-w-0 w-full shrink-0 grow-0 overflow-x-clip max-lg:basis-auto max-lg:h-[68svh] max-lg:min-h-[26rem] lg:basis-full lg:snap-start lg:snap-always"
+            className="min-h-0 min-w-0 w-full shrink-0 grow-0 basis-full snap-start snap-always overflow-x-clip"
           >
             <FeedItemCard
               item={item}
@@ -259,8 +258,12 @@ export function HomeFeed() {
     };
   }, []);
 
-  // Keep a stable in-flow layout on mobile so bottom nav/FAB/actions stay visible.
-  const liveImmersiveMobile = false;
+  /** Full-viewport feed on small screens (video edge-to-edge; shell chrome overlays). */
+  const liveImmersiveMobile =
+    scoutLoaded &&
+    !loading &&
+    !feedLoadFailed &&
+    items.length > 0;
 
   function renderFeedBody() {
     if (!scoutLoaded || loading) {
@@ -346,7 +349,12 @@ export function HomeFeed() {
           : "",
       ].join(" ")}
     >
-      <header className="space-y-0.5">
+      <header
+        className={[
+          "space-y-0.5",
+          liveImmersiveMobile ? "max-lg:hidden" : "",
+        ].join(" ")}
+      >
         <h1 className="text-xl font-semibold tracking-tight text-gn-text">
           {tFeed("pageTitle")}
         </h1>
@@ -355,13 +363,16 @@ export function HomeFeed() {
         </p>
       </header>
 
-      <div>
+      <div className={liveImmersiveMobile ? "max-lg:hidden" : ""}>
         <UploadVideoCtaButton />
       </div>
 
       <section
         className={[
           "overflow-hidden rounded-none border-0 bg-transparent shadow-none",
+          liveImmersiveMobile
+            ? "relative z-0 max-lg:flex max-lg:min-h-0 max-lg:min-w-0 max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-clip max-lg:pt-0"
+            : "",
         ].join(" ")}
         aria-busy={loading || !scoutLoaded}
         data-pitchrusch-feed-panel
