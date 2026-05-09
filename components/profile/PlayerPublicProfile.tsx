@@ -164,7 +164,11 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
     profile.full_name?.trim() ||
     profile.username?.trim() ||
     unknownPlayer;
-  const displayUsername = profile.username?.trim() || unknownPlayer;
+  const displayUsername =
+    profile.username?.trim() ||
+    profile.full_name?.trim() ||
+    playerSlug.trim() ||
+    unknownPlayer;
 
   const canUseScoutMessaging =
     !scoutGate.loaded ||
