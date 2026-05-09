@@ -1,4 +1,5 @@
 import { AuthGate } from "@/components/auth/AuthGate";
+import { RequireReauthOnReturn } from "@/components/auth/RequireReauthOnReturn";
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
 import { MinimalAppHeader } from "@/components/layout/MinimalAppHeader";
 import { NotificationsInboxProvider } from "@/components/notifications/NotificationsInboxContext";
@@ -11,6 +12,7 @@ export default function OnboardingLayout({
 }) {
   return (
     <AuthGate mode="protected" redirectTo="/login">
+      <RequireReauthOnReturn />
       <PremiumProvider>
         <NotificationsInboxProvider>
           <FeedbackProvider>
