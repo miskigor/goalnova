@@ -10,12 +10,20 @@ const fabBaseClass =
 
 const fabEnabledClass = `${fabBaseClass} hover:bg-gn-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg`;
 
-/**
- * Mobile: inset from the end so the FAB does not sit on the feed action rail (like/comment/share/sound).
- * Keep bottom moderate — upload sits lower; rail is lifted separately in FeedItemCard.
- */
-const fabPositionClass =
-  "pointer-events-none fixed z-[55] max-lg:end-[max(0.75rem,calc(4.5rem+env(safe-area-inset-right,0px)))] max-lg:bottom-[calc(8.75rem+env(safe-area-inset-bottom,0px))] lg:bottom-10 lg:end-10";
+function fabWrapperClassName(pathname: string | null): string {
+  /** DM thread: sticky composer + send — lift FAB so it does not cover controls */
+  const onMessagesThread =
+    typeof pathname === "string" && pathname.startsWith("/messages/");
+  const bottomMobile = onMessagesThread
+    ? "max-lg:bottom-[calc(13.5rem+env(safe-area-inset-bottom,0px))]"
+    : "max-lg:bottom-[calc(8.75rem+env(safe-area-inset-bottom,0px))]";
+  return [
+    "pointer-events-none fixed z-[55]",
+    "max-lg:end-[max(0.75rem,calc(4.5rem+env(safe-area-inset-right,0px)))]",
+    bottomMobile,
+    "lg:bottom-10 lg:end-10",
+  ].join(" ");
+}
 
 /**
  * Fixed upload FAB for authenticated app chrome. Hidden on `/upload` and while eligibility is loading, signed out, or unknown.
@@ -38,7 +46,7 @@ export function FloatingUploadFab() {
   }
 
   return (
-    <div className={`${fabPositionClass} rounded-full`}>
+    <div className={`${fabWrapperClassName(pathname)} rounded-full`}>
       <Link
         href="/upload"
         className={fabEnabledClass}
