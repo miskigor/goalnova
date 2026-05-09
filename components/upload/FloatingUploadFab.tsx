@@ -11,11 +11,11 @@ const fabBaseClass =
 const fabEnabledClass = `${fabBaseClass} hover:bg-gn-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg`;
 
 /**
- * Mobile: avoid the TikTok-style feed rail (same vertical band as like/comment/share/sound).
- * Inset from the end clears the ~w-11 rail + margin; bottom clears bottom nav + thumb zone.
+ * Mobile: inset from the end so the FAB does not sit on the feed action rail (like/comment/share/sound).
+ * Keep bottom moderate — upload sits lower; rail is lifted separately in FeedItemCard.
  */
 const fabPositionClass =
-  "pointer-events-none fixed z-[55] max-lg:end-[max(0.75rem,calc(4.5rem+env(safe-area-inset-right,0px)))] max-lg:bottom-[calc(13rem+env(safe-area-inset-bottom,0px))] lg:bottom-10 lg:end-10";
+  "pointer-events-none fixed z-[55] max-lg:end-[max(0.75rem,calc(4.5rem+env(safe-area-inset-right,0px)))] max-lg:bottom-[calc(8.75rem+env(safe-area-inset-bottom,0px))] lg:bottom-10 lg:end-10";
 
 /**
  * Fixed upload FAB for authenticated app chrome. Hidden on `/upload` and while eligibility is loading, signed out, or unknown.

@@ -177,8 +177,8 @@ export function FeedItemCard({
         />
       </div>
 
-      {/* Floating action rail — clear bottom nav + FAB; higher inset lifts like/comment/share/sound on phones */}
-      <div className="pointer-events-auto absolute z-[42] flex w-11 shrink-0 flex-col items-center justify-end end-[max(0.5rem,env(safe-area-inset-right,0px))] sm:end-[max(0.625rem,env(safe-area-inset-right,0px))] sm:w-12 max-lg:top-[calc(env(safe-area-inset-top,0px)+2.25rem)] max-lg:bottom-[calc(9rem+env(safe-area-inset-bottom,0px))] lg:top-12 lg:bottom-44">
+      {/* Floating action rail — clear bottom nav; higher bottom inset = like/comment/share/sound sit higher on mobile */}
+      <div className="pointer-events-auto absolute z-[42] flex w-11 shrink-0 flex-col items-center justify-end end-[max(0.5rem,env(safe-area-inset-right,0px))] sm:end-[max(0.625rem,env(safe-area-inset-right,0px))] sm:w-12 max-lg:top-[calc(env(safe-area-inset-top,0px)+2.25rem)] max-lg:bottom-[calc(10.75rem+env(safe-area-inset-bottom,0px))] lg:top-12 lg:bottom-44">
         <FeedVideoEngagement
           videoId={video.id}
           initialLikeCount={scoutMetrics?.likesCount ?? null}
