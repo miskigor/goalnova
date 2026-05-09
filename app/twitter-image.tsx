@@ -12,9 +12,9 @@ export default function TwitterImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: 92,
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "72px 82px",
           backgroundColor: "#000",
           color: "#fff",
           fontFamily:
@@ -23,29 +23,57 @@ export default function TwitterImage() {
       >
         <div
           style={{
-            fontSize: 72,
-            fontWeight: 800,
-            letterSpacing: -1.5,
-            lineHeight: 1.05,
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 24,
           }}
         >
-          PitchRusch
+          <div style={{ display: "flex", flexDirection: "column", maxWidth: 760 }}>
+            <div
+              style={{
+                fontSize: 70,
+                fontWeight: 800,
+                letterSpacing: -1.5,
+                lineHeight: 1.05,
+              }}
+            >
+              PitchRusch
+            </div>
+            <div
+              style={{
+                marginTop: 18,
+                fontSize: 32,
+                fontWeight: 600,
+                color: "rgba(255,255,255,0.82)",
+                lineHeight: 1.25,
+              }}
+            >
+              Discover football talent. Built for scouts and clubs.
+            </div>
+          </div>
+          <div
+            style={{
+              width: 170,
+              height: 170,
+              borderRadius: 42,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+              color: "#0a0a0a",
+              fontWeight: 900,
+              fontSize: 72,
+              letterSpacing: -3,
+            }}
+          >
+            PR
+          </div>
         </div>
         <div
           style={{
-            marginTop: 18,
-            fontSize: 32,
-            fontWeight: 600,
-            color: "rgba(255,255,255,0.82)",
-            maxWidth: 920,
-            lineHeight: 1.25,
-          }}
-        >
-          Discover football talent. Built for scouts and clubs.
-        </div>
-        <div
-          style={{
-            marginTop: 30,
+            marginTop: 24,
             fontSize: 22,
             fontWeight: 700,
             color: "#f97316",

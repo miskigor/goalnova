@@ -67,6 +67,11 @@ export async function generateMetadata({
       title: t("rootTitle"),
       description: t("rootDescription"),
     },
+    icons: {
+      icon: "/icon",
+      apple: "/apple-icon",
+      shortcut: "/icon",
+    },
   };
 }
 

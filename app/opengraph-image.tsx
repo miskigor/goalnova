@@ -12,9 +12,9 @@ export default function OpenGraphImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: 96,
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "86px 90px",
           backgroundColor: "#000",
           color: "#fff",
           fontFamily:
@@ -23,29 +23,58 @@ export default function OpenGraphImage() {
       >
         <div
           style={{
-            fontSize: 76,
-            fontWeight: 800,
-            letterSpacing: -1.5,
-            lineHeight: 1.05,
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 34,
           }}
         >
-          PitchRusch
+          <div style={{ display: "flex", flexDirection: "column", maxWidth: 790 }}>
+            <div
+              style={{
+                fontSize: 78,
+                fontWeight: 800,
+                letterSpacing: -1.5,
+                lineHeight: 1.05,
+              }}
+            >
+              PitchRusch
+            </div>
+            <div
+              style={{
+                marginTop: 22,
+                fontSize: 34,
+                fontWeight: 600,
+                color: "rgba(255,255,255,0.82)",
+                lineHeight: 1.25,
+              }}
+            >
+              Premium football talent discovery for scouts, clubs, and players.
+            </div>
+          </div>
+          <div
+            style={{
+              width: 220,
+              height: 220,
+              borderRadius: 56,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+              boxShadow: "0 0 70px rgba(249,115,22,0.38)",
+              color: "#0a0a0a",
+              fontWeight: 900,
+              fontSize: 96,
+              letterSpacing: -4,
+            }}
+          >
+            PR
+          </div>
         </div>
         <div
           style={{
-            marginTop: 22,
-            fontSize: 34,
-            fontWeight: 600,
-            color: "rgba(255,255,255,0.82)",
-            maxWidth: 900,
-            lineHeight: 1.25,
-          }}
-        >
-          Premium football talent discovery for scouts, clubs, and players.
-        </div>
-        <div
-          style={{
-            marginTop: 34,
+            marginTop: 28,
             display: "flex",
             alignItems: "center",
             gap: 12,
