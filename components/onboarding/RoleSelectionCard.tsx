@@ -111,6 +111,11 @@ export function RoleSelectionCard() {
 
       const authUser = authData.user;
       const userId = authUser?.id;
+      const signupFullNameRaw =
+        typeof authUser?.user_metadata?.full_name === "string"
+          ? authUser.user_metadata.full_name
+          : "";
+      const signupFullName = signupFullNameRaw.trim();
 
       if (!userId) {
         setError(t("notSignedIn"));
@@ -124,6 +129,9 @@ export function RoleSelectionCard() {
           email: authUser.email ?? null,
           role,
           language_preference: "en",
+          ...(role === "scout" && signupFullName
+            ? { scout_apply_full_name: signupFullName }
+            : {}),
         },
         { onConflict: "id" }
       );
@@ -155,7 +163,12 @@ export function RoleSelectionCard() {
       const profileTable = role === "player" ? "player_profiles" : "scout_profiles";
       const { error: profileUpsertError } = await supabase
         .from(profileTable)
-        .upsert({ id: userId }, { onConflict: "id" });
+        .upsert(
+          role === "player" && signupFullName
+            ? { id: userId, full_name: signupFullName }
+            : { id: userId },
+          { onConflict: "id" },
+        );
 
       if (profileUpsertError) {
         logFullSupabaseError(

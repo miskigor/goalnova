@@ -86,10 +86,8 @@ export function SignupCard() {
       const signupResult = await signUpWithEmailPassword({
         email: trimmedEmail,
         password,
+        fullName,
       });
-
-      // `fullName` is not used for now (future profile creation).
-      void fullName;
 
       setSignupComplete(true);
 

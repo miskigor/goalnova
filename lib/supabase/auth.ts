@@ -296,17 +296,27 @@ async function ensureUserRow({
 export async function signUpWithEmailPassword({
   email,
   password,
+  fullName,
   role = "player",
 }: {
   email: string;
   password: string;
+  fullName?: string;
   role?: Role;
 }): Promise<SignupResult> {
   assertSupabaseConfigured();
+  const trimmedFullName = fullName?.trim() || "";
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: trimmedFullName
+      ? {
+          data: {
+            full_name: trimmedFullName,
+          },
+        }
+      : undefined,
   });
 
   if (error) {
