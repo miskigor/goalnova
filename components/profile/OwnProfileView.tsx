@@ -75,7 +75,6 @@ export function OwnProfileView() {
     return (
       <div className="space-y-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4">
         <p className="text-sm text-gn-text-secondary">{tPlayer("loadFailed")}</p>
-        <p className="text-xs text-gn-text-tertiary">{error}</p>
         <Link
           href="/settings/profile"
           className="text-sm font-medium text-gn-accent hover:underline"

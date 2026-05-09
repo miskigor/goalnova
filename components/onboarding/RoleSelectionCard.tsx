@@ -26,6 +26,14 @@ function isMissingScoutApplyFullNameColumn(error: unknown): boolean {
   return msg.includes("scout_apply_full_name") && msg.includes("users");
 }
 
+function isSchemaCacheColumnError(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const e = error as SupabaseErrorShape;
+  if (e.code !== "PGRST204") return false;
+  const msg = String(e.message ?? "").toLowerCase();
+  return msg.includes("column") && msg.includes("schema cache");
+}
+
 function RoleSpinner() {
   return (
     <svg
@@ -68,6 +76,7 @@ export function RoleSelectionCard() {
     (err: unknown): string => {
       if (!err || typeof err !== "object") return t("unknownError");
       const e = err as SupabaseErrorShape;
+      if (isSchemaCacheColumnError(err)) return t("requestFailedGeneric");
       return e.message ? String(e.message) : t("requestFailedGeneric");
     },
     [t],
