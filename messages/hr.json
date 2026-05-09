@@ -570,7 +570,14 @@
     "trimRangeUnavailable": "Za ovu duljinu numere nema što podešavati.",
     "untitledTrack": "Bez naslova",
     "musicVolumeLabel": "Glasnoća glazbe",
-    "trimClampedHint": "Odsječak je skraćen da stane u video. Po želji podesi početak/kraj."
+    "trimClampedHint": "Odsječak je skraćen da stane u video. Po želji podesi početak/kraj.",
+    "trimPickSegmentHeading": "Odaberi koji dio numere ide uz ovaj video",
+    "trimPickSegmentDescription": "Narančasti odsječak jednak je duljini videa ({duration}). Pomakni ga duž cijele numere.",
+    "trimSlideAlongTrackLabel": "Pomakni duž cijele numere",
+    "trimShortTrackNotice": "Numer je kraći od videa. Koristi se cijela snimka; ostatak videa može biti tiši.",
+    "trimAdvancedSectionTitle": "Prilagođeni početak i kraj",
+    "trimAdvancedSectionHint": "Postavi točke početka i kraja. Ako je isječak kraći od videa, na kraju se dodaje tišina.",
+    "trimDurationMeasuring": "Učitavanje duljine numere…"
   },
   "adminMusic": {
     "pageTitle": "Biblioteka muzike",

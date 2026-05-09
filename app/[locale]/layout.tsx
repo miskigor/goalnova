@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Bebas_Neue, Geist, Noto_Sans_Arabic } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { loadMergedMessages } from "@/i18n/loadLocaleMessages";
+import { LocaleRouteFallback } from "@/components/loading/LocaleRouteFallback";
 import type { AppLocale } from "@/i18n/routing";
 import { RTL_LOCALES, routing } from "@/i18n/routing";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
@@ -87,6 +88,22 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
+async function LocaleIntlProvider({
+  locale,
+  children,
+}: {
+  locale: AppLocale;
+  children: React.ReactNode;
+}) {
+  const merged = await getMessages();
+  const messages = JSON.parse(JSON.stringify(merged)) as typeof merged;
+  return (
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      {children}
+    </NextIntlClientProvider>
+  );
+}
+
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
 
@@ -96,10 +113,6 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   setRequestLocale(locale);
 
-  // Same merge as `i18n/request.ts`, then JSON round-trip so the object is fully
-  // serializable for the RSC → client boundary (fixes missing nested `upload.*` in dev).
-  const merged = await loadMergedMessages(locale as AppLocale);
-  const messages = JSON.parse(JSON.stringify(merged)) as typeof merged;
   const dir = RTL_LOCALES.includes(locale as AppLocale) ? "rtl" : "ltr";
 
   return (
@@ -112,9 +125,9 @@ export default async function LocaleLayout({ children, params }: Props) {
       suppressHydrationWarning
     >
       <body style={{ backgroundColor: "#000" }} className="flex min-h-dvh min-w-0 flex-col bg-gn-bg text-gn-text">
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+        <Suspense fallback={<LocaleRouteFallback />}>
+          <LocaleIntlProvider locale={locale as AppLocale}>{children}</LocaleIntlProvider>
+        </Suspense>
       </body>
     </html>
   );

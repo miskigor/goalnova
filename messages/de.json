@@ -570,7 +570,14 @@
     "trimRangeUnavailable": "Nothing to adjust for this track length.",
     "untitledTrack": "Untitled track",
     "musicVolumeLabel": "Music volume",
-    "trimClampedHint": "Segment was shortened to fit your video. Adjust start/end if needed."
+    "trimClampedHint": "Segment was shortened to fit your video. Adjust start/end if needed.",
+    "trimPickSegmentHeading": "Choose which part of the song is used",
+    "trimPickSegmentDescription": "The orange segment matches your video length ({duration}). Slide to move it along the full track.",
+    "trimSlideAlongTrackLabel": "Slide along full track",
+    "trimShortTrackNotice": "This song is shorter than your clip. The entire song is used; silence may fill the rest of the video.",
+    "trimAdvancedSectionTitle": "Custom start and end",
+    "trimAdvancedSectionHint": "Set exact start and end points. If the segment is shorter than your video, silence is added at the end.",
+    "trimDurationMeasuring": "Reading track length…"
   },
   "adminMusic": {
     "pageTitle": "Musikbibliothek",

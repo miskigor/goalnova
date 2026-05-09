@@ -158,6 +158,10 @@ export function UploadForm() {
   const [musicTrackDurationSec, setMusicTrackDurationSec] = useState<number | null>(
     null,
   );
+  /** Used to probe real audio duration from the file when DB metadata is missing or wrong. */
+  const [selectedMusicAudioUrl, setSelectedMusicAudioUrl] = useState<string | null>(
+    null,
+  );
   const [videoDurationSeconds, setVideoDurationSeconds] = useState<number | null>(
     null,
   );
@@ -182,6 +186,42 @@ export function UploadForm() {
       if (draftVideoObjectUrl) URL.revokeObjectURL(draftVideoObjectUrl);
     };
   }, [draftVideoObjectUrl]);
+
+  /** Prefer browser-measured duration so the trim UI spans the full real track. */
+  useEffect(() => {
+    const url = selectedMusicAudioUrl?.trim();
+    if (!url) return;
+
+    const audio = new Audio();
+    audio.preload = "metadata";
+
+    const detach = () => {
+      audio.removeAttribute("src");
+      audio.load();
+    };
+
+    const onMeta = () => {
+      const d = audio.duration;
+      if (Number.isFinite(d) && d > 0.05) {
+        setMusicTrackDurationSec((prev) =>
+          prev == null || prev < 0.1 || Math.abs(prev - d) > 0.75 ? d : prev,
+        );
+      }
+      detach();
+    };
+
+    const onErr = () => detach();
+
+    audio.addEventListener("loadedmetadata", onMeta);
+    audio.addEventListener("error", onErr);
+    audio.src = url;
+
+    return () => {
+      audio.removeEventListener("loadedmetadata", onMeta);
+      audio.removeEventListener("error", onErr);
+      detach();
+    };
+  }, [selectedMusicAudioUrl]);
 
   const isUploadBusy = [
     "validating",
@@ -208,6 +248,7 @@ export function UploadForm() {
         setSelectedMusicTitle("");
         setSelectedMusicArtist("");
         setMusicTrackDurationSec(null);
+        setSelectedMusicAudioUrl(null);
         setVideoDurationSeconds(null);
         setMusicStartSec(0);
         setMusicEndSec(0);
@@ -929,6 +970,7 @@ export function UploadForm() {
         setSelectedMusicTitle("");
         setSelectedMusicArtist("");
         setMusicTrackDurationSec(null);
+        setSelectedMusicAudioUrl(null);
         setVideoDurationSeconds(null);
         setMusicStartSec(0);
         setMusicEndSec(0);
@@ -1283,15 +1325,20 @@ export function UploadForm() {
                     if (id && track) {
                       setSelectedMusicTitle((track.title ?? "").trim());
                       setSelectedMusicArtist((track.artist ?? "").trim());
+                      const au = (track.audio_url ?? "").trim();
+                      setSelectedMusicAudioUrl(au.length > 0 ? au : null);
                     } else {
                       setSelectedMusicTitle("");
                       setSelectedMusicArtist("");
+                      setSelectedMusicAudioUrl(null);
                     }
                     const md =
                       track && typeof track.duration_seconds === "number"
                         ? track.duration_seconds
                         : null;
-                    setMusicTrackDurationSec(md);
+                    setMusicTrackDurationSec(
+                      md != null && md > 0.05 ? md : null,
+                    );
                   }}
                   disabled={isUploadBusy}
                 />

@@ -61,7 +61,9 @@ export function MusicMergeTrimPanel({
     videoDurationSec != null && videoDurationSec > 0 ? videoDurationSec : null;
   const md =
     musicDurationSec != null && musicDurationSec > 0 ? musicDurationSec : null;
-  const musicLen = md ?? 600;
+
+  /** Effective length for timeline math (avoid huge placeholder timeline before probe). */
+  const musicLen = md ?? (vd != null && vd > 0 ? vd : 120);
 
   const constrained = useMemo(
     () =>
@@ -77,14 +79,15 @@ export function MusicMergeTrimPanel({
   const { startSec, endSec, segmentLengthSec } = constrained;
 
   const vdEff = vd;
-  const minEnd = musicStart + MUSIC_TRIM_MIN_GAP_SEC;
-  const maxEnd = Math.min(musicLen, vdEff != null ? musicStart + vdEff : musicLen);
 
-  const minStart = vdEff != null ? Math.max(0, musicEnd - vdEff) : 0;
-  const maxStart = Math.min(
-    musicLen - MUSIC_TRIM_MIN_GAP_SEC,
-    musicEnd - MUSIC_TRIM_MIN_GAP_SEC,
-  );
+  /** Max start index so [start, start+windowLen] fits in [0, md]. */
+  const maxWindowStart =
+    md != null && md > 0 && vd != null && vd > 0
+      ? Math.max(0, md - Math.min(vd, md))
+      : 0;
+
+  const showSlideAlongTrack =
+    md != null && vd != null && md >= vd - 1e-6 && maxWindowStart > 1e-6;
 
   const commit = useCallback(
     (rawStart: number, rawEnd: number) => {
@@ -99,6 +102,23 @@ export function MusicMergeTrimPanel({
     [videoDurationSec, musicDurationSec, onTrimChange],
   );
 
+  const onWindowPositionSlide = (rawStart: number) => {
+    if (md == null || vd == null) return;
+    const wl = Math.min(vd, md);
+    const s = Math.max(0, Math.min(maxWindowStart, rawStart));
+    const e = Math.min(md, s + wl);
+    commit(s, e);
+  };
+
+  const minEnd = musicStart + MUSIC_TRIM_MIN_GAP_SEC;
+  const maxEnd = Math.min(musicLen, vdEff != null ? musicStart + vdEff : musicLen);
+
+  const minStart = vdEff != null ? Math.max(0, musicEnd - vdEff) : 0;
+  const maxStart = Math.min(
+    musicLen - MUSIC_TRIM_MIN_GAP_SEC,
+    musicEnd - MUSIC_TRIM_MIN_GAP_SEC,
+  );
+
   const onStartSlider = (v: number) => {
     commit(v, musicEnd);
   };
@@ -109,7 +129,7 @@ export function MusicMergeTrimPanel({
 
   const startSliderDead = maxStart <= minStart + 1e-6;
   const endSliderDead = maxEnd <= minEnd + 1e-6;
-  const trimControlsDead = startSliderDead && endSliderDead;
+  const advancedTrimDead = startSliderDead && endSliderDead;
 
   const p0 = musicLen > 0 ? (startSec / musicLen) * 100 : 0;
   const p1 = musicLen > 0 ? Math.max(0, ((endSec - startSec) / musicLen) * 100) : 0;
@@ -118,7 +138,7 @@ export function MusicMergeTrimPanel({
   const timelineSummary = t("trimTimelineSummary", {
     start: formatMmSs(startSec),
     end: formatMmSs(endSec),
-    total: formatMmSs(musicLen),
+    total: formatMmSs(md ?? musicLen),
   });
 
   const segmentLive = t("segmentRangeLive", {
@@ -127,6 +147,8 @@ export function MusicMergeTrimPanel({
   });
 
   const segmentDurationStr = formatTrackDuration(Math.floor(segmentLengthSec));
+
+  const windowSliderValue = Math.min(maxWindowStart, Math.max(0, startSec));
 
   return (
     <div className="mt-4 space-y-4 rounded-xl border border-gn-accent/25 bg-gn-accent/[0.06] p-4">
@@ -154,7 +176,7 @@ export function MusicMergeTrimPanel({
             {t("musicDurationLabel")}
           </p>
           <p className="mt-0.5 tabular-nums text-sm font-medium text-white/90">
-            {formatDurationLabel(musicDurationSec)}
+            {md != null ? formatDurationLabel(md) : t("trimDurationMeasuring")}
           </p>
         </div>
         <div className="rounded-lg border border-gn-accent/30 bg-gn-accent/[0.08] px-3 py-2.5">
@@ -175,15 +197,17 @@ export function MusicMergeTrimPanel({
         </div>
       </div>
 
+      {md != null && vd != null && md < vd - 1e-6 ? (
+        <p className="rounded-lg border border-white/10 bg-black/35 px-3 py-2.5 text-xs leading-relaxed text-white/70">
+          {t("trimShortTrackNotice")}
+        </p>
+      ) : null}
+
       <div className="space-y-2">
         <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-white/45">
           {t("trimTimelineTitle")}
         </p>
-        <div
-          className="space-y-1.5"
-          role="group"
-          aria-label={timelineSummary}
-        >
+        <div className="space-y-1.5" role="group" aria-label={timelineSummary}>
           <div className="flex h-4 w-full overflow-hidden rounded-full ring-1 ring-white/10">
             <div
               className="h-full shrink-0 bg-white/[0.08]"
@@ -205,7 +229,7 @@ export function MusicMergeTrimPanel({
             <span className="text-start">{formatMmSs(0)}</span>
             <span className="font-medium text-gn-accent/95">{formatMmSs(startSec)}</span>
             <span className="font-medium text-gn-accent/95">{formatMmSs(endSec)}</span>
-            <span className="text-end">{formatMmSs(musicLen)}</span>
+            <span className="text-end">{formatMmSs(md ?? musicLen)}</span>
           </div>
           <div className="grid grid-cols-4 gap-x-1 text-center text-[0.58rem] leading-tight text-white/38">
             <span className="text-start">{t("trimAxisMin")}</span>
@@ -226,65 +250,119 @@ export function MusicMergeTrimPanel({
         {t("segmentLengthDetail", { duration: segmentDurationStr })}
       </p>
 
-      {trimControlsDead ? (
+      {showSlideAlongTrack && vdEff != null ? (
+        <div className="touch-manipulation space-y-2 rounded-lg border border-white/10 bg-black/25 px-3 py-3">
+          <p className="text-sm font-medium text-white">{t("trimPickSegmentHeading")}</p>
+          <p className="text-xs leading-relaxed text-white/55">
+            {t("trimPickSegmentDescription", {
+              duration: formatTrackDuration(Math.floor(vdEff)),
+            })}
+          </p>
+          <div className="space-y-2 pt-1">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-white/45">
+                {t("trimSlideAlongTrackLabel")}
+              </span>
+              <span className="tabular-nums text-sm font-medium text-white">
+                {formatMmSs(startSec)} → {formatMmSs(endSec)}
+              </span>
+            </div>
+            <input
+              suppressHydrationWarning
+              type="range"
+              className={RANGE_CLASS}
+              min={0}
+              max={Math.max(0.01, maxWindowStart)}
+              step={0.1}
+              value={windowSliderValue}
+              disabled={disabled}
+              onChange={(e) =>
+                onWindowPositionSlide(Number.parseFloat(e.target.value))
+              }
+              aria-label={t("trimSlideAlongTrackLabel")}
+              aria-valuetext={t("trimTimelineSummary", {
+                start: formatMmSs(startSec),
+                end: formatMmSs(endSec),
+                total: formatMmSs(md ?? musicLen),
+              })}
+            />
+          </div>
+        </div>
+      ) : md != null && vd != null && md >= vd - 1e-6 && maxWindowStart <= 1e-6 ? (
         <p className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-center text-xs text-white/55">
           {t("trimRangeUnavailable")}
         </p>
-      ) : (
-        <div className="touch-manipulation space-y-4">
-          {!startSliderDead ? (
-            <div className="space-y-2 py-1">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-white/45">
-                  {t("trimStartSlider")}
-                </span>
-                <span className="tabular-nums text-sm font-medium text-white">
-                  {formatMmSs(startSec)}
-                </span>
-              </div>
-              <input
-                suppressHydrationWarning
-                type="range"
-                className={RANGE_CLASS}
-                min={minStart}
-                max={Math.max(minStart + 0.01, maxStart)}
-                step={0.1}
-                value={Math.min(maxStart, Math.max(minStart, musicStart))}
-                disabled={disabled}
-                onChange={(e) => onStartSlider(Number.parseFloat(e.target.value))}
-                aria-label={t("trimStartSlider")}
-                aria-valuetext={formatMmSs(startSec)}
-              />
-            </div>
-          ) : null}
+      ) : null}
 
-          {!endSliderDead ? (
-            <div className="space-y-2 py-1">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-white/45">
-                  {t("trimEndSlider")}
-                </span>
-                <span className="tabular-nums text-sm font-medium text-white">
-                  {formatMmSs(endSec)}
-                </span>
-              </div>
-              <input
-                suppressHydrationWarning
-                type="range"
-                className={RANGE_CLASS}
-                min={Math.min(minEnd, maxEnd - 0.01)}
-                max={maxEnd}
-                step={0.1}
-                value={Math.min(maxEnd, Math.max(minEnd, musicEnd))}
-                disabled={disabled}
-                onChange={(e) => onEndSlider(Number.parseFloat(e.target.value))}
-                aria-label={t("trimEndSlider")}
-                aria-valuetext={formatMmSs(endSec)}
-              />
+      <details className="rounded-lg border border-white/10 bg-black/20 [&_summary]:cursor-pointer">
+        <summary className="list-none px-3 py-2.5 text-sm font-medium text-white/85 [&::-webkit-details-marker]:hidden">
+          <span className="underline-offset-2 hover:underline">{t("trimAdvancedSectionTitle")}</span>
+        </summary>
+        <div className="border-t border-white/10 px-3 pb-3 pt-2">
+          <p className="mb-3 text-[0.7rem] leading-relaxed text-white/45">
+            {t("trimAdvancedSectionHint")}
+          </p>
+          {advancedTrimDead ? (
+            <p className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-center text-xs text-white/55">
+              {t("trimRangeUnavailable")}
+            </p>
+          ) : (
+            <div className="touch-manipulation space-y-4">
+              {!startSliderDead ? (
+                <div className="space-y-2 py-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-white/45">
+                      {t("trimStartSlider")}
+                    </span>
+                    <span className="tabular-nums text-sm font-medium text-white">
+                      {formatMmSs(startSec)}
+                    </span>
+                  </div>
+                  <input
+                    suppressHydrationWarning
+                    type="range"
+                    className={RANGE_CLASS}
+                    min={minStart}
+                    max={Math.max(minStart + 0.01, maxStart)}
+                    step={0.1}
+                    value={Math.min(maxStart, Math.max(minStart, musicStart))}
+                    disabled={disabled}
+                    onChange={(e) => onStartSlider(Number.parseFloat(e.target.value))}
+                    aria-label={t("trimStartSlider")}
+                    aria-valuetext={formatMmSs(startSec)}
+                  />
+                </div>
+              ) : null}
+
+              {!endSliderDead ? (
+                <div className="space-y-2 py-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-white/45">
+                      {t("trimEndSlider")}
+                    </span>
+                    <span className="tabular-nums text-sm font-medium text-white">
+                      {formatMmSs(endSec)}
+                    </span>
+                  </div>
+                  <input
+                    suppressHydrationWarning
+                    type="range"
+                    className={RANGE_CLASS}
+                    min={Math.min(minEnd, maxEnd - 0.01)}
+                    max={maxEnd}
+                    step={0.1}
+                    value={Math.min(maxEnd, Math.max(minEnd, musicEnd))}
+                    disabled={disabled}
+                    onChange={(e) => onEndSlider(Number.parseFloat(e.target.value))}
+                    aria-label={t("trimEndSlider")}
+                    aria-valuetext={formatMmSs(endSec)}
+                  />
+                </div>
+              ) : null}
             </div>
-          ) : null}
+          )}
         </div>
-      )}
+      </details>
 
       <label className="block touch-manipulation text-left">
         <span className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-wider text-white/45">
