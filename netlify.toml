@@ -1,0 +1,17 @@
+[[redirects]]
+  from = "http://pitchrusch.com/*"
+  to = "https://pitchrusch.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.pitchrusch.com/*"
+  to = "https://pitchrusch.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.pitchrusch.com/*"
+  to = "https://pitchrusch.com/:splat"
+  status = 301
+  force = true
