@@ -71,6 +71,7 @@ function mapRpcRowToAugmentedItem(row: ScoutRpcRow): AugmentedHomeFeedItem {
   return {
     video,
     profile,
+    userDisplayName: row.full_name?.trim() || row.username?.trim() || null,
     userAvatarUrl: null,
     challenge: null,
     scoutMetrics: {
