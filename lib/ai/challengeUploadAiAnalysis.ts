@@ -9,13 +9,17 @@ import { logFullSupabaseError } from "@/lib/supabase/logError";
 export async function runAndPersistChallengeVideoAiAnalysis(params: {
   userId: string;
   videoId: string;
+  locale?: string;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
   const vid = params.videoId?.trim();
   const uid = params.userId?.trim();
   if (!vid || !uid) return { ok: false, error: "invalid_params" };
 
   try {
-    const scores = await getVideoAnalysisProvider().analyzeVideo({ videoId: vid });
+    const scores = await getVideoAnalysisProvider().analyzeVideo({
+      videoId: vid,
+      locale: params.locale,
+    });
     const { row, errorMessage } = await upsertAiAnalysis({
       userId: uid,
       videoId: vid,

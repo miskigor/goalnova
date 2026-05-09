@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 import { getVideoAnalysisProvider } from "@/lib/ai";
 import type { VideoAnalysisScores } from "@/lib/ai/types";
@@ -28,6 +29,7 @@ export type UseVideoAiAnalysisArgs = {
  * Fetches saved `ai_analyses` when active; runs the AI provider only when `reanalyze()` is called.
  */
 export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
+  const locale = useLocale();
   const t = useTranslations("ai");
   const tErr = useTranslations("errors");
   const {
@@ -107,7 +109,7 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
     setError(null);
     try {
       const provider = getVideoAnalysisProvider();
-      const next = await provider.analyzeVideo({ videoId });
+      const next = await provider.analyzeVideo({ videoId, locale });
       const { row, errorMessage } = await upsertPersistedVideoAiAnalysis({
         userId: viewerId,
         videoId,
@@ -139,7 +141,7 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
     } finally {
       setRunBusy(false);
     }
-  }, [active, viewerId, videoId, onRunSuccess, t, tErr]);
+  }, [active, viewerId, videoId, locale, onRunSuccess, t, tErr]);
 
   return {
     scores,

@@ -7,6 +7,229 @@ import type {
 } from "./types";
 import { overallFromAssessableMetrics } from "./visibilityAnalysis";
 
+type SupportedLocale =
+  | "en"
+  | "hr"
+  | "de"
+  | "bs"
+  | "es"
+  | "pt"
+  | "sr"
+  | "fr"
+  | "it"
+  | "nl"
+  | "tr"
+  | "ar";
+
+type LocaleCopy = {
+  invalidReason: string;
+  invalidFeedback: string;
+  feedbackGeneric: string;
+  clipSummary: string;
+  cameraNote: string;
+  evidence: string;
+  notAssessable: string;
+};
+
+const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
+  en: {
+    invalidReason:
+      "No football action detected — the footage does not clearly show a ball, pitch, or football-specific movement.",
+    invalidFeedback:
+      "PitchRusch only scores football highlights. This clip appears to be non-football content (or the camera never shows enough football context). Upload a clip where both the player and the ball are clearly visible in a football setting.",
+    feedbackGeneric:
+      "This score is based only on clearly visible football actions in the clip. Hidden or unclear moments are marked as not assessable.",
+    clipSummary:
+      "Football actions are visible in this clip and were assessed only where evidence is clear.",
+    cameraNote:
+      "Camera quality and angle affect confidence; unclear moments are not scored.",
+    evidence: "Visible football action in this clip supports this score.",
+    notAssessable: "This action is not clearly visible enough in this clip.",
+  },
+  hr: {
+    invalidReason:
+      "Nije prepoznata nogometna akcija — snimka ne prikazuje jasno loptu, teren ili nogometni pokret.",
+    invalidFeedback:
+      "PitchRusch ocjenjuje samo nogometne isječke. Ovaj video izgleda kao sadržaj koji nije nogomet (ili nema dovoljno jasnog nogometnog konteksta). Učitajte isječak gdje su igrač i lopta jasno vidljivi.",
+    feedbackGeneric:
+      "Ocjena je temeljena samo na jasno vidljivim nogometnim akcijama u isječku. Nejasni trenuci označeni su kao neocjenjivi.",
+    clipSummary:
+      "Nogometne akcije su vidljive i ocijenjene samo gdje postoji jasan dokaz.",
+    cameraNote:
+      "Kvaliteta i kut kamere utječu na pouzdanost; nejasni dijelovi se ne ocjenjuju.",
+    evidence: "Jasno vidljiva nogometna akcija podupire ovu ocjenu.",
+    notAssessable: "Ova akcija nije dovoljno jasno vidljiva u ovom isječku.",
+  },
+  de: {
+    invalidReason:
+      "Keine klare Fußballaktion erkannt — im Video sind Ball, Platz oder fußballspezifische Bewegung nicht eindeutig sichtbar.",
+    invalidFeedback:
+      "PitchRusch bewertet nur Fußball-Highlights. Dieser Clip wirkt nicht wie Fußballinhalt (oder zeigt zu wenig klaren Fußballkontext). Lade einen Clip hoch, in dem Spieler und Ball klar sichtbar sind.",
+    feedbackGeneric:
+      "Diese Bewertung basiert nur auf klar sichtbaren Fußballaktionen im Clip. Unklare Szenen werden als nicht bewertbar markiert.",
+    clipSummary:
+      "Fußballaktionen sind sichtbar und wurden nur bei klarer Evidenz bewertet.",
+    cameraNote:
+      "Kameraqualität und Perspektive beeinflussen die Sicherheit; unklare Momente werden nicht bewertet.",
+    evidence: "Sichtbare Fußballaktion im Clip stützt diese Bewertung.",
+    notAssessable: "Diese Aktion ist in diesem Clip nicht klar genug sichtbar.",
+  },
+  bs: {
+    invalidReason:
+      "Nije otkrivena nogometna akcija — snimak ne prikazuje jasno loptu, teren ili nogometno kretanje.",
+    invalidFeedback:
+      "PitchRusch ocjenjuje samo nogometne highlighte. Ovaj klip izgleda kao sadržaj koji nije nogomet (ili nema dovoljno jasnog nogometnog konteksta). Učitaj klip gdje su igrač i lopta jasno vidljivi.",
+    feedbackGeneric:
+      "Ocjena je zasnovana samo na jasno vidljivim nogometnim akcijama u klipu. Nejasni momenti su označeni kao neocjenjivi.",
+    clipSummary:
+      "Nogometne akcije su vidljive i ocijenjene samo kada postoji jasan dokaz.",
+    cameraNote:
+      "Kvalitet i ugao kamere utiču na pouzdanost; nejasni dijelovi se ne ocjenjuju.",
+    evidence: "Jasno vidljiva nogometna akcija podržava ovu ocjenu.",
+    notAssessable: "Ova akcija nije dovoljno jasno vidljiva u ovom klipu.",
+  },
+  es: {
+    invalidReason:
+      "No se detectó una acción de fútbol clara: el video no muestra claramente balón, campo o movimiento específico de fútbol.",
+    invalidFeedback:
+      "PitchRusch solo puntúa highlights de fútbol. Este clip parece no ser contenido de fútbol (o no muestra contexto suficiente). Sube un clip donde jugador y balón se vean claramente.",
+    feedbackGeneric:
+      "Esta puntuación se basa solo en acciones de fútbol claramente visibles en el clip. Los momentos no claros se marcan como no evaluables.",
+    clipSummary:
+      "Hay acciones de fútbol visibles y se evaluaron solo donde la evidencia es clara.",
+    cameraNote:
+      "La calidad y el ángulo de cámara afectan la confianza; los momentos poco claros no se puntúan.",
+    evidence: "La acción de fútbol visible en el clip respalda esta puntuación.",
+    notAssessable: "Esta acción no se ve con suficiente claridad en este clip.",
+  },
+  pt: {
+    invalidReason:
+      "Nenhuma ação de futebol foi detetada com clareza — o vídeo não mostra claramente bola, campo ou movimento específico de futebol.",
+    invalidFeedback:
+      "O PitchRusch só avalia destaques de futebol. Este clipe parece não ser conteúdo de futebol (ou não mostra contexto suficiente). Carregue um clipe em que jogador e bola estejam claramente visíveis.",
+    feedbackGeneric:
+      "Esta pontuação baseia-se apenas em ações de futebol claramente visíveis no clipe. Momentos pouco claros são marcados como não avaliáveis.",
+    clipSummary:
+      "Há ações de futebol visíveis e a avaliação foi feita apenas onde há evidência clara.",
+    cameraNote:
+      "A qualidade e o ângulo da câmara afetam a confiança; momentos pouco claros não são pontuados.",
+    evidence: "A ação de futebol visível no clipe sustenta esta pontuação.",
+    notAssessable: "Esta ação não está suficientemente visível neste clipe.",
+  },
+  sr: {
+    invalidReason:
+      "Nije detektovana jasna fudbalska akcija — snimak ne prikazuje jasno loptu, teren ili fudbalsko kretanje.",
+    invalidFeedback:
+      "PitchRusch ocenjuje samo fudbalske highlight snimke. Ovaj klip deluje kao sadržaj koji nije fudbal (ili nema dovoljno jasnog konteksta). Otpremi klip gde su igrač i lopta jasno vidljivi.",
+    feedbackGeneric:
+      "Ocena je zasnovana samo na jasno vidljivim fudbalskim akcijama u klipu. Nejasni momenti su označeni kao neocenjivi.",
+    clipSummary:
+      "Fudbalske akcije su vidljive i ocenjene samo gde postoji jasan dokaz.",
+    cameraNote:
+      "Kvalitet i ugao kamere utiču na pouzdanost; nejasni delovi se ne ocenjuju.",
+    evidence: "Jasno vidljiva fudbalska akcija podržava ovu ocenu.",
+    notAssessable: "Ova akcija nije dovoljno jasno vidljiva u ovom klipu.",
+  },
+  fr: {
+    invalidReason:
+      "Aucune action de football claire détectée : la vidéo ne montre pas clairement le ballon, le terrain ou un mouvement spécifique au football.",
+    invalidFeedback:
+      "PitchRusch évalue uniquement des highlights de football. Ce clip semble ne pas être du contenu football (ou manque de contexte clair). Importez un clip où le joueur et le ballon sont clairement visibles.",
+    feedbackGeneric:
+      "Cette note est basée uniquement sur les actions de football clairement visibles dans le clip. Les moments incertains sont marqués comme non évaluables.",
+    clipSummary:
+      "Des actions de football sont visibles et évaluées uniquement quand la preuve est claire.",
+    cameraNote:
+      "La qualité et l’angle de caméra influencent la confiance ; les moments flous ne sont pas notés.",
+    evidence: "Une action de football visible dans le clip justifie cette note.",
+    notAssessable: "Cette action n’est pas suffisamment visible dans ce clip.",
+  },
+  it: {
+    invalidReason:
+      "Nessuna azione calcistica chiara rilevata: il video non mostra chiaramente palla, campo o movimento tipico del calcio.",
+    invalidFeedback:
+      "PitchRusch valuta solo highlight calcistici. Questo clip sembra non essere contenuto calcistico (o manca contesto chiaro). Carica un clip in cui giocatore e palla siano chiaramente visibili.",
+    feedbackGeneric:
+      "Questo punteggio si basa solo su azioni calcistiche chiaramente visibili nel clip. I momenti non chiari sono segnati come non valutabili.",
+    clipSummary:
+      "Sono visibili azioni calcistiche e la valutazione è fatta solo dove l’evidenza è chiara.",
+    cameraNote:
+      "Qualità e angolo della camera influenzano la confidenza; i momenti poco chiari non vengono valutati.",
+    evidence: "L’azione calcistica visibile nel clip supporta questo punteggio.",
+    notAssessable: "Questa azione non è abbastanza visibile in questo clip.",
+  },
+  nl: {
+    invalidReason:
+      "Geen duidelijke voetbalactie gedetecteerd: de video toont geen bal, veld of voetbalspecifieke beweging duidelijk genoeg.",
+    invalidFeedback:
+      "PitchRusch beoordeelt alleen voetbalhighlights. Deze clip lijkt geen voetbalcontent te zijn (of mist duidelijke context). Upload een clip waarin speler en bal duidelijk zichtbaar zijn.",
+    feedbackGeneric:
+      "Deze score is alleen gebaseerd op duidelijk zichtbare voetbalacties in de clip. Onduidelijke momenten zijn gemarkeerd als niet beoordeelbaar.",
+    clipSummary:
+      "Voetbalacties zijn zichtbaar en alleen beoordeeld waar het bewijs duidelijk is.",
+    cameraNote:
+      "Camerakwaliteit en hoek beïnvloeden de betrouwbaarheid; onduidelijke momenten worden niet gescoord.",
+    evidence: "Zichtbare voetbalactie in de clip ondersteunt deze score.",
+    notAssessable: "Deze actie is niet duidelijk genoeg zichtbaar in deze clip.",
+  },
+  tr: {
+    invalidReason:
+      "Net bir futbol aksiyonu tespit edilemedi; görüntüde top, saha veya futbola özgü hareketler yeterince açık değil.",
+    invalidFeedback:
+      "PitchRusch yalnızca futbol özetlerini puanlar. Bu klip futbol içeriği gibi görünmüyor (veya yeterli futbol bağlamı yok). Oyuncu ve topun net göründüğü bir klip yükleyin.",
+    feedbackGeneric:
+      "Bu puan sadece klipte açıkça görülen futbol aksiyonlarına dayanır. Belirsiz anlar değerlendirilemez olarak işaretlenir.",
+    clipSummary:
+      "Klipte futbol aksiyonları görülüyor ve sadece açık kanıt olan kısımlar değerlendirildi.",
+    cameraNote:
+      "Kamera kalitesi ve açı güveni etkiler; belirsiz anlar puanlanmaz.",
+    evidence: "Klipte görülen futbol aksiyonu bu puanı destekliyor.",
+    notAssessable: "Bu aksiyon bu klipte yeterince net görünmüyor.",
+  },
+  ar: {
+    invalidReason:
+      "لم يتم اكتشاف لقطة كرة قدم واضحة؛ الفيديو لا يُظهر الكرة أو الملعب أو حركة كروية بشكل كافٍ.",
+    invalidFeedback:
+      "PitchRusch يقيّم فقط لقطات كرة القدم. هذا المقطع يبدو غير متعلق بكرة القدم (أو لا يحتوي سياقًا واضحًا). ارفع مقطعًا يظهر فيه اللاعب والكرة بوضوح.",
+    feedbackGeneric:
+      "هذه الدرجة مبنية فقط على اللقطات الكروية الواضحة في الفيديو. اللحظات غير الواضحة تُصنّف كغير قابلة للتقييم.",
+    clipSummary:
+      "تظهر لقطات كرة قدم في هذا المقطع وتم تقييم ما لديه دليل واضح فقط.",
+    cameraNote:
+      "جودة وزاوية الكاميرا تؤثران على الثقة؛ اللحظات غير الواضحة لا يتم تقييمها.",
+    evidence: "اللقطة الكروية الظاهرة في الفيديو تدعم هذه الدرجة.",
+    notAssessable: "هذه اللقطة غير واضحة بما يكفي للتقييم في هذا الفيديو.",
+  },
+};
+
+function normalizeLocale(locale?: string): SupportedLocale {
+  const base = String(locale ?? "en").toLowerCase().split("-")[0];
+  if (base in LOCALIZED_COPY) return base as SupportedLocale;
+  return "en";
+}
+
+function localizeVisibilityPayload(
+  payload: VisibilityAnalysisPayload,
+  copy: LocaleCopy,
+): VisibilityAnalysisPayload {
+  const metrics = Object.fromEntries(
+    Object.entries(payload.metrics).map(([k, v]) => {
+      if (!v) return [k, v];
+      if (v.status === "assessable") {
+        return [k, { ...v, evidence: copy.evidence }];
+      }
+      return [k, { ...v, reason: copy.notAssessable }];
+    }),
+  ) as VisibilityAnalysisPayload["metrics"];
+
+  return {
+    ...payload,
+    clip_summary: copy.clipSummary,
+    camera: { ...payload.camera, assessment_note: copy.cameraNote },
+    metrics,
+  };
+}
+
 function hashToUnit(input: string, salt: number): number {
   let h = salt;
   for (let i = 0; i < input.length; i += 1) {
@@ -47,8 +270,9 @@ function ok(
  * only visible/relevant metrics receive scores.
  */
 export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
-  async analyzeVideo({ videoId }) {
+  async analyzeVideo({ videoId, locale }) {
     await new Promise((r) => setTimeout(r, 900));
+    const copy = LOCALIZED_COPY[normalizeLocale(locale)];
 
     const scenario = Math.floor(hashToUnit(videoId, 0) * 8);
 
@@ -56,12 +280,10 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
       const invalid: VideoAnalysisScores = {
         valid_for_football_analysis: false,
         clip_type: "non_football",
-        invalid_reason:
-          "No football action detected — the footage does not clearly show a ball, pitch, or football-specific movement.",
+        invalid_reason: copy.invalidReason,
         overall_score: 0,
         overall_confidence: 0,
-        feedback_text:
-          "PitchRusch only scores football highlights. This clip appears to be non-football content (or the camera never shows enough football context). Upload a clip where both the player and the ball are clearly visible in a football setting.",
+        feedback_text: copy.invalidFeedback,
         visibility_analysis: null,
         legacy: null,
       };
@@ -520,21 +742,7 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
       ...draft,
       overall_confidence,
     };
-
-    const feedback_text =
-      scenario === 0
-        ? `The clip shows controlled touches in a tight drill pattern — see the evidence notes on close control and dribbling. Overall reflects only what is visible (${payload.camera.quality} camera read).`
-        : scenario === 1
-          ? `The footage includes a visible carry and shot sequence, so shooting and decision-making are scored from that action — not from parts of the game that are off-camera.`
-          : scenario === 2
-            ? `This angle follows the keeper: agility and coordination are scored from the dive; outfield shooting technique is not scored from this framing.`
-            : scenario === 3
-              ? `Juggling is clear in the clip, so ball control and coordination are assessed; there is no match pressure or defending to score.`
-              : scenario === 4
-                ? `The 1v1 and cross are in frame, so dribbling, defending, and passing reads are evidence-based; finishing was not shown.`
-                : scenario === 5
-                  ? `The sprint is visible, so acceleration is scored; ball-related metrics are skipped because the ball is not reliably visible.`
-                  : `Passing and first-touch moments in the drill are visible — scores reflect only those actions, not hypothetical match play.`;
+    const localizedPayload = localizeVisibilityPayload(payload, copy);
 
     const result: VideoAnalysisScores = {
       valid_for_football_analysis: true,
@@ -542,8 +750,8 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
       invalid_reason: null,
       overall_score,
       overall_confidence,
-      feedback_text,
-      visibility_analysis: payload,
+      feedback_text: copy.feedbackGeneric,
+      visibility_analysis: localizedPayload,
       legacy: null,
     };
     return result;

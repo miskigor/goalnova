@@ -5,5 +5,5 @@ import type { VideoAnalysisScores } from "./types";
  * Use `videoAnalysisPrompts.ts` (exported from `@/lib/ai`) for conservative system + JSON instructions.
  */
 export interface VideoAnalysisProvider {
-  analyzeVideo(input: { videoId: string }): Promise<VideoAnalysisScores>;
+  analyzeVideo(input: { videoId: string; locale?: string }): Promise<VideoAnalysisScores>;
 }
