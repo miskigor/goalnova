@@ -72,6 +72,13 @@ export async function fetchUserAvatarUrlsByUserIds(
 
 type NormalizedVideo = { video: HomeFeedVideo; embedChallenge: HomeFeedChallenge | null };
 
+function isMissingUsersScoutApplyFullNameColumn(error: unknown): boolean {
+  const e = error as { code?: string | null; message?: string | null };
+  if (e?.code !== "PGRST204") return false;
+  const m = (e.message ?? "").toLowerCase();
+  return m.includes("scout_apply_full_name") && m.includes("users");
+}
+
 /** Non-empty trimmed URL on at least one playable column (feeds may rely on processed-only assets). */
 function rowHasPlayableVideoUrl(row: Record<string, unknown>): boolean {
   const uv = typeof row.video_url === "string" ? row.video_url.trim() : "";
@@ -183,18 +190,40 @@ export async function fetchHomeFeedData(
   let activeUserIds = new Set<string>(initialUserIds);
   const userDisplayNameByUserId = new Map<string, string | null>();
   if (initialUserIds.length > 0) {
-    const { data: users, error: usersErr } = await supabase
+    const primary = await supabase
       .from("users")
       .select("id,is_deleted,scout_apply_full_name")
       .in("id", initialUserIds);
+    let usersErr = primary.error;
+    let userRows: Array<{
+      id: string;
+      is_deleted?: boolean;
+      scout_apply_full_name?: string | null;
+    }> = (primary.data ?? []) as Array<{
+      id: string;
+      is_deleted?: boolean;
+      scout_apply_full_name?: string | null;
+    }>;
+    if (usersErr && isMissingUsersScoutApplyFullNameColumn(usersErr)) {
+      // Backward compatibility for DBs missing scout_apply_full_name.
+      const fallback = await supabase
+        .from("users")
+        .select("id,is_deleted")
+        .in("id", initialUserIds);
+      userRows = (fallback.data ?? []) as Array<{
+        id: string;
+        is_deleted?: boolean;
+      }>;
+      usersErr = fallback.error;
+    }
     if (usersErr) {
       logFullSupabaseError("[PitchRusch home feed] users(is_deleted) filter", usersErr, {
         idsCount: initialUserIds.length,
       });
       return { items: [], error: supabaseErrorToUserMessage(usersErr) };
     }
-    const deletedUserIds = new Set((users ?? []).filter((u) => u.is_deleted).map((u) => u.id));
-    for (const u of users ?? []) {
+    const deletedUserIds = new Set(userRows.filter((u) => u.is_deleted).map((u) => u.id));
+    for (const u of userRows) {
       const name =
         typeof u.scout_apply_full_name === "string"
           ? u.scout_apply_full_name.trim()
