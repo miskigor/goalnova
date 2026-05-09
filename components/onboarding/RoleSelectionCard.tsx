@@ -18,6 +18,14 @@ type SupabaseErrorShape = {
   hint?: string | null;
 };
 
+function isMissingScoutApplyFullNameColumn(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const e = error as SupabaseErrorShape;
+  if (e.code !== "PGRST204") return false;
+  const msg = String(e.message ?? "").toLowerCase();
+  return msg.includes("scout_apply_full_name") && msg.includes("users");
+}
+
 function RoleSpinner() {
   return (
     <svg
@@ -123,16 +131,31 @@ export function RoleSelectionCard() {
       }
 
       // 1) Save role to users
-      const { error: usersUpsertError } = await supabase.from("users").upsert(
-        {
-          id: userId,
-          email: authUser.email ?? null,
-          role,
-          language_preference: "en",
-          ...(signupFullName ? { scout_apply_full_name: signupFullName } : {}),
-        },
-        { onConflict: "id" }
-      );
+      const usersPayload: {
+        id: string;
+        email: string | null;
+        role: Role;
+        language_preference: string;
+        scout_apply_full_name?: string;
+      } = {
+        id: userId,
+        email: authUser.email ?? null,
+        role,
+        language_preference: "en",
+        ...(signupFullName ? { scout_apply_full_name: signupFullName } : {}),
+      };
+      let { error: usersUpsertError } = await supabase
+        .from("users")
+        .upsert(usersPayload, { onConflict: "id" });
+      if (usersUpsertError && isMissingScoutApplyFullNameColumn(usersUpsertError)) {
+        // Backward compatibility for DBs where this optional column is not yet migrated.
+        const fallbackPayload = { ...usersPayload };
+        delete fallbackPayload.scout_apply_full_name;
+        const retry = await supabase
+          .from("users")
+          .upsert(fallbackPayload, { onConflict: "id" });
+        usersUpsertError = retry.error;
+      }
 
       if (usersUpsertError) {
         logFullSupabaseError("[RoleSelection] users upsert error", usersUpsertError);
