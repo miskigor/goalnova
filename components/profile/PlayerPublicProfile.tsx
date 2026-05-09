@@ -17,9 +17,9 @@ import { userMayMessagePlayers } from "@/lib/scoutVerification";
 import { PlayerFollowSection } from "./PlayerFollowSection";
 import { ScoutShortlistButton } from "./ScoutShortlistButton";
 import { ProfileVideoGrid } from "@/components/profile/ProfileVideoGrid";
-import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 import { PlayerPremiumBadge } from "@/components/premium/PremiumBadges";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
+import { ProfileUploadLink } from "@/components/profile/ProfileUploadLink";
 
 function Spinner({ className = "h-5 w-5" }: { className?: string }) {
   return (
@@ -56,7 +56,6 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
   const td = useTranslations("discover");
   const { userId } = usePremium();
   const scoutGate = useScoutVerification();
-  const uploadEligibility = useVideoUploadEligibility();
 
   const unknownPlayer = td("unknownPlayer");
 
@@ -210,13 +209,14 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
           </div>
         </div>
         {userId && profile.id === userId ? (
-          <div className="mt-3">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <Link
               href="/settings/profile"
               className="inline-flex items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
             >
               {tProfile("editProfile")}
             </Link>
+            <ProfileUploadLink />
           </div>
         ) : null}
         {userId && profile.id !== userId ? (
@@ -273,19 +273,6 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
             <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-gn-text-secondary">
               {tProfile("noVideosDescription")}
             </p>
-            {profile &&
-            userId &&
-            userId === profile.id &&
-            uploadEligibility === "player" ? (
-              <div className="mt-5 flex justify-center">
-                <Link
-                  href="/upload"
-                  className="inline-flex min-h-[2.75rem] max-w-full items-center justify-center rounded-full bg-gn-accent px-6 text-sm font-semibold text-black transition-opacity hover:opacity-90"
-                >
-                  {tProfile("noVideosCTA")}
-                </Link>
-              </div>
-            ) : null}
           </div>
         ) : (
           <ProfileVideoGrid

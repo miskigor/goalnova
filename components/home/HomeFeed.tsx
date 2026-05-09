@@ -31,7 +31,6 @@ import {
   feedItemProps,
   feedScrollRootProps,
 } from "@/lib/feed/feedScrollContract";
-import { UploadVideoCtaButton } from "@/components/upload/UploadVideoCtaButton";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 
@@ -309,11 +308,10 @@ export function HomeFeed() {
               {tFeed("emptySubtitle")}
             </p>
           </div>
-          <div className="flex w-full max-w-sm flex-col gap-3 sm:flex-row sm:justify-center">
-            <UploadVideoCtaButton className="sm:flex-1" />
+          <div className="flex w-full max-w-sm justify-center">
             <Link
               href="/discover"
-              className={`${GN_SECONDARY_BUTTON_CLASS} w-full sm:flex-1`}
+              className={`${GN_SECONDARY_BUTTON_CLASS} w-full sm:w-auto`}
             >
               {tFeed("exploreCta")}
             </Link>
@@ -362,10 +360,6 @@ export function HomeFeed() {
           {t("description")}
         </p>
       </header>
-
-      <div className={liveImmersiveMobile ? "max-lg:hidden" : ""}>
-        <UploadVideoCtaButton />
-      </div>
 
       <section
         className={[

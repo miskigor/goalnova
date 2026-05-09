@@ -4,7 +4,6 @@ import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppMobileHeader } from "@/components/layout/AppMobileHeader";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
-import { FloatingUploadFab } from "@/components/upload/FloatingUploadFab";
 
 /**
  * Logged-in shell: fixed left sidebar (desktop), main column, bottom nav (mobile).
@@ -34,7 +33,6 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
           </main>
         </div>
         <AppMobileBottomNav />
-        <FloatingUploadFab />
       </div>
     </FeedbackProvider>
   );

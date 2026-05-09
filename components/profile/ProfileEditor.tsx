@@ -25,7 +25,6 @@ import {
 } from "@/lib/supabase/profile";
 import { ProfileAvatarEditor } from "@/components/profile/ProfileAvatarEditor";
 import { PlayerFollowSection } from "@/components/profile/PlayerFollowSection";
-import { ProfilePlayerUploadPrompt } from "@/components/profile/ProfilePlayerUploadPrompt";
 import { ProfilePremiumBanner } from "@/components/premium/ProfilePremiumBanner";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { VerifiedScoutBadge } from "@/components/scout/VerifiedScoutBadge";
@@ -462,10 +461,6 @@ export function ProfileEditor() {
             {tSv("reapplyLink")}
           </Link>
         </div>
-      ) : null}
-
-      {role === "player" && selfUserId ? (
-        <ProfilePlayerUploadPrompt userId={selfUserId} />
       ) : null}
 
       {role === "player" && selfUserId ? (
