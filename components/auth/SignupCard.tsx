@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Logo } from "@/components/brand/Logo";
-import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import {
   isSignupEmailAlreadyExistsError,
   signUpWithEmailPassword,
@@ -41,7 +40,6 @@ function Spinner() {
 export function SignupCard() {
   const tSignup = useTranslations("authSignup");
   const tCommon = useTranslations("authCommon");
-  const tSettings = useTranslations("settings");
   const router = useRouter();
 
   const [fullName, setFullName] = useState("");
@@ -119,17 +117,7 @@ export function SignupCard() {
   }
 
   return (
-    <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:p-8">
-      <div className="mb-5 space-y-2">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="pitchrusch-lang" className="text-sm font-medium text-gn-text">
-            {tSettings("language")}
-          </label>
-          <LanguageSwitcher variant="auth" hideVisuallyHiddenLabel className="w-full min-w-0" />
-        </div>
-        <p className="text-xs leading-relaxed text-gn-text-secondary">{tCommon("authStartsInEnglish")}</p>
-      </div>
-
+    <div className="mx-auto w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:p-8">
       <div className="mb-6 text-center sm:mb-8">
         <Logo href="/" variant="entry" className="justify-center" showWordmark={false} />
         <h1 className="mt-4 text-xl font-semibold tracking-tight text-gn-text sm:mt-6">
