@@ -62,11 +62,11 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   // Prevent redirect loops from repeated auth-state events.
   const didRedirectRef = useRef(false);
 
-  // Last-resort unblock if timers/races around `getSession` misbehave on throttled mobile tabs.
+  // Last-resort unblock if auth init hangs on throttled mobile tabs.
   useEffect(() => {
     const id = window.setTimeout(() => {
       setChecking((c) => (c ? false : c));
-    }, 12000);
+    }, 4500);
     return () => window.clearTimeout(id);
   }, []);
 
@@ -74,7 +74,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     let mounted = true;
 
     async function init() {
-      const sessionTimeoutMs = 8000;
+      const sessionTimeoutMs = 2500;
       try {
         const result = await Promise.race([
           supabase.auth.getSession(),

@@ -82,7 +82,11 @@ export const supabase: SupabaseClient<Database> = createClient<Database>(
       fetch: supabaseSafeFetch,
     },
     auth: {
-      persistSession: true,
+      /**
+       * Keep session in memory only (no localStorage persistence).
+       * Users must log in again after reopening/reloading the app.
+       */
+      persistSession: false,
       /**
        * Avoid background refresh loops that can throw noisy `TypeError: Failed to fetch`
        * in unstable/offline dev sessions. We refresh on explicit auth actions instead.

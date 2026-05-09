@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabase/client";
  * If Supabase auth init hangs (same `initializePromise` as `getSession` / INITIAL_SESSION),
  * `authed` would stay `null` forever and `PublicShell` shows a perpetual loading header on mobile.
  */
-const NAV_SESSION_FAILSAFE_MS = 5000;
+const NAV_SESSION_FAILSAFE_MS = 2200;
 
 export function useNavSession(): {
   authed: boolean | null;
