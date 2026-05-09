@@ -1,10 +1,9 @@
 "use client";
 
-import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 import { useMemo, useRef, useState } from "react";
+import { Link } from "@/i18n/navigation";
 import type { VideoRow } from "@/lib/supabase/playerPublicProfile";
-import { hrefWithLocale } from "@/i18n/routing";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
@@ -38,15 +37,10 @@ export function ProfileVideoTile({
   onDelete,
 }: Props) {
   const t = useTranslations("playerProfile");
-  const locale = useLocale();
   const src = videoPlaybackUrl(video);
   const href = useMemo(
     () => (video.id ? `/video/${encodeURIComponent(video.id)}` : null),
     [video.id],
-  );
-  const resolvedHref = useMemo(
-    () => (href ? hrefWithLocale(href, locale) : null),
-    [href, locale],
   );
   const [duration, setDuration] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -116,7 +110,7 @@ export function ProfileVideoTile({
       </button>
     ) : null;
 
-  if (!resolvedHref) {
+  if (!href) {
     return (
       <div className="relative">
         {tile}
@@ -126,12 +120,12 @@ export function ProfileVideoTile({
   }
   return (
     <div className="relative h-full w-full">
-      <a
-        href={resolvedHref}
+      <Link
+        href={href}
         className="block h-full w-full outline-none ring-offset-2 ring-offset-gn-bg focus-visible:ring-2 focus-visible:ring-gn-accent/50"
       >
         {tile}
-      </a>
+      </Link>
       {deleteButton}
     </div>
   );
