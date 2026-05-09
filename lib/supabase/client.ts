@@ -45,6 +45,9 @@ async function inProcessAuthLock<R>(
   return fn();
 }
 
+const browserSessionStorage =
+  typeof window !== "undefined" ? window.sessionStorage : undefined;
+
 /**
  * Browser network errors can reject fetch with `TypeError: Failed to fetch`.
  * Converting them to a synthetic HTTP response prevents noisy unhandled promise
@@ -83,9 +86,11 @@ export const supabase: SupabaseClient<Database> = createClient<Database>(
     },
     auth: {
       /**
-       * Keep persistent auth for stable signup/onboarding and route transitions.
+       * Keep auth in tab session storage (not long-term localStorage).
+       * This avoids stale cross-restart sessions while keeping login stable in-tab.
        */
       persistSession: true,
+      storage: browserSessionStorage,
       /**
        * Avoid background refresh loops that can throw noisy `TypeError: Failed to fetch`
        * in unstable/offline dev sessions. We refresh on explicit auth actions instead.
