@@ -112,6 +112,34 @@ export async function rpcAdminSetDeleted(
     p_deleted: deleted,
   });
   if (error) {
+    const code = (error as { code?: string }).code ?? null;
+    const msg = (error.message ?? "").toLowerCase();
+    const rpcMissing =
+      code === "PGRST202" ||
+      msg.includes("goalnova_admin_set_deleted") ||
+      msg.includes("function") ||
+      msg.includes("does not exist");
+
+    // Backward compatibility for deployments where RPC has not been applied yet.
+    if (rpcMissing) {
+      const fallback = await supabase
+        .from("users")
+        .update({ is_deleted: deleted })
+        .eq("id", userId);
+      if (!fallback.error) {
+        console.warn(
+          "[admin] goalnova_admin_set_deleted missing; used users.is_deleted fallback",
+          { userId, deleted },
+        );
+        return { ok: true, error: null };
+      }
+      logFullSupabaseError("[admin] set_deleted fallback users.update failed", fallback.error, {
+        userId,
+        deleted,
+      });
+      return { ok: false, error: fallback.error.message };
+    }
+
     logFullSupabaseError("[admin] goalnova_admin_set_deleted", error);
     return { ok: false, error: error.message };
   }
