@@ -852,8 +852,8 @@
     "passwordPlaceholder": "Vaša lozinka",
     "emailPlaceholder": "vi@primjer.com",
     "submit": "Prijava",
-    "signingIn": "Signing in…",
-    "invalidCredentials": "Invalid email or password. Please try again.",
+    "signingIn": "Prijava…",
+    "invalidCredentials": "Netočna adresa e-pošte ili lozinka. Pokušajte ponovno.",
     "noAccount": "Nemate račun?",
     "signUpLink": "Registracija"
   },
@@ -868,7 +868,7 @@
     "passwordPlaceholder": "Najmanje 6 znakova",
     "emailPlaceholder": "vi@primjer.com",
     "submit": "Stvori račun",
-    "creatingAccount": "Creating account…",
+    "creatingAccount": "Stvaranje računa…",
     "haveAccount": "Već imate račun?",
     "loginLink": "Prijava",
     "emailAlreadyExists": "Račun s ovom adresom e-pošte već postoji. Prijavite se umjesto toga.",
@@ -1335,7 +1335,7 @@
   "authCommon": {
     "loading": "Učitavanje…",
     "genericError": "Nešto je pošlo po krivu. Pokušajte ponovno.",
-    "rateLimited": "Too many attempts. Please wait a moment and try again.",
+    "rateLimited": "Previše pokušaja. Pričekajte trenutak pa pokušajte ponovno.",
     "invalidEmail": "Unesite valjanu adresu e-pošte.",
     "invalidPassword": "Lozinka mora imati najmanje 6 znakova.",
     "signupSuccess": "Registracija je uspjela.",
