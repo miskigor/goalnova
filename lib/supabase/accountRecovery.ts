@@ -3,7 +3,7 @@ import type { Database } from "@/lib/supabase/database.types";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 
 export type AccountRecoveryRequestRow =
-  Database["public"]["Tables"]["account_recovery_requests"]["Row"];
+  Database["public"]["Tables"]["support_tickets"]["Row"];
 
 export async function submitAccountRecoveryRequest(
   client: SupabaseClient<Database>,
@@ -14,7 +14,7 @@ export async function submitAccountRecoveryRequest(
     message: string;
   },
 ): Promise<{ id: string | null; error: string | null }> {
-  const primary = await client.rpc("pitchrusch_submit_account_recovery_request", {
+  const primary = await client.rpc("pitchrusch_submit_account_recovery_ticket", {
     p_account_email: input.accountEmail.trim(),
     p_contact_email: input.contactEmail.trim(),
     p_username: input.username.trim() || null,
@@ -23,7 +23,7 @@ export async function submitAccountRecoveryRequest(
   if (!primary.error && primary.data) {
     return { id: primary.data, error: null };
   }
-  const fallback = await client.rpc("goalnova_submit_account_recovery_request", {
+  const fallback = await client.rpc("goalnova_submit_account_recovery_ticket", {
     p_account_email: input.accountEmail.trim(),
     p_contact_email: input.contactEmail.trim(),
     p_username: input.username.trim() || null,
@@ -40,10 +40,12 @@ export async function adminListAccountRecoveryRequests(
   client: SupabaseClient<Database>,
   limit = 200,
 ): Promise<{ rows: AccountRecoveryRequestRow[]; error: string | null }> {
-  const { data, error } = await client.rpc(
-    "goalnova_admin_list_account_recovery_requests",
-    { p_limit: limit },
-  );
+  const { data, error } = await client
+    .from("support_tickets")
+    .select("*")
+    .eq("ticket_type", "account_recovery")
+    .order("created_at", { ascending: false })
+    .limit(limit);
   if (error) {
     logFullSupabaseError("[admin] list account recovery", error);
     return { rows: [], error: error.message };
@@ -55,9 +57,11 @@ export async function adminResolveAccountRecoveryRequest(
   client: SupabaseClient<Database>,
   id: string,
 ): Promise<{ error: string | null }> {
-  const { error } = await client.rpc("goalnova_admin_resolve_account_recovery_request", {
-    p_id: id,
-  });
+  const { error } = await client
+    .from("support_tickets")
+    .update({ status: "resolved", updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .eq("ticket_type", "account_recovery");
   if (error) {
     logFullSupabaseError("[admin] resolve account recovery", error);
     return { error: error.message };

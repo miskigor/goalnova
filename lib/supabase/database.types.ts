@@ -118,10 +118,14 @@ export type Database = {
       support_tickets: {
         Row: {
           id: string;
-          user_id: string;
+          user_id: string | null;
           subject: string;
           message: string;
           category: string;
+          ticket_type: string;
+          account_email: string | null;
+          contact_email: string | null;
+          username: string | null;
           status: string;
           priority: string;
           assigned_admin_id: string | null;
@@ -131,10 +135,14 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          user_id: string;
+          user_id?: string | null;
           subject: string;
           message: string;
           category?: string;
+          ticket_type?: string;
+          account_email?: string | null;
+          contact_email?: string | null;
+          username?: string | null;
           status?: string;
           priority?: string;
           assigned_admin_id?: string | null;
@@ -144,10 +152,14 @@ export type Database = {
         };
         Update: {
           id?: string;
-          user_id?: string;
+          user_id?: string | null;
           subject?: string;
           message?: string;
           category?: string;
+          ticket_type?: string;
+          account_email?: string | null;
+          contact_email?: string | null;
+          username?: string | null;
           status?: string;
           priority?: string;
           assigned_admin_id?: string | null;
@@ -1143,6 +1155,24 @@ export type Database = {
         Returns: string;
       };
       pitchrusch_submit_account_recovery_request: {
+        Args: {
+          p_account_email: string;
+          p_contact_email: string;
+          p_username?: string | null;
+          p_message?: string | null;
+        };
+        Returns: string;
+      };
+      goalnova_submit_account_recovery_ticket: {
+        Args: {
+          p_account_email: string;
+          p_contact_email: string;
+          p_username?: string | null;
+          p_message?: string | null;
+        };
+        Returns: string;
+      };
+      pitchrusch_submit_account_recovery_ticket: {
         Args: {
           p_account_email: string;
           p_contact_email: string;

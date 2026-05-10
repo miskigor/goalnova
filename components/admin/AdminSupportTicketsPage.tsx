@@ -87,11 +87,12 @@ export function AdminSupportTicketsPage() {
   }, [load]);
 
   useEffect(() => {
-    if (!selected?.user_id) return;
+    const ownerId = selected?.user_id;
+    if (!ownerId) return;
     void (async () => {
       if (!selectedId) return;
       await markAdminSupportMessagesRead(selectedId);
-      await markAdminSupportNotificationsReadForTicketOwner(selected.user_id);
+      await markAdminSupportNotificationsReadForTicketOwner(ownerId);
       await fetchAdminUnreadSupportCount();
     })();
   }, [selected?.id, selected?.user_id, selectedId]);
