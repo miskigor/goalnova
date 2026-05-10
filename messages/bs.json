@@ -1404,7 +1404,7 @@
     "cta": "Back to home"
   },
   "localeSegmentError": {
-    "translateHint": "Automatic page translation (e.g. Google Chrome’s toolbar) changes the page and often crashes React apps. Turn off translation for this site or open the site in a private window."
+    "translateHint": "Automatski prijevod stranice (npr. Google u pregledniku) mijenja stranicu i često ruši React aplikacije. Isključi prijevod za ovu stranicu ili probaj u privatnom prozoru."
   },
   "appSectionError": {
     "title": "Something went wrong",
