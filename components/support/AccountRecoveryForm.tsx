@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
@@ -10,6 +9,25 @@ import {
   extractPostgrestErrorFields,
   formatPostgrestErrorForScreen,
 } from "@/lib/supabase/logError";
+
+/** Resolved on the server — avoids client `useTranslations` crashes that trigger the locale error boundary. */
+export type AccountRecoveryFormLabels = {
+  title: string;
+  intro: string;
+  accountEmailLabel: string;
+  contactEmailLabel: string;
+  usernameLabel: string;
+  usernamePlaceholder: string;
+  messageLabel: string;
+  messagePlaceholder: string;
+  submit: string;
+  submitting: string;
+  confirmMessage: string;
+  submitFailed: string;
+  validationEmail: string;
+  validationMessageShort: string;
+  backToLogin: string;
+};
 
 function Spinner() {
   return (
@@ -28,15 +46,6 @@ function Spinner() {
       />
     </svg>
   );
-}
-
-function safeMsg(t: ReturnType<typeof useTranslations>, key: string, fallback: string) {
-  try {
-    return (t as (k: string) => string)(key);
-  } catch (e) {
-    devError("[account recovery] translation", key, e);
-    return fallback;
-  }
 }
 
 /** Ensure we never pass non-strings into React children (avoids error boundary crash). */
@@ -71,8 +80,9 @@ function coerceSubmitError(err: unknown): string {
   return sanitizeDetail(err);
 }
 
-export function AccountRecoveryForm() {
-  const t = useTranslations("accountRecoverySupport");
+type Props = { labels: AccountRecoveryFormLabels };
+
+export function AccountRecoveryForm({ labels }: Props) {
   const submittingRef = useRef(false);
 
   const [accountEmail, setAccountEmail] = useState("");
@@ -85,12 +95,6 @@ export function AccountRecoveryForm() {
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
 
   async function handleSubmit() {
-    const failed =
-      "We couldn't send your request. Please try again in a moment.";
-    const invalidEmail = "Please enter a valid email address.";
-    const shortMsg =
-      "Please write a bit more detail (at least 10 characters).";
-
     if (done) return;
     if (submittingRef.current) return;
 
@@ -100,15 +104,15 @@ export function AccountRecoveryForm() {
       const a = accountEmail.trim();
       const c = contactEmail.trim();
       if (!a.includes("@")) {
-        setError(safeMsg(t, "validationEmail", invalidEmail));
+        setError(labels.validationEmail);
         return;
       }
       if (!c.includes("@")) {
-        setError(safeMsg(t, "validationEmail", invalidEmail));
+        setError(labels.validationEmail);
         return;
       }
       if (message.trim().length < 10) {
-        setError(safeMsg(t, "validationMessageShort", shortMsg));
+        setError(labels.validationMessageShort);
         return;
       }
 
@@ -124,14 +128,14 @@ export function AccountRecoveryForm() {
 
       if (submitErr) {
         devError("[account recovery]", submitErr);
-        setError(safeMsg(t, "submitFailed", failed));
+        setError(labels.submitFailed);
         setErrorDetail(coerceSubmitError(submitErr));
         return;
       }
       setDone(true);
     } catch (e) {
       devError("[account recovery] unexpected", e);
-      setError(safeMsg(t, "submitFailed", failed));
+      setError(labels.submitFailed);
       setErrorDetail(sanitizeDetail(e));
     } finally {
       submittingRef.current = false;
@@ -141,17 +145,17 @@ export function AccountRecoveryForm() {
 
   return (
     <div className="relative z-[2] mx-auto w-full max-w-lg rounded-2xl border border-gn-border-subtle bg-gn-surface/70 p-6 sm:p-8">
-      <h1 className="text-xl font-semibold tracking-tight text-gn-text">{t("title")}</h1>
-      <p className="mt-3 text-sm leading-relaxed text-gn-text-secondary">{t("intro")}</p>
+      <h1 className="text-xl font-semibold tracking-tight text-gn-text">{labels.title}</h1>
+      <p className="mt-3 text-sm leading-relaxed text-gn-text-secondary">{labels.intro}</p>
 
       {done ? (
         <div
           role="status"
           className="mt-6 rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-100/90"
         >
-          {t("confirmMessage")}
+          {labels.confirmMessage}
           <Link href="/login" className="mt-3 inline-block font-medium text-gn-accent hover:underline">
-            {t("backToLogin")}
+            {labels.backToLogin}
           </Link>
         </div>
       ) : (
@@ -162,14 +166,14 @@ export function AccountRecoveryForm() {
             e.preventDefault();
             void handleSubmit().catch((err) => {
               devError("[account recovery] promise rejection", err);
-              setError(safeMsg(t, "submitFailed", "We couldn't send your request. Please try again."));
+              setError(labels.submitFailed);
               setErrorDetail(sanitizeDetail(err));
             });
           }}
         >
           <div>
             <label htmlFor="ar-account-email" className="text-sm font-medium text-gn-text">
-              {t("accountEmailLabel")}
+              {labels.accountEmailLabel}
             </label>
             <input
               id="ar-account-email"
@@ -184,7 +188,7 @@ export function AccountRecoveryForm() {
           </div>
           <div>
             <label htmlFor="ar-contact-email" className="text-sm font-medium text-gn-text">
-              {t("contactEmailLabel")}
+              {labels.contactEmailLabel}
             </label>
             <input
               id="ar-contact-email"
@@ -199,14 +203,14 @@ export function AccountRecoveryForm() {
           </div>
           <div>
             <label htmlFor="ar-username" className="text-sm font-medium text-gn-text">
-              {t("usernameLabel")}
+              {labels.usernameLabel}
             </label>
             <input
               id="ar-username"
               name="username"
               type="text"
               autoComplete="username"
-              placeholder={t("usernamePlaceholder")}
+              placeholder={labels.usernamePlaceholder}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="mt-1.5 w-full rounded-xl border border-gn-border bg-gn-bg px-3 py-2.5 text-sm text-gn-text outline-none focus:border-gn-accent/50 focus:ring-2 focus:ring-gn-accent/20"
@@ -214,13 +218,13 @@ export function AccountRecoveryForm() {
           </div>
           <div>
             <label htmlFor="ar-message" className="text-sm font-medium text-gn-text">
-              {t("messageLabel")}
+              {labels.messageLabel}
             </label>
             <textarea
               id="ar-message"
               name="message"
               rows={4}
-              placeholder={t("messagePlaceholder")}
+              placeholder={labels.messagePlaceholder}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               className="mt-1.5 w-full resize-y rounded-xl border border-gn-border bg-gn-bg px-3 py-2.5 text-sm text-gn-text outline-none focus:border-gn-accent/50 focus:ring-2 focus:ring-gn-accent/20"
@@ -246,7 +250,7 @@ export function AccountRecoveryForm() {
             ].join(" ")}
           >
             {loading ? <Spinner /> : null}
-            {loading ? t("submitting") : t("submit")}
+            {loading ? labels.submitting : labels.submit}
           </button>
         </form>
       )}
