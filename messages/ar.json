@@ -1403,6 +1403,9 @@
     "body": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
     "cta": "العودة إلى الرئيسية"
   },
+  "localeSegmentError": {
+    "translateHint": "Automatic page translation (e.g. Google Chrome’s toolbar) changes the page and often crashes React apps. Turn off translation for this site or open the site in a private window."
+  },
   "appSectionError": {
     "title": "حدث خطأ ما",
     "description": "حدث خطأ غير متوقع. يُرجى المحاولة مرة أخرى.",

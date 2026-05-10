@@ -9,9 +9,9 @@ import {
 } from "@/components/ui/gnButtonClasses";
 
 /**
- * Catches errors under `[locale]` (onboarding, public, auth) when no closer
- * `error.tsx` handles them — avoids a blank tab / generic browser crash sheet
- * for recoverable React failures.
+ * Catches errors under `[locale]` when no closer `error.tsx` handles them.
+ * Mobile browsers’ automatic translation (e.g. Google) mutates the DOM and often
+ * crashes React — `translate="no"` on `<html>` reduces that; this screen explains it.
  */
 export default function LocaleSegmentError({
   error,
@@ -22,6 +22,8 @@ export default function LocaleSegmentError({
 }) {
   const tCommon = useTranslations("authCommon");
   const tNotFound = useTranslations("notFound");
+  const tLocaleErr = useTranslations("localeSegmentError");
+  const tAppErr = useTranslations("appSectionError");
 
   useEffect(() => {
     console.error("[PitchRusch locale segment error]", error);
@@ -32,12 +34,23 @@ export default function LocaleSegmentError({
       <p className="max-w-md text-lg font-semibold text-gn-text">
         {tCommon("genericError")}
       </p>
+      <p className="max-w-md text-sm leading-relaxed text-gn-text-secondary">
+        {tLocaleErr("translateHint")}
+      </p>
+      {error.digest ? (
+        <p className="max-w-md font-mono text-xs text-gn-text-tertiary">
+          Ref: {error.digest}
+        </p>
+      ) : null}
       <div className="flex flex-wrap justify-center gap-3">
         <button type="button" onClick={() => reset()} className={GN_PRIMARY_BUTTON_CLASS}>
           {tCommon("tryAgain")}
         </button>
         <Link href="/" className={GN_SECONDARY_BUTTON_CLASS}>
           {tNotFound("cta")}
+        </Link>
+        <Link href="/login" className={GN_SECONDARY_BUTTON_CLASS}>
+          {tAppErr("signIn")}
         </Link>
       </div>
     </div>

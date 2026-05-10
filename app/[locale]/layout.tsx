@@ -119,6 +119,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html
       lang={locale}
+      translate="no"
       dir={dir}
       style={{ backgroundColor: "#000" }}
       data-scroll-behavior="smooth"

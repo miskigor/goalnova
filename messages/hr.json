@@ -1403,6 +1403,9 @@
     "body": "Stranica koju tražite ne postoji ili je premještena.",
     "cta": "Natrag na početnu"
   },
+  "localeSegmentError": {
+    "translateHint": "Automatski prijevod stranice (npr. Google u pregledniku) mijenja DOM i često sruši React aplikacije. Isključi prijevod za ovu stranicu ili probaj u privatnom prozoru."
+  },
   "appSectionError": {
     "title": "Nešto je pošlo po zlu",
     "description": "Dogodila se neočekivana greška. Pokušajte ponovo.",

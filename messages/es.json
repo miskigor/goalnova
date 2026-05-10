@@ -1403,6 +1403,9 @@
     "body": "La página que buscas no existe o se ha movido.",
     "cta": "Volver al inicio"
   },
+  "localeSegmentError": {
+    "translateHint": "Automatic page translation (e.g. Google Chrome’s toolbar) changes the page and often crashes React apps. Turn off translation for this site or open the site in a private window."
+  },
   "appSectionError": {
     "title": "Algo salió mal",
     "description": "Ocurrió un error inesperado. Inténtalo de nuevo.",

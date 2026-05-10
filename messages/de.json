@@ -1403,6 +1403,9 @@
     "body": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
     "cta": "Zur Startseite"
   },
+  "localeSegmentError": {
+    "translateHint": "Automatic page translation (e.g. Google Chrome’s toolbar) changes the page and often crashes React apps. Turn off translation for this site or open the site in a private window."
+  },
   "appSectionError": {
     "title": "Etwas ist schiefgelaufen",
     "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
