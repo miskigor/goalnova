@@ -885,6 +885,8 @@
     "invalidCredentials": "Netočna adresa e-pošte ili lozinka. Pokušajte ponovno.",
     "emailNotConfirmed": "Potvrdi adresu e-pošte prije prijave. Provjeri ulaznu poštu za poveznicu za potvrdu.",
     "configMissing": "Aplikacija ne može doći do poslužitelja. Provjeri postavljanje Supabase URL-a i anon ključa na hostingu.",
+    "accountBanned": "Ovaj je račun suspendiran. Javi se podršci ako misliš da je greška.",
+    "rateLimited": "Previše pokušaja prijave. Pričekaj minutu pa pokušaj ponovno.",
     "noAccount": "Nemate račun?",
     "signUpLink": "Registracija"
   },

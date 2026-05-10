@@ -37,6 +37,8 @@ export default async function LoginPage({ params }: Props) {
     invalidPassword: tCommon("invalidPassword"),
     genericError: tCommon("genericError"),
     configMissing: tLogin("configMissing"),
+    accountBanned: tLogin("accountBanned"),
+    rateLimited: tLogin("rateLimited"),
   };
 
   return <LoginCard labels={labels} />;

@@ -34,44 +34,81 @@ export type LoginFormLabels = {
   invalidPassword: string;
   genericError: string;
   configMissing: string;
+  accountBanned: string;
+  rateLimited: string;
 };
 
-function classifyLoginError(err: unknown): {
-  kind: "invalid_credentials" | "email_not_confirmed" | "config" | "network" | "unknown";
-  raw: string;
-} {
-  const raw =
-    err && typeof err === "object" && "message" in err
-      ? String((err as { message?: unknown }).message)
-      : String(err ?? "");
-  const lower = raw.toLowerCase();
-  const code =
-    err && typeof err === "object" && "code" in err
-      ? String((err as { code?: unknown }).code ?? "").toLowerCase()
-      : "";
+function extractAuth(err: unknown): { message: string; code: string; status?: number } {
+  let message = "";
+  let code = "";
+  let status: number | undefined;
+  if (err && typeof err === "object") {
+    const e = err as { message?: unknown; code?: unknown; status?: unknown };
+    if (typeof e.message === "string") message = e.message;
+    if (typeof e.code === "string") code = e.code;
+    if (typeof e.status === "number") status = e.status;
+  }
+  if (!message) message = String(err ?? "");
+  return { message, code, status };
+}
 
-  if (/missing env var|supabase is not configured|next_public_supabase/i.test(raw)) {
-    return { kind: "config", raw };
+function classifyLoginError(err: unknown): {
+  kind:
+    | "invalid_credentials"
+    | "email_not_confirmed"
+    | "user_banned"
+    | "rate_limited"
+    | "config"
+    | "network"
+    | "unknown";
+  raw: string;
+  code: string;
+} {
+  const { message, code, status } = extractAuth(err);
+  const lower = message.toLowerCase();
+  const c = code.toLowerCase();
+
+  if (/missing env var|supabase is not configured|next_public_supabase/i.test(message)) {
+    return { kind: "config", raw: message, code };
   }
   if (
-    code === "email_not_confirmed" ||
+    c === "email_not_confirmed" ||
     lower.includes("email not confirmed") ||
     lower.includes("email address not confirmed")
   ) {
-    return { kind: "email_not_confirmed", raw };
+    return { kind: "email_not_confirmed", raw: message, code };
   }
   if (
-    code === "invalid_credentials" ||
+    c === "user_banned" ||
+    lower.includes("user_banned") ||
+    lower.includes("banned") && lower.includes("user")
+  ) {
+    return { kind: "user_banned", raw: message, code };
+  }
+  if (
+    c === "over_request_rate_limit" ||
+    c === "too_many_requests" ||
+    /rate limit|too many requests/i.test(lower)
+  ) {
+    return { kind: "rate_limited", raw: message, code };
+  }
+  if (
+    c === "invalid_credentials" ||
     /invalid login credentials|invalid email or password|wrong password|incorrect password/i.test(
-      raw,
+      message,
     )
   ) {
-    return { kind: "invalid_credentials", raw };
+    return { kind: "invalid_credentials", raw: message, code };
   }
-  if (/failed to fetch|network error|load failed|timed out|aborted|internet connection/i.test(lower)) {
-    return { kind: "network", raw };
+  if (
+    status === 503 ||
+    /failed to fetch|typeerror: failed to fetch|network error|load failed|timed out|aborted|service unavailable/i.test(
+      lower,
+    )
+  ) {
+    return { kind: "network", raw: message, code };
   }
-  return { kind: "unknown", raw };
+  return { kind: "unknown", raw: message, code };
 }
 
 function Spinner() {
@@ -100,6 +137,11 @@ function Spinner() {
   );
 }
 
+function sanitizeDetail(raw: string, code: string): string {
+  const line = [code ? `code=${code}` : null, raw.trim() || null].filter(Boolean).join(" · ");
+  return line.length > 400 ? `${line.slice(0, 400)}…` : line;
+}
+
 type Props = { labels: LoginFormLabels };
 
 export function LoginCard({ labels }: Props) {
@@ -110,6 +152,7 @@ export function LoginCard({ labels }: Props) {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<FieldError>(null);
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const [redirecting, setRedirecting] = useState(false);
 
   const canSubmit = useMemo(() => {
@@ -118,6 +161,7 @@ export function LoginCard({ labels }: Props) {
 
   async function onSubmit() {
     setError(null);
+    setErrorDetail(null);
 
     const trimmedEmail = email.trim();
     if (!trimmedEmail.includes("@")) {
@@ -142,27 +186,28 @@ export function LoginCard({ labels }: Props) {
       setRedirecting(true);
       window.setTimeout(() => {
         window.location.assign(homeUrlForLocale(locale));
-      }, 300);
+      }, 450);
       window.setTimeout(() => {
         setRedirecting(false);
         setLoading(false);
-      }, 6000);
+      }, 8000);
     } catch (err) {
-      const { kind, raw } = classifyLoginError(err);
+      const { kind, raw, code } = classifyLoginError(err);
       if (kind !== "invalid_credentials") {
         devError("Login error:", err);
       }
 
-      if (kind === "invalid_credentials") {
-        setError(labels.invalidCredentials);
-      } else if (kind === "email_not_confirmed") {
-        setError(labels.emailNotConfirmed);
-      } else if (kind === "config") {
-        setError(labels.configMissing);
-      } else if (kind === "network" || /timed out|failed to fetch|network/i.test(raw)) {
-        setError(labels.genericError);
-      } else {
-        setError(labels.genericError);
+      let msg = labels.genericError;
+      if (kind === "invalid_credentials") msg = labels.invalidCredentials;
+      else if (kind === "email_not_confirmed") msg = labels.emailNotConfirmed;
+      else if (kind === "user_banned") msg = labels.accountBanned;
+      else if (kind === "rate_limited") msg = labels.rateLimited;
+      else if (kind === "config") msg = labels.configMissing;
+      else if (kind === "network") msg = labels.genericError;
+
+      setError(msg);
+      if (kind === "unknown") {
+        setErrorDetail(sanitizeDetail(raw, code));
       }
       setRedirecting(false);
     } finally {
@@ -235,20 +280,25 @@ export function LoginCard({ labels }: Props) {
           <div
             role="alert"
             aria-live="assertive"
-            className="rounded-xl border border-red-500/35 bg-red-950/20 px-3.5 py-2 text-sm text-red-100/90"
+            className="space-y-2 rounded-xl border border-red-500/35 bg-red-950/20 px-3.5 py-2 text-sm text-red-100/90"
           >
-            {error}
+            <p>{error}</p>
+            {errorDetail ? (
+              <pre className="whitespace-pre-wrap break-words font-mono text-[11px] leading-snug text-red-100/75">
+                {errorDetail}
+              </pre>
+            ) : null}
           </div>
         ) : null}
 
         <button
           type="submit"
           disabled={loading || redirecting}
-          aria-busy={loading}
+          aria-busy={loading || redirecting}
           className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gn-accent py-3 text-sm font-semibold text-black transition-colors hover:bg-gn-accent-hover active:bg-gn-accent-pressed disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-gn-accent"
         >
-          {loading ? <Spinner /> : null}
-          {loading ? labels.signingIn : labels.submit}
+          {loading || redirecting ? <Spinner /> : null}
+          {loading || redirecting ? labels.signingIn : labels.submit}
         </button>
       </form>
 

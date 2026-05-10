@@ -885,6 +885,8 @@
     "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة. حاول مرة أخرى.",
     "emailNotConfirmed": "Please confirm your email before signing in. Check your inbox for the confirmation link.",
     "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
+    "accountBanned": "This account has been suspended. Contact support if you think this is a mistake.",
+    "rateLimited": "Too many sign-in attempts. Please wait a minute and try again.",
     "noAccount": "ليس لديك حساب؟",
     "signUpLink": "إنشاء حساب"
   },
