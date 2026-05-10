@@ -889,6 +889,10 @@
     "rateLimited": "Too many sign-in attempts. Please wait a minute and try again.",
     "networkError": "Can't reach the sign-in server. Check your internet, VPN/firewall, or try again in a moment.",
     "loginTimedOut": "Sign-in took too long. Try again or check a slow connection.",
+    "alreadySignedInTitle": "You're already signed in",
+    "alreadySignedInHint": "To use email and password or a different account, sign out first.",
+    "continueToHome": "Continue to home",
+    "signOutToSwitchAccount": "Sign out and use another account",
     "noAccount": "Non hai un account?",
     "signUpLink": "Registrati"
   },
@@ -1402,7 +1406,8 @@
   "appSectionError": {
     "title": "Qualcosa è andato storto",
     "description": "Si è verificato un errore imprevisto. Riprova.",
-    "backToHome": "Torna alla home"
+    "backToHome": "Torna alla home",
+    "signIn": "Accedi"
   },
   "authCommon": {
     "loading": "Caricamento…",

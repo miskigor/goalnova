@@ -20,6 +20,7 @@ export default async function LoginPage({ params }: Props) {
   const tLanding = await getTranslations({ locale, namespace: "landing" });
 
   const labels = {
+    checkingSession: tCommon("loading"),
     title: tLogin("title"),
     subtitle: tLogin("subtitle"),
     email: tLogin("email"),
@@ -41,6 +42,10 @@ export default async function LoginPage({ params }: Props) {
     rateLimited: tLogin("rateLimited"),
     networkError: tLogin("networkError"),
     loginTimedOut: tLogin("loginTimedOut"),
+    alreadySignedInTitle: tLogin("alreadySignedInTitle"),
+    alreadySignedInHint: tLogin("alreadySignedInHint"),
+    continueToHome: tLogin("continueToHome"),
+    signOutToSwitchAccount: tLogin("signOutToSwitchAccount"),
   };
 
   return <LoginCard labels={labels} />;

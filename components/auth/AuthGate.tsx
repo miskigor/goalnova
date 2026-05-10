@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
 import type { Session } from "@supabase/supabase-js";
@@ -36,6 +36,12 @@ function oauthReturnLikely(): boolean {
   );
 }
 
+/** Allow the login screen to render even with an active session (e.g. Google) so users can switch accounts. */
+function isLoginRoute(pathname: string | null): boolean {
+  if (!pathname) return false;
+  return pathname === "/login" || pathname.endsWith("/login");
+}
+
 function InlineSpinner() {
   return (
     <svg
@@ -65,6 +71,8 @@ function InlineSpinner() {
 export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const tCommon = useTranslations("authCommon");
   const router = useRouter();
+  const pathname = usePathname();
+  const onLoginUrl = isLoginRoute(pathname);
 
   const [session, setSession] = useState<Session | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -172,12 +180,16 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
       return;
     }
 
-    // guest mode
+    // guest mode — do not auto-redirect away from /login (email/password form must stay reachable).
+    if (mode === "guest" && isLoggedIn && onLoginUrl) {
+      return;
+    }
+
     if (isLoggedIn && !didRedirectRef.current) {
       didRedirectRef.current = true;
       router.replace(redirectTo);
     }
-  }, [checking, isAuthenticated, mode, redirectTo, router, session]);
+  }, [checking, isAuthenticated, mode, onLoginUrl, redirectTo, router, session]);
 
   if (checking) {
     return (
@@ -202,7 +214,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
       </div>
     );
   }
-  if (mode === "guest" && isLoggedIn) {
+  if (mode === "guest" && isLoggedIn && !onLoginUrl) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <div className="flex items-center gap-2 text-sm text-gn-text-secondary">

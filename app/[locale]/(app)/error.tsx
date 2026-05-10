@@ -34,6 +34,9 @@ export default function AppSectionError({
         <Link href="/home" className={GN_SECONDARY_BUTTON_CLASS}>
           {t("backToHome")}
         </Link>
+        <Link href="/login" className={GN_SECONDARY_BUTTON_CLASS}>
+          {t("signIn")}
+        </Link>
       </div>
     </div>
   );

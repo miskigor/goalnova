@@ -1,11 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocale } from "next-intl";
+import type { User } from "@supabase/supabase-js";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { devError } from "@/lib/devLog";
-import { signInWithEmailPassword } from "@/lib/supabase/auth";
+import { signInWithEmailPassword, signOut } from "@/lib/supabase/auth";
+import { supabase } from "@/lib/supabase/client";
 import { Logo } from "@/components/brand/Logo";
 
 function homeUrlForLocale(locale: string): string {
@@ -17,6 +19,7 @@ function homeUrlForLocale(locale: string): string {
 type FieldError = string | null;
 
 export type LoginFormLabels = {
+  checkingSession: string;
   title: string;
   subtitle: string;
   email: string;
@@ -38,6 +41,10 @@ export type LoginFormLabels = {
   rateLimited: string;
   networkError: string;
   loginTimedOut: string;
+  alreadySignedInTitle: string;
+  alreadySignedInHint: string;
+  continueToHome: string;
+  signOutToSwitchAccount: string;
 };
 
 function extractAuth(err: unknown): { message: string; code: string; status?: number } {
@@ -199,6 +206,9 @@ type Props = { labels: LoginFormLabels };
 export function LoginCard({ labels }: Props) {
   const locale = useLocale();
 
+  /** `undefined` = still resolving Supabase session (avoid flashing email form then hiding). */
+  const [sessionUser, setSessionUser] = useState<User | null | undefined>(undefined);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -207,9 +217,94 @@ export function LoginCard({ labels }: Props) {
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const [redirecting, setRedirecting] = useState(false);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    function applySession(next: User | null) {
+      if (!cancelled) setSessionUser(next);
+    }
+
+    void supabase.auth.getSession().then(({ data }) => {
+      applySession(data.session?.user ?? null);
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      applySession(session?.user ?? null);
+    });
+
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  async function handleSignOutForSwitch() {
+    setError(null);
+    setErrorDetail(null);
+    setLoading(true);
+    try {
+      await signOut();
+      setSessionUser(null);
+    } catch (err) {
+      devError("LoginCard signOut:", err);
+      setError(labels.genericError);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const canSubmit = useMemo(() => {
     return email.trim().length > 0 && password.length > 0 && !loading && !redirecting;
   }, [email, password, loading, redirecting]);
+
+  if (sessionUser === undefined) {
+    return (
+      <div className="mx-auto flex min-h-[240px] w-full max-w-sm flex-col items-center justify-center rounded-2xl border border-gn-border-subtle bg-gn-surface/80 px-6 py-16 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm">
+        <Spinner />
+        <p className="mt-4 text-sm text-gn-text-secondary">{labels.checkingSession}</p>
+      </div>
+    );
+  }
+
+  if (sessionUser) {
+    const emailLabel = sessionUser.email?.trim() || "—";
+    return (
+      <div className="mx-auto w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:p-8">
+        <div className="mb-6 text-center sm:mb-8">
+          <Logo href="/" variant="entry" className="justify-center" showWordmark={false} />
+          <h1 className="mt-4 text-xl font-semibold tracking-tight text-gn-text sm:mt-6">
+            {labels.alreadySignedInTitle}
+          </h1>
+          <p className="mt-2 break-all text-sm font-medium text-gn-accent">{emailLabel}</p>
+          <p className="mt-3 text-sm text-gn-text-secondary">{labels.alreadySignedInHint}</p>
+        </div>
+        {error ? (
+          <div
+            role="alert"
+            className="mb-4 rounded-xl border border-red-500/35 bg-red-950/20 px-3.5 py-2 text-sm text-red-100/90"
+          >
+            {error}
+          </div>
+        ) : null}
+        <div className="flex flex-col gap-3">
+          <Link
+            href="/home"
+            className="flex w-full cursor-pointer items-center justify-center rounded-xl bg-gn-accent py-3 text-center text-sm font-semibold text-black transition-colors hover:bg-gn-accent-hover"
+          >
+            {labels.continueToHome}
+          </Link>
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => void handleSignOutForSwitch()}
+            className="w-full rounded-xl border border-gn-border bg-transparent py-3 text-sm font-semibold text-gn-text transition-colors hover:bg-gn-surface disabled:opacity-60"
+          >
+            {loading ? labels.signingIn : labels.signOutToSwitchAccount}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   async function onSubmit() {
     setError(null);
