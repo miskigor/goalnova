@@ -26,6 +26,37 @@ export async function submitAccountRecoveryRequest(
     const message = input.message.trim();
     const username = input.username.trim() ? input.username.trim() : null;
 
+    const rpcArgs = {
+      p_account_email: accountEmail,
+      p_contact_email: contactEmail,
+      p_message: message,
+      p_username: username,
+    };
+
+    // Prefer RPC first: SECURITY DEFINER insert works even if anon INSERT RLS is missing;
+    // direct insert is faster when both RPC and policy exist (second path).
+    const primary = await client.rpc("pitchrusch_submit_account_recovery_ticket", rpcArgs);
+    if (!primary.error && primary.data) {
+      return { id: primary.data, error: null };
+    }
+    if (primary.error) {
+      logFullSupabaseError(
+        "[account recovery] rpc pitchrusch_submit_account_recovery_ticket",
+        primary.error,
+      );
+    }
+
+    const fallbackRpc = await client.rpc("goalnova_submit_account_recovery_ticket", rpcArgs);
+    if (!fallbackRpc.error && fallbackRpc.data) {
+      return { id: fallbackRpc.data, error: null };
+    }
+    if (fallbackRpc.error) {
+      logFullSupabaseError(
+        "[account recovery] rpc goalnova_submit_account_recovery_ticket",
+        fallbackRpc.error,
+      );
+    }
+
     const row: Database["public"]["Tables"]["support_tickets"]["Insert"] = {
       user_id: null,
       subject: ACCOUNT_RECOVERY_SUBJECT,
@@ -50,41 +81,20 @@ export async function submitAccountRecoveryRequest(
       logFullSupabaseError("[account recovery] insert support_tickets", inserted.error);
     }
 
-    const rpcArgs = {
-      p_account_email: accountEmail,
-      p_contact_email: contactEmail,
-      p_message: message,
-      p_username: username,
+    const combined = [
+      primary.error?.message,
+      fallbackRpc.error?.message,
+      inserted.error?.message,
+    ]
+      .map((s) => (s == null ? "" : String(s).trim()))
+      .filter((s) => s.length > 0)
+      .join(" — ");
+    return {
+      id: null,
+      error:
+        combined ||
+        String(fallbackRpc.error?.message ?? inserted.error?.message ?? "Request failed."),
     };
-
-    const primary = await client.rpc("pitchrusch_submit_account_recovery_ticket", rpcArgs);
-    if (!primary.error && primary.data) {
-      return { id: primary.data, error: null };
-    }
-    if (primary.error) {
-      logFullSupabaseError(
-        "[account recovery] rpc pitchrusch_submit_account_recovery_ticket",
-        primary.error,
-      );
-    }
-
-    const fallback = await client.rpc("goalnova_submit_account_recovery_ticket", rpcArgs);
-    if (fallback.error) {
-      logFullSupabaseError(
-        "[account recovery] rpc goalnova_submit_account_recovery_ticket",
-        fallback.error,
-      );
-      const combined = [
-        inserted.error?.message,
-        primary.error?.message,
-        fallback.error?.message,
-      ]
-        .map((s) => (s == null ? "" : String(s).trim()))
-        .filter((s) => s.length > 0)
-        .join(" — ");
-      return { id: null, error: combined || String(fallback.error.message ?? "Request failed.") };
-    }
-    return { id: fallback.data ?? null, error: null };
   } catch (e) {
     logFullSupabaseError("[account recovery] submitAccountRecoveryRequest threw", e);
     return {
