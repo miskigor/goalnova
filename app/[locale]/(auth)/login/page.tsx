@@ -39,6 +39,8 @@ export default async function LoginPage({ params }: Props) {
     configMissing: tLogin("configMissing"),
     accountBanned: tLogin("accountBanned"),
     rateLimited: tLogin("rateLimited"),
+    networkError: tLogin("networkError"),
+    loginTimedOut: tLogin("loginTimedOut"),
   };
 
   return <LoginCard labels={labels} />;

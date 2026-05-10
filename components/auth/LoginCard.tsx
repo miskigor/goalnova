@@ -36,6 +36,8 @@ export type LoginFormLabels = {
   configMissing: string;
   accountBanned: string;
   rateLimited: string;
+  networkError: string;
+  loginTimedOut: string;
 };
 
 function extractAuth(err: unknown): { message: string; code: string; status?: number } {
@@ -43,13 +45,41 @@ function extractAuth(err: unknown): { message: string; code: string; status?: nu
   let code = "";
   let status: number | undefined;
   if (err && typeof err === "object") {
-    const e = err as { message?: unknown; code?: unknown; status?: unknown };
-    if (typeof e.message === "string") message = e.message;
+    const e = err as Record<string, unknown>;
+    if (typeof e.message === "string" && e.message.trim().length > 0) {
+      message = e.message.trim();
+    } else if (typeof e.msg === "string" && e.msg.trim().length > 0) {
+      message = e.msg.trim();
+    }
     if (typeof e.code === "string") code = e.code;
     if (typeof e.status === "number") status = e.status;
+    if (status === undefined && typeof e.statusCode === "number") status = e.statusCode;
+  }
+  if (!message && typeof err === "string") message = err;
+  if (!message && err !== null && err !== undefined) {
+    try {
+      const s = JSON.stringify(err);
+      if (s && s !== "{}") message = s;
+    } catch {
+      message = String(err);
+    }
   }
   if (!message) message = String(err ?? "");
   return { message, code, status };
+}
+
+function safeSerializeError(err: unknown): string {
+  if (err instanceof Error) {
+    const stack = err.stack?.split("\n").slice(0, 4).join(" · ");
+    const base = err.message?.trim() || err.name;
+    return stack && stack.length > base.length ? stack.slice(0, 420) : base.slice(0, 420);
+  }
+  try {
+    const s = JSON.stringify(err);
+    return s === "{}" ? "Unknown error (empty server response)." : s.slice(0, 420);
+  } catch {
+    return String(err).slice(0, 420);
+  }
 }
 
 function classifyLoginError(err: unknown): {
@@ -59,6 +89,7 @@ function classifyLoginError(err: unknown): {
     | "user_banned"
     | "rate_limited"
     | "config"
+    | "timeout"
     | "network"
     | "unknown";
   raw: string;
@@ -100,12 +131,18 @@ function classifyLoginError(err: unknown): {
   ) {
     return { kind: "invalid_credentials", raw: message, code };
   }
+  if (/login request timed out|sign in request timed out/i.test(lower)) {
+    return { kind: "timeout", raw: message, code };
+  }
   if (
     status === 503 ||
-    /failed to fetch|typeerror: failed to fetch|network error|load failed|timed out|aborted|service unavailable/i.test(
+    /failed to fetch|typeerror: failed to fetch|network error|load failed|aborted|service unavailable|err_network|net::err_|connection (refused|reset)|econnrefused|enotfound/i.test(
       lower,
     )
   ) {
+    return { kind: "network", raw: message, code };
+  }
+  if (/timed out|timeout/i.test(lower)) {
     return { kind: "network", raw: message, code };
   }
   return { kind: "unknown", raw: message, code };
@@ -140,6 +177,21 @@ function Spinner() {
 function sanitizeDetail(raw: string, code: string): string {
   const line = [code ? `code=${code}` : null, raw.trim() || null].filter(Boolean).join(" · ");
   return line.length > 400 ? `${line.slice(0, 400)}…` : line;
+}
+
+function detailForLoginFailure(
+  err: unknown,
+  kind: ReturnType<typeof classifyLoginError>["kind"],
+  raw: string,
+  code: string,
+): string | null {
+  if (kind === "invalid_credentials") return null;
+  const primary = sanitizeDetail(raw, code);
+  if (primary) return primary;
+  if (kind === "unknown" || kind === "network" || kind === "timeout") {
+    return safeSerializeError(err);
+  }
+  return null;
 }
 
 type Props = { labels: LoginFormLabels };
@@ -203,12 +255,11 @@ export function LoginCard({ labels }: Props) {
       else if (kind === "user_banned") msg = labels.accountBanned;
       else if (kind === "rate_limited") msg = labels.rateLimited;
       else if (kind === "config") msg = labels.configMissing;
-      else if (kind === "network") msg = labels.genericError;
+      else if (kind === "timeout") msg = labels.loginTimedOut;
+      else if (kind === "network") msg = labels.networkError;
 
       setError(msg);
-      if (kind === "unknown") {
-        setErrorDetail(sanitizeDetail(raw, code));
-      }
+      setErrorDetail(detailForLoginFailure(err, kind, raw, code));
       setRedirecting(false);
     } finally {
       setLoading(false);

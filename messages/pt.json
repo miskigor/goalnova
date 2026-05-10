@@ -887,6 +887,8 @@
     "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
     "accountBanned": "This account has been suspended. Contact support if you think this is a mistake.",
     "rateLimited": "Too many sign-in attempts. Please wait a minute and try again.",
+    "networkError": "Can't reach the sign-in server. Check your internet, VPN/firewall, or try again in a moment.",
+    "loginTimedOut": "Sign-in took too long. Try again or check a slow connection.",
     "noAccount": "Sem conta?",
     "signUpLink": "Registar"
   },

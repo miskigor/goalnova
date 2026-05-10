@@ -887,6 +887,8 @@
     "configMissing": "Aplikacija ne može doći do poslužitelja. Provjeri postavljanje Supabase URL-a i anon ključa na hostingu.",
     "accountBanned": "Ovaj je račun suspendiran. Javi se podršci ako misliš da je greška.",
     "rateLimited": "Previše pokušaja prijave. Pričekaj minutu pa pokušaj ponovno.",
+    "networkError": "Ne možemo se spojiti na poslužitelj za prijavu. Provjeri internet, VPN ili vatrozid, pa pokušaj ponovno.",
+    "loginTimedOut": "Prijava je predugo trajala. Pokušaj ponovno ili provjeri vezu.",
     "noAccount": "Nemate račun?",
     "signUpLink": "Registracija"
   },
