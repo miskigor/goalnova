@@ -15,7 +15,7 @@ export default async function AccountRecoverySupportPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-5">
+    <div className="mx-auto w-full max-w-3xl px-4 py-10 pb-28 sm:px-5 lg:pb-10">
       <AccountRecoveryForm />
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { devError } from "@/lib/devLog";
@@ -28,6 +28,7 @@ function Spinner() {
 
 export function AccountRecoveryForm() {
   const t = useTranslations("accountRecoverySupport");
+  const submittingRef = useRef(false);
 
   const [accountEmail, setAccountEmail] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -37,17 +38,10 @@ export function AccountRecoveryForm() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const canSubmit = useMemo(() => {
-    return (
-      accountEmail.trim().includes("@") &&
-      contactEmail.trim().includes("@") &&
-      message.trim().length >= 10 &&
-      !loading &&
-      !done
-    );
-  }, [accountEmail, contactEmail, message, loading, done]);
+  async function handleSubmit() {
+    if (done) return;
+    if (submittingRef.current) return;
 
-  async function onSubmit() {
     setError(null);
     const a = accountEmail.trim();
     const c = contactEmail.trim();
@@ -64,6 +58,7 @@ export function AccountRecoveryForm() {
       return;
     }
 
+    submittingRef.current = true;
     setLoading(true);
     try {
       const { error: submitErr } = await submitAccountRecoveryRequest(supabase, {
@@ -82,12 +77,13 @@ export function AccountRecoveryForm() {
       devError("[account recovery] unexpected", e);
       setError(t("submitFailed"));
     } finally {
+      submittingRef.current = false;
       setLoading(false);
     }
   }
 
   return (
-    <div className="mx-auto w-full max-w-lg rounded-2xl border border-gn-border-subtle bg-gn-surface/70 p-6 sm:p-8">
+    <div className="relative z-[2] mx-auto w-full max-w-lg rounded-2xl border border-gn-border-subtle bg-gn-surface/70 p-6 sm:p-8">
       <h1 className="text-xl font-semibold tracking-tight text-gn-text">{t("title")}</h1>
       <p className="mt-3 text-sm leading-relaxed text-gn-text-secondary">{t("intro")}</p>
 
@@ -107,8 +103,7 @@ export function AccountRecoveryForm() {
           noValidate
           onSubmit={(e) => {
             e.preventDefault();
-            if (!canSubmit) return;
-            void onSubmit();
+            void handleSubmit();
           }}
         >
           <div>
@@ -117,7 +112,9 @@ export function AccountRecoveryForm() {
             </label>
             <input
               id="ar-account-email"
+              name="accountEmail"
               type="email"
+              inputMode="email"
               autoComplete="email"
               value={accountEmail}
               onChange={(e) => setAccountEmail(e.target.value)}
@@ -130,7 +127,9 @@ export function AccountRecoveryForm() {
             </label>
             <input
               id="ar-contact-email"
+              name="contactEmail"
               type="email"
+              inputMode="email"
               autoComplete="email"
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
@@ -143,6 +142,7 @@ export function AccountRecoveryForm() {
             </label>
             <input
               id="ar-username"
+              name="username"
               type="text"
               autoComplete="username"
               placeholder={t("usernamePlaceholder")}
@@ -157,6 +157,7 @@ export function AccountRecoveryForm() {
             </label>
             <textarea
               id="ar-message"
+              name="message"
               rows={4}
               placeholder={t("messagePlaceholder")}
               value={message}
@@ -171,8 +172,12 @@ export function AccountRecoveryForm() {
           ) : null}
           <button
             type="submit"
-            disabled={!canSubmit}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gn-accent py-3 text-sm font-semibold text-black hover:bg-gn-accent-hover disabled:opacity-50"
+            aria-busy={loading}
+            className={[
+              "flex min-h-[2.75rem] w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-gn-accent py-3 text-sm font-semibold text-black",
+              "hover:bg-gn-accent-hover active:scale-[0.99] motion-reduce:active:scale-100",
+              loading ? "pointer-events-none opacity-80" : "",
+            ].join(" ")}
           >
             {loading ? <Spinner /> : null}
             {loading ? t("submitting") : t("submit")}
