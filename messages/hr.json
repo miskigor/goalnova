@@ -28,7 +28,6 @@
     "adminDashboardTitle": "Admin",
     "adminMusicTitle": "Glazbena knjižnica",
     "supportTitle": "Support",
-    "forgotPasswordTitle": "Zaboravljena šifra",
     "resetPasswordTitle": "Nova šifra",
     "accountRecoveryTitle": "Oporavak računa"
   },
@@ -532,7 +531,7 @@
     "login": "Prijava",
     "signup": "Registracija",
     "footer": "© {year} PitchRusch. Sva prava pridržana.",
-    "forgotPasswordLink": "Zaboravljena šifra?"
+    "forgotPasswordLink": "Zaboravljena lozinka?"
   },
   "nav": {
     "primary": "Glavna navigacija",
@@ -903,26 +902,12 @@
     "emailAlreadyExists": "Račun s ovom adresom e-pošte već postoji. Prijavite se umjesto toga.",
     "goToLogin": "Na prijavu"
   },
-  "authForgotPassword": {
-    "title": "Zaboravljena šifra?",
-    "subtitle": "Unesite email adresu povezanu s vašim računom. Poslat ćemo vam link za postavljanje nove šifre.",
-    "email": "Email",
-    "emailPlaceholder": "vi@primjer.com",
-    "submit": "Pošalji link za reset šifre",
-    "sending": "Slanje…",
-    "neutralSuccess": "Ako račun s ovom email adresom postoji, poslat ćemo vam link za reset šifre.",
-    "rateLimitOrError": "Ako račun s ovom email adresom postoji, poslat ćemo vam link za reset šifre.",
-    "supportHint": "Ako više nemate pristup svom emailu, kontaktirajte support.",
-    "contactSupport": "Kontaktiraj support",
-    "supportDestAria": "Otvori obrazac za oporavak računa putem podrške",
-    "backToLogin": "Natrag na prijavu"
-  },
   "authResetPassword": {
     "title": "Nova šifra",
     "subtitleRecovery": "Odaberite jaku šifru za svoj račun.",
     "checkingSession": "Provjera linka…",
-    "invalidSession": "Ovaj reset link je nevažeći ili je istekao. Zatražite novi s stranice za prijavu.",
-    "requestNewLink": "Zatraži novi link za reset",
+    "invalidSession": "Ovaj link nije valjan ili je istekao. Koristite oporavak računa — support će vam pomoći.",
+    "requestNewLink": "Oporavak računa",
     "password": "Nova šifra",
     "confirm": "Potvrdi novu šifru",
     "passwordPlaceholder": "Najmanje 6 znakova",

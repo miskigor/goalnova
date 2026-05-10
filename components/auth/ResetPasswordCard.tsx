@@ -192,7 +192,7 @@ export function ResetPasswordCard() {
         <Logo href="/" variant="inline" className="justify-center" showWordmark={false} />
         <p className="mt-6 text-sm leading-relaxed text-gn-text-secondary">{t("invalidSession")}</p>
         <Link
-          href="/forgot-password"
+          href="/support/account-recovery"
           className="mt-6 inline-block font-medium text-gn-accent hover:text-gn-accent-hover"
         >
           {t("requestNewLink")}

@@ -121,7 +121,7 @@ export default async function LandingPage({ params }: Props) {
               </div>
               <p className="mt-5 text-center sm:mt-6">
                 <a
-                  href={h("/forgot-password")}
+                  href={h("/support/account-recovery")}
                   className="text-sm font-medium text-gn-text-secondary underline decoration-white/20 underline-offset-4 transition hover:text-gn-text hover:decoration-gn-accent/60"
                 >
                   {t("forgotPasswordLink")}

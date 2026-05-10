@@ -170,7 +170,7 @@ export function LoginCard() {
           />
           <div className="mt-2 text-end">
             <Link
-              href="/forgot-password"
+              href="/support/account-recovery"
               className="text-xs font-medium text-gn-accent hover:text-gn-accent-hover"
             >
               {tLanding("forgotPasswordLink")}

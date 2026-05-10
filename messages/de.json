@@ -28,7 +28,6 @@
     "adminDashboardTitle": "Admin",
     "adminMusicTitle": "Musikbibliothek",
     "supportTitle": "Support",
-    "forgotPasswordTitle": "Forgot password",
     "resetPasswordTitle": "Set new password",
     "accountRecoveryTitle": "Account recovery"
   },
@@ -902,20 +901,6 @@
     "loginLink": "Anmelden",
     "emailAlreadyExists": "Mit dieser E-Mail existiert bereits ein Konto. Bitte melden Sie sich stattdessen an.",
     "goToLogin": "Zur Anmeldung"
-  },
-  "authForgotPassword": {
-    "title": "Forgot password?",
-    "subtitle": "Enter the email address linked to your account. We'll send you a link to set a new password.",
-    "email": "Email",
-    "emailPlaceholder": "you@example.com",
-    "submit": "Send reset link",
-    "sending": "Sending…",
-    "neutralSuccess": "If an account exists with this email address, we will send you a password reset link.",
-    "rateLimitOrError": "If an account exists with this email address, we will send you a password reset link.",
-    "supportHint": "If you no longer have access to your email, contact support.",
-    "contactSupport": "Contact support",
-    "supportDestAria": "Open account recovery support form",
-    "backToLogin": "Back to login"
   },
   "authResetPassword": {
     "title": "Set a new password",
