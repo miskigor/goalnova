@@ -45,6 +45,7 @@ function Spinner() {
 export function LoginCard() {
   const tLogin = useTranslations("authLogin");
   const tCommon = useTranslations("authCommon");
+  const tLanding = useTranslations("landing");
   const locale = useLocale();
 
   const [email, setEmail] = useState("");
@@ -167,6 +168,14 @@ export function LoginCard() {
             onChange={(e) => setPassword(e.target.value)}
             className="mt-1.5 w-full rounded-xl border border-gn-border bg-gn-surface px-3.5 py-3 text-sm text-gn-text placeholder:text-gn-text-tertiary outline-none transition-[border-color,box-shadow] focus:border-gn-accent/60 focus:ring-2 focus:ring-gn-accent/25"
           />
+          <div className="mt-2 text-end">
+            <Link
+              href="/forgot-password"
+              className="text-xs font-medium text-gn-accent hover:text-gn-accent-hover"
+            >
+              {tLanding("forgotPasswordLink")}
+            </Link>
+          </div>
         </div>
 
         {error ? (

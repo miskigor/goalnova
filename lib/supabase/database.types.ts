@@ -157,6 +157,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      account_recovery_requests: {
+        Row: {
+          id: string;
+          account_email: string;
+          contact_email: string;
+          username: string | null;
+          message: string;
+          status: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          account_email: string;
+          contact_email: string;
+          username?: string | null;
+          message: string;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          account_email?: string;
+          contact_email?: string;
+          username?: string | null;
+          message?: string;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       support_ticket_messages: {
         Row: {
           id: string;
@@ -1099,6 +1132,32 @@ export type Database = {
           email: string | null;
           admin_role: string | null;
         }[];
+      };
+      goalnova_submit_account_recovery_request: {
+        Args: {
+          p_account_email: string;
+          p_contact_email: string;
+          p_username?: string | null;
+          p_message?: string | null;
+        };
+        Returns: string;
+      };
+      pitchrusch_submit_account_recovery_request: {
+        Args: {
+          p_account_email: string;
+          p_contact_email: string;
+          p_username?: string | null;
+          p_message?: string | null;
+        };
+        Returns: string;
+      };
+      goalnova_admin_list_account_recovery_requests: {
+        Args: { p_limit?: number };
+        Returns: Database["public"]["Tables"]["account_recovery_requests"]["Row"][];
+      };
+      goalnova_admin_resolve_account_recovery_request: {
+        Args: { p_id: string };
+        Returns: Json;
       };
     };
   };

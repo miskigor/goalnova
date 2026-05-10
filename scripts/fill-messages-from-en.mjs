@@ -50,7 +50,7 @@ function main() {
   const enRaw = fs.readFileSync(enPath, "utf8");
   const en = JSON.parse(enRaw);
 
-  const targets = ["hr", "de", "it", "fr", "es", "pt", "ar"];
+  const targets = ["hr", "de", "it", "fr", "es", "pt", "ar", "bs", "sr", "nl", "tr"];
 
   for (const loc of targets) {
     const p = path.join(MESSAGES_DIR, `${loc}.json`);

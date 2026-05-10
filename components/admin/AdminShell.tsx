@@ -13,6 +13,7 @@ const NAV: { href: string; labelKey: string; superOnly?: boolean }[] = [
   { href: "/admin/profiles", labelKey: "navProfiles" },
   { href: "/admin/scout-verifications", labelKey: "navScout" },
   { href: "/admin/support", labelKey: "navSupport" },
+  { href: "/admin/support/account-recovery", labelKey: "navAccountRecovery" },
   { href: "/admin/tasks", labelKey: "navTasks" },
   { href: "/admin/challenges", labelKey: "navChallenges" },
   { href: "/admin/music", labelKey: "navMusic" },
