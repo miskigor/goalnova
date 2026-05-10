@@ -117,6 +117,10 @@
     "joinCta": "PitchRusch'a katıl",
     "moreHighlights": "Daha fazla öne çıkan klip keşfet"
   },
+  "homeFeed": {
+    "tapToPlay": "Oynatmak için dokun",
+    "videoBufferingAria": "Video yükleniyor"
+  },
   "language": {
     "en": "English",
     "hr": "Hrvatski",

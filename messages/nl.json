@@ -117,6 +117,10 @@
     "joinCta": "Word lid van PitchRusch",
     "moreHighlights": "Bekijk meer highlights"
   },
+  "homeFeed": {
+    "tapToPlay": "Tik om af te spelen",
+    "videoBufferingAria": "Video wordt geladen"
+  },
   "language": {
     "en": "English",
     "hr": "Hrvatski",
