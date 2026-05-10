@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { devError } from "@/lib/devLog";
@@ -15,6 +15,64 @@ function homeUrlForLocale(locale: string): string {
 }
 
 type FieldError = string | null;
+
+export type LoginFormLabels = {
+  title: string;
+  subtitle: string;
+  email: string;
+  emailPlaceholder: string;
+  password: string;
+  passwordPlaceholder: string;
+  signingIn: string;
+  submit: string;
+  invalidCredentials: string;
+  emailNotConfirmed: string;
+  noAccount: string;
+  signUpLink: string;
+  forgotPasswordLink: string;
+  invalidEmail: string;
+  invalidPassword: string;
+  genericError: string;
+  configMissing: string;
+};
+
+function classifyLoginError(err: unknown): {
+  kind: "invalid_credentials" | "email_not_confirmed" | "config" | "network" | "unknown";
+  raw: string;
+} {
+  const raw =
+    err && typeof err === "object" && "message" in err
+      ? String((err as { message?: unknown }).message)
+      : String(err ?? "");
+  const lower = raw.toLowerCase();
+  const code =
+    err && typeof err === "object" && "code" in err
+      ? String((err as { code?: unknown }).code ?? "").toLowerCase()
+      : "";
+
+  if (/missing env var|supabase is not configured|next_public_supabase/i.test(raw)) {
+    return { kind: "config", raw };
+  }
+  if (
+    code === "email_not_confirmed" ||
+    lower.includes("email not confirmed") ||
+    lower.includes("email address not confirmed")
+  ) {
+    return { kind: "email_not_confirmed", raw };
+  }
+  if (
+    code === "invalid_credentials" ||
+    /invalid login credentials|invalid email or password|wrong password|incorrect password/i.test(
+      raw,
+    )
+  ) {
+    return { kind: "invalid_credentials", raw };
+  }
+  if (/failed to fetch|network error|load failed|timed out|aborted|internet connection/i.test(lower)) {
+    return { kind: "network", raw };
+  }
+  return { kind: "unknown", raw };
+}
 
 function Spinner() {
   return (
@@ -42,10 +100,9 @@ function Spinner() {
   );
 }
 
-export function LoginCard() {
-  const tLogin = useTranslations("authLogin");
-  const tCommon = useTranslations("authCommon");
-  const tLanding = useTranslations("landing");
+type Props = { labels: LoginFormLabels };
+
+export function LoginCard({ labels }: Props) {
   const locale = useLocale();
 
   const [email, setEmail] = useState("");
@@ -59,18 +116,16 @@ export function LoginCard() {
     return email.trim().length > 0 && password.length > 0 && !loading && !redirecting;
   }, [email, password, loading, redirecting]);
 
-  // Redirecting if a session exists is handled by the route-level `AuthGate`.
-
   async function onSubmit() {
     setError(null);
 
     const trimmedEmail = email.trim();
     if (!trimmedEmail.includes("@")) {
-      setError(tCommon("invalidEmail"));
+      setError(labels.invalidEmail);
       return;
     }
     if (password.length < 6) {
-      setError(tCommon("invalidPassword"));
+      setError(labels.invalidPassword);
       return;
     }
 
@@ -85,31 +140,29 @@ export function LoginCard() {
         }),
       ]);
       setRedirecting(true);
-      // Full navigation avoids mobile Safari / client router stalls after auth.
       window.setTimeout(() => {
         window.location.assign(homeUrlForLocale(locale));
       }, 300);
-      // Failsafe: if navigation doesn't happen, unlock the form again.
       window.setTimeout(() => {
         setRedirecting(false);
         setLoading(false);
       }, 6000);
     } catch (err) {
-      const raw =
-        err && typeof err === "object" && "message" in err
-          ? String((err as { message?: unknown }).message)
-          : "";
-      const isInvalidCredentials =
-        /invalid login credentials|invalid email or password/i.test(raw);
-      if (!isInvalidCredentials) {
+      const { kind, raw } = classifyLoginError(err);
+      if (kind !== "invalid_credentials") {
         devError("Login error:", err);
       }
-      if (isInvalidCredentials) {
-        setError(tLogin("invalidCredentials"));
-      } else if (/timed out|failed to fetch|network/i.test(raw)) {
-        setError(tCommon("genericError"));
+
+      if (kind === "invalid_credentials") {
+        setError(labels.invalidCredentials);
+      } else if (kind === "email_not_confirmed") {
+        setError(labels.emailNotConfirmed);
+      } else if (kind === "config") {
+        setError(labels.configMissing);
+      } else if (kind === "network" || /timed out|failed to fetch|network/i.test(raw)) {
+        setError(labels.genericError);
       } else {
-        setError(tCommon("genericError"));
+        setError(labels.genericError);
       }
       setRedirecting(false);
     } finally {
@@ -122,9 +175,9 @@ export function LoginCard() {
       <div className="mb-6 text-center sm:mb-8">
         <Logo href="/" variant="entry" className="justify-center" showWordmark={false} />
         <h1 className="mt-4 text-xl font-semibold tracking-tight text-gn-text sm:mt-6">
-          {tLogin("title")}
+          {labels.title}
         </h1>
-        <p className="mt-2 text-sm text-gn-text-secondary">{tLogin("subtitle")}</p>
+        <p className="mt-2 text-sm text-gn-text-secondary">{labels.subtitle}</p>
       </div>
 
       <form
@@ -133,12 +186,12 @@ export function LoginCard() {
         onSubmit={(e) => {
           e.preventDefault();
           if (!canSubmit) return;
-          onSubmit();
+          void onSubmit();
         }}
       >
         <div>
           <label htmlFor="login-email" className="text-sm font-medium text-gn-text">
-            {tLogin("email")}
+            {labels.email}
           </label>
           <input
             suppressHydrationWarning
@@ -146,7 +199,7 @@ export function LoginCard() {
             name="email"
             type="email"
             autoComplete="email"
-            placeholder={tLogin("emailPlaceholder")}
+            placeholder={labels.emailPlaceholder}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="mt-1.5 w-full rounded-xl border border-gn-border bg-gn-surface px-3.5 py-3 text-sm text-gn-text placeholder:text-gn-text-tertiary outline-none transition-[border-color,box-shadow] focus:border-gn-accent/60 focus:ring-2 focus:ring-gn-accent/25"
@@ -155,7 +208,7 @@ export function LoginCard() {
 
         <div>
           <label htmlFor="login-password" className="text-sm font-medium text-gn-text">
-            {tLogin("password")}
+            {labels.password}
           </label>
           <input
             suppressHydrationWarning
@@ -163,7 +216,7 @@ export function LoginCard() {
             name="password"
             type="password"
             autoComplete="current-password"
-            placeholder={tLogin("passwordPlaceholder")}
+            placeholder={labels.passwordPlaceholder}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="mt-1.5 w-full rounded-xl border border-gn-border bg-gn-surface px-3.5 py-3 text-sm text-gn-text placeholder:text-gn-text-tertiary outline-none transition-[border-color,box-shadow] focus:border-gn-accent/60 focus:ring-2 focus:ring-gn-accent/25"
@@ -173,7 +226,7 @@ export function LoginCard() {
               href="/support/account-recovery"
               className="text-xs font-medium text-gn-accent hover:text-gn-accent-hover"
             >
-              {tLanding("forgotPasswordLink")}
+              {labels.forgotPasswordLink}
             </Link>
           </div>
         </div>
@@ -195,20 +248,19 @@ export function LoginCard() {
           className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gn-accent py-3 text-sm font-semibold text-black transition-colors hover:bg-gn-accent-hover active:bg-gn-accent-pressed disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-gn-accent"
         >
           {loading ? <Spinner /> : null}
-          {loading ? tLogin("signingIn") : tLogin("submit")}
+          {loading ? labels.signingIn : labels.submit}
         </button>
       </form>
 
       <p className="mt-8 text-center text-sm text-gn-text-secondary">
-        {tLogin("noAccount")}{" "}
+        {labels.noAccount}{" "}
         <Link
           href="/signup"
           className="font-medium text-gn-accent hover:text-gn-accent-hover"
         >
-          {tLogin("signUpLink")}
+          {labels.signUpLink}
         </Link>
       </p>
     </div>
   );
 }
-

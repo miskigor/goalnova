@@ -883,6 +883,8 @@
     "submit": "Inloggen",
     "signingIn": "Bezig met inloggen…",
     "invalidCredentials": "Onjuist e-mailadres of wachtwoord. Probeer het opnieuw.",
+    "emailNotConfirmed": "Please confirm your email before signing in. Check your inbox for the confirmation link.",
+    "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
     "noAccount": "Geen account?",
     "signUpLink": "Registreren"
   },

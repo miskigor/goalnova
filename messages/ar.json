@@ -883,6 +883,8 @@
     "submit": "تسجيل الدخول",
     "signingIn": "جارٍ تسجيل الدخول…",
     "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة. حاول مرة أخرى.",
+    "emailNotConfirmed": "Please confirm your email before signing in. Check your inbox for the confirmation link.",
+    "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
     "noAccount": "ليس لديك حساب؟",
     "signUpLink": "إنشاء حساب"
   },

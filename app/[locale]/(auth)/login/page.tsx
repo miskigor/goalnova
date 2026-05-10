@@ -15,5 +15,29 @@ export default async function LoginPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <LoginCard />;
+  const tLogin = await getTranslations({ locale, namespace: "authLogin" });
+  const tCommon = await getTranslations({ locale, namespace: "authCommon" });
+  const tLanding = await getTranslations({ locale, namespace: "landing" });
+
+  const labels = {
+    title: tLogin("title"),
+    subtitle: tLogin("subtitle"),
+    email: tLogin("email"),
+    emailPlaceholder: tLogin("emailPlaceholder"),
+    password: tLogin("password"),
+    passwordPlaceholder: tLogin("passwordPlaceholder"),
+    signingIn: tLogin("signingIn"),
+    submit: tLogin("submit"),
+    invalidCredentials: tLogin("invalidCredentials"),
+    emailNotConfirmed: tLogin("emailNotConfirmed"),
+    noAccount: tLogin("noAccount"),
+    signUpLink: tLogin("signUpLink"),
+    forgotPasswordLink: tLanding("forgotPasswordLink"),
+    invalidEmail: tCommon("invalidEmail"),
+    invalidPassword: tCommon("invalidPassword"),
+    genericError: tCommon("genericError"),
+    configMissing: tLogin("configMissing"),
+  };
+
+  return <LoginCard labels={labels} />;
 }

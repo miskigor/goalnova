@@ -883,6 +883,8 @@
     "submit": "Prijava",
     "signingIn": "Prijava…",
     "invalidCredentials": "Neispravna adresa e-pošte ili lozinka. Pokušajte ponovo.",
+    "emailNotConfirmed": "Please confirm your email before signing in. Check your inbox for the confirmation link.",
+    "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
     "noAccount": "Nemate nalog?",
     "signUpLink": "Registracija"
   },

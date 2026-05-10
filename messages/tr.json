@@ -883,6 +883,8 @@
     "submit": "Giriş yap",
     "signingIn": "Giriş yapılıyor…",
     "invalidCredentials": "E-posta veya şifre hatalı. Lütfen tekrar dene.",
+    "emailNotConfirmed": "Please confirm your email before signing in. Check your inbox for the confirmation link.",
+    "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
     "noAccount": "Hesabın yok mu?",
     "signUpLink": "Kayıt ol"
   },

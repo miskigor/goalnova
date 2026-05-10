@@ -883,6 +883,8 @@
     "submit": "Log in",
     "signingIn": "Signing in…",
     "invalidCredentials": "Invalid email or password. Please try again.",
+    "emailNotConfirmed": "Please confirm your email before signing in. Check your inbox for the confirmation link.",
+    "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
     "noAccount": "No account?",
     "signUpLink": "Sign up"
   },
