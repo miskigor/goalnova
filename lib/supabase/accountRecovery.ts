@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
-import { logFullSupabaseError } from "@/lib/supabase/logError";
+import { logFullSupabaseError, supabaseErrorToUserMessage } from "@/lib/supabase/logError";
 
 export type AccountRecoveryRequestRow =
   Database["public"]["Tables"]["support_tickets"]["Row"];
@@ -20,58 +20,73 @@ export async function submitAccountRecoveryRequest(
     message: string;
   },
 ): Promise<{ id: string | null; error: string | null }> {
-  const accountEmail = normalizeEmail(input.accountEmail);
-  const contactEmail = normalizeEmail(input.contactEmail);
-  const message = input.message.trim();
-  const username = input.username.trim() ? input.username.trim() : null;
+  try {
+    const accountEmail = normalizeEmail(input.accountEmail);
+    const contactEmail = normalizeEmail(input.contactEmail);
+    const message = input.message.trim();
+    const username = input.username.trim() ? input.username.trim() : null;
 
-  const row: Database["public"]["Tables"]["support_tickets"]["Insert"] = {
-    user_id: null,
-    subject: ACCOUNT_RECOVERY_SUBJECT,
-    message,
-    category: "account_issue",
-    ticket_type: "account_recovery",
-    account_email: accountEmail,
-    contact_email: contactEmail,
-    username,
-    status: "open",
-    priority: "normal",
-  };
+    const row: Database["public"]["Tables"]["support_tickets"]["Insert"] = {
+      user_id: null,
+      subject: ACCOUNT_RECOVERY_SUBJECT,
+      message,
+      category: "account_issue",
+      ticket_type: "account_recovery",
+      account_email: accountEmail,
+      contact_email: contactEmail,
+      username,
+      status: "open",
+      priority: "normal",
+    };
 
-  const inserted = await client.from("support_tickets").insert(row).select("id").maybeSingle();
+    const inserted = await client.from("support_tickets").insert(row).select("id");
+    const insertedId = inserted.data?.[0]?.id;
 
-  if (!inserted.error && inserted.data?.id) {
-    return { id: inserted.data.id, error: null };
-  }
+    if (!inserted.error && insertedId) {
+      return { id: insertedId, error: null };
+    }
 
-  if (inserted.error) {
-    logFullSupabaseError("[account recovery] insert support_tickets", inserted.error);
-  }
+    if (inserted.error) {
+      logFullSupabaseError("[account recovery] insert support_tickets", inserted.error);
+    }
 
-  const rpcArgs = {
-    p_account_email: accountEmail,
-    p_contact_email: contactEmail,
-    p_username: username,
-    p_message: message,
-  };
+    const rpcArgs = {
+      p_account_email: accountEmail,
+      p_contact_email: contactEmail,
+      p_username: username,
+      p_message: message,
+    };
 
-  const primary = await client.rpc("pitchrusch_submit_account_recovery_ticket", rpcArgs);
-  if (!primary.error && primary.data) {
-    return { id: primary.data, error: null };
-  }
-  if (primary.error) {
-    logFullSupabaseError("[account recovery] rpc pitchrusch_submit_account_recovery_ticket", primary.error);
-  }
+    const primary = await client.rpc("pitchrusch_submit_account_recovery_ticket", rpcArgs);
+    if (!primary.error && primary.data) {
+      return { id: primary.data, error: null };
+    }
+    if (primary.error) {
+      logFullSupabaseError(
+        "[account recovery] rpc pitchrusch_submit_account_recovery_ticket",
+        primary.error,
+      );
+    }
 
-  const fallback = await client.rpc("goalnova_submit_account_recovery_ticket", rpcArgs);
-  if (fallback.error) {
-    logFullSupabaseError("[account recovery] rpc goalnova_submit_account_recovery_ticket", fallback.error);
+    const fallback = await client.rpc("goalnova_submit_account_recovery_ticket", rpcArgs);
+    if (fallback.error) {
+      logFullSupabaseError(
+        "[account recovery] rpc goalnova_submit_account_recovery_ticket",
+        fallback.error,
+      );
+      return {
+        id: null,
+        error: inserted.error?.message ?? fallback.error.message,
+      };
+    }
+    return { id: fallback.data ?? null, error: null };
+  } catch (e) {
+    logFullSupabaseError("[account recovery] submitAccountRecoveryRequest threw", e);
     return {
       id: null,
-      error: inserted.error?.message ?? fallback.error.message,
+      error: supabaseErrorToUserMessage(e),
     };
   }
-  return { id: fallback.data ?? null, error: null };
 }
 
 export async function adminListAccountRecoveryRequests(

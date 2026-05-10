@@ -26,6 +26,15 @@ function Spinner() {
   );
 }
 
+function safeMsg(t: ReturnType<typeof useTranslations>, key: string, fallback: string) {
+  try {
+    return (t as (k: string) => string)(key);
+  } catch (e) {
+    devError("[account recovery] translation", key, e);
+    return fallback;
+  }
+}
+
 export function AccountRecoveryForm() {
   const t = useTranslations("accountRecoverySupport");
   const submittingRef = useRef(false);
@@ -39,43 +48,51 @@ export function AccountRecoveryForm() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit() {
+    const failed =
+      "We couldn't send your request. Please try again in a moment.";
+    const invalidEmail = "Please enter a valid email address.";
+    const shortMsg =
+      "Please write a bit more detail (at least 10 characters).";
+
     if (done) return;
     if (submittingRef.current) return;
 
-    setError(null);
-    const a = accountEmail.trim();
-    const c = contactEmail.trim();
-    if (!a.includes("@")) {
-      setError(t("validationEmail"));
-      return;
-    }
-    if (!c.includes("@")) {
-      setError(t("validationEmail"));
-      return;
-    }
-    if (message.trim().length < 10) {
-      setError(t("validationMessageShort"));
-      return;
-    }
-
-    submittingRef.current = true;
-    setLoading(true);
     try {
+      setError(null);
+      const a = accountEmail.trim();
+      const c = contactEmail.trim();
+      if (!a.includes("@")) {
+        setError(safeMsg(t, "validationEmail", invalidEmail));
+        return;
+      }
+      if (!c.includes("@")) {
+        setError(safeMsg(t, "validationEmail", invalidEmail));
+        return;
+      }
+      if (message.trim().length < 10) {
+        setError(safeMsg(t, "validationMessageShort", shortMsg));
+        return;
+      }
+
+      submittingRef.current = true;
+      setLoading(true);
+
       const { error: submitErr } = await submitAccountRecoveryRequest(supabase, {
         accountEmail: a,
         contactEmail: c,
         username: username.trim(),
         message: message.trim(),
       });
+
       if (submitErr) {
         devError("[account recovery]", submitErr);
-        setError(t("submitFailed"));
+        setError(safeMsg(t, "submitFailed", failed));
         return;
       }
       setDone(true);
     } catch (e) {
       devError("[account recovery] unexpected", e);
-      setError(t("submitFailed"));
+      setError(safeMsg(t, "submitFailed", failed));
     } finally {
       submittingRef.current = false;
       setLoading(false);
@@ -103,7 +120,10 @@ export function AccountRecoveryForm() {
           noValidate
           onSubmit={(e) => {
             e.preventDefault();
-            void handleSubmit();
+            void handleSubmit().catch((err) => {
+              devError("[account recovery] promise rejection", err);
+              setError(safeMsg(t, "submitFailed", "We couldn't send your request. Please try again."));
+            });
           }}
         >
           <div>
