@@ -53,8 +53,8 @@ export async function submitAccountRecoveryRequest(
     const rpcArgs = {
       p_account_email: accountEmail,
       p_contact_email: contactEmail,
-      p_username: username,
       p_message: message,
+      p_username: username,
     };
 
     const primary = await client.rpc("pitchrusch_submit_account_recovery_ticket", rpcArgs);

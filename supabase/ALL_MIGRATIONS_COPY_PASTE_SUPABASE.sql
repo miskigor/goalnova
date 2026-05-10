@@ -6644,11 +6644,14 @@ alter table public.support_tickets
 create index if not exists support_tickets_ticket_type_idx
   on public.support_tickets (ticket_type);
 
+drop function if exists public.pitchrusch_submit_account_recovery_ticket(text, text, text, text);
+drop function if exists public.goalnova_submit_account_recovery_ticket(text, text, text, text);
+
 create or replace function public.goalnova_submit_account_recovery_ticket(
   p_account_email text,
   p_contact_email text,
-  p_username text default null,
-  p_message text default null
+  p_message text,
+  p_username text default null
 )
 returns uuid
 language plpgsql
@@ -6718,8 +6721,8 @@ grant execute on function public.goalnova_submit_account_recovery_ticket(text, t
 create or replace function public.pitchrusch_submit_account_recovery_ticket(
   p_account_email text,
   p_contact_email text,
-  p_username text default null,
-  p_message text default null
+  p_message text,
+  p_username text default null
 )
 returns uuid
 language sql
@@ -6729,8 +6732,8 @@ as $$
   select public.goalnova_submit_account_recovery_ticket(
     p_account_email,
     p_contact_email,
-    p_username,
-    p_message
+    p_message,
+    p_username
   );
 $$;
 
@@ -6740,6 +6743,8 @@ grant execute on function public.pitchrusch_submit_account_recovery_ticket(text,
   to anon;
 grant execute on function public.pitchrusch_submit_account_recovery_ticket(text, text, text, text)
   to authenticated;
+
+notify pgrst, 'reload schema';
 
 -- ---------------------------------------------------------------------------
 -- RLS: anon + authenticated INSERT for account_recovery only (20260510160000)

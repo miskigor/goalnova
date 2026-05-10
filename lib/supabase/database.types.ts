@@ -1167,8 +1167,8 @@ export type Database = {
         Args: {
           p_account_email: string;
           p_contact_email: string;
-          p_username?: string | null;
           p_message?: string | null;
+          p_username?: string | null;
         };
         Returns: string;
       };
@@ -1176,8 +1176,8 @@ export type Database = {
         Args: {
           p_account_email: string;
           p_contact_email: string;
-          p_username?: string | null;
           p_message?: string | null;
+          p_username?: string | null;
         };
         Returns: string;
       };
