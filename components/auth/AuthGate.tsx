@@ -39,7 +39,8 @@ function oauthReturnLikely(): boolean {
 /** Allow the login screen to render even with an active session (e.g. Google) so users can switch accounts. */
 function isLoginRoute(pathname: string | null): boolean {
   if (!pathname) return false;
-  return pathname === "/login" || pathname.endsWith("/login");
+  const normalized = pathname.replace(/\/+$/, "") || "/";
+  return normalized === "/login" || normalized.endsWith("/login");
 }
 
 function InlineSpinner() {
@@ -84,7 +85,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   // Last-resort unblock if auth init hangs on throttled mobile tabs.
   // Must stay ≥ OAuth PKCE `getSession` budget when `?code=` is present (see init timeout).
   useEffect(() => {
-    const ms = oauthReturnLikely() ? 22_000 : 4500;
+    const ms = oauthReturnLikely() ? 22_000 : 12_000;
     const id = window.setTimeout(() => {
       setChecking((c) => (c ? false : c));
     }, ms);
@@ -95,7 +96,8 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     let mounted = true;
 
     async function init() {
-      const sessionTimeoutMs = oauthReturnLikely() ? 20_000 : 2500;
+      // Slow mobile/WLAN auth init must not fall through to getUser() too early (felt “broken”).
+      const sessionTimeoutMs = oauthReturnLikely() ? 20_000 : 10_000;
       try {
         const result = await Promise.race([
           supabase.auth.getSession(),

@@ -19,7 +19,6 @@ function homeUrlForLocale(locale: string): string {
 type FieldError = string | null;
 
 export type LoginFormLabels = {
-  checkingSession: string;
   title: string;
   subtitle: string;
   email: string;
@@ -206,8 +205,8 @@ type Props = { labels: LoginFormLabels };
 export function LoginCard({ labels }: Props) {
   const locale = useLocale();
 
-  /** `undefined` = still resolving Supabase session (avoid flashing email form then hiding). */
-  const [sessionUser, setSessionUser] = useState<User | null | undefined>(undefined);
+  /** `null` until first auth snapshot (show email/password form immediately like before — no blocking spinner). */
+  const [sessionUser, setSessionUser] = useState<User | null>(null);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -256,15 +255,6 @@ export function LoginCard({ labels }: Props) {
   const canSubmit = useMemo(() => {
     return email.trim().length > 0 && password.length > 0 && !loading && !redirecting;
   }, [email, password, loading, redirecting]);
-
-  if (sessionUser === undefined) {
-    return (
-      <div className="mx-auto flex min-h-[240px] w-full max-w-sm flex-col items-center justify-center rounded-2xl border border-gn-border-subtle bg-gn-surface/80 px-6 py-16 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm">
-        <Spinner />
-        <p className="mt-4 text-sm text-gn-text-secondary">{labels.checkingSession}</p>
-      </div>
-    );
-  }
 
   if (sessionUser) {
     const emailLabel = sessionUser.email?.trim() || "—";

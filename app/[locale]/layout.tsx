@@ -96,8 +96,7 @@ async function LocaleIntlProvider({
   locale: AppLocale;
   children: React.ReactNode;
 }) {
-  const merged = await getMessages();
-  const messages = JSON.parse(JSON.stringify(merged)) as typeof merged;
+  const messages = await getMessages();
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       {children}
@@ -119,7 +118,6 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html
       lang={locale}
-      translate="no"
       dir={dir}
       style={{ backgroundColor: "#000" }}
       data-scroll-behavior="smooth"

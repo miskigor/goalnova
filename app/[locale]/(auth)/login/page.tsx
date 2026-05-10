@@ -20,7 +20,6 @@ export default async function LoginPage({ params }: Props) {
   const tLanding = await getTranslations({ locale, namespace: "landing" });
 
   const labels = {
-    checkingSession: tCommon("loading"),
     title: tLogin("title"),
     subtitle: tLogin("subtitle"),
     email: tLogin("email"),
