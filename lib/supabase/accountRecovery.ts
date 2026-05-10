@@ -19,6 +19,67 @@ function rpcTicketId(data: unknown): string | null {
   return null;
 }
 
+type ApiOutcome =
+  | { kind: "success"; id: string }
+  | { kind: "failure"; error: string }
+  | { kind: "skip" };
+
+/**
+ * Same-origin API route uses service role (bypasses missing anon RPC / RLS).
+ * Returns skip when service role is not configured (503) or fetch failed — caller falls back to anon Supabase.
+ */
+async function submitViaServiceRoleApi(input: {
+  accountEmail: string;
+  contactEmail: string;
+  username: string | null;
+  message: string;
+}): Promise<ApiOutcome> {
+  try {
+    const res = await fetch("/api/support/account-recovery", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        accountEmail: input.accountEmail,
+        contactEmail: input.contactEmail,
+        username: input.username ?? "",
+        message: input.message,
+      }),
+    });
+
+    let json: {
+      ok?: boolean;
+      id?: string;
+      error?: string;
+      reason?: string;
+    } = {};
+
+    try {
+      json = (await res.json()) as typeof json;
+    } catch {
+      return res.status === 503 ? { kind: "skip" } : { kind: "failure", error: "Request failed. Please try again." };
+    }
+
+    if (res.status === 503 && json.reason === "service_role_unconfigured") {
+      return { kind: "skip" };
+    }
+
+    if (res.ok && typeof json.id === "string" && json.id.length > 0) {
+      return { kind: "success", id: json.id };
+    }
+
+    const err =
+      typeof json.error === "string" && json.error.trim().length > 0
+        ? json.error.trim()
+        : `Request failed (${res.status}).`;
+    return { kind: "failure", error: err };
+  } catch {
+    return { kind: "skip" };
+  }
+}
+
 export async function submitAccountRecoveryRequest(
   client: SupabaseClient<Database>,
   input: {
@@ -33,6 +94,19 @@ export async function submitAccountRecoveryRequest(
     const contactEmail = normalizeEmail(input.contactEmail);
     const message = input.message.trim();
     const username = input.username.trim() ? input.username.trim() : null;
+
+    const apiFirst = await submitViaServiceRoleApi({
+      accountEmail,
+      contactEmail,
+      username,
+      message,
+    });
+    if (apiFirst.kind === "success") {
+      return { id: apiFirst.id, error: null };
+    }
+    if (apiFirst.kind === "failure") {
+      return { id: null, error: apiFirst.error };
+    }
 
     const rpcArgs = {
       p_account_email: accountEmail,

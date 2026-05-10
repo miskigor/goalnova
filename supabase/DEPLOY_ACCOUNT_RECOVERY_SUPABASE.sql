@@ -2,6 +2,10 @@
 -- ACCOUNT RECOVERY – jednokratno pokreni na Supabase projektu koji koristi web
 -- (isti projekt kao NEXT_PUBLIC_SUPABASE_URL u Netlify / .env).
 --
+-- Alternativa za anon RPC/RLS: Next.js API koristi SUPABASE_SERVICE_ROLE_KEY na
+-- serveru (Netlify env) i umeće red bez ovih funkcija — ali tablica mora imati
+-- kolone ticket_type, account_email, contact_email, username (ovaj skript ih dodaje).
+--
 -- Simptomi bez ovoga:
 --   • Could not find the function ... pitchrusch_submit_account_recovery_ticket ...
 --   • Could not find the function ... goalnova_submit_account_recovery_ticket ...
