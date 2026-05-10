@@ -35,6 +35,21 @@ function safeMsg(t: ReturnType<typeof useTranslations>, key: string, fallback: s
   }
 }
 
+/** Ensure we never pass non-strings into React children (avoids error boundary crash). */
+function sanitizeDetail(raw: unknown): string {
+  if (raw == null) return "";
+  if (typeof raw === "string") {
+    const s = raw.trim();
+    return s.length > 2500 ? `${s.slice(0, 2500)}…` : s;
+  }
+  try {
+    const j = JSON.stringify(raw);
+    return j.length > 2500 ? `${j.slice(0, 2500)}…` : j;
+  } catch {
+    return String(raw).slice(0, 2500);
+  }
+}
+
 export function AccountRecoveryForm() {
   const t = useTranslations("accountRecoverySupport");
   const submittingRef = useRef(false);
@@ -46,6 +61,7 @@ export function AccountRecoveryForm() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
 
   async function handleSubmit() {
     const failed =
@@ -59,6 +75,7 @@ export function AccountRecoveryForm() {
 
     try {
       setError(null);
+      setErrorDetail(null);
       const a = accountEmail.trim();
       const c = contactEmail.trim();
       if (!a.includes("@")) {
@@ -86,15 +103,15 @@ export function AccountRecoveryForm() {
 
       if (submitErr) {
         devError("[account recovery]", submitErr);
-        setError(
-          `${safeMsg(t, "submitFailed", failed)}\n\n${submitErr}`.trim(),
-        );
+        setError(safeMsg(t, "submitFailed", failed));
+        setErrorDetail(sanitizeDetail(submitErr));
         return;
       }
       setDone(true);
     } catch (e) {
       devError("[account recovery] unexpected", e);
       setError(safeMsg(t, "submitFailed", failed));
+      setErrorDetail(sanitizeDetail(e));
     } finally {
       submittingRef.current = false;
       setLoading(false);
@@ -125,6 +142,7 @@ export function AccountRecoveryForm() {
             void handleSubmit().catch((err) => {
               devError("[account recovery] promise rejection", err);
               setError(safeMsg(t, "submitFailed", "We couldn't send your request. Please try again."));
+              setErrorDetail(sanitizeDetail(err));
             });
           }}
         >
@@ -188,9 +206,14 @@ export function AccountRecoveryForm() {
             />
           </div>
           {error ? (
-            <p role="alert" className="whitespace-pre-wrap break-words text-sm text-red-300">
-              {error}
-            </p>
+            <div role="alert" className="space-y-2">
+              <p className="text-sm text-red-300">{error}</p>
+              {errorDetail ? (
+                <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-red-500/25 bg-red-950/35 p-2 font-mono text-[11px] leading-snug text-red-100/85">
+                  {errorDetail}
+                </pre>
+              ) : null}
+            </div>
           ) : null}
           <button
             type="submit"

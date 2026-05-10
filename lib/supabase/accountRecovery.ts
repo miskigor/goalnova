@@ -77,11 +77,12 @@ export async function submitAccountRecoveryRequest(
       const combined = [
         inserted.error?.message,
         primary.error?.message,
-        fallback.error.message,
+        fallback.error?.message,
       ]
-        .filter((s): s is string => Boolean(s && String(s).trim()))
+        .map((s) => (s == null ? "" : String(s).trim()))
+        .filter((s) => s.length > 0)
         .join(" — ");
-      return { id: null, error: combined || fallback.error.message };
+      return { id: null, error: combined || String(fallback.error.message ?? "Request failed.") };
     }
     return { id: fallback.data ?? null, error: null };
   } catch (e) {
