@@ -554,7 +554,8 @@
     "admin": "Admin",
     "scoutDashboard": "Scout dashboard",
     "adminScoutVerifications": "Verifikacije skauta",
-    "adminPanel": "Admin"
+    "adminPanel": "Admin",
+    "adminUnreadShort": "{count, plural, one {# poruka} few {# poruke} other {# poruka}}"
   },
   "music": {
     "addMusic": "Dodaj muziku",
@@ -1662,6 +1663,7 @@
   },
   "homeFeed": {
     "pageTitle": "Otkrij",
+    "adminSupportInboxHint": "{count, plural, one {Imaš 1 novu poruku u podršci — otvori Admin.} few {Imaš # nove poruke u podršci — otvori Admin.} other {Imaš # novih poruka u podršci — otvori Admin.}}",
     "exploreCta": "Istraži igrače",
     "uploadVideoCta": "Uploadaj video",
     "uploadVideoCtaAria": "Uploadaj video",

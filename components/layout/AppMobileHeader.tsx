@@ -5,6 +5,8 @@ import { Logo } from "@/components/brand/Logo";
 import { NavUserMenu } from "@/components/layout/NavUserMenu";
 import { useNavSession } from "@/components/layout/useNavSession";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
+import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadContext";
+import { UnreadNotificationBadge } from "@/components/notifications/UnreadNotificationBadge";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { InlineLogoutButton } from "@/components/auth/InlineLogoutButton";
@@ -18,6 +20,7 @@ import { NavIcon } from "@/components/icons/NavIcons";
 export function AppMobileHeader() {
   const { authed, user } = useNavSession();
   const { loaded: adminLoaded, isAdmin } = useAdminAccess();
+  const adminSupportUnread = useAdminSupportUnread();
   const tNav = useTranslations("nav");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -71,10 +74,22 @@ export function AppMobileHeader() {
             {authed && user && adminLoaded && isAdmin ? (
               <Link
                 href="/admin"
-                className="inline-flex min-h-9 items-center justify-center rounded-lg border border-gn-accent/40 bg-gn-accent/10 px-2.5 text-xs font-semibold text-gn-accent active:scale-[0.98]"
-                aria-label={tNav("adminPanel")}
+                className="relative inline-flex min-h-9 min-w-0 max-w-[8.5rem] flex-col items-center justify-center gap-0.5 rounded-lg border border-gn-accent/40 bg-gn-accent/10 px-2.5 py-1 text-center text-xs font-semibold leading-tight text-gn-accent active:scale-[0.98] sm:max-w-none"
+                aria-label={
+                  adminSupportUnread > 0
+                    ? `${tNav("adminPanel")}, ${adminSupportUnread} unread`
+                    : tNav("adminPanel")
+                }
               >
-                {tNav("admin")}
+                <span className="relative inline-flex shrink-0 items-center justify-center">
+                  <UnreadNotificationBadge count={adminSupportUnread} variant="navCompact" />
+                  <span>{tNav("admin")}</span>
+                </span>
+                {adminSupportUnread > 0 ? (
+                  <span className="max-w-full truncate text-[9px] font-medium normal-case text-gn-accent/95">
+                    {tNav("adminUnreadShort", { count: adminSupportUnread })}
+                  </span>
+                ) : null}
               </Link>
             ) : null}
             {authed && user ? (

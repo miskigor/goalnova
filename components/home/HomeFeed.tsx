@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadContext";
 import { supabase } from "@/lib/supabase/client";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
@@ -206,6 +207,7 @@ function FeedSpinner() {
 export function HomeFeed() {
   const t = useTranslations("home");
   const tFeed = useTranslations("homeFeed");
+  const adminSupportUnread = useAdminSupportUnread();
   const { loaded: scoutLoaded } = useScoutVerification();
 
   const [items, setItems] = useState<AugmentedHomeFeedItem[]>([]);
@@ -453,6 +455,14 @@ export function HomeFeed() {
         <p className="text-xs text-gn-text-secondary">
           {t("description")}
         </p>
+        {adminSupportUnread > 0 ? (
+          <Link
+            href="/admin"
+            className="mt-3 inline-flex w-full max-w-md rounded-xl border border-gn-accent/35 bg-gn-accent/10 px-3 py-2.5 text-left text-sm font-medium leading-snug text-gn-accent transition hover:bg-gn-accent/18"
+          >
+            {tFeed("adminSupportInboxHint", { count: adminSupportUnread })}
+          </Link>
+        ) : null}
       </header>
 
       <section

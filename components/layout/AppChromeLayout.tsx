@@ -1,6 +1,7 @@
 "use client";
 
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
+import { AdminSupportUnreadProvider } from "@/components/layout/AdminSupportUnreadContext";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppMobileHeader } from "@/components/layout/AppMobileHeader";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
@@ -11,7 +12,8 @@ import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
 export function AppChromeLayout({ children }: { children: React.ReactNode }) {
   return (
     <FeedbackProvider>
-      <div className="relative flex min-h-dvh min-w-0 w-full max-w-full bg-gn-bg text-gn-text">
+      <AdminSupportUnreadProvider>
+        <div className="relative flex min-h-dvh min-w-0 w-full max-w-full bg-gn-bg text-gn-text">
         <AppSidebar />
         {/* No overflow-x on this column or <main>: overflow clip on ancestors breaks WebKit’s
             fixed positioning for the immersive home feed (rail/icons shift off-screen). */}
@@ -33,7 +35,8 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
           </main>
         </div>
         <AppMobileBottomNav />
-      </div>
+        </div>
+      </AdminSupportUnreadProvider>
     </FeedbackProvider>
   );
 }

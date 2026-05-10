@@ -17,7 +17,7 @@ import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { UnreadNotificationBadge } from "@/components/notifications/UnreadNotificationBadge";
 import { supabase } from "@/lib/supabase/client";
-import { fetchAdminUnreadSupportCount } from "@/lib/supabase/adminSystem";
+import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadContext";
 import {
   SIDEBAR_PLAYER_UPLOAD_ACTIVE_CLASS,
   SIDEBAR_PLAYER_UPLOAD_CLASS,
@@ -42,43 +42,10 @@ export function AppSidebar() {
   const uploadEligibility = useVideoUploadEligibility();
   const { isApprovedScout } = useScoutVerification();
   const { loaded: adminLoaded, isAdmin } = useAdminAccess();
-  const [adminSupportUnread, setAdminSupportUnread] = useState(0);
+  const adminSupportUnread = useAdminSupportUnread();
   const [userSupportUnread, setUserSupportUnread] = useState(0);
-  const supportUnreadChannelRef = useState(
-    () => `admin-support-unread-sidebar-${Math.random().toString(36).slice(2)}`,
-  )[0];
   const showPlayerUpload = uploadEligibility === "player";
   const uploadActive = navItemActive(pathname, "/upload");
-
-  useEffect(() => {
-    if (!adminLoaded || !isAdmin) {
-      setAdminSupportUnread(0);
-      return;
-    }
-    let cancelled = false;
-    const refresh = async () => {
-      const { count } = await fetchAdminUnreadSupportCount();
-      if (!cancelled) setAdminSupportUnread(count);
-    };
-    void refresh();
-    const ch = supabase
-      .channel(supportUnreadChannelRef)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "support_ticket_messages" },
-        () => void refresh(),
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "notifications" },
-        () => void refresh(),
-      )
-      .subscribe();
-    return () => {
-      cancelled = true;
-      void supabase.removeChannel(ch);
-    };
-  }, [adminLoaded, isAdmin, supportUnreadChannelRef]);
 
   useEffect(() => {
     if (!authed || !user || isAdmin) {

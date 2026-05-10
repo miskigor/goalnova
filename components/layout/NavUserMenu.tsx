@@ -19,7 +19,7 @@ import {
   type AvatarUrlUpdatedDetail,
 } from "@/lib/avatar/avatarClientEvents";
 import { supabase } from "@/lib/supabase/client";
-import { fetchAdminUnreadSupportCount } from "@/lib/supabase/adminSystem";
+import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadContext";
 import { countMyUnreadSupportReplies } from "@/lib/supabase/supportTickets";
 
 function displayNameFromUser(user: User): string {
@@ -56,14 +56,8 @@ export function NavUserMenu({
   const pathname = usePathname();
   const uploadEligibility = useVideoUploadEligibility();
   const { loaded: adminLoaded, isAdmin } = useAdminAccess();
-  const [adminSupportUnread, setAdminSupportUnread] = useState(0);
+  const adminSupportUnread = useAdminSupportUnread();
   const [userSupportUnread, setUserSupportUnread] = useState(0);
-  const supportUnreadChannelRef = useRef(
-    `admin-support-unread-user-menu-${Math.random().toString(36).slice(2)}`,
-  );
-  const userSupportUnreadChannelRef = useRef(
-    `user-support-unread-menu-${Math.random().toString(36).slice(2)}`,
-  );
   const { showError } = useAppFeedback();
 
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -91,36 +85,6 @@ export function NavUserMenu({
   }, [user.id, pathname]);
 
   useEffect(() => {
-    if (!adminLoaded || !isAdmin) {
-      setAdminSupportUnread(0);
-      return;
-    }
-    let cancelled = false;
-    const refresh = async () => {
-      const { count } = await fetchAdminUnreadSupportCount();
-      if (!cancelled) setAdminSupportUnread(count);
-    };
-    void refresh();
-    const ch = supabase
-      .channel(supportUnreadChannelRef.current)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "support_ticket_messages" },
-        () => void refresh(),
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "notifications" },
-        () => void refresh(),
-      )
-      .subscribe();
-    return () => {
-      cancelled = true;
-      void supabase.removeChannel(ch);
-    };
-  }, [adminLoaded, isAdmin]);
-
-  useEffect(() => {
     if (!user?.id || isAdmin) {
       setUserSupportUnread(0);
       return;
@@ -132,7 +96,7 @@ export function NavUserMenu({
     };
     void refresh();
     const ch = supabase
-      .channel(userSupportUnreadChannelRef.current)
+      .channel(`user-support-unread-menu-${user.id}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "support_ticket_messages" },

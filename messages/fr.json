@@ -554,7 +554,8 @@
     "admin": "Admin",
     "scoutDashboard": "Scout dashboard",
     "adminScoutVerifications": "Scout verifications",
-    "adminPanel": "Admin"
+    "adminPanel": "Admin",
+    "adminUnreadShort": "{count, plural, one {# message} other {# messages}}"
   },
   "music": {
     "addMusic": "Ajouter de la musique",
@@ -1662,6 +1663,7 @@
   },
   "homeFeed": {
     "pageTitle": "Discover",
+    "adminSupportInboxHint": "{count, plural, one {You have 1 new support notification — open Admin to reply.} other {You have # new support notifications — open Admin to reply.}}",
     "exploreCta": "Explore Players",
     "uploadVideoCta": "Upload Video",
     "uploadVideoCtaAria": "Upload a video",
