@@ -85,7 +85,11 @@ export const supabase: SupabaseClient<Database> = createClient<Database>(
       /** Default browser storage is localStorage — survives full-page redirects reliably (session-only storage broke some mobile logins). */
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: false,
+      /**
+       * Required for OAuth (e.g. Google): PKCE redirect lands with `?code=` (or hash tokens).
+       * Without this, `getSession()` stays empty and the app briefly treats the user as logged out.
+       */
+      detectSessionInUrl: true,
       lock: inProcessAuthLock,
     },
   },

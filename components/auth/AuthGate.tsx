@@ -25,6 +25,17 @@ function isInvalidRefreshTokenError(err: unknown): boolean {
   return lower.includes("invalid refresh token") || lower.includes("refresh token not found");
 }
 
+/** OAuth redirect (PKCE `code` or legacy implicit hash tokens) — session exchange can outpace a short `getSession` timeout. */
+function oauthReturnLikely(): boolean {
+  if (typeof window === "undefined") return false;
+  const { search, hash } = window.location;
+  return (
+    /(?:^|[?&])code=/.test(search) ||
+    /(^|[#&])access_token=/.test(hash) ||
+    /(^|[#&])refresh_token=/.test(hash)
+  );
+}
+
 function InlineSpinner() {
   return (
     <svg
@@ -63,10 +74,12 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const didRedirectRef = useRef(false);
 
   // Last-resort unblock if auth init hangs on throttled mobile tabs.
+  // Must stay ≥ OAuth PKCE `getSession` budget when `?code=` is present (see init timeout).
   useEffect(() => {
+    const ms = oauthReturnLikely() ? 22_000 : 4500;
     const id = window.setTimeout(() => {
       setChecking((c) => (c ? false : c));
-    }, 4500);
+    }, ms);
     return () => window.clearTimeout(id);
   }, []);
 
@@ -74,7 +87,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     let mounted = true;
 
     async function init() {
-      const sessionTimeoutMs = 2500;
+      const sessionTimeoutMs = oauthReturnLikely() ? 20_000 : 2500;
       try {
         const result = await Promise.race([
           supabase.auth.getSession(),

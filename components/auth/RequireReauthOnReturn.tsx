@@ -5,7 +5,18 @@ import { useRouter } from "@/i18n/navigation";
 import { supabase } from "@/lib/supabase/client";
 
 const ARM_AFTER_MS = 4000;
-const MIN_HIDDEN_MS_FOR_REAUTH = 12000;
+/** OAuth (Google etc.) often keeps the tab in background >12s; avoid nuking the fresh session on return. */
+const MIN_HIDDEN_MS_FOR_REAUTH = 120_000;
+
+function hasOAuthCallbackInUrl(): boolean {
+  if (typeof window === "undefined") return false;
+  const { search, hash } = window.location;
+  return (
+    /(?:^|[?&])code=/.test(search) ||
+    /(?:^|[?&])error=/.test(search) ||
+    /(^|[#&])access_token=/.test(hash)
+  );
+}
 
 export function RequireReauthOnReturn() {
   const router = useRouter();
@@ -33,6 +44,7 @@ export function RequireReauthOnReturn() {
       hiddenAtRef.current = null;
 
       if (!hiddenAt) return;
+      if (hasOAuthCallbackInUrl()) return;
       const armedAt = armedAtRef.current;
       if (!armedAt || Date.now() - armedAt < ARM_AFTER_MS) return;
       const elapsedMs = Date.now() - hiddenAt;
