@@ -74,10 +74,14 @@ export async function submitAccountRecoveryRequest(
         "[account recovery] rpc goalnova_submit_account_recovery_ticket",
         fallback.error,
       );
-      return {
-        id: null,
-        error: inserted.error?.message ?? fallback.error.message,
-      };
+      const combined = [
+        inserted.error?.message,
+        primary.error?.message,
+        fallback.error.message,
+      ]
+        .filter((s): s is string => Boolean(s && String(s).trim()))
+        .join(" — ");
+      return { id: null, error: combined || fallback.error.message };
     }
     return { id: fallback.data ?? null, error: null };
   } catch (e) {

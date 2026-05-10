@@ -86,7 +86,9 @@ export function AccountRecoveryForm() {
 
       if (submitErr) {
         devError("[account recovery]", submitErr);
-        setError(safeMsg(t, "submitFailed", failed));
+        setError(
+          `${safeMsg(t, "submitFailed", failed)}\n\n${submitErr}`.trim(),
+        );
         return;
       }
       setDone(true);
@@ -186,7 +188,7 @@ export function AccountRecoveryForm() {
             />
           </div>
           {error ? (
-            <p role="alert" className="text-sm text-red-300">
+            <p role="alert" className="whitespace-pre-wrap break-words text-sm text-red-300">
               {error}
             </p>
           ) : null}
