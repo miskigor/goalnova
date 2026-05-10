@@ -13,6 +13,7 @@ import { supabase } from "@/lib/supabase/client";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
   fetchHomeFeedData,
+  HOME_FEED_PAGE_SIZE,
   type AugmentedHomeFeedItem,
 } from "@/lib/supabase/homeFeed";
 import { FeedItemCard } from "@/components/home/FeedItemCard";
@@ -50,6 +51,7 @@ const FEED_SCROLLPORT =
 /** Card fills its snap `li`; desktop keeps a subtle framed tile. */
 const FEED_SLIDE =
   "h-full min-h-0 min-w-0 w-full max-w-full overflow-visible rounded-none border-0 bg-black " +
+  "max-lg:min-h-[100dvh] max-lg:h-[100dvh] " +
   "lg:h-[100cqh] lg:max-h-[100cqh] lg:overflow-hidden lg:rounded-2xl lg:border lg:border-white/[0.06]";
 
 type MyVideosStatus =
@@ -122,12 +124,16 @@ function HomeFeedSnapList({
 function FeedScrollWithUserAudioActivation({
   className,
   children,
+  onNearEnd,
 }: {
   className: string;
   children: React.ReactNode;
+  /** Fires when the user scrolls within ~65% viewport height of the list bottom (throttled). */
+  onNearEnd?: () => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { notifyFeedUserActivation } = useHomeFeedSound();
+  const lastNearEndAtRef = useRef(0);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -146,6 +152,23 @@ function FeedScrollWithUserAudioActivation({
       el.removeEventListener("scroll", unlock);
     };
   }, [notifyFeedUserActivation]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || !onNearEnd) return;
+    const onScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      if (clientHeight <= 0 || scrollHeight <= 0) return;
+      const distFromBottom = scrollHeight - scrollTop - clientHeight;
+      if (distFromBottom > clientHeight * 0.65) return;
+      const now = Date.now();
+      if (now - lastNearEndAtRef.current < 650) return;
+      lastNearEndAtRef.current = now;
+      onNearEnd();
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [onNearEnd]);
 
   return (
     <div {...feedScrollRootProps} ref={scrollRef} className={className}>
@@ -189,9 +212,15 @@ export function HomeFeed() {
   const [loading, setLoading] = useState(true);
   const [feedLoadFailed, setFeedLoadFailed] = useState(false);
   const [myVideos, setMyVideos] = useState<MyVideosStatus>({ state: "loading" });
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const loadMoreInFlightRef = useRef(false);
 
-  const loadDefaultFeed = useCallback(async () => {
-    const { items: next, error: err } = await fetchHomeFeedData(supabase);
+  const loadInitialFeed = useCallback(async () => {
+    const { items: next, error: err } = await fetchHomeFeedData(supabase, {
+      limit: HOME_FEED_PAGE_SIZE,
+      offset: 0,
+    });
     if (err) {
       logFullSupabaseError(
         "[PitchRusch home feed] default feed failed",
@@ -199,9 +228,11 @@ export function HomeFeed() {
       );
       setFeedLoadFailed(true);
       setItems([]);
+      setHasMore(false);
     } else {
       setFeedLoadFailed(false);
-      setItems(next);
+      setItems(next as AugmentedHomeFeedItem[]);
+      setHasMore(next.length >= HOME_FEED_PAGE_SIZE);
     }
   }, []);
 
@@ -211,16 +242,74 @@ export function HomeFeed() {
     }
     setLoading(true);
     setFeedLoadFailed(false);
+    loadMoreInFlightRef.current = false;
     try {
-      await loadDefaultFeed();
+      await loadInitialFeed();
     } catch (e) {
       logFullSupabaseError("[PitchRusch home feed] loadFeed unexpected error", e);
       setFeedLoadFailed(true);
       setItems([]);
+      setHasMore(false);
     } finally {
       setLoading(false);
     }
-  }, [loadDefaultFeed, scoutLoaded]);
+  }, [loadInitialFeed, scoutLoaded]);
+
+  const handleLoadMore = useCallback(async () => {
+    if (
+      loadMoreInFlightRef.current ||
+      loadingMore ||
+      loading ||
+      feedLoadFailed ||
+      !hasMore
+    ) {
+      return;
+    }
+    loadMoreInFlightRef.current = true;
+    setLoadingMore(true);
+    const offset = items.length;
+    try {
+      const { items: batch, error: err } = await fetchHomeFeedData(supabase, {
+        limit: HOME_FEED_PAGE_SIZE,
+        offset,
+      });
+      if (err) {
+        logFullSupabaseError(
+          "[PitchRusch home feed] load more failed",
+          new Error(err),
+        );
+        return;
+      }
+      if (batch.length < HOME_FEED_PAGE_SIZE) {
+        setHasMore(false);
+      }
+      setItems((prev) => {
+        const seen = new Set(
+          prev.map((i) => i.video.id).filter(Boolean) as string[],
+        );
+        const merged = [...prev];
+        for (const it of batch) {
+          const id = it.video.id;
+          if (id && !seen.has(id)) {
+            seen.add(id);
+            merged.push(it as AugmentedHomeFeedItem);
+          }
+        }
+        return merged;
+      });
+    } catch (e) {
+      logFullSupabaseError("[PitchRusch home feed] load more unexpected", e);
+    } finally {
+      setLoadingMore(false);
+      loadMoreInFlightRef.current = false;
+    }
+  }, [
+    feedLoadFailed,
+    hasMore,
+    items.length,
+    loading,
+    loadingMore,
+  ]);
 
   const loadFeedRef = useRef(loadFeed);
   loadFeedRef.current = loadFeed;
@@ -331,6 +420,7 @@ export function HomeFeed() {
         <>
           <FeedScrollWithUserAudioActivation
             className={`${FEED_BLEED} ${FEED_SCROLLPORT}`}
+            onNearEnd={hasMore ? handleLoadMore : undefined}
           >
             <HomeFeedSnapList
               items={items}

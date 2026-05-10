@@ -1616,6 +1616,8 @@
     "emptyFirstVideo": "No football highlights yet",
     "loadingFeed": "Loading highlights…",
     "loadingMore": "Loading more…",
+    "tapToPlay": "Tap to play",
+    "videoBufferingAria": "Loading video",
     "errorTitle": "Could not load highlights",
     "errorBody": "Something went wrong. Please try again.",
     "retry": "Try again",
@@ -1795,12 +1797,12 @@
   "payment": {
     "successTitle": "Zahlung erfolgreich",
     "successBody": "Zahlung erfolgreich. Dein Abo wird aktiviert.",
-    "cancelTitle": "Zahlung abgebrochen",
-    "cancelBody": "Die Zahlung wurde abgebrochen. Du kannst es jederzeit erneut versuchen.",
     "goToDashboard": "Zum Dashboard",
     "activationLoading": "Dein Abo wird aktiviert…",
     "activationDone": "Abo erfolgreich aktiviert.",
     "activationFailed": "Aktivierung fehlgeschlagen. Bitte Support kontaktieren.",
-    "activationMissingSession": "Checkout-Session-ID fehlt. Bitte Support kontaktieren."
+    "activationMissingSession": "Checkout-Session-ID fehlt. Bitte Support kontaktieren.",
+    "cancelTitle": "Zahlung abgebrochen",
+    "cancelBody": "Die Zahlung wurde abgebrochen. Du kannst es jederzeit erneut versuchen."
   }
 }

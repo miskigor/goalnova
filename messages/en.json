@@ -1616,6 +1616,8 @@
     "emptyFirstVideo": "No football highlights yet",
     "loadingFeed": "Loading highlights…",
     "loadingMore": "Loading more…",
+    "tapToPlay": "Tap to play",
+    "videoBufferingAria": "Loading video",
     "errorTitle": "Could not load highlights",
     "errorBody": "Something went wrong. Please try again.",
     "retry": "Try again",

@@ -42,8 +42,11 @@ export type AugmentedHomeFeedItem = HomeFeedItem & {
   scoutMetrics?: ScoutFeedMetrics;
 };
 
-/** Cap rows from `videos` — avoids downloading the full table on home (mobile cold start). */
-export const HOME_FEED_VIDEO_QUERY_LIMIT = 40;
+/**
+ * Page size for `/home` feed — small first batch for fast initial load; use `offset` in
+ * `fetchHomeFeedData` for additional pages (see `HomeFeed` infinite scroll).
+ */
+export const HOME_FEED_PAGE_SIZE = 12;
 
 /** Batch-load `public.users.avatar_url` for feed cards. */
 export async function fetchUserAvatarUrlsByUserIds(
@@ -127,14 +130,25 @@ function normalizeHomeFeedVideoRows(
   });
 }
 
+export type FetchHomeFeedOptions = {
+  /** Defaults to {@link HOME_FEED_PAGE_SIZE}. */
+  limit?: number;
+  /** Row offset for pagination (ordered by `created_at` desc). */
+  offset?: number;
+};
+
 /**
- * Loads global highlight feed: all videos, player profiles, and optional challenges.
+ * Loads global highlight feed: videos, player profiles, and optional challenges.
  * Prefers videos+challenge embed with full challenge columns; retries with fewer columns on
  * older DBs (no `slug`, no structured reward columns), then falls back to separate queries.
  */
 export async function fetchHomeFeedData(
   supabase: SupabaseClient<Database>,
+  options?: FetchHomeFeedOptions,
 ): Promise<{ items: HomeFeedItem[]; error: string | null }> {
+  const limit = options?.limit ?? HOME_FEED_PAGE_SIZE;
+  const offset = Math.max(0, options?.offset ?? 0);
+  const rangeEnd = offset + Math.max(1, limit) - 1;
   let rawRows: Record<string, unknown>[] = [];
   let usedEmbed = false;
   let lastEmbedError: unknown | null = null;
@@ -151,7 +165,7 @@ export async function fetchHomeFeedData(
         "video_url.not.is.null,processed_video_url.not.is.null,source_video_url.not.is.null",
       )
       .order("created_at", { ascending: false })
-      .limit(HOME_FEED_VIDEO_QUERY_LIMIT);
+      .range(offset, rangeEnd);
 
     if (!embedError) {
       usedEmbed = true;
@@ -179,7 +193,7 @@ export async function fetchHomeFeedData(
         "video_url.not.is.null,processed_video_url.not.is.null,source_video_url.not.is.null",
       )
       .order("created_at", { ascending: false })
-      .limit(HOME_FEED_VIDEO_QUERY_LIMIT);
+      .range(offset, rangeEnd);
 
     if (videosError) {
       logFullSupabaseError("[PitchRusch home feed] videos select error", videosError);

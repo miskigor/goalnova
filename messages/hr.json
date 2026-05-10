@@ -1616,6 +1616,8 @@
     "emptyFirstVideo": "Započni uploadom svog prvog videa",
     "loadingFeed": "Učitavanje highlighta…",
     "loadingMore": "Učitavanje još…",
+    "tapToPlay": "Dodirni za reprodukciju",
+    "videoBufferingAria": "Učitavanje videa",
     "errorTitle": "Nije moguće učitati highlighte",
     "errorBody": "Nešto je pošlo po krivu. Pokušaj ponovno.",
     "retry": "Pokušaj ponovno",
@@ -1795,12 +1797,12 @@
   "payment": {
     "successTitle": "Plaćanje uspješno",
     "successBody": "Plaćanje je uspješno. Tvoja pretplata se aktivira.",
-    "cancelTitle": "Plaćanje otkazano",
-    "cancelBody": "Plaćanje je otkazano. Možeš pokušati ponovno bilo kada.",
     "goToDashboard": "Idi na nadzornu ploču",
     "activationLoading": "Aktiviram tvoju pretplatu…",
     "activationDone": "Pretplata je uspješno aktivirana.",
     "activationFailed": "Aktivacija pretplate nije uspjela. Kontaktiraj podršku.",
-    "activationMissingSession": "Nedostaje checkout session ID. Kontaktiraj podršku."
+    "activationMissingSession": "Nedostaje checkout session ID. Kontaktiraj podršku.",
+    "cancelTitle": "Plaćanje otkazano",
+    "cancelBody": "Plaćanje je otkazano. Možeš pokušati ponovno bilo kada."
   }
 }

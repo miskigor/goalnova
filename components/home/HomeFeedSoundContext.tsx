@@ -15,6 +15,11 @@ import {
 const MIN_VISIBILITY = 0.001;
 /** Drop a slide from the map only when it is essentially off-screen (avoids empty map mid-scroll). */
 const VISIBILITY_REMOVE_BELOW = 0.001;
+/**
+ * TikTok-style handoff: prefer clips that fill ~most of the viewport (stable band ~0.55–0.7).
+ * If none reach this bar during fast scroll, fall back to the strongest visible ratio.
+ */
+const ACTIVE_CLIP_RATIO_MIN = 0.55;
 
 /** Session flag: user preference for feed audio while browsing (survives in-tab navigation). */
 export const HOME_FEED_SOUND_SESSION_KEY = "pitchrusch-feed-sound";
@@ -118,9 +123,13 @@ export function HomeFeedSoundProvider({
   );
 
   const activeVideoId = useMemo(() => {
+    const entries = Object.entries(visibility);
+    const promoted = entries.filter(([, r]) => r >= ACTIVE_CLIP_RATIO_MIN);
+    const pool = promoted.length > 0 ? promoted : entries;
+
     let best: string | null = null;
     let bestR = 0;
-    for (const [id, r] of Object.entries(visibility)) {
+    for (const [id, r] of pool) {
       if (r > bestR) {
         best = id;
         bestR = r;

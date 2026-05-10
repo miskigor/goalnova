@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslations } from "next-intl";
 import { devLog } from "@/lib/devLog";
 import {
   PlaybackVideo,
@@ -58,12 +59,16 @@ export function FeedVideoSurface({
 }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<PlaybackVideoHandle | null>(null);
+  const executePlayRef = useRef<(() => void) | null>(null);
+  const tFeed = useTranslations("homeFeed");
   const {
     isSoundEnabled,
     activeVideoId,
     reportVideoVisibility,
     playbackGeneration,
     feedUserActivationGeneration,
+    requestPlaybackRetry,
+    notifyFeedUserActivation,
   } = useHomeFeedSound();
   const lastPlaybackGenerationRef = useRef(playbackGeneration);
   const lastFeedActivationGenRef = useRef(feedUserActivationGeneration);
@@ -74,6 +79,10 @@ export function FeedVideoSurface({
   const lastAudiblePromoteAtRef = useRef(0);
 
   const [browserPolicyMuted, setBrowserPolicyMuted] = useState(false);
+  /** Hidden until first `playing` — avoids empty black frame while buffering. */
+  const [mediaReady, setMediaReady] = useState(false);
+  /** Browser blocked programmatic play — offer tap-to-play (still respects mute policy below). */
+  const [needsTapToPlay, setNeedsTapToPlay] = useState(false);
 
   const isActive = activeVideoId === videoId;
   useEffect(() => {
@@ -82,6 +91,16 @@ export function FeedVideoSurface({
   useEffect(() => {
     isSoundEnabledRef.current = isSoundEnabled;
   }, [isSoundEnabled]);
+
+  useEffect(() => {
+    setMediaReady(false);
+    setNeedsTapToPlay(false);
+  }, [renderedPrimarySrc]);
+
+  useEffect(() => {
+    if (!isActive) setNeedsTapToPlay(false);
+  }, [isActive]);
+
   /** Sound off or not the focused slide → output muted; browser may also force mute. */
   const effectiveMuted = !isSoundEnabled || !isActive;
   const outputMuted = effectiveMuted || browserPolicyMuted;
@@ -209,8 +228,8 @@ export function FeedVideoSurface({
       },
       {
         root,
-        /** Bottom inset: next snap page starts competing for “active” earlier while scrolling. */
-        rootMargin: "0px 0px 28% 0px",
+        /** Bottom inset — tuned so next slide competes slightly before full snap (with context ≥0.55). */
+        rootMargin: "0px 0px 20% 0px",
         /** Dense steps so active clip switches quickly during snap scroll (not only at 25% / 50%). */
         threshold: [
           0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6,
@@ -293,6 +312,12 @@ export function FeedVideoSurface({
           err,
         });
         if (isSoundEnabled && isActive) setBrowserPolicyMuted(true);
+        const blocked =
+          typeof err === "object" &&
+          err !== null &&
+          "name" in err &&
+          (err as { name?: string }).name === "NotAllowedError";
+        if (isActive && blocked) setNeedsTapToPlay(true);
       });
   }, [
     applyVideoElementAudio,
@@ -303,6 +328,25 @@ export function FeedVideoSurface({
     scheduleAudiblePromotion,
     videoId,
   ]);
+
+  /** Pause when user switches tab / backgrounds the app; resume when visible if still active. */
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === "hidden") {
+        videoRef.current?.pause();
+        return;
+      }
+      if (isActiveRef.current) {
+        queueMicrotask(() => executePlayRef.current?.());
+      }
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
+
+  useLayoutEffect(() => {
+    executePlayRef.current = executePlay;
+  }, [executePlay]);
 
   /**
    * Uvijek pozovi play() kad je klip aktivan. Prije je `return` nakon `setBrowserPolicyMuted(false)`
@@ -346,9 +390,21 @@ export function FeedVideoSurface({
     });
   }, [applyVideoElementAudio, executePlay, onLoadOk]);
 
+  const handleTapToResume = useCallback(() => {
+    notifyFeedUserActivation();
+    requestPlaybackRetry();
+    setNeedsTapToPlay(false);
+    queueMicrotask(() => executePlay());
+  }, [executePlay, notifyFeedUserActivation, requestPlaybackRetry]);
+
   return (
     <div className="absolute inset-0">
-      <div ref={wrapRef} className="pointer-events-none absolute inset-0">
+      {/* Backdrop so inactive / buffering slides are never flat pure black */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-neutral-950 via-black to-neutral-950"
+        aria-hidden
+      />
+      <div ref={wrapRef} className="pointer-events-none absolute inset-0 z-[2]">
         <PlaybackVideo
           ref={videoRef}
           sources={sources}
@@ -364,6 +420,8 @@ export function FeedVideoSurface({
             if (isActiveRef.current) executePlay();
           }}
           onPlaying={() => {
+            setMediaReady(true);
+            setNeedsTapToPlay(false);
             logActiveClip("playing");
             if (isSoundEnabledRef.current && isActiveRef.current) {
               if (videoRef.current?.getVideoState?.().muted) {
@@ -376,6 +434,43 @@ export function FeedVideoSurface({
           className={[className, "pointer-events-none"].filter(Boolean).join(" ")}
         />
       </div>
+
+      {isActive && !mediaReady && renderedPrimarySrc ? (
+        <div
+          className="pointer-events-none absolute inset-0 z-[18] flex flex-col items-center justify-center bg-gradient-to-b from-black/80 via-black/55 to-black/85"
+          aria-busy
+          aria-label={tFeed("videoBufferingAria")}
+        >
+          <div className="flex size-14 items-center justify-center rounded-full border border-white/15 bg-white/5 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-sm">
+            <svg
+              className="size-7 text-white/85"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden
+            >
+              <path d="M8 5v14l11-7L8 5z" />
+            </svg>
+          </div>
+          <div className="mt-4 h-1 w-24 overflow-hidden rounded-full bg-white/10">
+            <div className="h-full w-2/3 animate-pulse rounded-full bg-gradient-to-r from-orange-500 to-orange-400" />
+          </div>
+        </div>
+      ) : null}
+
+      {needsTapToPlay && isActive ? (
+        <div className="absolute inset-0 z-[25] flex items-center justify-center bg-black/35 p-6">
+          <button
+            type="button"
+            className="pointer-events-auto flex min-h-[48px] min-w-[48px] flex-col items-center justify-center gap-2 rounded-full border border-white/25 bg-black/55 px-8 py-4 text-sm font-semibold text-white shadow-[0_12px_48px_rgba(0,0,0,0.55)] backdrop-blur-md transition hover:bg-black/65 active:scale-[0.98]"
+            onClick={handleTapToResume}
+          >
+            <svg className="size-10 text-orange-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+              <path d="M8 5v14l11-7L8 5z" />
+            </svg>
+            <span className="max-w-[12rem] text-center leading-snug">{tFeed("tapToPlay")}</span>
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

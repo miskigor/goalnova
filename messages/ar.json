@@ -1616,6 +1616,8 @@
     "emptyFirstVideo": "No football highlights yet",
     "loadingFeed": "Loading highlights…",
     "loadingMore": "Loading more…",
+    "tapToPlay": "Tap to play",
+    "videoBufferingAria": "Loading video",
     "errorTitle": "Could not load highlights",
     "errorBody": "Something went wrong. Please try again.",
     "retry": "Try again",
@@ -1795,12 +1797,12 @@
   "payment": {
     "successTitle": "Payment successful",
     "successBody": "Payment successful. Your subscription is being activated.",
-    "cancelTitle": "Payment cancelled",
-    "cancelBody": "Payment was cancelled. You can try again anytime.",
     "goToDashboard": "الانتقال إلى لوحة التحكم",
     "activationLoading": "جارٍ تفعيل اشتراكك…",
     "activationDone": "تم تفعيل الاشتراك بنجاح.",
     "activationFailed": "فشل تفعيل الاشتراك. يرجى التواصل مع الدعم.",
-    "activationMissingSession": "معرّف جلسة الدفع مفقود. يرجى التواصل مع الدعم."
+    "activationMissingSession": "معرّف جلسة الدفع مفقود. يرجى التواصل مع الدعم.",
+    "cancelTitle": "Payment cancelled",
+    "cancelBody": "Payment was cancelled. You can try again anytime."
   }
 }
