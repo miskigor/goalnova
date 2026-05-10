@@ -59,10 +59,11 @@ export function FeedItemCard({
     feedIndex !== undefined && activeFeedIndex !== undefined
       ? Math.abs(feedIndex - activeFeedIndex)
       : 999;
+  /** Only the active slide uses full `auto` — nearby slides used to all use `auto` (dist≤3), starving bandwidth. */
   const videoPreload: "none" | "metadata" | "auto" =
     feedIndex === undefined || activeFeedIndex === undefined
       ? "metadata"
-      : dist <= 3 || feedIndex === 0
+      : dist === 0
         ? "auto"
         : dist <= 9
           ? "metadata"
@@ -83,12 +84,12 @@ export function FeedItemCard({
     ],
   );
 
-  /** Near active + first row: high; mid distance: auto; far: low. */
+  /** Hint download priority — only the focused clip should be `high` so others don’t compete on slow links. */
   const videoFetchPriority: "high" | "low" | "auto" =
     feedIndex !== undefined && activeFeedIndex !== undefined
-      ? dist <= 2 || feedIndex === 0
+      ? dist === 0
         ? "high"
-        : dist <= 5
+        : dist <= 4
           ? "auto"
           : "low"
       : "auto";

@@ -42,6 +42,9 @@ export type AugmentedHomeFeedItem = HomeFeedItem & {
   scoutMetrics?: ScoutFeedMetrics;
 };
 
+/** Cap rows from `videos` — avoids downloading the full table on home (mobile cold start). */
+export const HOME_FEED_VIDEO_QUERY_LIMIT = 40;
+
 /** Batch-load `public.users.avatar_url` for feed cards. */
 export async function fetchUserAvatarUrlsByUserIds(
   supabase: SupabaseClient<Database>,
@@ -147,7 +150,8 @@ export async function fetchHomeFeedData(
       .or(
         "video_url.not.is.null,processed_video_url.not.is.null,source_video_url.not.is.null",
       )
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(HOME_FEED_VIDEO_QUERY_LIMIT);
 
     if (!embedError) {
       usedEmbed = true;
@@ -174,7 +178,8 @@ export async function fetchHomeFeedData(
       .or(
         "video_url.not.is.null,processed_video_url.not.is.null,source_video_url.not.is.null",
       )
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(HOME_FEED_VIDEO_QUERY_LIMIT);
 
     if (videosError) {
       logFullSupabaseError("[PitchRusch home feed] videos select error", videosError);

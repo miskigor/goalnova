@@ -1,6 +1,27 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { RoleSelectionCard } from "@/components/onboarding/RoleSelectionCard";
+
+const RoleSelectionCard = dynamic(
+  () =>
+    import("@/components/onboarding/RoleSelectionCard").then((m) => ({
+      default: m.RoleSelectionCard,
+    })),
+  {
+    loading: () => (
+      <div
+        className="mx-auto flex min-h-[12rem] w-full max-w-lg items-center justify-center px-4 py-16"
+        role="status"
+        aria-busy
+      >
+        <div
+          className="h-8 w-8 animate-spin rounded-full border-2 border-gn-accent border-t-transparent"
+          aria-hidden
+        />
+      </div>
+    ),
+  },
+);
 
 type Props = { params: Promise<{ locale: string }> };
 

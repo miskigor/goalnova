@@ -52,6 +52,9 @@ const explicitLanHosts =
     .filter(Boolean) ?? [];
 
 const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: ["next-intl"],
+  },
   allowedDevOrigins: [
     ...lanDevOriginPatterns,
     ...explicitLanHosts,

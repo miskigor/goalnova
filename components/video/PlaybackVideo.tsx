@@ -113,9 +113,10 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
       if (!currentSrc || !canFallback) return;
 
       // Some URLs never emit `error` but also never reach `loadeddata`.
+      /** Faster fallback when merged/processed URL hangs without firing `error` (next candidate often loads quicker). */
       loadWatchdogRef.current = window.setTimeout(() => {
         advanceToNextSource();
-      }, 4500);
+      }, 3200);
 
       return () => {
         clearLoadWatchdog();

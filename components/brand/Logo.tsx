@@ -73,13 +73,27 @@ export function Logo({
   const imgClass =
     `block object-contain object-left ${variantClass[variant]} ${logoImageFilterClass}`.trim();
 
+  const rasterQuality =
+    BRAND_LOGO_SRC.endsWith(".svg")
+      ? undefined
+      : variant === "header" || variant === "inline"
+        ? 82
+        : 75;
+  const logoSizes =
+    variant === "landing"
+      ? "(max-width: 768px) min(42vw, 16rem), min(38vw, 27rem)"
+      : variant === "entry"
+        ? "(max-width: 640px) min(100vw, 15rem), 18rem"
+        : "2.75rem";
+
   const image = (
     <Image
       src={BRAND_LOGO_SRC}
       alt=""
       width={BRAND_LOGO_WIDTH}
       height={BRAND_LOGO_HEIGHT}
-      quality={BRAND_LOGO_SRC.endsWith(".svg") ? undefined : 92}
+      sizes={BRAND_LOGO_SRC.endsWith(".svg") ? undefined : logoSizes}
+      quality={rasterQuality}
       unoptimized={BRAND_LOGO_SRC.endsWith(".svg")}
       priority={priority || variant === "landing" || variant === "entry"}
       className={imgClass}

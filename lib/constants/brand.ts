@@ -8,5 +8,5 @@ export const APP_DISPLAY_NAME = "PitchRusch";
 export const BRAND_LOGO_SRC = "/logo.png";
 
 /** Intrinsic dimensions of the PNG (must match the file; used by `next/image`). */
-export const BRAND_LOGO_WIDTH = 1024;
-export const BRAND_LOGO_HEIGHT = 1024;
+export const BRAND_LOGO_WIDTH = 512;
+export const BRAND_LOGO_HEIGHT = 512;

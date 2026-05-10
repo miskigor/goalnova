@@ -230,30 +230,34 @@ export function HomeFeed() {
     void loadFeedRef.current();
   }, [scoutLoaded]);
 
+  /** Deferred so first paint + feed fetch are not competing with an auth + count round-trip. */
   useEffect(() => {
     let cancelled = false;
-    void (async () => {
-      setMyVideos({ state: "loading" });
-      const { data: sessionData } = await supabase.auth.getSession();
-      const uid = sessionData.session?.user?.id;
-      if (!uid) {
-        if (!cancelled) setMyVideos({ state: "unknown" });
-        return;
-      }
-      const { count, error: countErr } = await supabase
-        .from("videos")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", uid);
-      if (cancelled) return;
-      if (countErr) {
-        logFullSupabaseError("[PitchRusch home feed] my videos count failed", countErr);
-        setMyVideos({ state: "unknown" });
-        return;
-      }
-      setMyVideos({ state: "ready", count: count ?? 0 });
-    })();
+    const handle = window.setTimeout(() => {
+      void (async () => {
+        setMyVideos({ state: "loading" });
+        const { data: sessionData } = await supabase.auth.getSession();
+        const uid = sessionData.session?.user?.id;
+        if (!uid) {
+          if (!cancelled) setMyVideos({ state: "unknown" });
+          return;
+        }
+        const { count, error: countErr } = await supabase
+          .from("videos")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", uid);
+        if (cancelled) return;
+        if (countErr) {
+          logFullSupabaseError("[PitchRusch home feed] my videos count failed", countErr);
+          setMyVideos({ state: "unknown" });
+          return;
+        }
+        setMyVideos({ state: "ready", count: count ?? 0 });
+      })();
+    }, 0);
     return () => {
       cancelled = true;
+      window.clearTimeout(handle);
     };
   }, []);
 

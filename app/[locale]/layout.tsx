@@ -13,6 +13,7 @@ import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const bebasNeue = Bebas_Neue({
