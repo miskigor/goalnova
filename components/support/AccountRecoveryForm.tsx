@@ -6,6 +6,10 @@ import { Link } from "@/i18n/navigation";
 import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
 import { submitAccountRecoveryRequest } from "@/lib/supabase/accountRecovery";
+import {
+  extractPostgrestErrorFields,
+  formatPostgrestErrorForScreen,
+} from "@/lib/supabase/logError";
 
 function Spinner() {
   return (
@@ -42,12 +46,29 @@ function sanitizeDetail(raw: unknown): string {
     const s = raw.trim();
     return s.length > 2500 ? `${s.slice(0, 2500)}…` : s;
   }
+  if (typeof raw === "object") {
+    const f = extractPostgrestErrorFields(raw);
+    const block = formatPostgrestErrorForScreen(f).trim();
+    if (block.length > 0) {
+      return block.length > 2500 ? `${block.slice(0, 2500)}…` : block;
+    }
+  }
   try {
     const j = JSON.stringify(raw);
     return j.length > 2500 ? `${j.slice(0, 2500)}…` : j;
   } catch {
     return String(raw).slice(0, 2500);
   }
+}
+
+function coerceSubmitError(err: unknown): string {
+  if (typeof err === "string") return err;
+  if (err != null && typeof err === "object") {
+    const f = extractPostgrestErrorFields(err);
+    const line = f.message.trim();
+    if (line.length > 0) return line.length > 2500 ? `${line.slice(0, 2500)}…` : line;
+  }
+  return sanitizeDetail(err);
 }
 
 export function AccountRecoveryForm() {
@@ -104,7 +125,7 @@ export function AccountRecoveryForm() {
       if (submitErr) {
         devError("[account recovery]", submitErr);
         setError(safeMsg(t, "submitFailed", failed));
-        setErrorDetail(sanitizeDetail(submitErr));
+        setErrorDetail(coerceSubmitError(submitErr));
         return;
       }
       setDone(true);

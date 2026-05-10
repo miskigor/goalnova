@@ -11,6 +11,14 @@ function normalizeEmail(raw: string): string {
   return raw.trim().toLowerCase();
 }
 
+/** PostgREST returns UUID RPC results as strings; reject odd shapes so we never leak non-strings into UI state. */
+function rpcTicketId(data: unknown): string | null {
+  if (typeof data === "string" && data.trim().length > 0) {
+    return data.trim();
+  }
+  return null;
+}
+
 export async function submitAccountRecoveryRequest(
   client: SupabaseClient<Database>,
   input: {
@@ -36,8 +44,9 @@ export async function submitAccountRecoveryRequest(
     // Prefer RPC first: SECURITY DEFINER insert works even if anon INSERT RLS is missing;
     // direct insert is faster when both RPC and policy exist (second path).
     const primary = await client.rpc("pitchrusch_submit_account_recovery_ticket", rpcArgs);
-    if (!primary.error && primary.data) {
-      return { id: primary.data, error: null };
+    const primaryId = rpcTicketId(primary.data);
+    if (!primary.error && primaryId) {
+      return { id: primaryId, error: null };
     }
     if (primary.error) {
       logFullSupabaseError(
@@ -47,8 +56,9 @@ export async function submitAccountRecoveryRequest(
     }
 
     const fallbackRpc = await client.rpc("goalnova_submit_account_recovery_ticket", rpcArgs);
-    if (!fallbackRpc.error && fallbackRpc.data) {
-      return { id: fallbackRpc.data, error: null };
+    const fallbackId = rpcTicketId(fallbackRpc.data);
+    if (!fallbackRpc.error && fallbackId) {
+      return { id: fallbackId, error: null };
     }
     if (fallbackRpc.error) {
       logFullSupabaseError(
@@ -81,14 +91,11 @@ export async function submitAccountRecoveryRequest(
       logFullSupabaseError("[account recovery] insert support_tickets", inserted.error);
     }
 
-    const combined = [
-      primary.error?.message,
-      fallbackRpc.error?.message,
-      inserted.error?.message,
-    ]
-      .map((s) => (s == null ? "" : String(s).trim()))
-      .filter((s) => s.length > 0)
-      .join(" — ");
+    const combined = mergeAccountRecoveryErrors(
+      primary.error,
+      fallbackRpc.error,
+      inserted.error,
+    );
     return {
       id: null,
       error:
@@ -102,6 +109,24 @@ export async function submitAccountRecoveryRequest(
       error: supabaseErrorToUserMessage(e),
     };
   }
+}
+
+function stringOrEmpty(v: unknown): string {
+  if (v == null) return "";
+  return typeof v === "string" ? v : String(v);
+}
+
+function mergeAccountRecoveryErrors(
+  primary: { message?: unknown } | null | undefined,
+  fallback: { message?: unknown } | null | undefined,
+  insert: { message?: unknown } | null | undefined,
+): string {
+  const parts = [
+    stringOrEmpty(primary?.message).trim(),
+    stringOrEmpty(fallback?.message).trim(),
+    stringOrEmpty(insert?.message).trim(),
+  ].filter((s) => s.length > 0);
+  return parts.join(" — ");
 }
 
 export async function adminListAccountRecoveryRequests(
