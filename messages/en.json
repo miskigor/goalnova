@@ -944,7 +944,8 @@
     "messagePlaceholder": "Describe what happened and how we can help.",
     "submit": "Submit request",
     "submitting": "Sending…",
-    "confirmMessage": "Request submitted. Our team will reach out within 24 hours.",
+    "confirmMessage": "Your request has been sent. Support will contact you within 24 hours.",
+    "submitFailed": "We couldn't send your request. Please try again in a moment.",
     "validationEmail": "Please enter a valid email address.",
     "validationMessageShort": "Please provide a slightly longer explanation (at least 10 characters).",
     "backToLogin": "Back to login"

@@ -945,6 +945,7 @@
     "submit": "Pošalji zahtjev",
     "submitting": "Slanje…",
     "confirmMessage": "Zahtjev je poslan. Support će vam se javiti u roku od 24 sata.",
+    "submitFailed": "Zahtjev se nije mogao poslati. Pokušajte ponovo za trenutak.",
     "validationEmail": "Unesite ispravnu email adresu.",
     "validationMessageShort": "Napišite malo podrobnije (najmanje 10 znakova).",
     "backToLogin": "Natrag na prijavu"

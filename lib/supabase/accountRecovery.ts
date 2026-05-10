@@ -5,6 +5,12 @@ import { logFullSupabaseError } from "@/lib/supabase/logError";
 export type AccountRecoveryRequestRow =
   Database["public"]["Tables"]["support_tickets"]["Row"];
 
+const ACCOUNT_RECOVERY_SUBJECT = "Account recovery request";
+
+function normalizeEmail(raw: string): string {
+  return raw.trim().toLowerCase();
+}
+
 export async function submitAccountRecoveryRequest(
   client: SupabaseClient<Database>,
   input: {
@@ -14,24 +20,56 @@ export async function submitAccountRecoveryRequest(
     message: string;
   },
 ): Promise<{ id: string | null; error: string | null }> {
-  const primary = await client.rpc("pitchrusch_submit_account_recovery_ticket", {
-    p_account_email: input.accountEmail.trim(),
-    p_contact_email: input.contactEmail.trim(),
-    p_username: input.username.trim() || null,
-    p_message: input.message.trim(),
-  });
+  const accountEmail = normalizeEmail(input.accountEmail);
+  const contactEmail = normalizeEmail(input.contactEmail);
+  const message = input.message.trim();
+  const username = input.username.trim() ? input.username.trim() : null;
+
+  const row: Database["public"]["Tables"]["support_tickets"]["Insert"] = {
+    user_id: null,
+    subject: ACCOUNT_RECOVERY_SUBJECT,
+    message,
+    category: "account_issue",
+    ticket_type: "account_recovery",
+    account_email: accountEmail,
+    contact_email: contactEmail,
+    username,
+    status: "open",
+    priority: "normal",
+  };
+
+  const inserted = await client.from("support_tickets").insert(row).select("id").maybeSingle();
+
+  if (!inserted.error && inserted.data?.id) {
+    return { id: inserted.data.id, error: null };
+  }
+
+  if (inserted.error) {
+    logFullSupabaseError("[account recovery] insert support_tickets", inserted.error);
+  }
+
+  const rpcArgs = {
+    p_account_email: accountEmail,
+    p_contact_email: contactEmail,
+    p_username: username,
+    p_message: message,
+  };
+
+  const primary = await client.rpc("pitchrusch_submit_account_recovery_ticket", rpcArgs);
   if (!primary.error && primary.data) {
     return { id: primary.data, error: null };
   }
-  const fallback = await client.rpc("goalnova_submit_account_recovery_ticket", {
-    p_account_email: input.accountEmail.trim(),
-    p_contact_email: input.contactEmail.trim(),
-    p_username: input.username.trim() || null,
-    p_message: input.message.trim(),
-  });
+  if (primary.error) {
+    logFullSupabaseError("[account recovery] rpc pitchrusch_submit_account_recovery_ticket", primary.error);
+  }
+
+  const fallback = await client.rpc("goalnova_submit_account_recovery_ticket", rpcArgs);
   if (fallback.error) {
-    logFullSupabaseError("[account recovery] submit rpc", fallback.error);
-    return { id: null, error: fallback.error.message };
+    logFullSupabaseError("[account recovery] rpc goalnova_submit_account_recovery_ticket", fallback.error);
+    return {
+      id: null,
+      error: inserted.error?.message ?? fallback.error.message,
+    };
   }
   return { id: fallback.data ?? null, error: null };
 }
@@ -57,14 +95,19 @@ export async function adminResolveAccountRecoveryRequest(
   client: SupabaseClient<Database>,
   id: string,
 ): Promise<{ error: string | null }> {
-  const { error } = await client
+  const { data, error } = await client
     .from("support_tickets")
     .update({ status: "resolved", updated_at: new Date().toISOString() })
     .eq("id", id)
-    .eq("ticket_type", "account_recovery");
+    .eq("ticket_type", "account_recovery")
+    .select("id")
+    .maybeSingle();
   if (error) {
     logFullSupabaseError("[admin] resolve account recovery", error);
     return { error: error.message };
+  }
+  if (!data?.id) {
+    return { error: "Ticket not found or already updated." };
   }
   return { error: null };
 }

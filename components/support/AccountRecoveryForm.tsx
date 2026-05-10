@@ -66,19 +66,21 @@ export function AccountRecoveryForm() {
 
     setLoading(true);
     try {
-      const { error: rpcErr } = await submitAccountRecoveryRequest(supabase, {
+      const { error: submitErr } = await submitAccountRecoveryRequest(supabase, {
         accountEmail: a,
         contactEmail: c,
         username: username.trim(),
         message: message.trim(),
       });
-      if (rpcErr) {
-        devError("[account recovery]", rpcErr);
+      if (submitErr) {
+        devError("[account recovery]", submitErr);
+        setError(t("submitFailed"));
+        return;
       }
       setDone(true);
     } catch (e) {
       devError("[account recovery] unexpected", e);
-      setDone(true);
+      setError(t("submitFailed"));
     } finally {
       setLoading(false);
     }
