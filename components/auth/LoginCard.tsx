@@ -223,9 +223,15 @@ export function LoginCard({ labels }: Props) {
       if (!cancelled) setSessionUser(next);
     }
 
-    void supabase.auth.getSession().then(({ data }) => {
-      applySession(data.session?.user ?? null);
-    });
+    void supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        applySession(data.session?.user ?? null);
+      })
+      .catch((err) => {
+        devError("LoginCard: getSession failed", err);
+        applySession(null);
+      });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       applySession(session?.user ?? null);
