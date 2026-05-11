@@ -191,12 +191,20 @@ export function ResetPasswordCard() {
       <div className="mx-auto w-full max-w-sm rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-6 text-center sm:p-8">
         <Logo href="/" variant="inline" className="justify-center" showWordmark={false} />
         <p className="mt-6 text-sm leading-relaxed text-gn-text-secondary">{t("invalidSession")}</p>
-        <Link
-          href="/support/account-recovery"
-          className="mt-6 inline-block font-medium text-gn-accent hover:text-gn-accent-hover"
-        >
-          {t("requestNewLink")}
-        </Link>
+        <div className="mt-6 flex flex-col items-center gap-3">
+          <Link
+            href="/forgot-password"
+            className="inline-block font-medium text-gn-accent hover:text-gn-accent-hover"
+          >
+            {t("requestNewLink")}
+          </Link>
+          <Link
+            href="/support/account-recovery"
+            className="text-xs font-medium text-gn-text-secondary underline decoration-white/15 underline-offset-4 hover:text-gn-text hover:decoration-gn-accent/50"
+          >
+            {t("supportRecoveryLink")}
+          </Link>
+        </div>
       </div>
     );
   }

@@ -410,7 +410,7 @@ export function LoginCard({ labels }: Props) {
           />
           <div className="mt-2 text-end">
             <Link
-              href="/support/account-recovery"
+              href="/forgot-password"
               className="text-xs font-medium text-gn-accent hover:text-gn-accent-hover"
             >
               {labels.forgotPasswordLink}

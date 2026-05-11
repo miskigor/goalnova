@@ -29,6 +29,7 @@
     "adminMusicTitle": "Glazbena knjižnica",
     "supportTitle": "Support",
     "resetPasswordTitle": "Nova šifra",
+    "forgotPasswordTitle": "Zaboravljena lozinka",
     "accountRecoveryTitle": "Oporavak računa"
   },
   "common": {
@@ -917,8 +918,9 @@
     "title": "Nova šifra",
     "subtitleRecovery": "Odaberite jaku šifru za svoj račun.",
     "checkingSession": "Provjera linka…",
-    "invalidSession": "Ovaj link nije valjan ili je istekao. Koristite oporavak računa — support će vam pomoći.",
-    "requestNewLink": "Oporavak računa",
+    "invalidSession": "Ovaj link nije valjan ili je istekao. Zatražite novi email za reset lozinke, ili kontaktirajte support ako više nemate pristup inboxu.",
+    "requestNewLink": "Novi email za reset lozinke",
+    "supportRecoveryLink": "Nemaš pristup emailu? Support",
     "password": "Nova šifra",
     "confirm": "Potvrdi novu šifru",
     "passwordPlaceholder": "Najmanje 6 znakova",
@@ -928,6 +930,21 @@
     "goToLogin": "Na prijavu",
     "mismatch": "Šifre se ne podudaraju.",
     "tooShort": "Šifra mora imati najmanje 6 znakova."
+  },
+  "authForgotPassword": {
+    "title": "Zaboravljena lozinka",
+    "subtitle": "Upišite email računa i poslat ćemo vam link za novu lozinku.",
+    "email": "Email",
+    "emailPlaceholder": "vi@primjer.com",
+    "submit": "Pošalji link za reset",
+    "sending": "Slanje…",
+    "success": "Ako postoji račun s tom adresom, uskoro ćete dobiti link za reset. Provjerite inbox i spam.",
+    "rateLimited": "Previše zahtjeva. Pričekajte nekoliko minuta pa pokušajte ponovo.",
+    "sendFailed": "Email se trenutno ne može poslati. Provjerite vezu i pokušajte ponovo.",
+    "invalidEmail": "Unesite ispravnu email adresu.",
+    "backToLogin": "Natrag na prijavu",
+    "needSupport": "Više nemaš pristup tom emailu?",
+    "needSupportLink": "Oporavak preko supporta"
   },
   "accountRecoverySupport": {
     "title": "Oporavak računa",

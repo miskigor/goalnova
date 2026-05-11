@@ -34,11 +34,19 @@ export default function LocaleSegmentError({
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-gn-bg px-6 py-16 text-center">
       <p className="max-w-md text-lg font-semibold text-gn-text">
-        Nešto je pošlo po krivu. Pokušaj ponovno.
+        Nešto je pošlo po zlu. Pokušaj ponovno.
       </p>
       <p className="max-w-md text-sm leading-relaxed text-gn-text-secondary">
         Something went wrong. Please try again.
       </p>
+      {error.message ? (
+        <details className="max-w-lg text-start text-xs text-gn-text-tertiary">
+          <summary className="cursor-pointer text-gn-text-secondary">Tehnički detalj / Technical detail</summary>
+          <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-gn-border-subtle bg-gn-surface/50 p-3 font-mono text-[11px] text-gn-text-secondary">
+            {error.message}
+          </pre>
+        </details>
+      ) : null}
       <p className="max-w-md text-xs leading-relaxed text-gn-text-tertiary">
         Ako koristiš automatski prijevod stranice u pregledniku (npr. Google), isključi ga za ovu
         stranicu — prijevod često sruši React aplikacije. / If you use automatic page translation in

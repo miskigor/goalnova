@@ -8,7 +8,7 @@ import { LocaleRouteFallback } from "@/components/loading/LocaleRouteFallback";
 import type { AppLocale } from "@/i18n/routing";
 import { RTL_LOCALES, routing } from "@/i18n/routing";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
-import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
+import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +41,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
   const origin = getServerSiteOrigin();
-  const metadataBase = origin ? new URL(origin) : undefined;
+  const metadataBase = siteMetadataBase(origin);
 
   return {
     metadataBase,

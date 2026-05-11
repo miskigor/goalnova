@@ -437,3 +437,49 @@ export async function signOut() {
   }
 }
 
+export type RequestPasswordResetEmailResult =
+  | { status: "sent" }
+  | { status: "rate_limited" }
+  | { status: "send_failed" };
+
+/**
+ * Sends Supabase's password recovery email (`redirectTo` must be allow-listed in Supabase Auth).
+ */
+export async function requestPasswordResetEmail(
+  email: string,
+  redirectTo: string,
+): Promise<RequestPasswordResetEmailResult> {
+  assertSupabaseConfigured();
+  const trimmed = email.trim();
+  if (!trimmed) {
+    return { status: "send_failed" };
+  }
+
+  const { error } = await withTimeout(
+    supabase.auth.resetPasswordForEmail(trimmed, { redirectTo }),
+    20000,
+    "Password reset email",
+  );
+
+  if (!error) {
+    return { status: "sent" };
+  }
+
+  logSupabaseError("Supabase: resetPasswordForEmail", error);
+
+  const msg = (error.message ?? "").toLowerCase();
+  const status = typeof (error as { status?: number }).status === "number"
+    ? (error as { status: number }).status
+    : undefined;
+
+  if (
+    status === 429 ||
+    msg.includes("rate limit") ||
+    msg.includes("too many requests")
+  ) {
+    return { status: "rate_limited" };
+  }
+
+  return { status: "send_failed" };
+}
+

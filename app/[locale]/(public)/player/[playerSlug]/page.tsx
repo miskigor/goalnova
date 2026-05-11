@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
 import { routing } from "@/i18n/routing";
-import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
+import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 import { createAnonSupabaseServerClient } from "@/lib/supabase/anonServerClient";
 
 type Props = {
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, playerSlug } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
   const origin = getServerSiteOrigin();
-  const metadataBase = origin ? new URL(origin) : undefined;
+  const metadataBase = siteMetadataBase(origin);
   const localePrefix = locale === routing.defaultLocale ? "" : `/${locale}`;
   const slug = (playerSlug ?? "").trim();
   const supabase = createAnonSupabaseServerClient();

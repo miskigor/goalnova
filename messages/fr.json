@@ -29,6 +29,7 @@
     "adminMusicTitle": "Bibliothèque musicale",
     "supportTitle": "Support",
     "resetPasswordTitle": "Set new password",
+    "forgotPasswordTitle": "Reset password",
     "accountRecoveryTitle": "Account recovery"
   },
   "common": {
@@ -917,8 +918,9 @@
     "title": "Set a new password",
     "subtitleRecovery": "Choose a strong password for your account.",
     "checkingSession": "Checking your link…",
-    "invalidSession": "This reset link is invalid or has expired. Request a new link from the login page.",
-    "requestNewLink": "Request a new reset link",
+    "invalidSession": "This link is invalid or has expired. Request a new reset email, or contact support if you can no longer access your inbox.",
+    "requestNewLink": "Request new reset email",
+    "supportRecoveryLink": "No access to your email? Contact support",
     "password": "New password",
     "confirm": "Confirm new password",
     "passwordPlaceholder": "At least 6 characters",
@@ -928,6 +930,21 @@
     "goToLogin": "Go to login",
     "mismatch": "Passwords do not match.",
     "tooShort": "Password must be at least 6 characters."
+  },
+  "authForgotPassword": {
+    "title": "Reset your password",
+    "subtitle": "Enter your account email and we will send you a link to choose a new password.",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "submit": "Send reset link",
+    "sending": "Sending…",
+    "success": "If an account exists for this email, you will receive a reset link shortly. Check your inbox and spam folder.",
+    "rateLimited": "Too many requests. Please wait a few minutes and try again.",
+    "sendFailed": "We could not send the email right now. Check your connection and try again.",
+    "invalidEmail": "Please enter a valid email address.",
+    "backToLogin": "Back to login",
+    "needSupport": "Cannot access your email anymore?",
+    "needSupportLink": "Account recovery via support"
   },
   "accountRecoverySupport": {
     "title": "Account recovery",

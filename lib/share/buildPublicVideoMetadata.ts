@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { routing, type AppLocale } from "@/i18n/routing";
-import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
+import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 
 /** Open Graph `locale` — align with app locales where possible. */
 const OG_LOCALE: Partial<Record<AppLocale, string>> = {
@@ -58,8 +58,9 @@ export function buildPublicVideoMetadata(
   const mime = inferVideoMimeType(videoUrl);
   const isHttps = videoUrl.startsWith("https://");
 
+  const metadataBase = siteMetadataBase(base);
   const metadata: Metadata = {
-    ...(base ? { metadataBase: new URL(base.endsWith("/") ? base.slice(0, -1) : base) } : {}),
+    ...(metadataBase ? { metadataBase } : {}),
     title,
     description,
     robots: { index: true, follow: true },

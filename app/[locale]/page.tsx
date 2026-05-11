@@ -4,7 +4,7 @@ import { Logo } from "@/components/brand/Logo";
 import { LandingScrollLock } from "@/components/landing/LandingScrollLock";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { hrefWithLocale } from "@/i18n/routing";
-import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
+import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
 import { routing } from "@/i18n/routing";
 
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
   const origin = getServerSiteOrigin();
-  const metadataBase = origin ? new URL(origin) : undefined;
+  const metadataBase = siteMetadataBase(origin);
   const description = t("rootDescription");
   const localePrefix = locale === routing.defaultLocale ? "" : `/${locale}`;
 
@@ -121,7 +121,7 @@ export default async function LandingPage({ params }: Props) {
               </div>
               <p className="mt-5 text-center sm:mt-6">
                 <a
-                  href={h("/support/account-recovery")}
+                  href={h("/forgot-password")}
                   className="text-sm font-medium text-gn-text-secondary underline decoration-white/20 underline-offset-4 transition hover:text-gn-text hover:decoration-gn-accent/60"
                 >
                   {t("forgotPasswordLink")}
