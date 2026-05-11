@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { Bebas_Neue, Geist, Noto_Sans_Arabic } from "next/font/google";
+import type { AbstractIntlMessages } from "next-intl";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -96,7 +97,14 @@ async function LocaleIntlProvider({
   locale: AppLocale;
   children: React.ReactNode;
 }) {
-  const messages = await getMessages();
+  let messages: AbstractIntlMessages;
+  try {
+    messages = await getMessages();
+  } catch (err) {
+    console.error("[locale layout] getMessages failed; using English messages fallback", err);
+    const mod = await import("../../messages/en.json");
+    messages = mod.default as unknown as AbstractIntlMessages;
+  }
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       {children}

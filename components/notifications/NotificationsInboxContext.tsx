@@ -218,12 +218,21 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
   );
 }
 
+/** Avoid hard-crashing the whole `[locale]` tree if a component mounts outside the provider (shell edge cases). */
+const NOTIFICATIONS_INBOX_FALLBACK: NotificationsInboxContextValue = {
+  unreadCount: 0,
+  realtimeHealthy: true,
+  refreshUnreadCount: async () => {},
+};
+
 export function useNotificationsInbox(): NotificationsInboxContextValue {
   const ctx = useContext(NotificationsInboxContext);
-  if (!ctx) {
-    throw new Error("useNotificationsInbox must be used within NotificationsInboxProvider");
-  }
-  return ctx;
+  if (ctx) return ctx;
+  // Always log: production mis-mounts should show in Netlify / browser console.
+  console.error(
+    "[notifications] useNotificationsInbox outside NotificationsInboxProvider — using fallback (badge disabled).",
+  );
+  return NOTIFICATIONS_INBOX_FALLBACK;
 }
 
 export function useNotificationsInboxOptional(): NotificationsInboxContextValue | null {
