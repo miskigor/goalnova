@@ -38,12 +38,24 @@ type NavUserMenuProps = {
   menuPlacement?: "below" | "above";
 };
 
+function newRealtimeChannelSuffix(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return `rt-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+}
+
 export function NavUserMenu({
   user,
   onNavigate,
   menuPlacement = "below",
 }: NavUserMenuProps) {
   const menuId = useId();
+  /** AppSidebar + AppMobileHeader both mount NavUserMenu; `supabase.channel(name)` reuses one RealtimeChannel per name, so a second mount cannot chain `.on()` after the first `.subscribe()`. */
+  const supportUnreadChannelSuffixRef = useRef<string>("");
+  if (!supportUnreadChannelSuffixRef.current) {
+    supportUnreadChannelSuffixRef.current = newRealtimeChannelSuffix();
+  }
   const [open, setOpen] = useState(false);
   const [logoutBusy, setLogoutBusy] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -96,7 +108,9 @@ export function NavUserMenu({
     };
     void refresh();
     const ch = supabase
-      .channel(`user-support-unread-menu-${user.id}`)
+      .channel(
+        `user-support-unread-menu-${user.id}-${supportUnreadChannelSuffixRef.current}`,
+      )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "support_ticket_messages" },
