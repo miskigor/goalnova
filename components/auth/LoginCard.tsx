@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useLocale } from "next-intl";
 import type { User } from "@supabase/supabase-js";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { devError } from "@/lib/devLog";
-import { signInWithEmailPassword, signOut } from "@/lib/supabase/auth";
+import { signInWithEmailPassword } from "@/lib/supabase/auth";
 import { supabase } from "@/lib/supabase/client";
 import { Logo } from "@/components/brand/Logo";
 
@@ -154,10 +154,10 @@ function classifyLoginError(err: unknown): {
   return { kind: "unknown", raw: message, code };
 }
 
-function Spinner() {
+function Spinner({ className = "text-black" }: { className?: string }) {
   return (
     <svg
-      className="h-4 w-4 animate-spin text-black"
+      className={`h-4 w-4 animate-spin ${className}`}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -204,6 +204,7 @@ type Props = { labels: LoginFormLabels };
 
 export function LoginCard({ labels }: Props) {
   const locale = useLocale();
+  const router = useRouter();
 
   /** `null` until first auth snapshot (show email/password form immediately like before — no blocking spinner). */
   const [sessionUser, setSessionUser] = useState<User | null>(null);
@@ -243,61 +244,20 @@ export function LoginCard({ labels }: Props) {
     };
   }, []);
 
-  async function handleSignOutForSwitch() {
-    setError(null);
-    setErrorDetail(null);
-    setLoading(true);
-    try {
-      await signOut();
-      setSessionUser(null);
-    } catch (err) {
-      devError("LoginCard signOut:", err);
-      setError(labels.genericError);
-    } finally {
-      setLoading(false);
-    }
-  }
+  useLayoutEffect(() => {
+    if (!sessionUser) return;
+    router.replace("/home");
+  }, [router, sessionUser]);
 
   const canSubmit = useMemo(() => {
     return email.trim().length > 0 && password.length > 0 && !loading && !redirecting;
   }, [email, password, loading, redirecting]);
 
   if (sessionUser) {
-    const emailLabel = sessionUser.email?.trim() || "—";
     return (
-      <div className="mx-auto w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:p-8">
-        <div className="mb-6 text-center sm:mb-8">
-          <Logo href="/" variant="entry" className="justify-center" showWordmark={false} />
-          <h1 className="mt-4 text-xl font-semibold tracking-tight text-gn-text sm:mt-6">
-            {labels.alreadySignedInTitle}
-          </h1>
-          <p className="mt-2 break-all text-sm font-medium text-gn-accent">{emailLabel}</p>
-          <p className="mt-3 text-sm text-gn-text-secondary">{labels.alreadySignedInHint}</p>
-        </div>
-        {error ? (
-          <div
-            role="alert"
-            className="mb-4 rounded-xl border border-red-500/35 bg-red-950/20 px-3.5 py-2 text-sm text-red-100/90"
-          >
-            {error}
-          </div>
-        ) : null}
-        <div className="flex flex-col gap-3">
-          <Link
-            href="/home"
-            className="flex w-full cursor-pointer items-center justify-center rounded-xl bg-gn-accent py-3 text-center text-sm font-semibold text-black transition-colors hover:bg-gn-accent-hover"
-          >
-            {labels.continueToHome}
-          </Link>
-          <button
-            type="button"
-            disabled={loading}
-            onClick={() => void handleSignOutForSwitch()}
-            className="w-full rounded-xl border border-gn-border bg-transparent py-3 text-sm font-semibold text-gn-text transition-colors hover:bg-gn-surface disabled:opacity-60"
-          >
-            {loading ? labels.signingIn : labels.signOutToSwitchAccount}
-          </button>
-        </div>
+      <div className="mx-auto flex min-h-[240px] w-full flex-col items-center justify-center gap-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-8 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:min-h-[280px]">
+        <Spinner className="text-gn-accent" />
+        <p className="text-sm text-gn-text-secondary">{labels.signingIn}</p>
       </div>
     );
   }
