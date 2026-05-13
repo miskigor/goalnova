@@ -67,7 +67,6 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
   ) {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const loadWatchdogRef = useRef<number | null>(null);
-    const stallFallbackTimerRef = useRef<number | null>(null);
     useEffect(() => {
       const v = videoRef.current;
       if (!v) return;
@@ -88,18 +87,10 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
       }
     }, []);
 
-    const clearStallFallbackTimer = useCallback(() => {
-      if (stallFallbackTimerRef.current !== null) {
-        window.clearTimeout(stallFallbackTimerRef.current);
-        stallFallbackTimerRef.current = null;
-      }
-    }, []);
-
     const advanceToNextSource = useCallback(() => {
       clearLoadWatchdog();
-      clearStallFallbackTimer();
       setSourceIndex((idx) => idx + 1);
-    }, [clearLoadWatchdog, clearStallFallbackTimer]);
+    }, [clearLoadWatchdog]);
 
     useIosInlineVideoFirstFrameBump(videoRef, Boolean(currentSrc), currentSrc);
 
@@ -109,20 +100,19 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
 
     useEffect(() => {
       clearLoadWatchdog();
-      clearStallFallbackTimer();
       if (!currentSrc || !canFallback) return;
 
-      // Some URLs never emit `error` but also never reach `loadeddata`.
-      /** Faster fallback when merged/processed URL hangs without firing `error` (next candidate often loads quicker). */
+      // Some URLs never emit `error` but also never reach `loadeddata`. Do not use `waiting`/`stalled`
+      // for fallback — those fire during normal re-buffering and swapping `src` feels like start–stop–start.
+      const LOAD_WATCHDOG_MS = 10_000;
       loadWatchdogRef.current = window.setTimeout(() => {
         advanceToNextSource();
-      }, 3200);
+      }, LOAD_WATCHDOG_MS);
 
       return () => {
         clearLoadWatchdog();
-        clearStallFallbackTimer();
       };
-    }, [advanceToNextSource, canFallback, clearLoadWatchdog, clearStallFallbackTimer, currentSrc]);
+    }, [advanceToNextSource, canFallback, clearLoadWatchdog, currentSrc]);
 
     useEffect(() => {
       const v = videoRef.current;
@@ -171,33 +161,13 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
         {...(fetchPriority ? { fetchPriority } : {})}
         onLoadedData={() => {
           clearLoadWatchdog();
-          clearStallFallbackTimer();
           onLoadOk?.();
         }}
         onCanPlay={() => {
           onCanPlay?.();
         }}
-        onWaiting={() => {
-          if (!canFallback) return;
-          clearStallFallbackTimer();
-          stallFallbackTimerRef.current = window.setTimeout(() => {
-            advanceToNextSource();
-          }, 2800);
-        }}
-        onStalled={() => {
-          if (!canFallback) return;
-          clearStallFallbackTimer();
-          stallFallbackTimerRef.current = window.setTimeout(() => {
-            advanceToNextSource();
-          }, 1600);
-        }}
-        onTimeUpdate={() => {
-          // Once playback advances, cancel any pending stall fallback switch.
-          clearStallFallbackTimer();
-        }}
         onPlaying={() => {
           clearLoadWatchdog();
-          clearStallFallbackTimer();
           onPlaying?.();
         }}
         onError={() => {
@@ -206,7 +176,6 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
             return;
           }
           clearLoadWatchdog();
-          clearStallFallbackTimer();
           onLoadError?.();
         }}
       />
