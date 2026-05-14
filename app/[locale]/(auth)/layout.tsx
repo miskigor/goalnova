@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { ViewportScrollLock } from "@/components/layout/ViewportScrollLock";
+import { ReferralBootstrap } from "@/components/referrals/ReferralBootstrap";
 
 export default function AuthLayout({
   children,
@@ -8,6 +10,9 @@ export default function AuthLayout({
 }) {
   return (
     <AuthGate mode="guest" redirectTo="/home">
+      <Suspense fallback={null}>
+        <ReferralBootstrap />
+      </Suspense>
       <ViewportScrollLock />
       <div
         className="relative flex h-[100dvh] min-h-0 min-w-0 w-full flex-col items-center justify-center overflow-hidden overscroll-y-none bg-black pb-[max(1rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pt-[max(1rem,env(safe-area-inset-top))]"

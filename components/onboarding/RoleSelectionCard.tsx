@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabase/client";
 import { signOut } from "@/lib/supabase/auth";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { ensureOnboardingNotificationsForRole } from "@/lib/supabase/onboardingNotifications";
-import { tryConsumePendingReferral } from "@/lib/supabase/referrals";
+import { rememberReferralCodeFromQuery, tryConsumePendingReferral } from "@/lib/supabase/referrals";
 import { InviteFriendsSection } from "@/components/referrals/InviteFriendsSection";
 
 type Role = "player" | "scout";
@@ -83,6 +83,12 @@ export function RoleSelectionCard() {
     },
     [t],
   );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const ref = new URLSearchParams(window.location.search).get("ref");
+    rememberReferralCodeFromQuery(ref);
+  }, []);
 
   useEffect(() => {
     // If already onboarded (role is set AND corresponding profile exists), skip.
@@ -234,7 +240,11 @@ export function RoleSelectionCard() {
       void ensureOnboardingNotificationsForRole(supabase, userId, role);
 
       if (role === "player") {
-        void tryConsumePendingReferral();
+        try {
+          await tryConsumePendingReferral();
+        } catch (e) {
+          devError("[RoleSelection] tryConsumePendingReferral failed", e);
+        }
       }
 
       router.replace(role === "scout" ? "/scout-apply" : "/profile");

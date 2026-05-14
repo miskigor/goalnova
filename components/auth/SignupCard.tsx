@@ -98,6 +98,9 @@ export function SignupCard() {
 
       setSignupComplete(true);
 
+      const ref = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("ref") : null;
+      rememberReferralCodeFromQuery(ref);
+
       // Redirect immediately when signup also created a session.
       // Avoid an extra getSession() roundtrip that can race with AuthGate guest redirect.
       if (!signupResult.requiresEmailConfirmation) {

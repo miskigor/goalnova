@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { hrefWithLocale } from "@/i18n/routing";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
 import { devError } from "@/lib/devLog";
+import { PITCHRUSCH_PREMIUM_UPDATED_EVENT } from "@/lib/supabase/premium";
 import { fetchReferralDashboard, type ReferralDashboard } from "@/lib/supabase/referrals";
 
 const cardClass =
@@ -44,6 +45,21 @@ export function BenefitsReferralPage() {
 
   useEffect(() => {
     void load();
+  }, [load]);
+
+  useEffect(() => {
+    const onPremium = () => {
+      void load();
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    window.addEventListener(PITCHRUSCH_PREMIUM_UPDATED_EVENT, onPremium);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener(PITCHRUSCH_PREMIUM_UPDATED_EVENT, onPremium);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, [load]);
 
   const inviteUrl = useMemo(() => {

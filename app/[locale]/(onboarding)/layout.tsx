@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { RequireReauthOnReturn } from "@/components/auth/RequireReauthOnReturn";
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
 import { MinimalAppHeader } from "@/components/layout/MinimalAppHeader";
 import { NotificationsInboxProvider } from "@/components/notifications/NotificationsInboxContext";
 import { PremiumProvider } from "@/components/premium/PremiumProvider";
+import { ReferralBootstrap } from "@/components/referrals/ReferralBootstrap";
 
 export default function OnboardingLayout({
   children,
@@ -13,6 +15,9 @@ export default function OnboardingLayout({
   return (
     <AuthGate mode="protected" redirectTo="/login">
       <RequireReauthOnReturn />
+      <Suspense fallback={null}>
+        <ReferralBootstrap />
+      </Suspense>
       <PremiumProvider>
         <NotificationsInboxProvider>
           <FeedbackProvider>
