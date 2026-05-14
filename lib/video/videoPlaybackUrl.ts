@@ -29,14 +29,15 @@ export function rankingsPreviewVideoCandidates(video: VideoPlaybackFields): stri
 
 /**
  * Home / snap feed candidates:
- * Prefer merged asset first, but keep fallback URLs so broken/expired processed
- * links don't result in black/empty slides.
+ * Prefer **`video_url` first** (often starts decoding faster on mobile), then merged `processed`,
+ * then `source` — keeps fallbacks so broken links do not black the slide.
+ * (See `videoPlaybackUrl` for single-URL “canonical” choice elsewhere.)
  */
 export function homeFeedPlaybackCandidates(video: VideoPlaybackFields): string[] {
   const processed = (video.processed_video_url ?? "").trim();
   const source = (video.source_video_url ?? "").trim();
   const primary = (video.video_url ?? "").trim();
-  return Array.from(new Set([processed, source, primary].filter(Boolean)));
+  return Array.from(new Set([primary, processed, source].filter(Boolean)));
 }
 
 /**

@@ -10,16 +10,17 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { isDev, devLog } from "@/lib/devLog";
 
 /** Ignore noise when picking the active slide (argmax among observers). */
 const MIN_VISIBILITY = 0.001;
 /** Drop a slide from the map only when it is essentially off-screen (avoids empty map mid-scroll). */
 const VISIBILITY_REMOVE_BELOW = 0.001;
 /**
- * TikTok-style handoff: prefer clips that fill ~most of the viewport (stable band ~0.55–0.7).
+ * TikTok-style handoff: prefer clips that fill most of the viewport; lower = handoff earlier (before full snap).
  * If none reach this bar during fast scroll, fall back to the strongest visible ratio.
  */
-const ACTIVE_CLIP_RATIO_MIN = 0.55;
+export const HOME_FEED_ACTIVE_CLIP_RATIO_MIN = 0.48;
 
 /** Session flag: user preference for feed audio while browsing (survives in-tab navigation). */
 export const HOME_FEED_SOUND_SESSION_KEY = "pitchrusch-feed-sound";
@@ -39,7 +40,8 @@ type HomeFeedSoundContextValue = {
    * uz glazbu dok listaš.
    */
   feedUserActivationGeneration: number;
-  notifyFeedUserActivation: () => void;
+  /** `force` skips throttle (e.g. Tap to play) so the next clip can autoplay immediately. */
+  notifyFeedUserActivation: (force?: boolean) => void;
 };
 
 const HomeFeedSoundContext = createContext<HomeFeedSoundContextValue | null>(
@@ -55,7 +57,7 @@ export function HomeFeedSoundProvider({
   bootstrapActiveVideoId?: string | null;
 }) {
   const [isSoundEnabled, setSoundEnabledState] = useState(() => {
-    if (typeof window === "undefined") return true;
+    if (typeof window === "undefined") return false;
     try {
       const v = sessionStorage.getItem(HOME_FEED_SOUND_SESSION_KEY);
       if (v === "0") return false;
@@ -63,7 +65,8 @@ export function HomeFeedSoundProvider({
     } catch {
       /* ignore */
     }
-    return true;
+    /** Default off: muted autoplay works on iOS/Android; user enables sound from the rail. */
+    return false;
   });
   const [visibility, setVisibility] = useState<Record<string, number>>({});
   const [playbackGeneration, setPlaybackGeneration] = useState(0);
@@ -99,10 +102,10 @@ export function HomeFeedSoundProvider({
     setPlaybackGeneration((g) => g + 1);
   }, []);
 
-  const notifyFeedUserActivation = useCallback(() => {
+  const notifyFeedUserActivation = useCallback((force?: boolean) => {
     const now =
       typeof performance !== "undefined" ? performance.now() : Date.now();
-    if (now - lastFeedInteractionBumpRef.current < 72) return;
+    if (!force && now - lastFeedInteractionBumpRef.current < 72) return;
     lastFeedInteractionBumpRef.current = now;
     setFeedUserActivationGeneration((g) => g + 1);
   }, []);
@@ -124,7 +127,7 @@ export function HomeFeedSoundProvider({
 
   const activeVideoId = useMemo(() => {
     const entries = Object.entries(visibility);
-    const promoted = entries.filter(([, r]) => r >= ACTIVE_CLIP_RATIO_MIN);
+    const promoted = entries.filter(([, r]) => r >= HOME_FEED_ACTIVE_CLIP_RATIO_MIN);
     const pool = promoted.length > 0 ? promoted : entries;
 
     let best: string | null = null;
@@ -150,6 +153,20 @@ export function HomeFeedSoundProvider({
     if (activeVideoId == null) return;
     setPlaybackGeneration((g) => g + 1);
   }, [activeVideoId]);
+
+  const debugFeedLogAtRef = useRef(0);
+  useEffect(() => {
+    if (!isDev) return;
+    const now =
+      typeof performance !== "undefined" ? performance.now() : Date.now();
+    if (now - debugFeedLogAtRef.current < 220) return;
+    debugFeedLogAtRef.current = now;
+    devLog("[PitchRusch][HomeFeedSound] visibility + active", {
+      activeVideoId,
+      visibilityRatios: { ...visibility },
+      promotedMin: HOME_FEED_ACTIVE_CLIP_RATIO_MIN,
+    });
+  }, [activeVideoId, visibility]);
 
   const value = useMemo(
     () => ({

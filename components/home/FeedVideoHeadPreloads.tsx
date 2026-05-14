@@ -9,9 +9,12 @@ import { useLayoutEffect } from "react";
 export function FeedVideoHeadPreloads({
   firstHref,
   nextHref,
+  thirdHref,
 }: {
   firstHref: string | null;
   nextHref: string | null;
+  /** Optional third clip hint while the first is active (warm N+2). */
+  thirdHref?: string | null;
 }) {
   useLayoutEffect(() => {
     if (typeof document === "undefined") return;
@@ -29,12 +32,19 @@ export function FeedVideoHeadPreloads({
     };
 
     if (firstHref) push(firstHref, "high");
-    if (nextHref && nextHref !== firstHref) push(nextHref, "low");
+    if (nextHref && nextHref !== firstHref) push(nextHref, "high");
+    if (
+      thirdHref &&
+      thirdHref !== firstHref &&
+      thirdHref !== nextHref
+    ) {
+      push(thirdHref, "low");
+    }
 
     return () => {
       created.forEach((l) => l.remove());
     };
-  }, [firstHref, nextHref]);
+  }, [firstHref, nextHref, thirdHref]);
 
   return null;
 }

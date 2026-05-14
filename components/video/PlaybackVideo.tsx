@@ -40,6 +40,8 @@ type PlaybackVideoProps = {
   volume?: number;
   /** Fires when enough data is available to start (retry play() after load). */
   onCanPlay?: () => void;
+  /** Enough buffered to play through without stalling (mobile feed: retry play). */
+  onCanPlayThrough?: () => void;
   /** Fires when playback actually starts (good for debug / metrics). */
   onPlaying?: () => void;
   /** Hint for the browser when competing for network (feed active clip). */
@@ -60,6 +62,7 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
       muted = false,
       volume = 1,
       onCanPlay,
+      onCanPlayThrough,
       onPlaying,
       fetchPriority,
     },
@@ -124,7 +127,19 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
     useImperativeHandle(
       ref,
       () => ({
-        play: () => videoRef.current?.play() ?? Promise.resolve(),
+        play: () => {
+          const v = videoRef.current;
+          if (!v) return Promise.resolve();
+          // Nudge fetch when the element has not left HAVE_NOTHING (common with preload="none" neighbors).
+          if (v.readyState < HTMLMediaElement.HAVE_METADATA) {
+            try {
+              v.load();
+            } catch {
+              /* ignore */
+            }
+          }
+          return v.play() ?? Promise.resolve();
+        },
         pause: () => videoRef.current?.pause(),
         syncAudioOutput: (muted: boolean, volume: number) => {
           const v = videoRef.current;
@@ -165,6 +180,9 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
         }}
         onCanPlay={() => {
           onCanPlay?.();
+        }}
+        onCanPlayThrough={() => {
+          onCanPlayThrough?.();
         }}
         onPlaying={() => {
           clearLoadWatchdog();

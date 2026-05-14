@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { devLog, isDev } from "@/lib/devLog";
 import type { AugmentedHomeFeedItem } from "@/lib/supabase/homeFeed";
 import { FeedSoundRailButton } from "@/components/home/FeedSoundRailButton";
 import { FeedVideoEngagement } from "@/components/home/FeedVideoEngagement";
@@ -47,7 +48,10 @@ export function FeedItemCard({
 }: Props) {
   const t = useTranslations("homeFeed");
   const { video, profile, userDisplayName, userAvatarUrl, challenge, scoutMetrics } = item;
-  const playbackSources = homeFeedPlaybackCandidates(video);
+  const playbackSources = useMemo(
+    () => homeFeedPlaybackCandidates(item.video),
+    [item.video],
+  );
   const renderedPrimarySrc = playbackSources[0] ?? "";
   const url = renderedPrimarySrc || videoPlaybackUrl(video);
   const feedVideoKey = feedItemVideoKey(item);
@@ -55,17 +59,19 @@ export function FeedItemCard({
   const hasUrl = url.length > 0;
   const hasProcessedAsset = Boolean((video.processed_video_url ?? "").trim());
 
-  const dist =
+  /** Signed offset from focused snap slide: +1 = next (down), -1 = previous (up). */
+  const slideOffset =
     feedIndex !== undefined && activeFeedIndex !== undefined
-      ? Math.abs(feedIndex - activeFeedIndex)
-      : 999;
-  /** Active: full buffer; immediate neighbors: metadata only; rest: no eager fetch (TikTok-style). */
+      ? feedIndex - activeFeedIndex
+      : null;
+
+  /** Active + next clip: full buffer; previous: metadata; rest: none (TikTok-style). */
   const videoPreload: "none" | "metadata" | "auto" =
-    feedIndex === undefined || activeFeedIndex === undefined
+    slideOffset === null
       ? "metadata"
-      : dist === 0
+      : slideOffset === 0 || slideOffset === 1
         ? "auto"
-        : dist === 1
+        : slideOffset === -1
           ? "metadata"
           : "none";
 
@@ -84,15 +90,21 @@ export function FeedItemCard({
     ],
   );
 
-  /** Hint download priority — focused clip `high`, neighbors `auto`, rest `low`. */
   const videoFetchPriority: "high" | "low" | "auto" =
-    feedIndex !== undefined && activeFeedIndex !== undefined
-      ? dist === 0
+    slideOffset === null
+      ? "auto"
+      : slideOffset === 0 || slideOffset === 1 || slideOffset === -1
         ? "high"
-        : dist === 1
-          ? "auto"
-          : "low"
-      : "auto";
+        : "low";
+
+  useEffect(() => {
+    if (!isDev || slideOffset !== 0) return;
+    devLog("[PitchRusch][FeedItemCard] active clip playback URL", {
+      videoId: video.id,
+      renderedPrimarySrc,
+      candidates: playbackSources,
+    });
+  }, [playbackSources, renderedPrimarySrc, slideOffset, video.id]);
 
   const userId = (video.user_id ?? "").trim();
 

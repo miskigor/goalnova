@@ -46,7 +46,7 @@ const FEED_BLEED = "w-full min-w-0 max-w-full";
 const FEED_SCROLLPORT =
   "touch-pan-y snap-y snap-mandatory overflow-y-auto overflow-x-clip scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
   "[container-type:size] min-h-0 min-w-0 " +
-  "max-lg:flex-1 max-lg:h-full max-lg:min-h-0 " +
+  "max-lg:flex-1 max-lg:h-full max-lg:min-h-[min(100dvh,100svh)] " +
   "lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
 /** Card fills its snap `li`; desktop keeps a subtle framed tile. */
@@ -90,11 +90,20 @@ function HomeFeedSnapList({
     return href.length > 0 ? href : null;
   }, [items, activeFeedIndex]);
 
+  const thirdPreloadHref = useMemo(() => {
+    if (activeFeedIndex + 2 >= items.length) return null;
+    const v = items[activeFeedIndex + 2].video;
+    const c = homeFeedPlaybackCandidates(v);
+    const href = (c[0] ?? videoPlaybackUrl(v)).trim();
+    return href.length > 0 ? href : null;
+  }, [items, activeFeedIndex]);
+
   return (
     <>
       <FeedVideoHeadPreloads
         firstHref={firstPreloadHref}
         nextHref={nextPreloadHref}
+        thirdHref={thirdPreloadHref}
       />
       <ul
         {...feedItemsListProps}

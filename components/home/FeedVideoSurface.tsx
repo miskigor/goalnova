@@ -8,16 +8,19 @@ import {
   useState,
 } from "react";
 import { useTranslations } from "next-intl";
-import { devLog } from "@/lib/devLog";
+import { devLog, isDev } from "@/lib/devLog";
 import {
   PlaybackVideo,
   type PlaybackVideoHandle,
 } from "@/components/video/PlaybackVideo";
-import { useHomeFeedSound } from "@/components/home/HomeFeedSoundContext";
+import {
+  HOME_FEED_ACTIVE_CLIP_RATIO_MIN,
+  useHomeFeedSound,
+} from "@/components/home/HomeFeedSoundContext";
 
 type Props = {
   sources: string[];
-  /** First URL tried by the player (matches processed → source → primary). */
+  /** First URL tried by the player (see `homeFeedPlaybackCandidates` order). */
   renderedPrimarySrc: string;
   videoId: string;
   className?: string;
@@ -221,15 +224,23 @@ export function FeedVideoSurface({
       (entries) => {
         const e = entries[0];
         if (!e) return;
-        reportVideoVisibility(
-          videoId,
-          e.isIntersecting ? e.intersectionRatio : 0,
-        );
+        const ratio = e.isIntersecting ? e.intersectionRatio : 0;
+        if (isDev) {
+          const lo = Math.max(0, HOME_FEED_ACTIVE_CLIP_RATIO_MIN - 0.08);
+          if (ratio === 0 || ratio >= lo) {
+            devLog("[PitchRusch][FeedVideoSurface][IO]", {
+              feedVideoId: videoId,
+              intersectionRatio: ratio,
+              scrollRootFound: Boolean(root),
+            });
+          }
+        }
+        reportVideoVisibility(videoId, ratio);
       },
       {
         root,
-        /** Bottom inset — tuned so next slide competes slightly before full snap (with context ≥0.55). */
-        rootMargin: "0px 0px 20% 0px",
+        /** Extra bottom root margin so the incoming slide gains ratio earlier (before snap finishes). */
+        rootMargin: "0px 0px 32% 0px",
         /** Dense steps so active clip switches quickly during snap scroll (not only at 25% / 50%). */
         threshold: [
           0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6,
@@ -275,6 +286,7 @@ export function FeedVideoSurface({
     const before = h.getVideoState?.();
 
     devLog("[PitchRusch][FeedVideoSurface] play attempt", {
+      activeVideoId,
       feedVideoId: videoId,
       isSoundEnabled,
       browserPolicyMuted,
@@ -320,6 +332,7 @@ export function FeedVideoSurface({
         if (isActive && blocked) setNeedsTapToPlay(true);
       });
   }, [
+    activeVideoId,
     applyVideoElementAudio,
     browserPolicyMuted,
     isActive,
@@ -391,7 +404,7 @@ export function FeedVideoSurface({
   }, [applyVideoElementAudio, executePlay, onLoadOk]);
 
   const handleTapToResume = useCallback(() => {
-    notifyFeedUserActivation();
+    notifyFeedUserActivation(true);
     requestPlaybackRetry();
     setNeedsTapToPlay(false);
     queueMicrotask(() => executePlay());
@@ -416,6 +429,10 @@ export function FeedVideoSurface({
           muted={outputMuted}
           volume={1}
           onCanPlay={() => {
+            applyVideoElementAudio();
+            if (isActiveRef.current) executePlay();
+          }}
+          onCanPlayThrough={() => {
             applyVideoElementAudio();
             if (isActiveRef.current) executePlay();
           }}
