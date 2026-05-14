@@ -3,7 +3,7 @@
   "benefitsSubtitle": "Bekijk wat je kunt gebruiken en wat je kunt ontgrendelen.",
   "availableNow": "Nu beschikbaar",
   "lockedBenefits": "Vergrendelde voordelen",
-  "lockedBenefitsIntro": "Deze highlights ontgrendel je met Player Premium of referral-mijlpalen.",
+  "lockedBenefitsIntro": "Extra voordelen kunnen ontgrendelen bij referral-mijlpalen (details volgen hier).",
   "premiumBenefits": "Premiumvoordelen",
   "referralRewards": "Referralbeloningen",
   "referralSectionIntro": "Nodig nieuwe spelers uit die zich via jouw link registreren en verdien beloningen.",
@@ -32,7 +32,7 @@
   "aiImprovementTips": "AI-tips om te verbeteren",
   "moreVideoUploads": "Meer video-uploads",
   "invite3Players": "Nodig 3 spelers uit",
-  "invite3PlayersReward": "Krijg 1 maand Player Premium.",
+  "invite3PlayersReward": "1 maand extra spelersvoordelen wanneer mijlpalen zijn gehaald.",
   "invite10Players": "Nodig 10 spelers uit",
   "invite10PlayersReward": "Krijg 7 dagen de Featured Player-badge.",
   "basicPlayerSearch": "Basis spelerszoekfunctie",
@@ -64,5 +64,7 @@
   "hintScoutPricing": "Vergelijk Scout Pro op de prijspagina.",
   "hintClubPricing": "Vergelijk clubplannen en tools op de prijspagina.",
   "linkPlayerStats": "Spelerstatistieken openen",
-  "hintStatsCard": "Profiel- en video-inzichten met Player Premium."
+  "hintStatsCard": "Profiel- en videoprestaties op één plek.",
+  "playerBenefitsStatusIntro": "Erkenning en zichtbaarheid voor je spelersaccount (details volgen).",
+  "scoutBenefitsStatusIntro": "Basis-tools voor ontdekken met je scouttoegang."
 }

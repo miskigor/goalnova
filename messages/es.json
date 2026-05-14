@@ -1931,7 +1931,7 @@
     "benefitsSubtitle": "Mira lo que puedes usar y lo que puedes desbloquear.",
     "availableNow": "Disponible ahora",
     "lockedBenefits": "Ventajas bloqueadas",
-    "lockedBenefitsIntro": "Se desbloquean con Player Premium o hitos de referidos.",
+    "lockedBenefitsIntro": "Ventajas extra al cumplir hitos de referidos (los detalles aparecerán aquí).",
     "premiumBenefits": "Ventajas Premium",
     "referralRewards": "Recompensas por referidos",
     "referralSectionIntro": "Invita a nuevos jugadores que se registren con tu enlace y gana recompensas.",
@@ -1960,7 +1960,7 @@
     "aiImprovementTips": "Consejos de mejora con IA",
     "moreVideoUploads": "Más subidas de vídeo",
     "invite3Players": "Invita a 3 jugadores",
-    "invite3PlayersReward": "Consigue 1 mes de Player Premium.",
+    "invite3PlayersReward": "1 mes de ventajas extra para jugadores al cumplir los hitos.",
     "invite10Players": "Invita a 10 jugadores",
     "invite10PlayersReward": "Consigue la insignia Featured Player durante 7 días.",
     "basicPlayerSearch": "Búsqueda básica de jugadores",
@@ -1992,6 +1992,8 @@
     "hintScoutPricing": "Compara Scout Pro en la página de precios.",
     "hintClubPricing": "Compara planes de club y herramientas en la página de precios.",
     "linkPlayerStats": "Abrir estadísticas de jugador",
-    "hintStatsCard": "Información de perfil y vídeo con Player Premium."
+    "hintStatsCard": "Rendimiento de perfil y vídeos en un solo lugar.",
+    "playerBenefitsStatusIntro": "Reconocimiento y visibilidad ligados a tu cuenta de jugador (detalles pronto).",
+    "scoutBenefitsStatusIntro": "Herramientas básicas de descubrimiento con tu acceso de scout."
   }
 }

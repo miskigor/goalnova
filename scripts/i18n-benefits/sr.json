@@ -3,7 +3,7 @@
   "benefitsSubtitle": "Pogledaj šta možeš da koristiš i šta možeš da otključaš.",
   "availableNow": "Dostupno sada",
   "lockedBenefits": "Zaključane mogućnosti",
-  "lockedBenefitsIntro": "Otključavaš ih uz Player Premium ili referral prekretnice.",
+  "lockedBenefitsIntro": "Dodatne pogodnosti mogu da se otključaju referral prekretnicama (detalji će biti ovde).",
   "premiumBenefits": "Premium mogućnosti",
   "referralRewards": "Referral nagrade",
   "referralSectionIntro": "Pozovi nove igrače koji se prijave preko tvog linka i ostvari nagrade.",
@@ -32,7 +32,7 @@
   "aiImprovementTips": "AI saveti za napredak",
   "moreVideoUploads": "Više video uploadova",
   "invite3Players": "Pozovi 3 igrača",
-  "invite3PlayersReward": "Dobijaš 1 mesec Player Premiuma.",
+  "invite3PlayersReward": "1 mesec dodatnih pogodnosti za igrače kad ispuniš uslove.",
   "invite10Players": "Pozovi 10 igrača",
   "invite10PlayersReward": "Dobijaš Featured Player badge na 7 dana.",
   "basicPlayerSearch": "Osnovna pretraga igrača",
@@ -64,5 +64,7 @@
   "hintScoutPricing": "Uporedi Scout Pro na stranici sa cenama.",
   "hintClubPricing": "Uporedi Club pakete i klupske alate na stranici sa cenama.",
   "linkPlayerStats": "Otvori statistiku igrača",
-  "hintStatsCard": "Uvidi profila i snimaka uz Player Premium."
+  "hintStatsCard": "Uspješnost profila i snimaka na jednom mestu.",
+  "playerBenefitsStatusIntro": "Priznanje i vidljivost vezani za tvoj igrački nalog (detalji uskoro).",
+  "scoutBenefitsStatusIntro": "Osnovni alati za otkrivanje dok pregledaš kao skaut."
 }

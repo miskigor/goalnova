@@ -3,7 +3,7 @@
   "benefitsSubtitle": "Sieh, was du nutzen kannst und was du freischalten kannst.",
   "availableNow": "Jetzt verfügbar",
   "lockedBenefits": "Gesperrte Vorteile",
-  "lockedBenefitsIntro": "Diese Highlights schaltest du mit Player Premium oder Empfehlungs-Meilensteinen frei.",
+  "lockedBenefitsIntro": "Zusätzliche Vorteile können sich über Empfehlungs-Meilensteine freischalten (Details folgen).",
   "premiumBenefits": "Premium-Vorteile",
   "referralRewards": "Empfehlungsprämien",
   "referralSectionIntro": "Lade neue Spieler ein, die sich über deinen Link registrieren, und sichere dir Belohnungen.",
@@ -32,7 +32,7 @@
   "aiImprovementTips": "KI-Tipps zur Verbesserung",
   "moreVideoUploads": "Mehr Video-Uploads",
   "invite3Players": "3 Spieler einladen",
-  "invite3PlayersReward": "Erhalte 1 Monat Player Premium.",
+  "invite3PlayersReward": "1 Monat zusätzlicher Spieler-Vorteile, sobald die Meilensteine erreicht sind.",
   "invite10Players": "10 Spieler einladen",
   "invite10PlayersReward": "Erhalte ein Featured-Player-Badge für 7 Tage.",
   "basicPlayerSearch": "Einfache Spielersuche",
@@ -64,5 +64,7 @@
   "hintScoutPricing": "Vergleiche Scout Pro auf der Preisseite.",
   "hintClubPricing": "Vergleiche Club-Tarife und Team-Tools auf der Preisseite.",
   "linkPlayerStats": "Spielerstatistik öffnen",
-  "hintStatsCard": "Profil- und Video-Insights mit Player Premium."
+  "hintStatsCard": "Profil- und Video-Performance an einem Ort.",
+  "playerBenefitsStatusIntro": "Anerkennung und Sichtbarkeit für dein Spielerkonto (Details folgen).",
+  "scoutBenefitsStatusIntro": "Kernfunktionen für die Spielersuche mit deinem Scout-Zugang."
 }

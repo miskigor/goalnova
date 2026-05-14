@@ -3,7 +3,7 @@
   "benefitsSubtitle": "Neleri kullanabileceğini ve neleri açabileceğini gör.",
   "availableNow": "Şu an kullanılabilir",
   "lockedBenefits": "Kilitli avantajlar",
-  "lockedBenefitsIntro": "Bu öne çıkanlar Player Premium veya davet kilometre taşlarıyla açılır.",
+  "lockedBenefitsIntro": "Ek avantajlar davet kilometre taşlarıyla açılabilir (ayrıntılar burada görünecek).",
   "premiumBenefits": "Premium avantajları",
   "referralRewards": "Davet ödülleri",
   "referralSectionIntro": "Bağlantınla kayıt olan yeni oyuncular davet et ve ödül kazan.",
@@ -32,7 +32,7 @@
   "aiImprovementTips": "Gelişim için yapay zekâ ipuçları",
   "moreVideoUploads": "Daha fazla video yükleme",
   "invite3Players": "3 oyuncu davet et",
-  "invite3PlayersReward": "1 ay Player Premium kazan.",
+  "invite3PlayersReward": "Kilometre taşları tamamlandığında 1 ay ekstra oyuncu avantajı.",
   "invite10Players": "10 oyuncu davet et",
   "invite10PlayersReward": "7 gün Featured Player rozeti kazan.",
   "basicPlayerSearch": "Temel oyuncu araması",
@@ -64,5 +64,7 @@
   "hintScoutPricing": "Scout Pro’yu fiyat sayfasında karşılaştır.",
   "hintClubPricing": "Kulüp planlarını ve araçları fiyat sayfasında karşılaştır.",
   "linkPlayerStats": "Oyuncu istatistiklerini aç",
-  "hintStatsCard": "Player Premium ile profil ve video içgörüleri."
+  "hintStatsCard": "Profil ve video performansını tek yerde gör.",
+  "playerBenefitsStatusIntro": "Oyuncu hesabınla bağlı tanınma ve görünürlük (detaylar yakında).",
+  "scoutBenefitsStatusIntro": "Scout erişiminle birlikte gelen temel keşif araçları."
 }

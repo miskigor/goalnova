@@ -3,7 +3,7 @@
   "benefitsSubtitle": "See what you can use and what you can unlock.",
   "availableNow": "Available now",
   "lockedBenefits": "Locked benefits",
-  "lockedBenefitsIntro": "These highlights unlock with Player Premium or referral milestones.",
+  "lockedBenefitsIntro": "Extra perks can unlock when you hit referral milestones (details will show here).",
   "premiumBenefits": "Premium benefits",
   "referralRewards": "Referral rewards",
   "referralSectionIntro": "Invite new players who sign up with your link to earn rewards.",
@@ -32,7 +32,7 @@
   "aiImprovementTips": "AI improvement tips",
   "moreVideoUploads": "More video uploads",
   "invite3Players": "Invite 3 players",
-  "invite3PlayersReward": "Get 1 month of Player Premium.",
+  "invite3PlayersReward": "Earn 1 month of extra player perks when milestones are met.",
   "invite10Players": "Invite 10 players",
   "invite10PlayersReward": "Get a Featured Player badge for 7 days.",
   "basicPlayerSearch": "Basic player search",
@@ -64,5 +64,7 @@
   "hintScoutPricing": "Compare Scout Pro features on the pricing page.",
   "hintClubPricing": "Compare Club plans and team tools on the pricing page.",
   "linkPlayerStats": "Open player statistics",
-  "hintStatsCard": "Profile and video insights when you have Player Premium."
+  "hintStatsCard": "See profile and video performance in one place.",
+  "playerBenefitsStatusIntro": "Recognition and visibility tied to your player account (status updates soon).",
+  "scoutBenefitsStatusIntro": "Core discovery tools included with your scout access."
 }
