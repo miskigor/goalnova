@@ -1941,10 +1941,10 @@
     "locked": "مقفل",
     "unlocked": "مفتوح",
     "referralTermsShort": "تُطبَّق المكافآت عندما ينشئ المدعوون حسابًا.",
+    "yourInviteLink": "رابط الدعوة الخاص بك:",
+    "copyLink": "نسخ الرابط",
+    "shareLink": "مشاركة",
     "inviteLinkCopied": "تم نسخ رابط الدعوة.",
-    "yourInviteLinkLabel": "رابط دعوتك:",
-    "copyLinkButton": "نسخ الرابط",
-    "shareLinkButton": "مشاركة",
-    "referralLinkUnavailable": "رابط الدعوة غير متاح حاليًا. حاول تحديث الصفحة."
+    "referralLinkUnavailable": "رابط الدعوة غير متاح حالياً. يرجى تحديث الصفحة."
   }
 }

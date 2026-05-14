@@ -142,8 +142,8 @@ export function BenefitsReferralPage() {
         </button>
 
         <div className="space-y-2">
-          <p className="text-xs font-medium uppercase tracking-wide text-gn-text-tertiary">
-            {t("yourInviteLinkLabel")}
+          <p className="text-xs font-medium tracking-wide text-gn-text-tertiary">
+            {t("yourInviteLink")}
           </p>
           <div className={linkBoxClass}>
             {hasLink ? inviteUrl : <span className="font-sans text-sm text-gn-text-secondary">{t("referralLinkUnavailable")}</span>}
@@ -155,7 +155,7 @@ export function BenefitsReferralPage() {
               disabled={!hasLink}
               className="rounded-xl border border-gn-border bg-gn-surface px-4 py-2.5 text-sm font-medium text-gn-text transition hover:border-orange-500/50 hover:bg-gn-surface-elevated disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {t("copyLinkButton")}
+              {t("copyLink")}
             </button>
             <button
               type="button"
@@ -163,7 +163,7 @@ export function BenefitsReferralPage() {
               disabled={!hasLink}
               className="rounded-xl border border-orange-500/50 bg-orange-500/10 px-4 py-2.5 text-sm font-semibold text-orange-200 transition hover:bg-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {t("shareLinkButton")}
+              {t("shareLink")}
             </button>
           </div>
         </div>

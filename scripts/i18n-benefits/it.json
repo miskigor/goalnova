@@ -13,9 +13,9 @@
   "locked": "Bloccato",
   "unlocked": "Sbloccato",
   "referralTermsShort": "Le ricompense valgono quando gli invitati creano un account.",
+  "yourInviteLink": "Il tuo link di invito:",
+  "copyLink": "Copia link",
+  "shareLink": "Condividi",
   "inviteLinkCopied": "Link di invito copiato.",
-  "yourInviteLinkLabel": "Il tuo link di invito:",
-  "copyLinkButton": "Copia link",
-  "shareLinkButton": "Condividi",
-  "referralLinkUnavailable": "Il link di invito non è disponibile al momento. Prova ad aggiornare la pagina."
+  "referralLinkUnavailable": "Il link di invito non è al momento disponibile. Aggiorna la pagina."
 }

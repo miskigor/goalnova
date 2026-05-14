@@ -13,9 +13,9 @@
   "locked": "Vergrendeld",
   "unlocked": "Ontgrendeld",
   "referralTermsShort": "Beloningen tellen wanneer genodigden een account aanmaken.",
+  "yourInviteLink": "Jouw uitnodigingslink:",
+  "copyLink": "Link kopiëren",
+  "shareLink": "Delen",
   "inviteLinkCopied": "Uitnodigingslink gekopieerd.",
-  "yourInviteLinkLabel": "Jouw uitnodigingslink:",
-  "copyLinkButton": "Link kopiëren",
-  "shareLinkButton": "Delen",
-  "referralLinkUnavailable": "Je uitnodigingslink is nu niet beschikbaar. Vernieuw de pagina."
+  "referralLinkUnavailable": "Uitnodigingslink is momenteel niet beschikbaar. Vernieuw de pagina."
 }

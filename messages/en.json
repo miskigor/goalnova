@@ -1941,10 +1941,10 @@
     "locked": "Locked",
     "unlocked": "Unlocked",
     "referralTermsShort": "Rewards apply when invited players create an account.",
+    "yourInviteLink": "Your invite link:",
+    "copyLink": "Copy link",
+    "shareLink": "Share",
     "inviteLinkCopied": "Invite link copied.",
-    "yourInviteLinkLabel": "Your invite link:",
-    "copyLinkButton": "Copy link",
-    "shareLinkButton": "Share",
-    "referralLinkUnavailable": "Your invite link is not available right now. Try refreshing the page."
+    "referralLinkUnavailable": "Invite link is currently unavailable. Please refresh the page."
   }
 }

@@ -1941,10 +1941,10 @@
     "locked": "Bloqueado",
     "unlocked": "Desbloqueado",
     "referralTermsShort": "As recompensas aplicam-se quando os convidados criam uma conta.",
+    "yourInviteLink": "O teu link de convite:",
+    "copyLink": "Copiar link",
+    "shareLink": "Partilhar",
     "inviteLinkCopied": "Link de convite copiado.",
-    "yourInviteLinkLabel": "O teu link de convite:",
-    "copyLinkButton": "Copiar link",
-    "shareLinkButton": "Partilhar",
-    "referralLinkUnavailable": "O teu link de convite não está disponível de momento. Tenta atualizar a página."
+    "referralLinkUnavailable": "O link de convite não está disponível no momento. Atualiza a página."
   }
 }

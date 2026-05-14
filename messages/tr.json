@@ -1941,10 +1941,10 @@
     "locked": "Kilitli",
     "unlocked": "Açıldı",
     "referralTermsShort": "Ödüller, davet edilen oyuncular hesap oluşturduğunda geçerlidir.",
+    "yourInviteLink": "Davet linkin:",
+    "copyLink": "Linki kopyala",
+    "shareLink": "Paylaş",
     "inviteLinkCopied": "Davet linki kopyalandı.",
-    "yourInviteLinkLabel": "Davet linkin:",
-    "copyLinkButton": "Linki kopyala",
-    "shareLinkButton": "Paylaş",
-    "referralLinkUnavailable": "Davet linkin şu an kullanılamıyor. Sayfayı yenilemeyi dene."
+    "referralLinkUnavailable": "Davet linki şu anda kullanılamıyor. Lütfen sayfayı yenile."
   }
 }

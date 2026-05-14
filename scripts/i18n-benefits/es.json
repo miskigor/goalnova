@@ -13,9 +13,9 @@
   "locked": "Bloqueado",
   "unlocked": "Desbloqueado",
   "referralTermsShort": "Las recompensas aplican cuando los invitados crean una cuenta.",
+  "yourInviteLink": "Tu enlace de invitación:",
+  "copyLink": "Copiar enlace",
+  "shareLink": "Compartir",
   "inviteLinkCopied": "Enlace de invitación copiado.",
-  "yourInviteLinkLabel": "Tu enlace de invitación:",
-  "copyLinkButton": "Copiar enlace",
-  "shareLinkButton": "Compartir",
-  "referralLinkUnavailable": "Tu enlace de invitación no está disponible ahora. Prueba a actualizar la página."
+  "referralLinkUnavailable": "El enlace de invitación no está disponible en este momento. Actualiza la página."
 }

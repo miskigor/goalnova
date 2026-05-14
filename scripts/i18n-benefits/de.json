@@ -13,9 +13,9 @@
   "locked": "Gesperrt",
   "unlocked": "Freigeschaltet",
   "referralTermsShort": "Prämien gelten, wenn eingeladene Spieler ein Konto erstellen.",
+  "yourInviteLink": "Dein Einladungslink:",
+  "copyLink": "Link kopieren",
+  "shareLink": "Teilen",
   "inviteLinkCopied": "Einladungslink kopiert.",
-  "yourInviteLinkLabel": "Dein Einladungslink:",
-  "copyLinkButton": "Link kopieren",
-  "shareLinkButton": "Teilen",
-  "referralLinkUnavailable": "Dein Einladungslink ist gerade nicht verfügbar. Bitte die Seite neu laden."
+  "referralLinkUnavailable": "Der Einladungslink ist derzeit nicht verfügbar. Bitte aktualisiere die Seite."
 }
