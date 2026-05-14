@@ -14,5 +14,8 @@
   "unlocked": "مفتوح",
   "referralTermsShort": "تُطبَّق المكافآت عندما ينشئ المدعوون حسابًا.",
   "inviteLinkCopied": "تم نسخ رابط الدعوة.",
-  "referralNotAvailable": "الدعوات غير متاحة لحسابك بعد."
+  "yourInviteLinkLabel": "رابط دعوتك:",
+  "copyLinkButton": "نسخ الرابط",
+  "shareLinkButton": "مشاركة",
+  "referralLinkUnavailable": "رابط الدعوة غير متاح حاليًا. حاول تحديث الصفحة."
 }

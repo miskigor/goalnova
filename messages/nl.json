@@ -1942,6 +1942,9 @@
     "unlocked": "Ontgrendeld",
     "referralTermsShort": "Beloningen tellen wanneer genodigden een account aanmaken.",
     "inviteLinkCopied": "Uitnodigingslink gekopieerd.",
-    "referralNotAvailable": "Uitnodigingen zijn voor je account nog niet beschikbaar."
+    "yourInviteLinkLabel": "Jouw uitnodigingslink:",
+    "copyLinkButton": "Link kopiëren",
+    "shareLinkButton": "Delen",
+    "referralLinkUnavailable": "Je uitnodigingslink is nu niet beschikbaar. Vernieuw de pagina."
   }
 }

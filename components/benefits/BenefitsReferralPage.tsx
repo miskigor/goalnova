@@ -4,10 +4,18 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { hrefWithLocale } from "@/i18n/routing";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
+import { devError } from "@/lib/devLog";
 import { fetchReferralDashboard, type ReferralDashboard } from "@/lib/supabase/referrals";
 
 const cardClass =
   "rounded-xl border border-orange-500/60 bg-gn-surface/20 p-4 shadow-sm sm:p-5";
+
+const linkBoxClass =
+  "rounded-lg border border-gn-border-subtle bg-gn-surface/30 px-3 py-2.5 font-mono text-xs leading-relaxed text-gn-text break-all sm:text-sm";
+
+function isShareCancelled(err: unknown): boolean {
+  return err instanceof DOMException && err.name === "AbortError";
+}
 
 export function BenefitsReferralPage() {
   const t = useTranslations("benefits");
@@ -18,8 +26,19 @@ export function BenefitsReferralPage() {
   const [copied, setCopied] = useState(false);
 
   const load = useCallback(async () => {
-    const { data } = await fetchReferralDashboard();
+    const { data, errorMessage } = await fetchReferralDashboard();
     setDash(data);
+    if (process.env.NODE_ENV === "development") {
+      if (errorMessage) {
+        devError("[benefits] fetchReferralDashboard error:", errorMessage);
+      }
+      if (!data?.referralCode && errorMessage === null && data) {
+        devError("[benefits] referral dashboard returned no referral_code", data);
+      }
+      if (!data && errorMessage === null) {
+        devError("[benefits] fetchReferralDashboard returned no data");
+      }
+    }
     setLoading(false);
   }, []);
 
@@ -34,45 +53,69 @@ export function BenefitsReferralPage() {
     return `${window.location.origin}${hrefWithLocale(path, locale)}`;
   }, [dash?.referralCode, locale]);
 
+  const hasLink = Boolean(inviteUrl);
   const n = dash?.inviteCount ?? 0;
   const has3 = (dash?.grantedKeys ?? []).includes("invite_3_player_premium");
   const has10 = (dash?.grantedKeys ?? []).includes("invite_10_featured_player");
 
-  const onInvite = useCallback(() => {
+  const showCopiedToast = useCallback(() => {
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 5000);
+  }, []);
+
+  const copyInviteUrl = useCallback(async () => {
     if (!inviteUrl) return;
-    const shareData = { title: APP_DISPLAY_NAME, text: t("inviteFriendsCta"), url: inviteUrl };
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      showCopiedToast();
+    } catch {
+      setCopied(false);
+    }
+  }, [inviteUrl, showCopiedToast]);
+
+  const shareData = useMemo(
+    () => ({ title: APP_DISPLAY_NAME, text: t("inviteFriendsCta"), url: inviteUrl }),
+    [inviteUrl, t],
+  );
+
+  /** Orange primary: native share if available; otherwise copy. Share cancel does not copy. */
+  const onInvitePrimary = useCallback(() => {
+    if (!inviteUrl) return;
     void (async () => {
       if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
         try {
           await navigator.share(shareData);
-          return;
-        } catch {
-          return;
+        } catch (e) {
+          if (isShareCancelled(e)) return;
+          await copyInviteUrl();
         }
+        return;
       }
-      try {
-        await navigator.clipboard.writeText(inviteUrl);
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 5000);
-      } catch {
-        setCopied(false);
-      }
+      await copyInviteUrl();
     })();
-  }, [inviteUrl, t]);
+  }, [copyInviteUrl, inviteUrl, shareData]);
+
+  /** Share row: share if supported, else same as copy. */
+  const onShareSecondary = useCallback(() => {
+    if (!inviteUrl) return;
+    void (async () => {
+      if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+        try {
+          await navigator.share(shareData);
+        } catch (e) {
+          if (isShareCancelled(e)) return;
+          await copyInviteUrl();
+        }
+        return;
+      }
+      await copyInviteUrl();
+    })();
+  }, [copyInviteUrl, inviteUrl, shareData]);
 
   if (loading) {
     return (
       <div className="min-w-0 max-w-full py-6">
         <p className="text-sm text-gn-text-secondary">{tCommon("loadingEllipsis")}</p>
-      </div>
-    );
-  }
-
-  if (!dash?.referralCode) {
-    return (
-      <div className="min-w-0 max-w-full space-y-4 py-2">
-        <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">{t("benefitsTitle")}</h1>
-        <p className="text-sm text-gn-text-secondary">{t("referralNotAvailable")}</p>
       </div>
     );
   }
@@ -91,11 +134,39 @@ export function BenefitsReferralPage() {
 
         <button
           type="button"
-          onClick={onInvite}
-          className="w-full rounded-xl bg-orange-500 px-4 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg sm:w-auto sm:min-w-[12rem]"
+          onClick={onInvitePrimary}
+          disabled={!hasLink}
+          className="w-full rounded-xl bg-orange-500 px-4 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:min-w-[12rem]"
         >
           {t("inviteFriendButton")}
         </button>
+
+        <div className="space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-gn-text-tertiary">
+            {t("yourInviteLinkLabel")}
+          </p>
+          <div className={linkBoxClass}>
+            {hasLink ? inviteUrl : <span className="font-sans text-sm text-gn-text-secondary">{t("referralLinkUnavailable")}</span>}
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+            <button
+              type="button"
+              onClick={() => void copyInviteUrl()}
+              disabled={!hasLink}
+              className="rounded-xl border border-gn-border bg-gn-surface px-4 py-2.5 text-sm font-medium text-gn-text transition hover:border-orange-500/50 hover:bg-gn-surface-elevated disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {t("copyLinkButton")}
+            </button>
+            <button
+              type="button"
+              onClick={onShareSecondary}
+              disabled={!hasLink}
+              className="rounded-xl border border-orange-500/50 bg-orange-500/10 px-4 py-2.5 text-sm font-semibold text-orange-200 transition hover:bg-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {t("shareLinkButton")}
+            </button>
+          </div>
+        </div>
 
         {copied ? (
           <p className="text-sm font-medium text-orange-400" role="status">

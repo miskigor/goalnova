@@ -14,5 +14,8 @@
   "unlocked": "Desbloqueado",
   "referralTermsShort": "As recompensas aplicam-se quando os convidados criam uma conta.",
   "inviteLinkCopied": "Link de convite copiado.",
-  "referralNotAvailable": "Os convites ainda não estão disponíveis para a tua conta."
+  "yourInviteLinkLabel": "O teu link de convite:",
+  "copyLinkButton": "Copiar link",
+  "shareLinkButton": "Partilhar",
+  "referralLinkUnavailable": "O teu link de convite não está disponível de momento. Tenta atualizar a página."
 }

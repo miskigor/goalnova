@@ -14,5 +14,8 @@
   "unlocked": "Açıldı",
   "referralTermsShort": "Ödüller, davet edilen oyuncular hesap oluşturduğunda geçerlidir.",
   "inviteLinkCopied": "Davet linki kopyalandı.",
-  "referralNotAvailable": "Davetler hesabın için henüz kullanılamıyor."
+  "yourInviteLinkLabel": "Davet linkin:",
+  "copyLinkButton": "Linki kopyala",
+  "shareLinkButton": "Paylaş",
+  "referralLinkUnavailable": "Davet linkin şu an kullanılamıyor. Sayfayı yenilemeyi dene."
 }

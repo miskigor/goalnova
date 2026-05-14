@@ -1942,6 +1942,9 @@
     "unlocked": "Freigeschaltet",
     "referralTermsShort": "Prämien gelten, wenn eingeladene Spieler ein Konto erstellen.",
     "inviteLinkCopied": "Einladungslink kopiert.",
-    "referralNotAvailable": "Empfehlungen sind für dein Konto noch nicht verfügbar."
+    "yourInviteLinkLabel": "Dein Einladungslink:",
+    "copyLinkButton": "Link kopieren",
+    "shareLinkButton": "Teilen",
+    "referralLinkUnavailable": "Dein Einladungslink ist gerade nicht verfügbar. Bitte die Seite neu laden."
   }
 }

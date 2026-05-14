@@ -1942,6 +1942,9 @@
     "unlocked": "Débloqué",
     "referralTermsShort": "Les récompenses s’appliquent lorsque les invités créent un compte.",
     "inviteLinkCopied": "Lien d’invitation copié.",
-    "referralNotAvailable": "Les parrainages ne sont pas encore disponibles pour votre compte."
+    "yourInviteLinkLabel": "Votre lien d’invitation :",
+    "copyLinkButton": "Copier le lien",
+    "shareLinkButton": "Partager",
+    "referralLinkUnavailable": "Votre lien d’invitation n’est pas disponible pour le moment. Essayez d’actualiser la page."
   }
 }

@@ -14,5 +14,8 @@
   "unlocked": "Unlocked",
   "referralTermsShort": "Rewards apply when invited players create an account.",
   "inviteLinkCopied": "Invite link copied.",
-  "referralNotAvailable": "Referrals are not available for your account yet."
+  "yourInviteLinkLabel": "Your invite link:",
+  "copyLinkButton": "Copy link",
+  "shareLinkButton": "Share",
+  "referralLinkUnavailable": "Your invite link is not available right now. Try refreshing the page."
 }

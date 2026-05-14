@@ -14,5 +14,8 @@
   "unlocked": "Otključano",
   "referralTermsShort": "Nagrade važe kada pozvani igrači naprave nalog.",
   "inviteLinkCopied": "Pozivni link je kopiran.",
-  "referralNotAvailable": "Preporuke još nisu dostupne za tvoj nalog."
+  "yourInviteLinkLabel": "Tvoj pozivni link:",
+  "copyLinkButton": "Kopiraj link",
+  "shareLinkButton": "Podeli",
+  "referralLinkUnavailable": "Pozivni link trenutno nije dostupan. Pokušaj da osvežiš stranicu."
 }
