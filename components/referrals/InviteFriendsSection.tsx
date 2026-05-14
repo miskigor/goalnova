@@ -91,7 +91,7 @@ export function InviteFriendsSection({ className = "" }: { className?: string })
 
   return (
     <section
-      className={`space-y-4 rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4 sm:p-5 ${className}`}
+      className={`scroll-mt-[calc(5rem+env(safe-area-inset-top,0px)+0.5rem)] space-y-4 rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4 sm:p-5 ${className}`}
       id="invite-friends"
     >
       <div>
