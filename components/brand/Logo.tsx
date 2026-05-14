@@ -51,11 +51,12 @@ const wordmarkTextClass: Record<LogoVariant, string> = {
 
 /** “Pitch” bijelo + “Rusch” narandžasto, spojeno (bez razmaka između slova). */
 function LogoWordmark({ variant }: { variant: LogoVariant }) {
+  const wrapClass =
+    variant === "header"
+      ? `min-w-0 shrink truncate leading-none ${wordmarkTextClass[variant]}`
+      : `shrink-0 whitespace-nowrap leading-none ${wordmarkTextClass[variant]}`;
   return (
-    <span
-      className={`shrink-0 whitespace-nowrap leading-none ${wordmarkTextClass[variant]}`}
-      aria-hidden
-    >
+    <span className={wrapClass} aria-hidden>
       <span className="text-white">Pitch</span>
       <span className="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">Rusch</span>
     </span>
@@ -109,12 +110,14 @@ export function Logo({
 
   const gapClass = showWordmark ? "gap-2 sm:gap-2.5" : "gap-0";
 
+  const linkShrinkClass = variant === "header" ? "min-w-0 shrink" : "shrink-0";
+
   if (resolvedHref) {
     return (
       <Link
         href={resolvedHref}
         aria-label={APP_DISPLAY_NAME}
-        className={`group inline-flex shrink-0 items-center ${gapClass} rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg ${className}`.trim()}
+        className={`group inline-flex ${linkShrinkClass} items-center ${gapClass} rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg ${className}`.trim()}
         dir="ltr"
       >
         {mark}

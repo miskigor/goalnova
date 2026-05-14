@@ -21,6 +21,7 @@ import {
 import { supabase } from "@/lib/supabase/client";
 import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadContext";
 import { countMyUnreadSupportReplies } from "@/lib/supabase/supportTickets";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 
 function displayNameFromUser(user: User): string {
   return (
@@ -36,6 +37,10 @@ type NavUserMenuProps = {
   onNavigate?: () => void;
   /** Open dropdown above the trigger (e.g. sidebar footer) */
   menuPlacement?: "below" | "above";
+  /** Mobile app header: former hamburger links + language (no duplicate hamburger). */
+  mobileMoreInMenu?: boolean;
+  /** Mobile header: avatar-only trigger without chevron to save horizontal space. */
+  compactTrigger?: boolean;
 };
 
 function newRealtimeChannelSuffix(): string {
@@ -49,6 +54,8 @@ export function NavUserMenu({
   user,
   onNavigate,
   menuPlacement = "below",
+  mobileMoreInMenu = false,
+  compactTrigger = false,
 }: NavUserMenuProps) {
   const menuId = useId();
   /** AppSidebar + AppMobileHeader both mount NavUserMenu; `supabase.channel(name)` reuses one RealtimeChannel per name, so a second mount cannot chain `.on()` after the first `.subscribe()`. */
@@ -191,7 +198,10 @@ export function NavUserMenu({
         aria-controls={menuId}
         aria-label={tA11y("accountMenu")}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-full p-0.5 transition-all duration-200 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg"
+        className={
+          "flex items-center rounded-full transition-all duration-200 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg " +
+          (compactTrigger ? "gap-0 p-0" : "gap-2 p-0.5")
+        }
       >
         <ProfileAvatar
           name={displayNameFromUser(user)}
@@ -199,16 +209,18 @@ export function NavUserMenu({
           sizeClassName="size-9 text-xs font-semibold"
           className="ring-2 ring-gn-border-subtle"
         />
-        <svg
-          className={`size-4 shrink-0 text-gn-text-tertiary transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          aria-hidden
-        >
-          <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        {compactTrigger ? null : (
+          <svg
+            className={`size-4 shrink-0 text-gn-text-tertiary transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden
+          >
+            <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
       </button>
 
       {open ? (
@@ -318,6 +330,57 @@ export function NavUserMenu({
             >
               {tNav("upload")}
             </Link>
+          ) : null}
+
+          {mobileMoreInMenu ? (
+            <>
+              <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
+              <p className="px-3 pt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-gn-text-tertiary">
+                {tNav("moreInMenu")}
+              </p>
+              <Link
+                href="/explore"
+                role="menuitem"
+                className={linkClass}
+                onClick={() => {
+                  setOpen(false);
+                  onNavigate?.();
+                }}
+              >
+                <NavIcon name="explore" className="size-4 shrink-0 opacity-90" />
+                {tNav("explore")}
+              </Link>
+              <Link
+                href="/rankings"
+                role="menuitem"
+                className={linkClass}
+                onClick={() => {
+                  setOpen(false);
+                  onNavigate?.();
+                }}
+              >
+                <NavIcon name="rankings" className="size-4 shrink-0 opacity-90" />
+                {tNav("rankings")}
+              </Link>
+              <Link
+                href="/notifications"
+                role="menuitem"
+                className={linkClass}
+                onClick={() => {
+                  setOpen(false);
+                  onNavigate?.();
+                }}
+              >
+                <NavIcon name="messages" className="size-4 shrink-0 opacity-90" />
+                {tNav("messages")}
+              </Link>
+            </>
+          ) : null}
+
+          {mobileMoreInMenu ? (
+            <div className="border-t border-gn-border-subtle px-2 py-2">
+              <LanguageSwitcher className="w-full [&_select]:w-full" />
+            </div>
           ) : null}
 
           <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
