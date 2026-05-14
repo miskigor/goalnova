@@ -94,6 +94,11 @@ export async function tryConsumePendingReferral(): Promise<void> {
   const row = data as Record<string, unknown> | null;
   const reason = typeof row?.reason === "string" ? row.reason : "";
 
+  if (row?.ok === false && reason === "referral_only_for_new_accounts") {
+    clearPendingReferralCode();
+    return;
+  }
+
   if (row?.ok === true) {
     if (reason === "no_player_profile" || reason === "not_player_role") {
       return;

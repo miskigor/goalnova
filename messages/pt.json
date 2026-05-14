@@ -1914,6 +1914,12 @@
     "featuredBadgeUnlocked": "Badge Featured Player desbloqueado",
     "inviteFriendsCta": "Convida os teus colegas e desbloqueia um boost Premium.",
     "shareWithTeam": "Partilhar com a equipa",
-    "referralTermsShort": "As recompensas aplicam-se quando os jogadores convidados criam uma conta."
+    "referralTermsShort": "As recompensas aplicam-se quando os jogadores convidados criam uma conta.",
+    "inviteLinkCopiedFull": "Link copiado. Envia-o aos teus colegas.",
+    "invitedPlayersLabel": "Jogadores convidados: {count}",
+    "progressInvitePremium": "{current} / {target} para 1 mês de Player Premium",
+    "progressInviteFeatured": "{current} / {target} para badge Featured Player (7 dias)",
+    "rewardStatusLocked": "Bloqueado",
+    "rewardStatusUnlocked": "Desbloqueado"
   }
 }

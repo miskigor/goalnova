@@ -3,11 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { hrefWithLocale } from "@/i18n/routing";
-import {
-  fetchReferralDashboard,
-  tryConsumePendingReferral,
-  type ReferralDashboard,
-} from "@/lib/supabase/referrals";
+import { fetchReferralDashboard, type ReferralDashboard } from "@/lib/supabase/referrals";
 
 function clampPct(n: number, max: number): number {
   if (max <= 0) return 0;
@@ -20,10 +16,9 @@ export function InviteFriendsSection({ className = "" }: { className?: string })
   const locale = useLocale();
   const [loading, setLoading] = useState(true);
   const [dash, setDash] = useState<ReferralDashboard | null>(null);
-  const [copyDone, setCopyDone] = useState(false);
+  const [copyHint, setCopyHint] = useState(false);
 
   const load = useCallback(async () => {
-    await tryConsumePendingReferral();
     const { data } = await fetchReferralDashboard();
     setDash(data);
     setLoading(false);
@@ -40,42 +35,46 @@ export function InviteFriendsSection({ className = "" }: { className?: string })
     return `${window.location.origin}${hrefWithLocale(path, locale)}`;
   }, [dash?.referralCode, locale]);
 
-  const pct3 = clampPct(dash?.inviteCount ?? 0, 3);
-  const pct10 = clampPct(dash?.inviteCount ?? 0, 10);
+  const n = dash?.inviteCount ?? 0;
+  const pct3 = clampPct(n, 3);
+  const pct10 = clampPct(n, 10);
 
   const has3 = (dash?.grantedKeys ?? []).includes("invite_3_player_premium");
   const has10 = (dash?.grantedKeys ?? []).includes("invite_10_featured_player");
 
-  const toGo3 = Math.max(0, 3 - (dash?.inviteCount ?? 0));
-  const toGo10 = Math.max(0, 10 - (dash?.inviteCount ?? 0));
-
-  async function onCopy() {
+  function onCopy() {
     if (!inviteUrl) return;
-    try {
-      await navigator.clipboard.writeText(inviteUrl);
-      setCopyDone(true);
-      window.setTimeout(() => setCopyDone(false), 2000);
-    } catch {
-      setCopyDone(false);
-    }
+    void (async () => {
+      try {
+        await navigator.clipboard.writeText(inviteUrl);
+        setCopyHint(true);
+        window.setTimeout(() => setCopyHint(false), 5000);
+      } catch {
+        setCopyHint(false);
+      }
+    })();
   }
 
-  async function onShare() {
+  function onShare() {
     if (!inviteUrl) return;
     const shareData = {
       title: "PitchRusch",
       text: t("inviteFriendsCta"),
       url: inviteUrl,
     };
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await onCopy();
+    void (async () => {
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(inviteUrl);
+          setCopyHint(true);
+          window.setTimeout(() => setCopyHint(false), 5000);
+        }
+      } catch {
+        /* user cancelled share or clipboard denied */
       }
-    } catch {
-      /* user cancelled share */
-    }
+    })();
   }
 
   if (loading) {
@@ -111,41 +110,39 @@ export function InviteFriendsSection({ className = "" }: { className?: string })
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={() => void onCopy()}
+            onClick={onCopy}
             className="rounded-xl border border-gn-border bg-gn-surface px-4 py-2 text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/50"
           >
-            {copyDone ? t("inviteLinkCopied") : t("copyInviteLink")}
+            {t("copyInviteLink")}
           </button>
           <button
             type="button"
-            onClick={() => void onShare()}
+            onClick={onShare}
             className="rounded-xl bg-gn-accent px-4 py-2 text-sm font-semibold text-black transition-opacity hover:opacity-90"
           >
             {t("shareInviteLink")}
           </button>
         </div>
+        {copyHint ? (
+          <p className="text-sm font-medium text-gn-accent" role="status">
+            {t("inviteLinkCopiedFull")}
+          </p>
+        ) : null}
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div className="rounded-lg border border-gn-border-subtle bg-gn-surface/30 p-3">
-          <p className="text-xs text-gn-text-tertiary">{t("invitedPlayers")}</p>
-          <p className="mt-1 text-2xl font-bold text-gn-text">{dash.inviteCount}</p>
-          <p className="mt-1 text-xs text-gn-text-secondary">
-            {(dash.inviteCount ?? 0)} {t("playersInvited")}
-          </p>
+      <div className="space-y-3 rounded-lg border border-gn-border-subtle bg-gn-surface/30 p-4">
+        <div>
+          <p className="text-sm font-semibold text-gn-text">{t("invitedPlayersLabel", { count: n })}</p>
         </div>
-        <div className="rounded-lg border border-gn-border-subtle bg-gn-surface/30 p-3">
-          <p className="text-xs text-gn-text-tertiary">{t("yourReferralProgress")}</p>
-          <p className="mt-2 text-xs text-gn-text-secondary">
-            {t("invite3RewardTitle")}: {toGo3} {t("playersToGo")}
-          </p>
-          <div className="mt-1 h-2 overflow-hidden rounded-full bg-gn-border">
+        <div className="space-y-1 text-sm text-gn-text-secondary">
+          <p>{t("progressInvitePremium", { current: n, target: 3 })}</p>
+          <div className="h-2 overflow-hidden rounded-full bg-gn-border">
             <div className="h-full rounded-full bg-gn-accent transition-all" style={{ width: `${pct3}%` }} />
           </div>
-          <p className="mt-3 text-xs text-gn-text-secondary">
-            {t("invite10RewardTitle")}: {toGo10} {t("playersToGo")}
-          </p>
-          <div className="mt-1 h-2 overflow-hidden rounded-full bg-gn-border">
+        </div>
+        <div className="space-y-1 text-sm text-gn-text-secondary">
+          <p>{t("progressInviteFeatured", { current: n, target: 10 })}</p>
+          <div className="h-2 overflow-hidden rounded-full bg-gn-border">
             <div className="h-full rounded-full bg-gn-accent/70 transition-all" style={{ width: `${pct10}%` }} />
           </div>
         </div>
@@ -157,15 +154,37 @@ export function InviteFriendsSection({ className = "" }: { className?: string })
         </p>
         <ul className="space-y-2 text-sm text-gn-text-secondary">
           <li className="rounded-lg border border-gn-border-subtle bg-gn-surface/20 p-3">
-            <p className="font-medium text-gn-text">{t("invite3RewardTitle")}</p>
-            <p className="mt-0.5">{t("invite3RewardDescription")}</p>
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <p className="font-medium text-gn-text">{t("invite3RewardTitle")}</p>
+                <p className="mt-0.5">{t("invite3RewardDescription")}</p>
+              </div>
+              <span
+                className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                  has3 ? "bg-gn-accent/20 text-gn-accent" : "bg-gn-border text-gn-text-tertiary"
+                }`}
+              >
+                {has3 ? t("rewardStatusUnlocked") : t("rewardStatusLocked")}
+              </span>
+            </div>
             {has3 ? (
               <p className="mt-2 text-xs font-semibold text-gn-accent">{t("premiumBoostUnlocked")}</p>
             ) : null}
           </li>
           <li className="rounded-lg border border-gn-border-subtle bg-gn-surface/20 p-3">
-            <p className="font-medium text-gn-text">{t("invite10RewardTitle")}</p>
-            <p className="mt-0.5">{t("invite10RewardDescription")}</p>
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <p className="font-medium text-gn-text">{t("invite10RewardTitle")}</p>
+                <p className="mt-0.5">{t("invite10RewardDescription")}</p>
+              </div>
+              <span
+                className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                  has10 ? "bg-gn-accent/20 text-gn-accent" : "bg-gn-border text-gn-text-tertiary"
+                }`}
+              >
+                {has10 ? t("rewardStatusUnlocked") : t("rewardStatusLocked")}
+              </span>
+            </div>
             {has10 ? (
               <p className="mt-2 text-xs font-semibold text-gn-accent">{t("featuredBadgeUnlocked")}</p>
             ) : null}

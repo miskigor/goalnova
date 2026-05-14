@@ -1914,6 +1914,12 @@
     "featuredBadgeUnlocked": "Featured Player rozeti açıldı",
     "inviteFriendsCta": "Takım arkadaşlarını davet et ve Premium boost aç.",
     "shareWithTeam": "Takımınla paylaş",
-    "referralTermsShort": "Ödüller, davet edilen oyuncular hesap oluşturduğunda geçerlidir."
+    "referralTermsShort": "Ödüller, davet edilen oyuncular hesap oluşturduğunda geçerlidir.",
+    "inviteLinkCopiedFull": "Link kopyalandı. Takım arkadaşlarına gönder.",
+    "invitedPlayersLabel": "Davet edilen oyuncular: {count}",
+    "progressInvitePremium": "{current} / {target} — 1 ay Player Premium",
+    "progressInviteFeatured": "{current} / {target} — Featured Player rozeti (7 gün)",
+    "rewardStatusLocked": "Kilitli",
+    "rewardStatusUnlocked": "Açıldı"
   }
 }

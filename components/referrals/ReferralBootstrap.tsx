@@ -19,7 +19,7 @@ export function ReferralBootstrap() {
     let cancelled = false;
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
       if (cancelled) return;
-      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "INITIAL_SESSION") {
+      if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
         void tryConsumePendingReferral();
       }
     });

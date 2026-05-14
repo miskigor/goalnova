@@ -1914,6 +1914,12 @@
     "featuredBadgeUnlocked": "Featured Player badge ontgrendeld",
     "inviteFriendsCta": "Nodig je teamgenoten uit en ontgrendel Premium boost.",
     "shareWithTeam": "Delen met je team",
-    "referralTermsShort": "Beloningen gelden wanneer uitgenodigde spelers een account aanmaken."
+    "referralTermsShort": "Beloningen gelden wanneer uitgenodigde spelers een account aanmaken.",
+    "inviteLinkCopiedFull": "Link gekopieerd. Stuur hem naar je teamgenoten.",
+    "invitedPlayersLabel": "Uitgenodigde spelers: {count}",
+    "progressInvitePremium": "{current} / {target} voor 1 maand Player Premium",
+    "progressInviteFeatured": "{current} / {target} voor Featured Player-badge (7 dagen)",
+    "rewardStatusLocked": "Vergrendeld",
+    "rewardStatusUnlocked": "Ontgrendeld"
   }
 }

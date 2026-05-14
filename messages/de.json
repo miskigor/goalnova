@@ -1914,6 +1914,12 @@
     "featuredBadgeUnlocked": "Featured-Player-Abzeichen freigeschaltet",
     "inviteFriendsCta": "Lade deine Teamkollegen ein und schalte Premium-Boost frei.",
     "shareWithTeam": "Mit deinem Team teilen",
-    "referralTermsShort": "Belohnungen gelten, wenn eingeladene Spieler ein Konto erstellen."
+    "referralTermsShort": "Belohnungen gelten, wenn eingeladene Spieler ein Konto erstellen.",
+    "inviteLinkCopiedFull": "Link kopiert. Schick ihn an deine Teamkollegen.",
+    "invitedPlayersLabel": "Eingeladene Spieler: {count}",
+    "progressInvitePremium": "{current} / {target} für 1 Monat Player Premium",
+    "progressInviteFeatured": "{current} / {target} für Featured-Player-Abzeichen (7 Tage)",
+    "rewardStatusLocked": "Gesperrt",
+    "rewardStatusUnlocked": "Freigeschaltet"
   }
 }

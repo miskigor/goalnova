@@ -1914,6 +1914,12 @@
     "featuredBadgeUnlocked": "تم فتح شارة Featured Player",
     "inviteFriendsCta": "ادعُ زملاءك وافتح تعزيز Premium.",
     "shareWithTeam": "شارك مع فريقك",
-    "referralTermsShort": "تُطبق المكافآت عندما ينشئ اللاعبون المدعوون حسابًا."
+    "referralTermsShort": "تُطبق المكافآت عندما ينشئ اللاعبون المدعوون حسابًا.",
+    "inviteLinkCopiedFull": "تم نسخ الرابط. أرسله لزملائك في الفريق.",
+    "invitedPlayersLabel": "اللاعبون المدعوون: {count}",
+    "progressInvitePremium": "{current} / {target} لشهر واحد من Player Premium",
+    "progressInviteFeatured": "{current} / {target} لشارة Featured Player (7 أيام)",
+    "rewardStatusLocked": "مقفل",
+    "rewardStatusUnlocked": "مفتوح"
   }
 }

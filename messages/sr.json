@@ -1914,6 +1914,12 @@
     "featuredBadgeUnlocked": "Featured Player badge otključan",
     "inviteFriendsCta": "Pozovi svoje saigrače i otključaj Premium boost.",
     "shareWithTeam": "Podeli sa ekipom",
-    "referralTermsShort": "Nagrade važe kada pozvani igrači naprave nalog."
+    "referralTermsShort": "Nagrade važe kada pozvani igrači naprave nalog.",
+    "inviteLinkCopiedFull": "Link je kopiran. Pošalji ga svojim saigračima.",
+    "invitedPlayersLabel": "Pozvani igrači: {count}",
+    "progressInvitePremium": "{current} / {target} za 1 mesec Player Premiuma",
+    "progressInviteFeatured": "{current} / {target} za Featured Player badge 7 dana",
+    "rewardStatusLocked": "Zaključano",
+    "rewardStatusUnlocked": "Otključano"
   }
 }
