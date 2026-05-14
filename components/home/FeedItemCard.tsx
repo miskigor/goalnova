@@ -65,15 +65,22 @@ export function FeedItemCard({
       ? feedIndex - activeFeedIndex
       : null;
 
-  /** Active + next clip: full buffer; previous: metadata; rest: none (TikTok-style). */
+  /** Active + next two clips: full buffer; previous two: metadata; rest: none. */
   const videoPreload: "none" | "metadata" | "auto" =
     slideOffset === null
       ? "metadata"
-      : slideOffset === 0 || slideOffset === 1
+      : slideOffset === 0 || slideOffset === 1 || slideOffset === 2
         ? "auto"
-        : slideOffset === -1
+        : slideOffset === -1 || slideOffset === -2
           ? "metadata"
           : "none";
+
+  const videoFetchPriority: "high" | "low" | "auto" =
+    slideOffset === null
+      ? "auto"
+      : slideOffset !== null && Math.abs(slideOffset) <= 2
+        ? "high"
+        : "low";
 
   const feedVideoDebugMeta = useMemo(
     () => ({
@@ -89,13 +96,6 @@ export function FeedItemCard({
       video.video_url,
     ],
   );
-
-  const videoFetchPriority: "high" | "low" | "auto" =
-    slideOffset === null
-      ? "auto"
-      : slideOffset === 0 || slideOffset === 1 || slideOffset === -1
-        ? "high"
-        : "low";
 
   useEffect(() => {
     if (!isDev || slideOffset !== 0) return;

@@ -19,6 +19,7 @@ import {
 } from "@/lib/supabase/homeFeed";
 import { FeedItemCard } from "@/components/home/FeedItemCard";
 import { FeedVideoHeadPreloads } from "@/components/home/FeedVideoHeadPreloads";
+import { HomeFeedMediaGestureUnlock } from "@/components/home/HomeFeedMediaGestureUnlock";
 import {
   HomeFeedSoundProvider,
   useHomeFeedSound,
@@ -135,15 +136,19 @@ function FeedScrollWithUserAudioActivation({
   className,
   children,
   onNearEnd,
+  snapVideoKeys,
 }: {
   className: string;
   children: React.ReactNode;
-  /** Fires when the user scrolls within ~65% viewport height of the list bottom (throttled). */
+  /** When the user scrolls within ~65% viewport height of the list bottom (throttled). */
   onNearEnd?: () => void;
+  /** Ordered feed keys for scroll-snap index → early `activeVideoId` boost (mobile TikTok handoff). */
+  snapVideoKeys?: readonly string[];
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { notifyFeedUserActivation } = useHomeFeedSound();
+  const { notifyFeedUserActivation, reportScrollSnapBoost } = useHomeFeedSound();
   const lastNearEndAtRef = useRef(0);
+  const scrollBoostRafRef = useRef<number | null>(null);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -162,6 +167,40 @@ function FeedScrollWithUserAudioActivation({
       el.removeEventListener("scroll", unlock);
     };
   }, [notifyFeedUserActivation]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || !snapVideoKeys?.length) return;
+
+    const applySnapBoost = () => {
+      const ch = el.clientHeight;
+      if (ch < 8) return;
+      const idx = Math.min(
+        snapVideoKeys.length - 1,
+        Math.max(0, Math.round(el.scrollTop / ch)),
+      );
+      const id = snapVideoKeys[idx];
+      if (id) reportScrollSnapBoost(id);
+    };
+
+    const onScroll = () => {
+      if (scrollBoostRafRef.current != null) return;
+      scrollBoostRafRef.current = window.requestAnimationFrame(() => {
+        scrollBoostRafRef.current = null;
+        applySnapBoost();
+      });
+    };
+
+    applySnapBoost();
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      if (scrollBoostRafRef.current != null) {
+        window.cancelAnimationFrame(scrollBoostRafRef.current);
+        scrollBoostRafRef.current = null;
+      }
+    };
+  }, [reportScrollSnapBoost, snapVideoKeys]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -426,18 +465,22 @@ export function HomeFeed() {
     const bootstrapActiveVideoId =
       items.length > 0 ? feedItemVideoKey(items[0]) : null;
 
+    const snapVideoKeys = items.map((it) => feedItemVideoKey(it)) as readonly string[];
+
     return (
       <HomeFeedSoundProvider bootstrapActiveVideoId={bootstrapActiveVideoId}>
         <>
           <FeedScrollWithUserAudioActivation
             className={`${FEED_BLEED} ${FEED_SCROLLPORT}`}
             onNearEnd={hasMore ? handleLoadMore : undefined}
+            snapVideoKeys={snapVideoKeys}
           >
             <HomeFeedSnapList
               items={items}
               feedSlideClassName={FEED_SLIDE}
             />
           </FeedScrollWithUserAudioActivation>
+          <HomeFeedMediaGestureUnlock />
         </>
       </HomeFeedSoundProvider>
     );

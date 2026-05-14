@@ -12,6 +12,9 @@ import {
 } from "react";
 import { isDev, devLog } from "@/lib/devLog";
 
+/** Session: user completed one tap on the feed so programmatic media can start (iOS / strict mobile WebKit). */
+export const HOME_FEED_MEDIA_GESTURE_SESSION_KEY = "pitchrusch-feed-media-gesture";
+
 /** Ignore noise when picking the active slide (argmax among observers). */
 const MIN_VISIBILITY = 0.001;
 /** Drop a slide from the map only when it is essentially off-screen (avoids empty map mid-scroll). */
@@ -20,7 +23,7 @@ const VISIBILITY_REMOVE_BELOW = 0.001;
  * TikTok-style handoff: prefer clips that fill most of the viewport; lower = handoff earlier (before full snap).
  * If none reach this bar during fast scroll, fall back to the strongest visible ratio.
  */
-export const HOME_FEED_ACTIVE_CLIP_RATIO_MIN = 0.48;
+export const HOME_FEED_ACTIVE_CLIP_RATIO_MIN = 0.38;
 
 /** Session flag: user preference for feed audio while browsing (survives in-tab navigation). */
 export const HOME_FEED_SOUND_SESSION_KEY = "pitchrusch-feed-sound";
@@ -42,6 +45,11 @@ type HomeFeedSoundContextValue = {
   feedUserActivationGeneration: number;
   /** `force` skips throttle (e.g. Tap to play) so the next clip can autoplay immediately. */
   notifyFeedUserActivation: (force?: boolean) => void;
+  /**
+   * Scroll-snap center index (from `scrollTop / clientHeight`): briefly forces that clip as `activeVideoId`
+   * so playback starts before IntersectionObserver catches up.
+   */
+  reportScrollSnapBoost: (videoId: string) => void;
 };
 
 const HomeFeedSoundContext = createContext<HomeFeedSoundContextValue | null>(
@@ -69,6 +77,8 @@ export function HomeFeedSoundProvider({
     return false;
   });
   const [visibility, setVisibility] = useState<Record<string, number>>({});
+  /** Scroll-snap center row wins `activeVideoId` briefly so playback beats slow IntersectionObserver updates. */
+  const [scrollSnapFocusId, setScrollSnapFocusId] = useState<string | null>(null);
   const [playbackGeneration, setPlaybackGeneration] = useState(0);
   const [feedUserActivationGeneration, setFeedUserActivationGeneration] =
     useState(0);
@@ -76,6 +86,7 @@ export function HomeFeedSoundProvider({
   const lastFeedInteractionBumpRef = useRef(0);
   /** When the focused clip changes, retry audio policy + play() for the new active surface. */
   const prevActiveVideoIdRef = useRef<string | null>(null);
+  const scrollSnapClearTimerRef = useRef<number | null>(null);
 
   const setSoundEnabled = useCallback(
     (value: boolean | ((prev: boolean) => boolean)) => {
@@ -110,6 +121,27 @@ export function HomeFeedSoundProvider({
     setFeedUserActivationGeneration((g) => g + 1);
   }, []);
 
+  const reportScrollSnapBoost = useCallback((videoId: string) => {
+    const id = videoId.trim();
+    if (!id) return;
+    setScrollSnapFocusId(id);
+    if (scrollSnapClearTimerRef.current != null) {
+      window.clearTimeout(scrollSnapClearTimerRef.current);
+    }
+    scrollSnapClearTimerRef.current = window.setTimeout(() => {
+      scrollSnapClearTimerRef.current = null;
+      setScrollSnapFocusId(null);
+    }, 280);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (scrollSnapClearTimerRef.current != null) {
+        window.clearTimeout(scrollSnapClearTimerRef.current);
+      }
+    };
+  }, []);
+
   const reportVideoVisibility = useCallback(
     (videoId: string, intersectionRatio: number) => {
       setVisibility((prev) => {
@@ -126,6 +158,11 @@ export function HomeFeedSoundProvider({
   );
 
   const activeVideoId = useMemo(() => {
+    const fromScroll = scrollSnapFocusId?.trim() ?? "";
+    if (fromScroll.length > 0) {
+      return fromScroll;
+    }
+
     const entries = Object.entries(visibility);
     const promoted = entries.filter(([, r]) => r >= HOME_FEED_ACTIVE_CLIP_RATIO_MIN);
     const pool = promoted.length > 0 ? promoted : entries;
@@ -144,7 +181,7 @@ export function HomeFeedSoundProvider({
         ? bootstrapActiveVideoId.trim()
         : "";
     return boot.length > 0 ? boot : null;
-  }, [bootstrapActiveVideoId, visibility]);
+  }, [bootstrapActiveVideoId, scrollSnapFocusId, visibility]);
 
   /** Novi aktivni klip → retry play() i reset browser mute lock na tom surfaceu. */
   useEffect(() => {
@@ -163,10 +200,11 @@ export function HomeFeedSoundProvider({
     debugFeedLogAtRef.current = now;
     devLog("[PitchRusch][HomeFeedSound] visibility + active", {
       activeVideoId,
+      scrollSnapFocusId,
       visibilityRatios: { ...visibility },
       promotedMin: HOME_FEED_ACTIVE_CLIP_RATIO_MIN,
     });
-  }, [activeVideoId, visibility]);
+  }, [activeVideoId, scrollSnapFocusId, visibility]);
 
   const value = useMemo(
     () => ({
@@ -178,6 +216,7 @@ export function HomeFeedSoundProvider({
       requestPlaybackRetry,
       feedUserActivationGeneration,
       notifyFeedUserActivation,
+      reportScrollSnapBoost,
     }),
     [
       isSoundEnabled,
@@ -188,6 +227,7 @@ export function HomeFeedSoundProvider({
       requestPlaybackRetry,
       feedUserActivationGeneration,
       notifyFeedUserActivation,
+      reportScrollSnapBoost,
     ],
   );
 

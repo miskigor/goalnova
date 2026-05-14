@@ -38,7 +38,7 @@ export function FeedVideoHeadPreloads({
       thirdHref !== firstHref &&
       thirdHref !== nextHref
     ) {
-      push(thirdHref, "low");
+      push(thirdHref, "high");
     }
 
     return () => {

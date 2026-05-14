@@ -240,7 +240,7 @@ export function FeedVideoSurface({
       {
         root,
         /** Extra bottom root margin so the incoming slide gains ratio earlier (before snap finishes). */
-        rootMargin: "0px 0px 32% 0px",
+        rootMargin: "-18% 0px 48% 0px",
         /** Dense steps so active clip switches quickly during snap scroll (not only at 25% / 50%). */
         threshold: [
           0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6,
