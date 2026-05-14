@@ -17,9 +17,6 @@ function tagKey(kind: TagKind): string {
 }
 
 const PLAYER_ROWS: { feature: string; tag: TagKind }[] = [
-  { feature: "playerProfile", tag: "included" },
-  { feature: "uploadVideos", tag: "included" },
-  { feature: "joinChallenges", tag: "included" },
   { feature: "leaderboards", tag: "included" },
   { feature: "profileStatistics", tag: "included" },
   { feature: "premiumBoost", tag: "premium" },
@@ -63,6 +60,7 @@ const PREMIUM_SHOWCASE: { feature: string }[] = [
   { feature: "featuredVideo" },
   { feature: "featuredPlayerBadge" },
   { feature: "priorityScoutVisibility" },
+  { feature: "aiImprovementTips" },
   { feature: "moreVideoUploads" },
 ];
 
@@ -107,44 +105,6 @@ export async function BenefitsPageBody() {
         <p className="mt-2 text-sm text-gn-text-secondary">{t("notActive")}</p>
       </section>
 
-      <section className="space-y-3" aria-labelledby="benefits-available-heading">
-        <h2 id="benefits-available-heading" className={sectionTitle}>
-          {t("availableNow")}
-        </h2>
-        <ul className="grid gap-2 sm:grid-cols-2">
-          <li>
-            <Link href="/profile" className={cardClass}>
-              <span className="font-medium text-gn-text">{t("openProfile")}</span>
-              <p className={sectionHint}>{t("playerProfile")}</p>
-            </Link>
-          </li>
-          <li>
-            <Link href="/challenges" className={cardClass}>
-              <span className="font-medium text-gn-text">{t("openChallenges")}</span>
-              <p className={sectionHint}>{t("joinChallenges")}</p>
-            </Link>
-          </li>
-          <li>
-            <Link href="/profile" className={cardClass}>
-              <span className="font-medium text-gn-text">{t("shareProfile")}</span>
-              <p className={sectionHint}>{t("playerProfile")}</p>
-            </Link>
-          </li>
-          <li>
-            <Link href="/upload" className={cardClass}>
-              <span className="font-medium text-gn-text">{t("uploadVideos")}</span>
-              <p className={sectionHint}>{t("hintUploadCard")}</p>
-            </Link>
-          </li>
-          <li className="sm:col-span-2">
-            <Link href="/settings#invite-friends" className={cardClass}>
-              <span className="font-medium text-gn-text">{t("inviteFriends")}</span>
-              <p className={sectionHint}>{t("hintInviteCard")}</p>
-            </Link>
-          </li>
-        </ul>
-      </section>
-
       <section className="space-y-4" aria-labelledby="benefits-referral-heading">
         <h2 id="benefits-referral-heading" className={sectionTitle}>
           {t("referralRewards")}
@@ -160,6 +120,12 @@ export async function BenefitsPageBody() {
             <p className="mt-2 text-sm text-gn-text-secondary">{t("invite10PlayersReward")}</p>
           </li>
         </ul>
+        <Link
+          href="/settings#invite-friends"
+          className="mt-2 inline-flex w-full items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3 text-sm font-semibold text-gn-text transition-colors hover:border-gn-border hover:bg-gn-surface/60 sm:w-auto"
+        >
+          {t("inviteFriends")}
+        </Link>
       </section>
 
       <section className="space-y-3" aria-labelledby="benefits-locked-heading">
