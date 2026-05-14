@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { PremiumSettingsSection } from "@/components/settings/PremiumSettingsSection";
+import { SettingsInviteFriendsSection } from "@/components/settings/SettingsInviteFriendsSection";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -32,6 +33,8 @@ export default async function SettingsPage({ params }: Props) {
       </div>
 
       <PremiumSettingsSection />
+
+      <SettingsInviteFriendsSection />
 
       <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4">
         <p className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">

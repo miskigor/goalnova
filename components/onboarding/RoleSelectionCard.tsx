@@ -8,6 +8,8 @@ import { supabase } from "@/lib/supabase/client";
 import { signOut } from "@/lib/supabase/auth";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { ensureOnboardingNotificationsForRole } from "@/lib/supabase/onboardingNotifications";
+import { tryConsumePendingReferral } from "@/lib/supabase/referrals";
+import { InviteFriendsSection } from "@/components/referrals/InviteFriendsSection";
 
 type Role = "player" | "scout";
 
@@ -231,6 +233,10 @@ export function RoleSelectionCard() {
 
       void ensureOnboardingNotificationsForRole(supabase, userId, role);
 
+      if (role === "player") {
+        void tryConsumePendingReferral();
+      }
+
       router.replace(role === "scout" ? "/scout-apply" : "/profile");
     } catch (e) {
       devError("RoleSelection save error", e);
@@ -355,6 +361,10 @@ export function RoleSelectionCard() {
           {error}
         </div>
       ) : null}
+
+      <div className="mt-8">
+        <InviteFriendsSection />
+      </div>
 
       <button
         type="button"

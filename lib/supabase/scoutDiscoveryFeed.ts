@@ -149,7 +149,9 @@ export async function fetchScoutDiscoveryFeed(
     const userIds = [...new Set(mapped.map((m) => m.video.user_id).filter(Boolean))];
     const { data: premiumProfiles } = await client
       .from("player_profiles")
-      .select("id,subscription_plan,subscription_status,profile_completeness,ai_overall_score")
+      .select(
+        "id,subscription_plan,subscription_status,profile_completeness,ai_overall_score,featured_player_until",
+      )
       .in("id", userIds);
     const premiumById = new Map((premiumProfiles ?? []).map((p) => [p.id, p]));
     const sorted = sortVideosForScouts(

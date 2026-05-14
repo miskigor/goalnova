@@ -11,6 +11,8 @@ export type PremiumLikeProfile = {
   subscription_status?: string | null;
   ai_overall_score?: number | null;
   profile_completeness?: number | null;
+  /** Referral reward: treat like featured in discovery ordering until this instant. */
+  featured_player_until?: string | null;
 };
 
 export type PremiumLikeVideo = {
@@ -72,6 +74,23 @@ function ts(value: string | null | undefined): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+export function isFeaturedPlayerBoostActive(
+  profile: PremiumLikeProfile | null | undefined,
+  nowMs: number = Date.now(),
+): boolean {
+  return ts(profile?.featured_player_until) > nowMs;
+}
+
+function effectiveFeaturedForSort(
+  profile: PremiumLikeProfile | null | undefined,
+  video: PremiumLikeVideo,
+  nowMs: number,
+): number {
+  if (video.is_featured === true) return 1;
+  if (isFeaturedPlayerBoostActive(profile, nowMs)) return 1;
+  return 0;
+}
+
 function num(value: number | null | undefined): number {
   return typeof value === "number" && Number.isFinite(value) ? value : -1;
 }
@@ -79,12 +98,13 @@ function num(value: number | null | undefined): number {
 export function sortVideosForScouts<T extends { profile?: PremiumLikeProfile | null; video: PremiumLikeVideo }>(
   rows: T[],
 ): T[] {
+  const nowMs = Date.now();
   return [...rows].sort((a, b) => {
     const pa = getPlayerVisibilityBoost(a.profile);
     const pb = getPlayerVisibilityBoost(b.profile);
     if (pb !== pa) return pb - pa;
-    const fa = a.video.is_featured === true ? 1 : 0;
-    const fb = b.video.is_featured === true ? 1 : 0;
+    const fa = effectiveFeaturedForSort(a.profile, a.video, nowMs);
+    const fb = effectiveFeaturedForSort(b.profile, b.video, nowMs);
     if (fb !== fa) return fb - fa;
     const aa = num(a.profile?.ai_overall_score);
     const ab = num(b.profile?.ai_overall_score);
@@ -97,10 +117,14 @@ export function sortVideosForScouts<T extends { profile?: PremiumLikeProfile | n
 }
 
 export function sortPlayersForScouts<T extends PremiumLikeProfile>(rows: T[]): T[] {
+  const nowMs = Date.now();
   return [...rows].sort((a, b) => {
     const pa = getPlayerVisibilityBoost(a);
     const pb = getPlayerVisibilityBoost(b);
     if (pb !== pa) return pb - pa;
+    const fa = isFeaturedPlayerBoostActive(a, nowMs) ? 1 : 0;
+    const fb = isFeaturedPlayerBoostActive(b, nowMs) ? 1 : 0;
+    if (fb !== fa) return fb - fa;
     const aa = num(a.ai_overall_score);
     const ab = num(b.ai_overall_score);
     if (ab !== aa) return ab - aa;

@@ -1891,5 +1891,29 @@
     "activationMissingSession": "Nedostaje checkout session ID. Kontaktiraj podršku.",
     "cancelTitle": "Plaćanje otkazano",
     "cancelBody": "Plaćanje je otkazano. Možete pokušati ponovo bilo kada."
+  },
+  "inviteFriends": {
+    "inviteFriendsTitle": "Pozovi prijatelje",
+    "inviteFriendsSubtitle": "Dovedi svoje suigrače na PitchRusch",
+    "inviteFriendsDescription": "Pozovi svoje suigrače i otključaj Premium boost.",
+    "inviteYourTeammates": "Pozovi svoje suigrače",
+    "unlockPremiumBoost": "Otključaj Premium boost",
+    "copyInviteLink": "Kopiraj pozivni link",
+    "shareInviteLink": "Podijeli pozivni link",
+    "inviteLinkCopied": "Pozivni link je kopiran",
+    "invitedPlayers": "Pozvani igrači",
+    "yourReferralProgress": "Tvoj referral napredak",
+    "invite3RewardTitle": "Pozovi 3 igrača",
+    "invite3RewardDescription": "Dobijaš 1 mjesec Player Premiuma.",
+    "invite10RewardTitle": "Pozovi 10 igrača",
+    "invite10RewardDescription": "Dobijaš Featured Player badge na 7 dana.",
+    "playersInvited": "igrača pozvano",
+    "playersToGo": "igrača još treba",
+    "rewardUnlocked": "Nagrada otključana",
+    "premiumBoostUnlocked": "Premium boost otključan",
+    "featuredBadgeUnlocked": "Featured Player badge otključan",
+    "inviteFriendsCta": "Pozovi svoje suigrače i otključaj Premium boost.",
+    "shareWithTeam": "Podijeli sa ekipom",
+    "referralTermsShort": "Nagrade vrijede kada pozvani igrači naprave račun."
   }
 }

@@ -329,6 +329,9 @@ export type Database = {
           career_history?: Json | null;
           profile_highlight?: string | null;
           created_at?: string | null;
+          referral_code?: string | null;
+          referred_by?: string | null;
+          featured_player_until?: string | null;
         };
         Insert: {
           id: string;
@@ -357,6 +360,9 @@ export type Database = {
           career_history?: Json | null;
           profile_highlight?: string | null;
           created_at?: string | null;
+          referral_code?: string | null;
+          referred_by?: string | null;
+          featured_player_until?: string | null;
         };
         Update: {
           id?: string;
@@ -385,6 +391,57 @@ export type Database = {
           career_history?: Json | null;
           profile_highlight?: string | null;
           created_at?: string | null;
+          referral_code?: string | null;
+          referred_by?: string | null;
+          featured_player_until?: string | null;
+        };
+        Relationships: [];
+      };
+      player_referrals: {
+        Row: {
+          id: string;
+          referrer_user_id: string;
+          referred_user_id: string;
+          referral_code: string;
+          status: string;
+          reward_type: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          referrer_user_id: string;
+          referred_user_id: string;
+          referral_code: string;
+          status?: string;
+          reward_type?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          referrer_user_id?: string;
+          referred_user_id?: string;
+          referral_code?: string;
+          status?: string;
+          reward_type?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      player_referral_reward_grants: {
+        Row: {
+          user_id: string;
+          reward_key: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          reward_key: string;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          reward_key?: string;
+          created_at?: string;
         };
         Relationships: [];
       };
@@ -1001,6 +1058,18 @@ export type Database = {
       goalnova_notify_players_about_challenge: {
         Args: { p_challenge_id: string };
         Returns: Json;
+      };
+      goalnova_player_referral_dashboard: {
+        Args: Record<string, never>;
+        Returns: Json;
+      };
+      goalnova_player_complete_referral: {
+        Args: { p_referral_code: string };
+        Returns: Json;
+      };
+      goalnova_player_ensure_referral_code: {
+        Args: Record<string, never>;
+        Returns: string;
       };
       goalnova_admin_list_users: {
         Args: {

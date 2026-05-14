@@ -1891,5 +1891,29 @@
     "activationMissingSession": "Falta o ID da sessão checkout. Contacta o suporte.",
     "cancelTitle": "Payment cancelled",
     "cancelBody": "Payment was cancelled. You can try again anytime."
+  },
+  "inviteFriends": {
+    "inviteFriendsTitle": "Convidar amigos",
+    "inviteFriendsSubtitle": "Traz os teus colegas para o PitchRusch",
+    "inviteFriendsDescription": "Convida os teus colegas e desbloqueia boosts Premium.",
+    "inviteYourTeammates": "Convida os teus colegas",
+    "unlockPremiumBoost": "Desbloquear boost Premium",
+    "copyInviteLink": "Copiar link de convite",
+    "shareInviteLink": "Partilhar link de convite",
+    "inviteLinkCopied": "Link de convite copiado",
+    "invitedPlayers": "Jogadores convidados",
+    "yourReferralProgress": "O teu progresso de convite",
+    "invite3RewardTitle": "Convida 3 jogadores",
+    "invite3RewardDescription": "Recebe 1 mês de Player Premium.",
+    "invite10RewardTitle": "Convida 10 jogadores",
+    "invite10RewardDescription": "Recebe um badge Featured Player por 7 dias.",
+    "playersInvited": "jogadores convidados",
+    "playersToGo": "jogadores restantes",
+    "rewardUnlocked": "Recompensa desbloqueada",
+    "premiumBoostUnlocked": "Boost Premium desbloqueado",
+    "featuredBadgeUnlocked": "Badge Featured Player desbloqueado",
+    "inviteFriendsCta": "Convida os teus colegas e desbloqueia um boost Premium.",
+    "shareWithTeam": "Partilhar com a equipa",
+    "referralTermsShort": "As recompensas aplicam-se quando os jogadores convidados criam uma conta."
   }
 }

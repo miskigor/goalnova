@@ -1891,5 +1891,29 @@
     "activationMissingSession": "Missing checkout session id. Please contact support.",
     "cancelTitle": "Payment cancelled",
     "cancelBody": "Payment was cancelled. You can try again anytime."
+  },
+  "inviteFriends": {
+    "inviteFriendsTitle": "Invite friends",
+    "inviteFriendsSubtitle": "Bring your teammates to PitchRusch",
+    "inviteFriendsDescription": "Invite your teammates and unlock Premium boosts.",
+    "inviteYourTeammates": "Invite your teammates",
+    "unlockPremiumBoost": "Unlock Premium boost",
+    "copyInviteLink": "Copy invite link",
+    "shareInviteLink": "Share invite link",
+    "inviteLinkCopied": "Invite link copied",
+    "invitedPlayers": "Invited players",
+    "yourReferralProgress": "Your referral progress",
+    "invite3RewardTitle": "Invite 3 players",
+    "invite3RewardDescription": "Get 1 month of Player Premium.",
+    "invite10RewardTitle": "Invite 10 players",
+    "invite10RewardDescription": "Get a Featured Player badge for 7 days.",
+    "playersInvited": "players invited",
+    "playersToGo": "players to go",
+    "rewardUnlocked": "Reward unlocked",
+    "premiumBoostUnlocked": "Premium boost unlocked",
+    "featuredBadgeUnlocked": "Featured Player badge unlocked",
+    "inviteFriendsCta": "Invite your teammates and unlock Premium boost.",
+    "shareWithTeam": "Share with your team",
+    "referralTermsShort": "Rewards apply when invited players create an account."
   }
 }

@@ -1891,5 +1891,29 @@
     "activationMissingSession": "Checkout session kimliği eksik. Destek ile iletişime geçin.",
     "cancelTitle": "Ödeme iptal edildi",
     "cancelBody": "Ödeme iptal edildi. İstediğin zaman tekrar deneyebilirsin."
+  },
+  "inviteFriends": {
+    "inviteFriendsTitle": "Arkadaşlarını davet et",
+    "inviteFriendsSubtitle": "Takım arkadaşlarını PitchRusch’a getir",
+    "inviteFriendsDescription": "Takım arkadaşlarını davet et ve Premium boostları aç.",
+    "inviteYourTeammates": "Takım arkadaşlarını davet et",
+    "unlockPremiumBoost": "Premium boost aç",
+    "copyInviteLink": "Davet linkini kopyala",
+    "shareInviteLink": "Davet linkini paylaş",
+    "inviteLinkCopied": "Davet linki kopyalandı",
+    "invitedPlayers": "Davet edilen oyuncular",
+    "yourReferralProgress": "Davet ilerlemen",
+    "invite3RewardTitle": "3 oyuncu davet et",
+    "invite3RewardDescription": "1 ay Player Premium kazan.",
+    "invite10RewardTitle": "10 oyuncu davet et",
+    "invite10RewardDescription": "7 gün Featured Player rozeti kazan.",
+    "playersInvited": "oyuncu davet edildi",
+    "playersToGo": "oyuncu kaldı",
+    "rewardUnlocked": "Ödül açıldı",
+    "premiumBoostUnlocked": "Premium boost açıldı",
+    "featuredBadgeUnlocked": "Featured Player rozeti açıldı",
+    "inviteFriendsCta": "Takım arkadaşlarını davet et ve Premium boost aç.",
+    "shareWithTeam": "Takımınla paylaş",
+    "referralTermsShort": "Ödüller, davet edilen oyuncular hesap oluşturduğunda geçerlidir."
   }
 }

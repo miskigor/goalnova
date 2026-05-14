@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Logo } from "@/components/brand/Logo";
@@ -8,6 +8,7 @@ import {
   isSignupEmailAlreadyExistsError,
   signUpWithEmailPassword,
 } from "@/lib/supabase/auth";
+import { rememberReferralCodeFromQuery } from "@/lib/supabase/referrals";
 import { devError } from "@/lib/devLog";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
@@ -51,6 +52,12 @@ export function SignupCard() {
   /** Prevents duplicate submit after account creation (no success UI). */
   const [signupComplete, setSignupComplete] = useState(false);
   const [showLoginCta, setShowLoginCta] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const ref = new URLSearchParams(window.location.search).get("ref");
+    rememberReferralCodeFromQuery(ref);
+  }, []);
 
   const canSubmit = useMemo(() => {
     const trimmed = email.trim();

@@ -1891,5 +1891,29 @@
     "activationMissingSession": "Checkout-Session-ID fehlt. Bitte Support kontaktieren.",
     "cancelTitle": "Zahlung abgebrochen",
     "cancelBody": "Die Zahlung wurde abgebrochen. Du kannst es jederzeit erneut versuchen."
+  },
+  "inviteFriends": {
+    "inviteFriendsTitle": "Freunde einladen",
+    "inviteFriendsSubtitle": "Bring deine Teamkollegen zu PitchRusch",
+    "inviteFriendsDescription": "Lade deine Teamkollegen ein und schalte Premium-Boosts frei.",
+    "inviteYourTeammates": "Lade deine Teamkollegen ein",
+    "unlockPremiumBoost": "Premium-Boost freischalten",
+    "copyInviteLink": "Einladungslink kopieren",
+    "shareInviteLink": "Einladungslink teilen",
+    "inviteLinkCopied": "Einladungslink kopiert",
+    "invitedPlayers": "Eingeladene Spieler",
+    "yourReferralProgress": "Dein Empfehlungsfortschritt",
+    "invite3RewardTitle": "Lade 3 Spieler ein",
+    "invite3RewardDescription": "Erhalte 1 Monat Player Premium.",
+    "invite10RewardTitle": "Lade 10 Spieler ein",
+    "invite10RewardDescription": "Erhalte für 7 Tage ein Featured-Player-Abzeichen.",
+    "playersInvited": "Spieler eingeladen",
+    "playersToGo": "Spieler fehlen noch",
+    "rewardUnlocked": "Belohnung freigeschaltet",
+    "premiumBoostUnlocked": "Premium-Boost freigeschaltet",
+    "featuredBadgeUnlocked": "Featured-Player-Abzeichen freigeschaltet",
+    "inviteFriendsCta": "Lade deine Teamkollegen ein und schalte Premium-Boost frei.",
+    "shareWithTeam": "Mit deinem Team teilen",
+    "referralTermsShort": "Belohnungen gelten, wenn eingeladene Spieler ein Konto erstellen."
   }
 }

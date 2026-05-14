@@ -1891,5 +1891,29 @@
     "activationMissingSession": "معرّف جلسة الدفع مفقود. يرجى التواصل مع الدعم.",
     "cancelTitle": "Payment cancelled",
     "cancelBody": "Payment was cancelled. You can try again anytime."
+  },
+  "inviteFriends": {
+    "inviteFriendsTitle": "ادعُ أصدقاءك",
+    "inviteFriendsSubtitle": "اجلب زملاءك في الفريق إلى PitchRusch",
+    "inviteFriendsDescription": "ادعُ زملاءك وافتح تعزيزات Premium.",
+    "inviteYourTeammates": "ادعُ زملاءك في الفريق",
+    "unlockPremiumBoost": "افتح تعزيز Premium",
+    "copyInviteLink": "نسخ رابط الدعوة",
+    "shareInviteLink": "مشاركة رابط الدعوة",
+    "inviteLinkCopied": "تم نسخ رابط الدعوة",
+    "invitedPlayers": "اللاعبون المدعوون",
+    "yourReferralProgress": "تقدم الدعوات الخاص بك",
+    "invite3RewardTitle": "ادعُ 3 لاعبين",
+    "invite3RewardDescription": "احصل على شهر واحد من Player Premium.",
+    "invite10RewardTitle": "ادعُ 10 لاعبين",
+    "invite10RewardDescription": "احصل على شارة Featured Player لمدة 7 أيام.",
+    "playersInvited": "لاعبين تمت دعوتهم",
+    "playersToGo": "لاعبين متبقين",
+    "rewardUnlocked": "تم فتح المكافأة",
+    "premiumBoostUnlocked": "تم فتح تعزيز Premium",
+    "featuredBadgeUnlocked": "تم فتح شارة Featured Player",
+    "inviteFriendsCta": "ادعُ زملاءك وافتح تعزيز Premium.",
+    "shareWithTeam": "شارك مع فريقك",
+    "referralTermsShort": "تُطبق المكافآت عندما ينشئ اللاعبون المدعوون حسابًا."
   }
 }

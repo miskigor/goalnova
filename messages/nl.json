@@ -1891,5 +1891,29 @@
     "activationMissingSession": "Checkout-sessie-ID ontbreekt. Neem contact op met support.",
     "cancelTitle": "Betaling geannuleerd",
     "cancelBody": "De betaling is geannuleerd. Je kunt het altijd opnieuw proberen."
+  },
+  "inviteFriends": {
+    "inviteFriendsTitle": "Vrienden uitnodigen",
+    "inviteFriendsSubtitle": "Breng je teamgenoten naar PitchRusch",
+    "inviteFriendsDescription": "Nodig je teamgenoten uit en ontgrendel Premium boosts.",
+    "inviteYourTeammates": "Nodig je teamgenoten uit",
+    "unlockPremiumBoost": "Premium boost ontgrendelen",
+    "copyInviteLink": "Uitnodigingslink kopiëren",
+    "shareInviteLink": "Uitnodigingslink delen",
+    "inviteLinkCopied": "Uitnodigingslink gekopieerd",
+    "invitedPlayers": "Uitgenodigde spelers",
+    "yourReferralProgress": "Jouw referral-voortgang",
+    "invite3RewardTitle": "Nodig 3 spelers uit",
+    "invite3RewardDescription": "Krijg 1 maand Player Premium.",
+    "invite10RewardTitle": "Nodig 10 spelers uit",
+    "invite10RewardDescription": "Krijg 7 dagen een Featured Player badge.",
+    "playersInvited": "spelers uitgenodigd",
+    "playersToGo": "spelers te gaan",
+    "rewardUnlocked": "Beloning ontgrendeld",
+    "premiumBoostUnlocked": "Premium boost ontgrendeld",
+    "featuredBadgeUnlocked": "Featured Player badge ontgrendeld",
+    "inviteFriendsCta": "Nodig je teamgenoten uit en ontgrendel Premium boost.",
+    "shareWithTeam": "Delen met je team",
+    "referralTermsShort": "Beloningen gelden wanneer uitgenodigde spelers een account aanmaken."
   }
 }
