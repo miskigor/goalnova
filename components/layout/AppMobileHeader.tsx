@@ -7,8 +7,9 @@ import { useNavSession } from "@/components/layout/useNavSession";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadContext";
 import { UnreadNotificationBadge } from "@/components/notifications/UnreadNotificationBadge";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { navItemActive } from "@/lib/navigation/navItemActive";
 import { InlineLogoutButton } from "@/components/auth/InlineLogoutButton";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { NavIcon } from "@/components/icons/NavIcons";
@@ -22,7 +23,9 @@ export function AppMobileHeader() {
   const { loaded: adminLoaded, isAdmin } = useAdminAccess();
   const adminSupportUnread = useAdminSupportUnread();
   const tNav = useTranslations("nav");
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const benefitsActive = navItemActive(pathname, "/benefits");
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -36,7 +39,7 @@ export function AppMobileHeader() {
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-[45] shrink-0 overflow-x-clip border-b border-gn-border-subtle bg-gn-bg/95 pt-[env(safe-area-inset-top,0px)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:hidden">
-        <div className="mx-auto flex h-14 w-full min-w-0 max-w-lg items-center justify-between gap-1.5 sm:gap-3 md:max-w-2xl pl-[max(0.75rem,env(safe-area-inset-left,0px))] pr-[max(0.75rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.25rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.25rem,env(safe-area-inset-right,0px))]">
+        <div className="mx-auto flex h-14 w-full min-w-0 max-w-lg items-center justify-between gap-1 sm:gap-3 md:max-w-2xl pl-[max(0.75rem,env(safe-area-inset-left,0px))] pr-[max(0.75rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.25rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.25rem,env(safe-area-inset-right,0px))]">
           <Logo href="/home" variant="header" className="min-w-0 shrink" />
           <Link
             href="/premium"
@@ -46,7 +49,7 @@ export function AppMobileHeader() {
             <NavIcon name="premium" className="size-[18px] shrink-0" />
             <span className="truncate">{tNav("premium")}</span>
           </Link>
-          <div className="flex min-w-0 shrink-0 items-center justify-end gap-2">
+          <div className="flex min-w-0 shrink-0 items-center justify-end gap-1 sm:gap-2">
             {authed && user ? (
               <button
                 type="button"
@@ -90,6 +93,21 @@ export function AppMobileHeader() {
                     {tNav("adminUnreadShort", { count: adminSupportUnread })}
                   </span>
                 ) : null}
+              </Link>
+            ) : null}
+            {authed && user ? (
+              <Link
+                href="/benefits"
+                className={
+                  "inline-flex size-9 shrink-0 items-center justify-center rounded-lg border text-gn-text-secondary transition active:scale-[0.98] hover:bg-gn-surface-elevated hover:text-gn-text " +
+                  (benefitsActive
+                    ? "border-gn-accent/45 bg-gn-accent/10 text-gn-accent"
+                    : "border-gn-border-subtle bg-gn-surface/30")
+                }
+                aria-label={tNav("myBenefits")}
+                title={tNav("myBenefits")}
+              >
+                <NavIcon name="benefits" className="size-[18px] shrink-0" />
               </Link>
             ) : null}
             {authed && user ? (
