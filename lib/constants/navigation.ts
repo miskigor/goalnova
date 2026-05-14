@@ -10,29 +10,59 @@ export type NavIconName =
   | "upload"
   | "challenges"
   | "premium"
-  | "scoutDashboard";
+  | "scoutDashboard"
+  | "benefits";
 
-/** Primary app shell: sidebar (desktop) + bottom bar (mobile). */
-export const APP_SHELL_MAIN_NAV = [
-  { href: "/home" as const, labelKey: "home" as const, icon: "home" as const },
-  { href: "/explore" as const, labelKey: "explore" as const, icon: "explore" as const },
-  {
-    href: "/rankings" as const,
-    labelKey: "rankings" as const,
-    icon: "rankings" as const,
-  },
-  {
-    href: "/challenges" as const,
-    labelKey: "challenges" as const,
-    icon: "challenges" as const,
-  },
-  {
-    href: "/notifications" as const,
-    labelKey: "notifications" as const,
-    icon: "notifications" as const,
-  },
-  { href: "/profile" as const, labelKey: "profile" as const, icon: "profile" as const },
-  { href: "/premium" as const, labelKey: "premium" as const, icon: "premium" as const },
+export type AppShellNavItem = {
+  href:
+    | "/home"
+    | "/explore"
+    | "/rankings"
+    | "/challenges"
+    | "/notifications"
+    | "/profile"
+    | "/premium"
+    | "/benefits";
+  labelKey:
+    | "home"
+    | "explore"
+    | "rankings"
+    | "challenges"
+    | "notifications"
+    | "profile"
+    | "premium"
+    | "myBenefits";
+  icon: NavIconName;
+};
+
+/**
+ * Desktop sidebar primary list (order preserved).
+ * Mobile bottom bar uses {@link APP_SHELL_MOBILE_BOTTOM_NAV} only (max 5 items).
+ */
+export const APP_SHELL_MAIN_NAV: AppShellNavItem[] = [
+  { href: "/home", labelKey: "home", icon: "home" },
+  { href: "/explore", labelKey: "explore", icon: "explore" },
+  { href: "/rankings", labelKey: "rankings", icon: "rankings" },
+  { href: "/challenges", labelKey: "challenges", icon: "challenges" },
+  { href: "/notifications", labelKey: "notifications", icon: "notifications" },
+  { href: "/profile", labelKey: "profile", icon: "profile" },
+  { href: "/premium", labelKey: "premium", icon: "premium" },
+  { href: "/benefits", labelKey: "myBenefits", icon: "benefits" },
+];
+
+/** Mobile bottom navigation: exactly five primary destinations (no overflow on small phones). */
+export type ShellMobileNavItem = {
+  href: "/home" | "/challenges" | "/upload" | "/explore" | "/premium" | "/profile";
+  labelKey: "home" | "challenges" | "upload" | "explore" | "premium" | "profile";
+  icon: NavIconName;
+};
+
+export const APP_SHELL_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
+  { href: "/home", labelKey: "home", icon: "home" },
+  { href: "/challenges", labelKey: "challenges", icon: "challenges" },
+  { href: "/upload", labelKey: "upload", icon: "upload" },
+  { href: "/premium", labelKey: "premium", icon: "premium" },
+  { href: "/profile", labelKey: "profile", icon: "profile" },
 ];
 
 export type AppNavItem = {

@@ -30,7 +30,8 @@
     "supportTitle": "Support",
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
-    "accountRecoveryTitle": "Account recovery"
+    "accountRecoveryTitle": "Account recovery",
+    "benefitsTitle": "Mes avantages"
   },
   "common": {
     "save": "Enregistrer",
@@ -556,7 +557,11 @@
     "scoutDashboard": "Scout dashboard",
     "adminScoutVerifications": "Scout verifications",
     "adminPanel": "Admin",
-    "adminUnreadShort": "{count, plural, one {# message} other {# messages}}"
+    "adminUnreadShort": "{count, plural, one {# message} other {# messages}}",
+    "myBenefits": "Mes avantages",
+    "support": "Assistance",
+    "quickLinksSection": "Compte et avantages",
+    "moreInMenu": "Plus dans l’app"
   },
   "music": {
     "addMusic": "Ajouter de la musique",
@@ -1921,5 +1926,16 @@
     "progressInviteFeatured": "{current} / {target} pour le badge Featured Player (7 jours)",
     "rewardStatusLocked": "Verrouillé",
     "rewardStatusUnlocked": "Débloqué"
+  },
+  "benefits": {
+    "title": "Mes avantages",
+    "subtitle": "Tes avantages PitchRusch au même endroit.",
+    "intro": "Améliore ta visibilité, invite tes coéquipiers et suis les stats premium avec Player Premium.",
+    "linkPremium": "Player Premium et tarifs",
+    "hintPremium": "Offres, paiement et gestion d’abonnement.",
+    "linkInvite": "Inviter des amis",
+    "hintInvite": "Partage ton lien de parrainage et débloque des récompenses.",
+    "linkStats": "Statistiques joueur",
+    "hintStats": "Indicateurs profil et vidéo (Player Premium)."
   }
 }

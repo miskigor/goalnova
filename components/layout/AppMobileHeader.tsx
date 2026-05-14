@@ -133,6 +133,37 @@ export function AppMobileHeader() {
               </button>
             </div>
             <nav className="space-y-1">
+              <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-gn-text-tertiary">
+                {tNav("moreInMenu")}
+              </p>
+              <Link
+                href="/benefits"
+                className="block rounded-xl px-3 py-2.5 text-sm text-gn-text-secondary hover:bg-gn-surface-elevated hover:text-gn-text"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {tNav("myBenefits")}
+              </Link>
+              <Link
+                href="/explore"
+                className="block rounded-xl px-3 py-2.5 text-sm text-gn-text-secondary hover:bg-gn-surface-elevated hover:text-gn-text"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {tNav("explore")}
+              </Link>
+              <Link
+                href="/rankings"
+                className="block rounded-xl px-3 py-2.5 text-sm text-gn-text-secondary hover:bg-gn-surface-elevated hover:text-gn-text"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {tNav("rankings")}
+              </Link>
+              <Link
+                href="/notifications"
+                className="block rounded-xl px-3 py-2.5 text-sm text-gn-text-secondary hover:bg-gn-surface-elevated hover:text-gn-text"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {tNav("messages")}
+              </Link>
               <Link
                 href="/profile"
                 className="block rounded-xl px-3 py-2.5 text-sm text-gn-text-secondary hover:bg-gn-surface-elevated hover:text-gn-text"

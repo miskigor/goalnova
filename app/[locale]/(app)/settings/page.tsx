@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { PremiumSettingsSection } from "@/components/settings/PremiumSettingsSection";
 import { SettingsInviteFriendsSection } from "@/components/settings/SettingsInviteFriendsSection";
+import { AppAccountQuickLinks } from "@/components/layout/AppAccountQuickLinks";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -32,6 +33,8 @@ export default async function SettingsPage({ params }: Props) {
         <p className="mt-1 text-xs text-gn-text-secondary sm:text-sm">{t("subtitle")}</p>
       </div>
 
+      <AppAccountQuickLinks />
+
       <PremiumSettingsSection />
 
       <SettingsInviteFriendsSection />
@@ -50,12 +53,6 @@ export default async function SettingsPage({ params }: Props) {
         <li>
           <Link href="/settings/profile" className={rowClass}>
             <span>{tProfile("title")}</span>
-            <span className="text-gn-text-tertiary">→</span>
-          </Link>
-        </li>
-        <li>
-          <Link href="/support" className={rowClass}>
-            <span>Support</span>
             <span className="text-gn-text-tertiary">→</span>
           </Link>
         </li>

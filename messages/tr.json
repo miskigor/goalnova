@@ -30,7 +30,8 @@
     "supportTitle": "Support",
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
-    "accountRecoveryTitle": "Account recovery"
+    "accountRecoveryTitle": "Account recovery",
+    "benefitsTitle": "Avantajlarım"
   },
   "common": {
     "save": "Save",
@@ -556,7 +557,11 @@
     "scoutDashboard": "Scout dashboard",
     "adminScoutVerifications": "Scout verifications",
     "adminPanel": "Admin",
-    "adminUnreadShort": "{count, plural, one {# message} other {# messages}}"
+    "adminUnreadShort": "{count, plural, one {# message} other {# messages}}",
+    "myBenefits": "Avantajlarım",
+    "support": "Destek",
+    "quickLinksSection": "Hesap ve avantajlar",
+    "moreInMenu": "Uygulamada daha fazlası"
   },
   "music": {
     "addMusic": "Add music",
@@ -1921,5 +1926,16 @@
     "progressInviteFeatured": "{current} / {target} — Featured Player rozeti (7 gün)",
     "rewardStatusLocked": "Kilitli",
     "rewardStatusUnlocked": "Açıldı"
+  },
+  "benefits": {
+    "title": "Avantajlarım",
+    "subtitle": "PitchRusch avantajların tek yerde.",
+    "intro": "Görünürlüğü artır, takım arkadaşlarını davet et ve Player Premium ile istatistikleri takip et.",
+    "linkPremium": "Player Premium ve fiyatlar",
+    "hintPremium": "Planlar, ödeme ve abonelik yönetimi.",
+    "linkInvite": "Arkadaşlarını davet et",
+    "hintInvite": "Davet linkini paylaş ve ödülleri aç.",
+    "linkStats": "Oyuncu istatistikleri",
+    "hintStats": "Profil ve video metrikleri (Player Premium)."
   }
 }

@@ -92,6 +92,7 @@ export function InviteFriendsSection({ className = "" }: { className?: string })
   return (
     <section
       className={`space-y-4 rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4 sm:p-5 ${className}`}
+      id="invite-friends"
     >
       <div>
         <h2 className="text-lg font-semibold text-gn-text">{t("inviteFriendsTitle")}</h2>

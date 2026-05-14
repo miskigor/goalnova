@@ -30,7 +30,8 @@
     "supportTitle": "Support",
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
-    "accountRecoveryTitle": "Account recovery"
+    "accountRecoveryTitle": "Account recovery",
+    "benefitsTitle": "Moje mogućnosti"
   },
   "common": {
     "save": "Save",
@@ -556,7 +557,11 @@
     "scoutDashboard": "Scout dashboard",
     "adminScoutVerifications": "Scout verifications",
     "adminPanel": "Admin",
-    "adminUnreadShort": "{count, plural, one {# message} other {# messages}}"
+    "adminUnreadShort": "{count, plural, one {# message} other {# messages}}",
+    "myBenefits": "Moje mogućnosti",
+    "support": "Podrška",
+    "quickLinksSection": "Račun i mogućnosti",
+    "moreInMenu": "Više u aplikaciji"
   },
   "music": {
     "addMusic": "Add music",
@@ -1921,5 +1926,16 @@
     "progressInviteFeatured": "{current} / {target} za Featured Player badge 7 dana",
     "rewardStatusLocked": "Zaključano",
     "rewardStatusUnlocked": "Otključano"
+  },
+  "benefits": {
+    "title": "Moje mogućnosti",
+    "subtitle": "Tvoje PitchRusch pogodnosti na jednom mjestu.",
+    "intro": "Nadogradi vidljivost, pozovi suigrače i prati premium statistiku uz Player Premium.",
+    "linkPremium": "Player Premium i cijene",
+    "hintPremium": "Planovi, plaćanje i pretplata.",
+    "linkInvite": "Pozovi prijatelje",
+    "hintInvite": "Podijeli referral link i otključaj nagrade.",
+    "linkStats": "Statistika igrača",
+    "hintStats": "Uvidi profila i videa (Player Premium)."
   }
 }

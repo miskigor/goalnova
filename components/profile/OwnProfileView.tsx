@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import { AppAccountQuickLinks } from "@/components/layout/AppAccountQuickLinks";
 import { loadAndEnsureProfile } from "@/lib/supabase/profile";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
@@ -96,6 +97,7 @@ export function OwnProfileView() {
             {tProfileEditor("saved")}
           </div>
         ) : null}
+        <AppAccountQuickLinks />
         <ScoutOwnProfileView user={scoutBundle.user} profile={scoutBundle.profile} />
       </>
     );
@@ -120,6 +122,7 @@ export function OwnProfileView() {
           {tProfileEditor("saved")}
         </div>
       ) : null}
+      <AppAccountQuickLinks />
       <PlayerPublicProfile playerSlug={playerSlug} />
     </>
   );
