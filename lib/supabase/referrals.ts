@@ -4,6 +4,8 @@ import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { PITCHRUSCH_PREMIUM_UPDATED_EVENT } from "@/lib/supabase/premium";
 
 export const PITCHRUSCH_PENDING_REFERRAL_KEY = "pitchrusch_pending_referral_code";
+/** Last `goalnova_player_complete_referral` outcome JSON for mobile debugging (localStorage). */
+export const PITCHRUSCH_LAST_REFERRAL_RESULT_KEY = "pitchrusch_last_referral_result";
 
 export type ReferralDashboard = {
   referralCode: string | null;
@@ -12,9 +14,33 @@ export type ReferralDashboard = {
   grantedKeys: string[];
 };
 
+/** RPC reasons that clear pending code (no further retries). */
+const DEFINITIVE_FAIL_REASONS = new Set([
+  "invalid_code",
+  "unknown_code",
+  "self_referral",
+  "referral_only_for_new_accounts",
+]);
+
+/** RPC / client reasons that keep pending and allow retries. */
+const TEMPORARY_FAIL_REASONS = new Set([
+  "not_authenticated",
+  "no_player_profile",
+  "not_player_role",
+  "no_current_user",
+  "session_missing",
+  "rpc_transport",
+]);
+
 function dispatchPremiumUpdated() {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new CustomEvent(PITCHRUSCH_PREMIUM_UPDATED_EVENT));
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
 
 function parseRpcRow(data: unknown): Record<string, unknown> | null {
@@ -32,6 +58,42 @@ function rpcOk(row: Record<string, unknown> | null): boolean {
   return v === true || v === "true";
 }
 
+function persistLastReferralResult(payload: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+  try {
+    const merged = { ...payload, at: new Date().toISOString() };
+    localStorage.setItem(PITCHRUSCH_LAST_REFERRAL_RESULT_KEY, JSON.stringify(merged));
+  } catch {
+    /* ignore */
+  }
+}
+
+function storageWritePending(code: string) {
+  try {
+    sessionStorage.setItem(PITCHRUSCH_PENDING_REFERRAL_KEY, code);
+  } catch {
+    /* ignore */
+  }
+  try {
+    localStorage.setItem(PITCHRUSCH_PENDING_REFERRAL_KEY, code);
+  } catch {
+    /* ignore */
+  }
+}
+
+function storageClearPending() {
+  try {
+    sessionStorage.removeItem(PITCHRUSCH_PENDING_REFERRAL_KEY);
+  } catch {
+    /* ignore */
+  }
+  try {
+    localStorage.removeItem(PITCHRUSCH_PENDING_REFERRAL_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
 export function rememberReferralCodeFromQuery(ref: string | null | undefined) {
   const raw = (ref ?? "").trim();
   const code = raw.toUpperCase();
@@ -39,31 +101,177 @@ export function rememberReferralCodeFromQuery(ref: string | null | undefined) {
     if (raw.length > 0) devLog("[referral] skip remember: ref too short", { raw });
     return;
   }
-  try {
-    sessionStorage.setItem(PITCHRUSCH_PENDING_REFERRAL_KEY, code);
-    devLog("[referral] pending referral code saved to sessionStorage", { code });
-  } catch (e) {
-    devLog("[referral] sessionStorage.setItem failed", e);
-  }
+  storageWritePending(code);
+  devLog("[referral] pending referral code saved (session + local)", { code });
 }
 
 export function peekPendingReferralCode(): string | null {
   try {
-    const raw = sessionStorage.getItem(PITCHRUSCH_PENDING_REFERRAL_KEY);
+    let raw = sessionStorage.getItem(PITCHRUSCH_PENDING_REFERRAL_KEY);
+    if (!(raw ?? "").trim()) {
+      raw = localStorage.getItem(PITCHRUSCH_PENDING_REFERRAL_KEY);
+    }
     const code = (raw ?? "").trim().toUpperCase();
-    return code.length >= 4 ? code : null;
-  } catch {
-    return null;
-  }
-}
-
-export function clearPendingReferralCode() {
-  try {
-    sessionStorage.removeItem(PITCHRUSCH_PENDING_REFERRAL_KEY);
-    devLog("[referral] cleared pending referral code from sessionStorage");
+    if (code.length >= 4) {
+      storageWritePending(code);
+      return code;
+    }
   } catch {
     /* ignore */
   }
+  return null;
+}
+
+export function clearPendingReferralCode() {
+  storageClearPending();
+  devLog("[referral] cleared pending referral code (session + local)");
+}
+
+/**
+ * Poll until `users.role === 'player'` and a `player_profiles` row exists (handles replication lag).
+ */
+export async function waitUntilPlayerProfileReady(
+  userId: string,
+  options?: { maxMs?: number; stepMs?: number },
+): Promise<boolean> {
+  const maxMs = options?.maxMs ?? 15_000;
+  const stepMs = options?.stepMs ?? 350;
+  const deadline = Date.now() + maxMs;
+
+  while (Date.now() < deadline) {
+    const { data: userRow, error: userErr } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (!userErr && userRow?.role === "player") {
+      const { data: profileRow, error: profileErr } = await supabase
+        .from("player_profiles")
+        .select("id")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (!profileErr && profileRow?.id) {
+        devLog("[referral] waitUntilPlayerProfileReady: ready", { userId });
+        return true;
+      }
+    }
+
+    await sleep(stepMs);
+  }
+
+  devLog("[referral] waitUntilPlayerProfileReady: timeout", { userId, maxMs });
+  return false;
+}
+
+type OnceOutcome = "success" | "definitive_fail" | "temporary_fail" | "no_pending";
+
+async function tryConsumePendingReferralOnce(): Promise<OnceOutcome> {
+  const code = peekPendingReferralCode();
+  if (!code) {
+    persistLastReferralResult({ stage: "peek", outcome: "no_pending" });
+    return "no_pending";
+  }
+
+  const { data: authData, error: authErr } = await supabase.auth.getUser();
+  const userId = authData.user?.id;
+
+  if (authErr || !userId) {
+    const reason = authErr ? "session_missing" : "no_current_user";
+    persistLastReferralResult({
+      stage: "auth",
+      ok: false,
+      reason,
+      message: authErr?.message ?? null,
+    });
+    devLog("[referral] tryConsumeOnce: no session, keep pending", { reason });
+    return "temporary_fail";
+  }
+
+  const { data, error } = await supabase.rpc("goalnova_player_complete_referral", {
+    p_referral_code: code,
+  });
+
+  if (error) {
+    logFullSupabaseError("[referrals] goalnova_player_complete_referral", error, { code });
+    persistLastReferralResult({
+      stage: "rpc_error",
+      ok: false,
+      reason: "rpc_transport",
+      message: error.message,
+      code: error.code,
+    });
+    devLog("[referral] tryConsumeOnce: RPC transport error, keep pending", error.message);
+    return "temporary_fail";
+  }
+
+  const row = parseRpcRow(data);
+  const reason = typeof row?.reason === "string" ? row.reason : "";
+  const ok = rpcOk(row);
+
+  persistLastReferralResult({
+    stage: "rpc",
+    ok,
+    reason: reason || null,
+    noop: row?.noop === true || row?.noop === "true",
+    raw: row ?? null,
+  });
+
+  devLog("[referral] tryConsumeOnce: RPC body", { ok, reason, row });
+
+  if (ok) {
+    if (reason === "no_player_profile" || reason === "not_player_role") {
+      return "temporary_fail";
+    }
+    clearPendingReferralCode();
+    if (!row?.noop) {
+      dispatchPremiumUpdated();
+    }
+    return "success";
+  }
+
+  if (DEFINITIVE_FAIL_REASONS.has(reason)) {
+    clearPendingReferralCode();
+    return "definitive_fail";
+  }
+
+  if (TEMPORARY_FAIL_REASONS.has(reason)) {
+    return "temporary_fail";
+  }
+
+  devLog("[referral] tryConsumeOnce: unknown reason, treat as temporary", { reason });
+  return "temporary_fail";
+}
+
+/**
+ * Reads pending code, calls RPC up to 3 times: immediately, +1s, +3s after prior attempt if still temporary.
+ */
+export async function tryConsumePendingReferralWithRetry(): Promise<void> {
+  if (typeof window === "undefined") return;
+
+  if (!peekPendingReferralCode()) {
+    return;
+  }
+
+  devLog("[referral] tryConsumePendingReferralWithRetry: start");
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt === 1) await sleep(1000);
+    if (attempt === 2) await sleep(3000);
+
+    const outcome = await tryConsumePendingReferralOnce();
+    if (outcome === "success" || outcome === "definitive_fail" || outcome === "no_pending") {
+      return;
+    }
+  }
+
+  devLog("[referral] tryConsumePendingReferralWithRetry: exhausted retries (pending kept)");
+}
+
+/** @deprecated Prefer {@link tryConsumePendingReferralWithRetry}; kept for call sites — now runs full retry schedule. */
+export async function tryConsumePendingReferral(): Promise<void> {
+  await tryConsumePendingReferralWithRetry();
 }
 
 export async function fetchReferralDashboard(): Promise<{
@@ -94,71 +302,4 @@ export async function fetchReferralDashboard(): Promise<{
     },
     errorMessage: null,
   };
-}
-
-/**
- * Links the signed-in player to their referrer (once) and applies milestone rewards server-side.
- * Clears sessionStorage pending code only after a definitive RPC outcome (success, unknown code,
- * invalid code, or referral_only_for_new_accounts). Does not clear on RPC transport errors so the
- * client can retry (e.g. after navigation to /profile or AppShell mount).
- */
-export async function tryConsumePendingReferral(): Promise<void> {
-  const code = peekPendingReferralCode();
-  if (!code) {
-    devLog("[referral] tryConsumePendingReferral: no pending code in sessionStorage");
-    return;
-  }
-
-  devLog("[referral] tryConsumePendingReferral: starting", { code });
-
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user?.id) {
-    devLog("[referral] tryConsumePendingReferral: not signed in, keeping pending code");
-    return;
-  }
-
-  const { data, error } = await supabase.rpc("goalnova_player_complete_referral", {
-    p_referral_code: code,
-  });
-
-  if (error) {
-    logFullSupabaseError("[referrals] goalnova_player_complete_referral", error, { code });
-    devLog("[referral] RPC error (pending code NOT cleared, will retry)", error.message);
-    return;
-  }
-
-  const row = parseRpcRow(data);
-  const reason = typeof row?.reason === "string" ? row.reason : "";
-  const ok = rpcOk(row);
-
-  devLog("[referral] goalnova_player_complete_referral result", { ok, reason, raw: row });
-
-  if (!ok && reason === "referral_only_for_new_accounts") {
-    clearPendingReferralCode();
-    return;
-  }
-
-  if (!ok && (reason === "not_player_role" || reason === "no_player_profile")) {
-    devLog("[referral] defer referral completion until player role + profile exist", { reason });
-    return;
-  }
-
-  if (!ok && (reason === "unknown_code" || reason === "invalid_code")) {
-    clearPendingReferralCode();
-    return;
-  }
-
-  if (!ok) {
-    devLog("[referral] RPC returned ok=false (pending code kept for retry)", { reason });
-    return;
-  }
-
-  if (reason === "no_player_profile" || reason === "not_player_role") {
-    return;
-  }
-
-  clearPendingReferralCode();
-  if (!row?.noop) {
-    dispatchPremiumUpdated();
-  }
 }

@@ -6,7 +6,7 @@ import { hrefWithLocale } from "@/i18n/routing";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
 import { devError } from "@/lib/devLog";
 import { PITCHRUSCH_PREMIUM_UPDATED_EVENT } from "@/lib/supabase/premium";
-import { fetchReferralDashboard, type ReferralDashboard } from "@/lib/supabase/referrals";
+import { fetchReferralDashboard, tryConsumePendingReferralWithRetry, type ReferralDashboard } from "@/lib/supabase/referrals";
 
 const cardClass =
   "rounded-xl border border-orange-500/60 bg-gn-surface/20 p-4 shadow-sm sm:p-5";
@@ -44,15 +44,26 @@ export function BenefitsReferralPage() {
   }, []);
 
   useEffect(() => {
-    void load();
+    void (async () => {
+      await tryConsumePendingReferralWithRetry();
+      await load();
+    })();
   }, [load]);
 
   useEffect(() => {
     const onPremium = () => {
-      void load();
+      void (async () => {
+        await tryConsumePendingReferralWithRetry();
+        void load();
+      })();
     };
     const onVisibility = () => {
-      if (document.visibilityState === "visible") void load();
+      if (document.visibilityState === "visible") {
+        void (async () => {
+          await tryConsumePendingReferralWithRetry();
+          void load();
+        })();
+      }
     };
     window.addEventListener(PITCHRUSCH_PREMIUM_UPDATED_EVENT, onPremium);
     document.addEventListener("visibilitychange", onVisibility);

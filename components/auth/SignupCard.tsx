@@ -8,7 +8,7 @@ import {
   isSignupEmailAlreadyExistsError,
   signUpWithEmailPassword,
 } from "@/lib/supabase/auth";
-import { rememberReferralCodeFromQuery } from "@/lib/supabase/referrals";
+import { rememberReferralCodeFromQuery, peekPendingReferralCode } from "@/lib/supabase/referrals";
 import { devError } from "@/lib/devLog";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
@@ -104,7 +104,9 @@ export function SignupCard() {
       // Redirect immediately when signup also created a session.
       // Avoid an extra getSession() roundtrip that can race with AuthGate guest redirect.
       if (!signupResult.requiresEmailConfirmation) {
-        router.replace("/role");
+        const pending = peekPendingReferralCode();
+        const roleHref = pending ? `/role?ref=${encodeURIComponent(pending)}` : "/role";
+        router.replace(roleHref);
       }
     } catch (err) {
       devError("Signup error:", err);

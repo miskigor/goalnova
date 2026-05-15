@@ -10,6 +10,7 @@ import {
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadContext";
+import { ReferralConsumeOnMount } from "@/components/referrals/ReferralConsumeOnMount";
 import { supabase } from "@/lib/supabase/client";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
@@ -495,6 +496,7 @@ export function HomeFeed() {
           : "",
       ].join(" ")}
     >
+      <ReferralConsumeOnMount />
       <header
         className={[
           "space-y-0.5",

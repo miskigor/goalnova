@@ -8,7 +8,11 @@ import { supabase } from "@/lib/supabase/client";
 import { signOut } from "@/lib/supabase/auth";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { ensureOnboardingNotificationsForRole } from "@/lib/supabase/onboardingNotifications";
-import { rememberReferralCodeFromQuery, tryConsumePendingReferral } from "@/lib/supabase/referrals";
+import {
+  rememberReferralCodeFromQuery,
+  tryConsumePendingReferralWithRetry,
+  waitUntilPlayerProfileReady,
+} from "@/lib/supabase/referrals";
 import { InviteFriendsSection } from "@/components/referrals/InviteFriendsSection";
 
 type Role = "player" | "scout";
@@ -241,9 +245,10 @@ export function RoleSelectionCard() {
 
       if (role === "player") {
         try {
-          await tryConsumePendingReferral();
+          await waitUntilPlayerProfileReady(userId);
+          await tryConsumePendingReferralWithRetry();
         } catch (e) {
-          devError("[RoleSelection] tryConsumePendingReferral failed", e);
+          devError("[RoleSelection] referral consume failed", e);
         }
       }
 

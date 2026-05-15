@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { rememberReferralCodeFromQuery, tryConsumePendingReferral } from "@/lib/supabase/referrals";
+import { rememberReferralCodeFromQuery, tryConsumePendingReferralWithRetry } from "@/lib/supabase/referrals";
 import { supabase } from "@/lib/supabase/client";
 
 /**
@@ -20,10 +20,10 @@ export function ReferralBootstrap() {
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
       if (cancelled) return;
       if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
-        void tryConsumePendingReferral();
+        void tryConsumePendingReferralWithRetry();
       }
     });
-    void tryConsumePendingReferral();
+    void tryConsumePendingReferralWithRetry();
     return () => {
       cancelled = true;
       sub.subscription.unsubscribe();

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { loadAndEnsureProfile } from "@/lib/supabase/profile";
+import { tryConsumePendingReferralWithRetry } from "@/lib/supabase/referrals";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
 import { ScoutOwnProfileView } from "@/components/profile/ScoutOwnProfileView";
@@ -41,6 +42,10 @@ export function OwnProfileView() {
     profile: ScoutProfileRow;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    void tryConsumePendingReferralWithRetry();
+  }, []);
 
   useEffect(() => {
     let mounted = true;
