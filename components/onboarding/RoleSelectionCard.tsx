@@ -12,7 +12,6 @@ import {
   rememberReferralCodeFromQuery,
   syncPendingReferralCodeToUserMetadata,
   tryConsumePendingReferralWithRetry,
-  waitUntilPlayerProfileReady,
 } from "@/lib/supabase/referrals";
 import { InviteFriendsSection } from "@/components/referrals/InviteFriendsSection";
 
@@ -244,20 +243,18 @@ export function RoleSelectionCard() {
 
       void ensureOnboardingNotificationsForRole(supabase, userId, role);
 
-      if (role === "player") {
-        try {
-          await syncPendingReferralCodeToUserMetadata();
-          await waitUntilPlayerProfileReady(userId);
-          await tryConsumePendingReferralWithRetry();
-          window.setTimeout(() => {
-            void tryConsumePendingReferralWithRetry();
-          }, 3000);
-        } catch (e) {
-          devError("[RoleSelection] referral consume failed", e);
-        }
-      }
-
       router.replace(role === "scout" ? "/scout-apply" : "/profile");
+
+      if (role === "player") {
+        void (async () => {
+          try {
+            await syncPendingReferralCodeToUserMetadata();
+            await tryConsumePendingReferralWithRetry();
+          } catch (e) {
+            devError("[RoleSelection] referral consume failed", e);
+          }
+        })();
+      }
     } catch (e) {
       devError("RoleSelection save error", e);
       setError(

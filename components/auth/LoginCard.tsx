@@ -319,7 +319,7 @@ export function LoginCard({ labels }: Props) {
         const roleHref = pendingRef ? `/role?ref=${encodeURIComponent(pendingRef)}` : "/role";
         router.replace(roleHref);
       } else {
-        await tryConsumePendingReferralWhenPlayerReady();
+        void tryConsumePendingReferralWhenPlayerReady();
         window.location.assign(homeUrlForLocale(locale));
       }
       setRedirecting(false);
