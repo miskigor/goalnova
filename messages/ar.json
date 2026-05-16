@@ -988,7 +988,12 @@
     "scoutPlanLimitsNote": "الحصص للإرشاد؛ التطبيق الكامل مع الفوترة لاحقًا.",
     "scoutTestSectionTitle": "اختبار سريع",
     "scoutTestSectionBody": "افتح ملف اللاعب يانكو لتجربة القائمة القصيرة والرسائل والأبرز.",
-    "scoutTestJankoLink": "فتح اللاعب @janko"
+    "scoutTestJankoLink": "فتح اللاعب @janko",
+    "deleteAccountTitle": "Delete account",
+    "deleteAccountDescription": "Permanently delete your account, profile, and sign-in. This cannot be undone.",
+    "deleteAccountButton": "Delete account",
+    "deleteAccountConfirm": "Delete your account permanently? All your data will be removed and you will be signed out.",
+    "deleteAccountFailed": "Could not delete your account. Please try again or contact support."
   },
   "follow": {
     "loading": "جارٍ تحميل النشاط…",

@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { loadAndEnsureProfile } from "@/lib/supabase/profile";
 import { tryConsumePendingReferralWithRetry } from "@/lib/supabase/referrals";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
+import { DeleteAccountSection } from "@/components/profile/DeleteAccountSection";
 import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
 import { ScoutOwnProfileView } from "@/components/profile/ScoutOwnProfileView";
 import type { Database } from "@/lib/supabase/client";
@@ -99,6 +100,7 @@ export function OwnProfileView() {
           </div>
         ) : null}
         <ScoutOwnProfileView user={scoutBundle.user} profile={scoutBundle.profile} />
+        <DeleteAccountSection />
       </>
     );
   }
@@ -123,6 +125,7 @@ export function OwnProfileView() {
         </div>
       ) : null}
       <PlayerPublicProfile playerSlug={playerSlug} />
+      <DeleteAccountSection />
     </>
   );
 }

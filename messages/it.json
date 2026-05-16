@@ -988,7 +988,12 @@
     "scoutPlanLimitsNote": "Le quote sono indicative; l’applicazione completa arriverà con la fatturazione.",
     "scoutTestSectionTitle": "Test rapido",
     "scoutTestSectionBody": "Apri il profilo del giocatore Janko per provare shortlist, messaggi e highlight.",
-    "scoutTestJankoLink": "Apri giocatore @janko"
+    "scoutTestJankoLink": "Apri giocatore @janko",
+    "deleteAccountTitle": "Delete account",
+    "deleteAccountDescription": "Permanently delete your account, profile, and sign-in. This cannot be undone.",
+    "deleteAccountButton": "Delete account",
+    "deleteAccountConfirm": "Delete your account permanently? All your data will be removed and you will be signed out.",
+    "deleteAccountFailed": "Could not delete your account. Please try again or contact support."
   },
   "follow": {
     "loading": "Caricamento attività…",

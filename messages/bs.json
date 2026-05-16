@@ -988,7 +988,12 @@
     "scoutPlanLimitsNote": "Quotas are shown for reference; full enforcement will go live with billing.",
     "scoutTestSectionTitle": "Quick test",
     "scoutTestSectionBody": "Open the Janko player profile to try shortlist, messages, and viewing highlights.",
-    "scoutTestJankoLink": "Open player @janko"
+    "scoutTestJankoLink": "Open player @janko",
+    "deleteAccountTitle": "Obriši račun",
+    "deleteAccountDescription": "Trajno briše vaš račun, profil i prijavu. Ovo se ne može poništiti.",
+    "deleteAccountButton": "Obriši račun",
+    "deleteAccountConfirm": "Trajno obrisati račun? Svi podaci bit će uklonjeni i bit ćete odjavljeni.",
+    "deleteAccountFailed": "Račun nije mogao biti obrisan. Pokušajte ponovo ili kontaktirajte podršku."
   },
   "follow": {
     "loading": "Loading activity…",

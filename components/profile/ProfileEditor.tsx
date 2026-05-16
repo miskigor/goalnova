@@ -23,6 +23,7 @@ import {
   saveScoutProfile,
   updateUserAvatarUrl,
 } from "@/lib/supabase/profile";
+import { DeleteAccountSection } from "@/components/profile/DeleteAccountSection";
 import { ProfileAvatarEditor } from "@/components/profile/ProfileAvatarEditor";
 import { PlayerFollowSection } from "@/components/profile/PlayerFollowSection";
 import { ProfilePremiumBanner } from "@/components/premium/ProfilePremiumBanner";
@@ -895,6 +896,8 @@ export function ProfileEditor() {
         {saving ? <Spinner /> : null}
         {saving ? t("saving") : t("save")}
       </button>
+
+      <DeleteAccountSection />
     </div>
   );
 }
