@@ -7,6 +7,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { devError } from "@/lib/devLog";
 import { signInWithEmailPassword } from "@/lib/supabase/auth";
+import { rememberReferralCodeFromQuery } from "@/lib/supabase/referrals";
 import { supabase } from "@/lib/supabase/client";
 import { Logo } from "@/components/brand/Logo";
 
@@ -216,6 +217,12 @@ export function LoginCard({ labels }: Props) {
   const [error, setError] = useState<FieldError>(null);
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const [redirecting, setRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const ref = new URLSearchParams(window.location.search).get("ref");
+    rememberReferralCodeFromQuery(ref);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;

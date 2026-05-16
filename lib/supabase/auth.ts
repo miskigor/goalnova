@@ -298,25 +298,26 @@ export async function signUpWithEmailPassword({
   password,
   fullName,
   role = "player",
+  pendingReferralCode,
 }: {
   email: string;
   password: string;
   fullName?: string;
   role?: Role;
+  /** Survives email confirmation when browser storage is cleared (auth user_metadata). */
+  pendingReferralCode?: string | null;
 }): Promise<SignupResult> {
   assertSupabaseConfigured();
   const trimmedFullName = fullName?.trim() || "";
+  const refMeta = (pendingReferralCode ?? "").trim().toUpperCase();
+  const signUpMeta: Record<string, string> = {};
+  if (trimmedFullName) signUpMeta.full_name = trimmedFullName;
+  if (refMeta.length >= 4) signUpMeta.pending_referral_code = refMeta;
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: trimmedFullName
-      ? {
-          data: {
-            full_name: trimmedFullName,
-          },
-        }
-      : undefined,
+    options: Object.keys(signUpMeta).length > 0 ? { data: signUpMeta } : undefined,
   });
 
   if (error) {

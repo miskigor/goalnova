@@ -48,6 +48,7 @@ export function ReferralDebugPage() {
   const [localPending, setLocalPending] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<string | null>(null);
   const [peeked, setPeeked] = useState<string | null>(null);
+  const [metaPending, setMetaPending] = useState<string | null>(null);
   const [retryBusy, setRetryBusy] = useState(false);
   const [afterRetryJson, setAfterRetryJson] = useState<string | null>(null);
 
@@ -70,6 +71,9 @@ export function ReferralDebugPage() {
       }
       const uid = auth.user?.id ?? null;
       const email = auth.user?.email ?? null;
+      const metaRef = auth.user?.user_metadata?.pending_referral_code;
+      setMetaPending(typeof metaRef === "string" && metaRef.trim() ? metaRef.trim().toUpperCase() : null);
+
       if (!uid) {
         setSnapshot({
           userId: null,
@@ -215,6 +219,8 @@ export function ReferralDebugPage() {
           <dd className="break-all">{localPending ?? "—"}</dd>
           <dt className="text-gn-text-tertiary">peekPendingReferralCode()</dt>
           <dd className="break-all">{peeked ?? "—"}</dd>
+          <dt className="text-gn-text-tertiary">user_metadata.pending_referral_code</dt>
+          <dd className="break-all">{metaPending ?? "—"}</dd>
         </dl>
       </section>
 

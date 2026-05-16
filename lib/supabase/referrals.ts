@@ -122,6 +122,28 @@ export function peekPendingReferralCode(): string | null {
   return null;
 }
 
+/** session/local storage first, then auth user_metadata.pending_referral_code (email-confirm flow). */
+export async function resolvePendingReferralCode(): Promise<string | null> {
+  const fromStorage = peekPendingReferralCode();
+  if (fromStorage) return fromStorage;
+
+  try {
+    const { data } = await supabase.auth.getUser();
+    const meta = data.user?.user_metadata?.pending_referral_code;
+    if (typeof meta === "string") {
+      const code = meta.trim().toUpperCase();
+      if (code.length >= 4) {
+        storageWritePending(code);
+        devLog("[referral] restored pending code from user_metadata", { code });
+        return code;
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
 export function clearPendingReferralCode() {
   storageClearPending();
   devLog("[referral] cleared pending referral code (session + local)");
@@ -168,7 +190,7 @@ export async function waitUntilPlayerProfileReady(
 type OnceOutcome = "success" | "definitive_fail" | "temporary_fail" | "no_pending";
 
 async function tryConsumePendingReferralOnce(): Promise<OnceOutcome> {
-  const code = peekPendingReferralCode();
+  const code = await resolvePendingReferralCode();
   if (!code) {
     persistLastReferralResult({ stage: "peek", outcome: "no_pending" });
     return "no_pending";
@@ -250,7 +272,7 @@ async function tryConsumePendingReferralOnce(): Promise<OnceOutcome> {
 export async function tryConsumePendingReferralWithRetry(): Promise<void> {
   if (typeof window === "undefined") return;
 
-  if (!peekPendingReferralCode()) {
+  if (!(await resolvePendingReferralCode())) {
     return;
   }
 
