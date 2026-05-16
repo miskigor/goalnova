@@ -3,6 +3,8 @@
 -- - wrong audit insert column "payload" (should use goalnova_admin_audit_log RPC)
 -- Restore canonical implementation.
 
+drop function if exists public.goalnova_admin_set_suspended(uuid, boolean);
+
 create or replace function public.goalnova_admin_set_suspended(
   p_user_id uuid,
   p_suspended boolean

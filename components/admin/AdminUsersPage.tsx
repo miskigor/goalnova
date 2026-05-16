@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { adminHardDeleteUser } from "@/lib/supabase/adminDeleteUser";
 import {
   rpcAdminCreateTicketForUser,
   rpcAdminListUsers,
@@ -124,6 +125,40 @@ export function AdminUsersPage() {
     alert(t("ticketCreatedAlert", { id }));
   }
 
+  async function hardDeleteUser(row: AdminUserListRow) {
+    setActionError(null);
+    if (!isSuperAdmin) {
+      setActionError(t("hardDeleteForbidden"));
+      return;
+    }
+    if (
+      !window.confirm(
+        t("userListConfirmHardDelete", {
+          email: row.email ?? row.username ?? row.id,
+        }),
+      )
+    ) {
+      return;
+    }
+    setBusyId(row.id);
+    const result = await adminHardDeleteUser(row.id);
+    setBusyId(null);
+    if (!result.ok) {
+      if (result.reason === "cannot_delete_self") {
+        setActionError(t("cannotDeleteSelf"));
+      } else if (result.reason === "cannot_delete_super_admin") {
+        setActionError(t("cannotDeleteSuperAdmin"));
+      } else if (result.reason === "forbidden") {
+        setActionError(t("hardDeleteForbidden"));
+      } else {
+        setActionError(result.errorMessage ?? tc("failed"));
+      }
+      return;
+    }
+    setRows((prev) => prev.filter((r) => r.id !== row.id));
+    void load();
+  }
+
   async function toggleModerator(row: AdminUserListRow) {
     if (!isSuperAdmin) return;
     const nextRole = row.admin_role === "moderator" ? null : "moderator";
@@ -242,6 +277,16 @@ export function AdminUsersPage() {
                           className="rounded bg-white/10 px-2 py-1 text-xs text-zinc-200 hover:bg-white/15 disabled:opacity-50"
                         >
                           {row.is_deleted ? t("restore") : t("softDelete")}
+                        </button>
+                      ) : null}
+                      {isSuperAdmin ? (
+                        <button
+                          type="button"
+                          disabled={busyId === row.id}
+                          onClick={() => void hardDeleteUser(row)}
+                          className="rounded bg-red-500/20 px-2 py-1 text-xs font-medium text-red-200 hover:bg-red-500/30 disabled:opacity-50"
+                        >
+                          {t("hardDelete")}
                         </button>
                       ) : null}
                       <button

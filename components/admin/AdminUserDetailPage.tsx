@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
+import { adminHardDeleteUser } from "@/lib/supabase/adminDeleteUser";
 import { supabase } from "@/lib/supabase/client";
 import {
   type AdminNoticeType,
@@ -125,6 +126,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
   const t = useTranslations("adminDashboard");
   const tc = useTranslations("common");
   const locale = useLocale();
+  const router = useRouter();
   const {
     isSuperAdmin,
     isSupportAdmin,
@@ -570,6 +572,35 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
               className="rounded-lg bg-white/10 px-3 py-2 text-sm text-white hover:bg-white/15"
             >
               {Boolean(user.is_deleted) ? t("restore") : t("softDelete")}
+            </button>
+          ) : null}
+          {isSuperAdmin ? (
+            <button
+              type="button"
+              onClick={async () => {
+                const email =
+                  typeof user.email === "string" ? user.email : userId;
+                if (!window.confirm(t("userDetailConfirmHardDelete", { email }))) {
+                  return;
+                }
+                const r = await adminHardDeleteUser(userId);
+                if (!r.ok) {
+                  if (r.reason === "cannot_delete_self") {
+                    alert(t("cannotDeleteSelf"));
+                  } else if (r.reason === "cannot_delete_super_admin") {
+                    alert(t("cannotDeleteSuperAdmin"));
+                  } else if (r.reason === "forbidden") {
+                    alert(t("hardDeleteForbidden"));
+                  } else {
+                    alert(r.errorMessage ?? tc("failed"));
+                  }
+                  return;
+                }
+                router.replace("/admin/users");
+              }}
+              className="rounded-lg bg-red-500/25 px-3 py-2 text-sm font-semibold text-red-200 hover:bg-red-500/35"
+            >
+              {t("hardDelete")}
             </button>
           ) : null}
         </section>
