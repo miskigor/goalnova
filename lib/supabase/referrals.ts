@@ -254,7 +254,10 @@ async function tryConsumePendingReferralOnce(): Promise<OnceOutcome> {
   }
 
   if (DEFINITIVE_FAIL_REASONS.has(reason)) {
-    clearPendingReferralCode();
+    // Keep pending when code may still exist only in auth metadata (RPC ran before client resolved it).
+    if (reason !== "invalid_code") {
+      clearPendingReferralCode();
+    }
     return "definitive_fail";
   }
 

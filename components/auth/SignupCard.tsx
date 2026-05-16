@@ -90,14 +90,18 @@ export function SignupCard() {
 
     setLoading(true);
     try {
-      const ref = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("ref") : null;
-      rememberReferralCodeFromQuery(ref);
+      const refFromUrl =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search).get("ref")
+          : null;
+      rememberReferralCodeFromQuery(refFromUrl);
+      const pendingCode = peekPendingReferralCode() ?? refFromUrl?.trim().toUpperCase() ?? null;
 
       const signupResult = await signUpWithEmailPassword({
         email: trimmedEmail,
         password,
         fullName,
-        pendingReferralCode: ref,
+        pendingReferralCode: pendingCode,
       });
 
       setSignupComplete(true);
