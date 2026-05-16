@@ -266,8 +266,56 @@ async function tryConsumePendingReferralOnce(): Promise<OnceOutcome> {
   return "temporary_fail";
 }
 
+const RETRY_DELAYS_MS = [0, 1000, 2000, 4000, 8000, 15000];
+
 /**
- * Reads pending code, calls RPC up to 3 times: immediately, +1s, +3s after prior attempt if still temporary.
+ * True when the signed-in user still needs to finish /role (no player/scout profile row yet).
+ */
+export async function needsRoleOnboardingPage(): Promise<boolean> {
+  const { data: auth } = await supabase.auth.getUser();
+  const userId = auth.user?.id;
+  if (!userId) return false;
+
+  const { data: userRow } = await supabase
+    .from("users")
+    .select("role")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (userRow?.role === "scout") {
+    const { data: scoutProfile } = await supabase
+      .from("scout_profiles")
+      .select("id")
+      .eq("id", userId)
+      .maybeSingle();
+    return !scoutProfile?.id;
+  }
+
+  const { data: playerProfile } = await supabase
+    .from("player_profiles")
+    .select("id")
+    .eq("id", userId)
+    .maybeSingle();
+
+  return !playerProfile?.id;
+}
+
+/**
+ * Waits until player profile exists, then runs the full consume retry schedule.
+ */
+export async function tryConsumePendingReferralWhenPlayerReady(): Promise<void> {
+  if (typeof window === "undefined") return;
+  if (!(await resolvePendingReferralCode())) return;
+
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user?.id) return;
+
+  await waitUntilPlayerProfileReady(auth.user.id, { maxMs: 20_000 });
+  await tryConsumePendingReferralWithRetry();
+}
+
+/**
+ * Reads pending code, calls RPC with backoff (0s, 1s, 2s, 4s, 8s, 15s) while outcome is temporary.
  */
 export async function tryConsumePendingReferralWithRetry(): Promise<void> {
   if (typeof window === "undefined") return;
@@ -278,9 +326,8 @@ export async function tryConsumePendingReferralWithRetry(): Promise<void> {
 
   devLog("[referral] tryConsumePendingReferralWithRetry: start");
 
-  for (let attempt = 0; attempt < 3; attempt++) {
-    if (attempt === 1) await sleep(1000);
-    if (attempt === 2) await sleep(3000);
+  for (let attempt = 0; attempt < RETRY_DELAYS_MS.length; attempt++) {
+    if (attempt > 0) await sleep(RETRY_DELAYS_MS[attempt]);
 
     const outcome = await tryConsumePendingReferralOnce();
     if (outcome === "success" || outcome === "definitive_fail" || outcome === "no_pending") {

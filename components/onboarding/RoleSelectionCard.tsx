@@ -247,6 +247,9 @@ export function RoleSelectionCard() {
         try {
           await waitUntilPlayerProfileReady(userId);
           await tryConsumePendingReferralWithRetry();
+          window.setTimeout(() => {
+            void tryConsumePendingReferralWithRetry();
+          }, 3000);
         } catch (e) {
           devError("[RoleSelection] referral consume failed", e);
         }

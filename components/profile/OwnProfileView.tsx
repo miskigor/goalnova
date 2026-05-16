@@ -44,10 +44,6 @@ export function OwnProfileView() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    void tryConsumePendingReferralWithRetry();
-  }, []);
-
-  useEffect(() => {
     let mounted = true;
     void (async () => {
       const result = await loadAndEnsureProfile();
@@ -67,6 +63,7 @@ export function OwnProfileView() {
         return;
       }
       setPlayerSlug(nextSlug);
+      void tryConsumePendingReferralWithRetry();
     })().catch((err) => {
       logFullSupabaseError("[OwnProfileView] loadAndEnsureProfile", err);
       if (mounted) setError(tCommon("genericError"));

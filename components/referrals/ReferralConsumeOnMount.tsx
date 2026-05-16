@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { tryConsumePendingReferralWithRetry } from "@/lib/supabase/referrals";
+import { tryConsumePendingReferralWhenPlayerReady } from "@/lib/supabase/referrals";
 
-/** Runs robust pending-referral consume when the shell route mounts (home / profile / benefits use this). */
+/** Waits for player profile, then consumes pending referral (home / profile / benefits). */
 export function ReferralConsumeOnMount() {
   useEffect(() => {
-    void tryConsumePendingReferralWithRetry();
+    void tryConsumePendingReferralWhenPlayerReady();
   }, []);
   return null;
 }

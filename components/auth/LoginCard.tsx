@@ -7,7 +7,12 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { devError } from "@/lib/devLog";
 import { signInWithEmailPassword } from "@/lib/supabase/auth";
-import { rememberReferralCodeFromQuery } from "@/lib/supabase/referrals";
+import {
+  needsRoleOnboardingPage,
+  rememberReferralCodeFromQuery,
+  resolvePendingReferralCode,
+  tryConsumePendingReferralWithRetry,
+} from "@/lib/supabase/referrals";
 import { supabase } from "@/lib/supabase/client";
 import { Logo } from "@/components/brand/Logo";
 
@@ -294,13 +299,17 @@ export function LoginCard({ labels }: Props) {
         }),
       ]);
       setRedirecting(true);
-      window.setTimeout(() => {
+      const pendingRef = await resolvePendingReferralCode();
+      const needsRole = await needsRoleOnboardingPage();
+      if (needsRole) {
+        const roleHref = pendingRef ? `/role?ref=${encodeURIComponent(pendingRef)}` : "/role";
+        router.replace(roleHref);
+      } else {
+        await tryConsumePendingReferralWithRetry();
         window.location.assign(homeUrlForLocale(locale));
-      }, 450);
-      window.setTimeout(() => {
-        setRedirecting(false);
-        setLoading(false);
-      }, 8000);
+      }
+      setRedirecting(false);
+      setLoading(false);
     } catch (err) {
       const { kind, raw, code } = classifyLoginError(err);
       if (kind !== "invalid_credentials") {
