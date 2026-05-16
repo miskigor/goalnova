@@ -103,6 +103,34 @@ export function rememberReferralCodeFromQuery(ref: string | null | undefined) {
   }
   storageWritePending(code);
   devLog("[referral] pending referral code saved (session + local)", { code });
+  void syncPendingReferralCodeToUserMetadata();
+}
+
+/** Persists browser pending code into auth metadata (survives email-confirm / new tab). */
+export async function syncPendingReferralCodeToUserMetadata(): Promise<void> {
+  if (typeof window === "undefined") return;
+  const code = peekPendingReferralCode();
+  if (!code) return;
+
+  try {
+    const { data: auth, error: authErr } = await supabase.auth.getUser();
+    if (authErr || !auth.user) return;
+
+    const raw = auth.user.user_metadata?.pending_referral_code;
+    const existing = typeof raw === "string" ? raw.trim().toUpperCase() : "";
+    if (existing === code) return;
+
+    const { error } = await supabase.auth.updateUser({
+      data: { pending_referral_code: code },
+    });
+    if (error) {
+      devLog("[referral] sync metadata failed", error.message);
+      return;
+    }
+    devLog("[referral] synced pending_referral_code to user_metadata", { code });
+  } catch {
+    /* ignore */
+  }
 }
 
 export function peekPendingReferralCode(): string | null {
@@ -190,6 +218,7 @@ export async function waitUntilPlayerProfileReady(
 type OnceOutcome = "success" | "definitive_fail" | "temporary_fail" | "no_pending";
 
 async function tryConsumePendingReferralOnce(): Promise<OnceOutcome> {
+  await syncPendingReferralCodeToUserMetadata();
   const code = await resolvePendingReferralCode();
   if (!code) {
     persistLastReferralResult({ stage: "peek", outcome: "no_pending" });

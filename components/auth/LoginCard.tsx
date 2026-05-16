@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLocale } from "next-intl";
 import type { User } from "@supabase/supabase-js";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -11,7 +11,8 @@ import {
   needsRoleOnboardingPage,
   rememberReferralCodeFromQuery,
   resolvePendingReferralCode,
-  tryConsumePendingReferralWithRetry,
+  syncPendingReferralCodeToUserMetadata,
+  tryConsumePendingReferralWhenPlayerReady,
 } from "@/lib/supabase/referrals";
 import { supabase } from "@/lib/supabase/client";
 import { Logo } from "@/components/brand/Logo";
@@ -222,6 +223,8 @@ export function LoginCard({ labels }: Props) {
   const [error, setError] = useState<FieldError>(null);
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const [redirecting, setRedirecting] = useState(false);
+  /** Prevents useLayoutEffect from sending fresh sign-ins to /home before /role + referral. */
+  const signInFlowRef = useRef(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -257,8 +260,17 @@ export function LoginCard({ labels }: Props) {
   }, []);
 
   useLayoutEffect(() => {
-    if (!sessionUser) return;
-    router.replace("/home");
+    if (!sessionUser || signInFlowRef.current) return;
+    void (async () => {
+      await syncPendingReferralCodeToUserMetadata();
+      const needsRole = await needsRoleOnboardingPage();
+      if (needsRole) {
+        const pendingRef = await resolvePendingReferralCode();
+        router.replace(pendingRef ? `/role?ref=${encodeURIComponent(pendingRef)}` : "/role");
+        return;
+      }
+      router.replace("/home");
+    })();
   }, [router, sessionUser]);
 
   const canSubmit = useMemo(() => {
@@ -289,6 +301,7 @@ export function LoginCard({ labels }: Props) {
     }
 
     setLoading(true);
+    signInFlowRef.current = true;
     try {
       await Promise.race([
         signInWithEmailPassword({ email: trimmedEmail, password }),
@@ -299,18 +312,20 @@ export function LoginCard({ labels }: Props) {
         }),
       ]);
       setRedirecting(true);
+      await syncPendingReferralCodeToUserMetadata();
       const pendingRef = await resolvePendingReferralCode();
       const needsRole = await needsRoleOnboardingPage();
       if (needsRole) {
         const roleHref = pendingRef ? `/role?ref=${encodeURIComponent(pendingRef)}` : "/role";
         router.replace(roleHref);
       } else {
-        await tryConsumePendingReferralWithRetry();
+        await tryConsumePendingReferralWhenPlayerReady();
         window.location.assign(homeUrlForLocale(locale));
       }
       setRedirecting(false);
       setLoading(false);
     } catch (err) {
+      signInFlowRef.current = false;
       const { kind, raw, code } = classifyLoginError(err);
       if (kind !== "invalid_credentials") {
         devError("Login error:", err);

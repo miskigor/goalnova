@@ -6,7 +6,12 @@ import { hrefWithLocale } from "@/i18n/routing";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
 import { devError } from "@/lib/devLog";
 import { PITCHRUSCH_PREMIUM_UPDATED_EVENT } from "@/lib/supabase/premium";
-import { fetchReferralDashboard, tryConsumePendingReferralWithRetry, type ReferralDashboard } from "@/lib/supabase/referrals";
+import {
+  fetchReferralDashboard,
+  tryConsumePendingReferralWhenPlayerReady,
+  tryConsumePendingReferralWithRetry,
+  type ReferralDashboard,
+} from "@/lib/supabase/referrals";
 
 const cardClass =
   "rounded-xl border border-orange-500/60 bg-gn-surface/20 p-4 shadow-sm sm:p-5";
@@ -45,8 +50,9 @@ export function BenefitsReferralPage() {
 
   useEffect(() => {
     void (async () => {
-      await tryConsumePendingReferralWithRetry();
+      await tryConsumePendingReferralWhenPlayerReady();
       await load();
+      window.setTimeout(() => void load(), 5000);
     })();
   }, [load]);
 

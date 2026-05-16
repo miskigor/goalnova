@@ -10,6 +10,7 @@ import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { ensureOnboardingNotificationsForRole } from "@/lib/supabase/onboardingNotifications";
 import {
   rememberReferralCodeFromQuery,
+  syncPendingReferralCodeToUserMetadata,
   tryConsumePendingReferralWithRetry,
   waitUntilPlayerProfileReady,
 } from "@/lib/supabase/referrals";
@@ -245,6 +246,7 @@ export function RoleSelectionCard() {
 
       if (role === "player") {
         try {
+          await syncPendingReferralCodeToUserMetadata();
           await waitUntilPlayerProfileReady(userId);
           await tryConsumePendingReferralWithRetry();
           window.setTimeout(() => {
