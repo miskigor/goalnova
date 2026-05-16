@@ -989,11 +989,11 @@
     "scoutTestSectionTitle": "Quick test",
     "scoutTestSectionBody": "Open the Janko player profile to try shortlist, messages, and viewing highlights.",
     "scoutTestJankoLink": "Open player @janko",
-    "deleteAccountTitle": "Delete account",
-    "deleteAccountDescription": "Permanently delete your account, profile, and sign-in. This cannot be undone.",
-    "deleteAccountButton": "Delete account",
-    "deleteAccountConfirm": "Delete your account permanently? All your data will be removed and you will be signed out.",
-    "deleteAccountFailed": "Could not delete your account. Please try again or contact support."
+    "deleteAccountTitle": "Account verwijderen",
+    "deleteAccountDescription": "Verwijdert je account, profiel en login permanent. Dit kan niet ongedaan worden gemaakt.",
+    "deleteAccountButton": "Account verwijderen",
+    "deleteAccountConfirm": "Account permanent verwijderen? Alle gegevens worden gewist en je wordt uitgelogd.",
+    "deleteAccountFailed": "Account kon niet worden verwijderd. Probeer opnieuw of neem contact op met support."
   },
   "follow": {
     "loading": "Loading activity…",

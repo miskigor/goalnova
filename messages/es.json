@@ -989,11 +989,11 @@
     "scoutTestSectionTitle": "Prueba rápida",
     "scoutTestSectionBody": "Abre el perfil del jugador Janko para probar lista corta, mensajes y highlights.",
     "scoutTestJankoLink": "Abrir jugador @janko",
-    "deleteAccountTitle": "Delete account",
-    "deleteAccountDescription": "Permanently delete your account, profile, and sign-in. This cannot be undone.",
-    "deleteAccountButton": "Delete account",
-    "deleteAccountConfirm": "Delete your account permanently? All your data will be removed and you will be signed out.",
-    "deleteAccountFailed": "Could not delete your account. Please try again or contact support."
+    "deleteAccountTitle": "Eliminar cuenta",
+    "deleteAccountDescription": "Elimina permanentemente tu cuenta, perfil e inicio de sesión. Esta acción no se puede deshacer.",
+    "deleteAccountButton": "Eliminar cuenta",
+    "deleteAccountConfirm": "¿Eliminar tu cuenta de forma permanente? Se borrarán todos tus datos y cerrarás sesión.",
+    "deleteAccountFailed": "No se pudo eliminar la cuenta. Inténtalo de nuevo o contacta con soporte."
   },
   "follow": {
     "loading": "Cargando actividad…",
