@@ -75,6 +75,7 @@
     "usersTitle": "Users",
     "searchPlaceholder": "Search email, name, username…",
     "loadUsersError": "Could not load users.",
+    "suspendForbidden": "Je hebt geen toestemming om gebruikers te schorsen.",
     "open": "Open",
     "suspend": "Suspend",
     "unsuspend": "Unsuspend",

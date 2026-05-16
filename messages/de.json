@@ -75,6 +75,7 @@
     "usersTitle": "Benutzer",
     "searchPlaceholder": "E-Mail, Name, Benutzername suchen…",
     "loadUsersError": "Benutzer konnten nicht geladen werden.",
+    "suspendForbidden": "Keine Berechtigung zum Sperren von Benutzern.",
     "open": "Öffnen",
     "suspend": "Sperren",
     "unsuspend": "Entsperren",

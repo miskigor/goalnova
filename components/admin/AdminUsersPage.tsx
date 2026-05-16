@@ -22,6 +22,7 @@ export function AdminUsersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -40,15 +41,24 @@ export function AdminUsersPage() {
   }, [load]);
 
   async function toggleSuspend(row: AdminUserListRow) {
-    if (!isSuperAdmin && !isModerator) return;
+    setActionError(null);
+    if (!isSuperAdmin && !isModerator) {
+      setActionError(t("suspendForbidden"));
+      return;
+    }
+    const nextSuspended = !row.is_suspended;
+    const snapshot = rows;
     setBusyId(row.id);
-    const { ok, error: e } = await rpcAdminSetSuspended(
-      row.id,
-      !row.is_suspended,
+    setRows((prev) =>
+      prev.map((r) =>
+        r.id === row.id ? { ...r, is_suspended: nextSuspended } : r,
+      ),
     );
+    const { ok, error: e } = await rpcAdminSetSuspended(row.id, nextSuspended);
     setBusyId(null);
     if (!ok) {
-      alert(e ?? tc("failed"));
+      setRows(snapshot);
+      setActionError(e ?? tc("failed"));
       return;
     }
     void load();
@@ -150,6 +160,11 @@ export function AdminUsersPage() {
       {error ? (
         <p className="text-sm text-red-300" role="alert">
           {error}
+        </p>
+      ) : null}
+      {actionError ? (
+        <p className="text-sm text-red-300" role="alert">
+          {actionError}
         </p>
       ) : null}
       <div className="overflow-x-auto rounded-xl border border-white/10">

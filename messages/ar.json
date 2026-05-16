@@ -75,6 +75,7 @@
     "usersTitle": "Users",
     "searchPlaceholder": "Search email, name, username…",
     "loadUsersError": "Could not load users.",
+    "suspendForbidden": "ليس لديك إذن لتعليق المستخدمين.",
     "open": "Open",
     "suspend": "Suspend",
     "unsuspend": "Unsuspend",

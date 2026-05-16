@@ -92,15 +92,42 @@ export async function rpcAdminSetSuspended(
   userId: string,
   suspended: boolean,
 ): Promise<{ ok: boolean; error: string | null }> {
-  const { error } = await supabase.rpc("goalnova_admin_set_suspended", {
+  const { data, error } = await supabase.rpc("goalnova_admin_set_suspended", {
     p_user_id: userId,
     p_suspended: suspended,
   });
-  if (error) {
-    logFullSupabaseError("[admin] goalnova_admin_set_suspended", error);
-    return { ok: false, error: error.message };
+  if (!error) {
+    const row = data as { ok?: boolean } | null;
+    if (row?.ok === false) {
+      return { ok: false, error: "Suspend failed" };
+    }
+    return { ok: true, error: null };
   }
-  return { ok: true, error: null };
+
+  logFullSupabaseError("[admin] goalnova_admin_set_suspended", error, { userId, suspended });
+
+  const code = (error as { code?: string }).code ?? null;
+  const msg = (error.message ?? "").toLowerCase();
+  const rpcMissing =
+    code === "PGRST202" ||
+    msg.includes("goalnova_admin_set_suspended") ||
+    msg.includes("function") ||
+    msg.includes("payload");
+
+  if (rpcMissing) {
+    const { error: fallbackErr } = await supabase
+      .from("users")
+      .update({ is_suspended: suspended })
+      .eq("id", userId);
+    if (!fallbackErr) {
+      return { ok: true, error: null };
+    }
+    logFullSupabaseError("[admin] set_suspended fallback users.update", fallbackErr, {
+      userId,
+    });
+  }
+
+  return { ok: false, error: error.message };
 }
 
 export async function rpcAdminSetDeleted(

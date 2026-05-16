@@ -75,6 +75,7 @@
     "usersTitle": "Korisnici",
     "searchPlaceholder": "Pretraži email, ime, korisničko ime…",
     "loadUsersError": "Nije moguće učitati korisnike.",
+    "suspendForbidden": "Nemate dozvolu za suspendiranje korisnika.",
     "open": "Otvori",
     "suspend": "Suspendiraj",
     "unsuspend": "Ukloni suspenziju",

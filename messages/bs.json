@@ -75,6 +75,7 @@
     "usersTitle": "Users",
     "searchPlaceholder": "Search email, name, username…",
     "loadUsersError": "Could not load users.",
+    "suspendForbidden": "Nemate dozvolu za suspendiranje korisnika.",
     "open": "Open",
     "suspend": "Suspend",
     "unsuspend": "Unsuspend",
