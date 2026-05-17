@@ -1014,7 +1014,11 @@
     "deleteAccountDescription": "Elimina permanentemente a sua conta, perfil e login. Esta ação não pode ser desfeita.",
     "deleteAccountButton": "Eliminar conta",
     "deleteAccountConfirm": "Eliminar a conta permanentemente? Todos os dados serão removidos e a sessão será encerrada.",
-    "deleteAccountFailed": "Não foi possível eliminar a conta. Tente novamente ou contacte o suporte."
+    "deleteAccountFailed": "Não foi possível eliminar a conta. Tente novamente ou contacte o suporte.",
+    "uploadFirstTitle": "Bem-vindo ao PitchRusch",
+    "uploadFirstText": "O teu perfil está pronto. Carrega o teu primeiro highlight e mostra o teu talento.",
+    "uploadFirstCta": "Carregar primeiro vídeo",
+    "uploadFirstLater": "Mais tarde"
   },
   "follow": {
     "loading": "A carregar atividade…",

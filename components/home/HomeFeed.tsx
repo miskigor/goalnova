@@ -37,6 +37,10 @@ import {
 } from "@/lib/feed/feedScrollContract";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
+import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
+import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
+import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
+import { currentUserHasAnyVideo } from "@/lib/supabase/currentUserVideos";
 
 /** Scrollport width: stay within the main column (negative margins removed — they fought min-w-0 and could widen scrollWidth). */
 const FEED_BLEED = "w-full min-w-0 max-w-full";
@@ -258,6 +262,9 @@ export function HomeFeed() {
   const tFeed = useTranslations("homeFeed");
   const adminSupportUnread = useAdminSupportUnread();
   const { loaded: scoutLoaded } = useScoutVerification();
+  const uploadEligibility = useVideoUploadEligibility();
+  const { dismissed: uploadFirstDismissed, dismiss: dismissUploadFirst } =
+    useUploadFirstVideoDismiss();
 
   const [items, setItems] = useState<AugmentedHomeFeedItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -370,36 +377,40 @@ export function HomeFeed() {
     void loadFeedRef.current();
   }, [scoutLoaded]);
 
+  const refreshMyVideosCount = useCallback(async () => {
+    setMyVideos({ state: "loading" });
+    const hasVideo = await currentUserHasAnyVideo();
+    if (hasVideo === null) {
+      setMyVideos({ state: "unknown" });
+      return;
+    }
+    setMyVideos({ state: "ready", count: hasVideo ? 1 : 0 });
+  }, []);
+
   /** Deferred so first paint + feed fetch are not competing with an auth + count round-trip. */
   useEffect(() => {
     let cancelled = false;
     const handle = window.setTimeout(() => {
       void (async () => {
-        setMyVideos({ state: "loading" });
-        const { data: sessionData } = await supabase.auth.getSession();
-        const uid = sessionData.session?.user?.id;
-        if (!uid) {
-          if (!cancelled) setMyVideos({ state: "unknown" });
-          return;
-        }
-        const { count, error: countErr } = await supabase
-          .from("videos")
-          .select("id", { count: "exact", head: true })
-          .eq("user_id", uid);
         if (cancelled) return;
-        if (countErr) {
-          logFullSupabaseError("[PitchRusch home feed] my videos count failed", countErr);
-          setMyVideos({ state: "unknown" });
-          return;
-        }
-        setMyVideos({ state: "ready", count: count ?? 0 });
+        await refreshMyVideosCount();
       })();
     }, 0);
     return () => {
       cancelled = true;
       window.clearTimeout(handle);
     };
-  }, []);
+  }, [refreshMyVideosCount]);
+
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        void refreshMyVideosCount();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [refreshMyVideosCount]);
 
   /** Full-viewport feed on small screens (video edge-to-edge; shell chrome overlays). */
   const liveImmersiveMobile =
@@ -407,6 +418,13 @@ export function HomeFeed() {
     !loading &&
     !feedLoadFailed &&
     items.length > 0;
+
+  const showUploadFirstBanner =
+    uploadEligibility === "player" &&
+    myVideos.state === "ready" &&
+    myVideos.count === 0 &&
+    !uploadFirstDismissed &&
+    !liveImmersiveMobile;
 
   function renderFeedBody() {
     if (!scoutLoaded || loading) {
@@ -443,7 +461,11 @@ export function HomeFeed() {
       const showFirstUploadHint =
         myVideos.state === "ready" && myVideos.count === 0;
       return (
-        <div className="flex flex-col items-center gap-5 rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-12 text-center">
+        <div className="flex w-full min-w-0 max-w-full flex-col gap-4">
+          {showUploadFirstBanner ? (
+            <UploadFirstVideoBanner variant="compact" onLater={dismissUploadFirst} />
+          ) : null}
+          <div className="flex flex-col items-center gap-5 rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-12 text-center">
           <div className="max-w-sm space-y-2">
             <p className="text-sm font-medium text-gn-text">
               {showFirstUploadHint ? tFeed("emptyFirstVideo") : tFeed("empty")}
@@ -460,6 +482,7 @@ export function HomeFeed() {
               {tFeed("exploreCta")}
             </Link>
           </div>
+        </div>
         </div>
       );
     }
@@ -516,6 +539,9 @@ export function HomeFeed() {
           >
             {tFeed("adminSupportInboxHint", { count: adminSupportUnread })}
           </Link>
+        ) : null}
+        {showUploadFirstBanner ? (
+          <UploadFirstVideoBanner variant="compact" onLater={dismissUploadFirst} />
         ) : null}
       </header>
 

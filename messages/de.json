@@ -1014,7 +1014,11 @@
     "deleteAccountDescription": "Löscht dein Konto, Profil und die Anmeldung dauerhaft. Dies kann nicht rückgängig gemacht werden.",
     "deleteAccountButton": "Konto löschen",
     "deleteAccountConfirm": "Konto dauerhaft löschen? Alle Daten werden entfernt und du wirst abgemeldet.",
-    "deleteAccountFailed": "Konto konnte nicht gelöscht werden. Bitte erneut versuchen oder den Support kontaktieren."
+    "deleteAccountFailed": "Konto konnte nicht gelöscht werden. Bitte erneut versuchen oder den Support kontaktieren.",
+    "uploadFirstTitle": "Willkommen bei PitchRusch",
+    "uploadFirstText": "Dein Profil ist bereit. Lade dein erstes Highlight hoch und zeig dein Talent.",
+    "uploadFirstCta": "Erstes Video hochladen",
+    "uploadFirstLater": "Später"
   },
   "follow": {
     "loading": "Aktivität wird geladen…",

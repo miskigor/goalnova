@@ -1014,7 +1014,11 @@
     "deleteAccountDescription": "Permanently delete your account, profile, and sign-in. This cannot be undone.",
     "deleteAccountButton": "Delete account",
     "deleteAccountConfirm": "Delete your account permanently? All your data will be removed and you will be signed out.",
-    "deleteAccountFailed": "Could not delete your account. Please try again or contact support."
+    "deleteAccountFailed": "Could not delete your account. Please try again or contact support.",
+    "uploadFirstTitle": "Welcome to PitchRusch",
+    "uploadFirstText": "Your profile is ready. Upload your first highlight and start showing your talent.",
+    "uploadFirstCta": "Upload first video",
+    "uploadFirstLater": "Later"
   },
   "follow": {
     "loading": "Loading activity…",

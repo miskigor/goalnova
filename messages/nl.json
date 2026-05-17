@@ -1014,7 +1014,11 @@
     "deleteAccountDescription": "Verwijdert je account, profiel en login permanent. Dit kan niet ongedaan worden gemaakt.",
     "deleteAccountButton": "Account verwijderen",
     "deleteAccountConfirm": "Account permanent verwijderen? Alle gegevens worden gewist en je wordt uitgelogd.",
-    "deleteAccountFailed": "Account kon niet worden verwijderd. Probeer opnieuw of neem contact op met support."
+    "deleteAccountFailed": "Account kon niet worden verwijderd. Probeer opnieuw of neem contact op met support.",
+    "uploadFirstTitle": "Welkom bij PitchRusch",
+    "uploadFirstText": "Je profiel is klaar. Upload je eerste highlight en laat je talent zien.",
+    "uploadFirstCta": "Eerste video uploaden",
+    "uploadFirstLater": "Later"
   },
   "follow": {
     "loading": "Loading activity…",

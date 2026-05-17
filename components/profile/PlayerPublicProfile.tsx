@@ -20,6 +20,9 @@ import { ProfileVideoGrid } from "@/components/profile/ProfileVideoGrid";
 import { PlayerPremiumBadge } from "@/components/premium/PremiumBadges";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
 import { ProfileUploadLink } from "@/components/profile/ProfileUploadLink";
+import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
+import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
+import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 
 function Spinner({ className = "h-5 w-5" }: { className?: string }) {
   return (
@@ -56,6 +59,9 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
   const td = useTranslations("discover");
   const { userId } = usePremium();
   const scoutGate = useScoutVerification();
+  const uploadEligibility = useVideoUploadEligibility();
+  const { dismissed: uploadFirstDismissed, dismiss: dismissUploadFirst } =
+    useUploadFirstVideoDismiss();
 
   const unknownPlayer = td("unknownPlayer");
 
@@ -174,6 +180,11 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
     !scoutGate.row ||
     userMayMessagePlayers(scoutGate.row);
   const isOwnProfile = Boolean(userId && profile.id === userId);
+  const showUploadFirstBanner =
+    isOwnProfile &&
+    videos.length === 0 &&
+    uploadEligibility === "player" &&
+    !uploadFirstDismissed;
 
   async function onDeleteVideo(videoId: string) {
     if (!isOwnProfile) return;
@@ -249,6 +260,10 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
       </header>
 
       <PlayerFollowSection profileUserId={profile.id} />
+
+      {showUploadFirstBanner ? (
+        <UploadFirstVideoBanner variant="profile" onLater={dismissUploadFirst} />
+      ) : null}
 
       <section aria-label={t("videosSectionAria")}>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gn-text-tertiary">

@@ -1014,7 +1014,11 @@
     "deleteAccountDescription": "Supprime définitivement votre compte, votre profil et votre connexion. Cette action est irréversible.",
     "deleteAccountButton": "Supprimer le compte",
     "deleteAccountConfirm": "Supprimer définitivement votre compte ? Toutes vos données seront effacées et vous serez déconnecté.",
-    "deleteAccountFailed": "Impossible de supprimer le compte. Réessayez ou contactez le support."
+    "deleteAccountFailed": "Impossible de supprimer le compte. Réessayez ou contactez le support.",
+    "uploadFirstTitle": "Bienvenue sur PitchRusch",
+    "uploadFirstText": "Ton profil est prêt. Publie ton premier highlight et montre ton talent.",
+    "uploadFirstCta": "Publier la première vidéo",
+    "uploadFirstLater": "Plus tard"
   },
   "follow": {
     "loading": "Chargement de l’activité…",

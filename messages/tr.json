@@ -1014,7 +1014,11 @@
     "deleteAccountDescription": "Hesabınızı, profilinizi ve girişinizi kalıcı olarak siler. Bu işlem geri alınamaz.",
     "deleteAccountButton": "Hesabı sil",
     "deleteAccountConfirm": "Hesabınız kalıcı olarak silinsin mi? Tüm veriler kaldırılır ve oturumunuz kapatılır.",
-    "deleteAccountFailed": "Hesap silinemedi. Lütfen tekrar deneyin veya destekle iletişime geçin."
+    "deleteAccountFailed": "Hesap silinemedi. Lütfen tekrar deneyin veya destekle iletişime geçin.",
+    "uploadFirstTitle": "PitchRusch'a hoş geldin",
+    "uploadFirstText": "Profilin hazır. İlk highlightını yükle ve yeteneğini göstermeye başla.",
+    "uploadFirstCta": "İlk videoyu yükle",
+    "uploadFirstLater": "Sonra"
   },
   "follow": {
     "loading": "Loading activity…",

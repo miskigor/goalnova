@@ -1014,7 +1014,11 @@
     "deleteAccountDescription": "يحذف حسابك وملفك الشخصي وتسجيل الدخول نهائياً. لا يمكن التراجع عن هذا الإجراء.",
     "deleteAccountButton": "حذف الحساب",
     "deleteAccountConfirm": "هل تريد حذف حسابك نهائياً؟ سيتم إزالة جميع بياناتك وتسجيل خروجك.",
-    "deleteAccountFailed": "تعذر حذف الحساب. يرجى المحاولة مرة أخرى أو التواصل مع الدعم."
+    "deleteAccountFailed": "تعذر حذف الحساب. يرجى المحاولة مرة أخرى أو التواصل مع الدعم.",
+    "uploadFirstTitle": "مرحبًا بك في PitchRusch",
+    "uploadFirstText": "ملفك جاهز. ارفع أول هايلايت وابدأ بإظهار موهبتك.",
+    "uploadFirstCta": "ارفع أول فيديو",
+    "uploadFirstLater": "لاحقًا"
   },
   "follow": {
     "loading": "جارٍ تحميل النشاط…",

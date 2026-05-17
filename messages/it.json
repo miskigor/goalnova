@@ -1014,7 +1014,11 @@
     "deleteAccountDescription": "Elimina definitivamente account, profilo e accesso. Questa azione non può essere annullata.",
     "deleteAccountButton": "Elimina account",
     "deleteAccountConfirm": "Eliminare definitivamente l'account? Tutti i dati verranno rimossi e verrai disconnesso.",
-    "deleteAccountFailed": "Impossibile eliminare l'account. Riprova o contatta l'assistenza."
+    "deleteAccountFailed": "Impossibile eliminare l'account. Riprova o contatta l'assistenza.",
+    "uploadFirstTitle": "Benvenuto su PitchRusch",
+    "uploadFirstText": "Il tuo profilo è pronto. Carica il tuo primo highlight e mostra il tuo talento.",
+    "uploadFirstCta": "Carica il primo video",
+    "uploadFirstLater": "Più tardi"
   },
   "follow": {
     "loading": "Caricamento attività…",

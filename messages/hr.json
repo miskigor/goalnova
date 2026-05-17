@@ -1014,7 +1014,11 @@
     "deleteAccountDescription": "Trajno briše vaš račun, profil i prijavu. Ovo se ne može poništiti.",
     "deleteAccountButton": "Obriši račun",
     "deleteAccountConfirm": "Trajno obrisati račun? Svi podaci bit će uklonjeni i bit ćete odjavljeni.",
-    "deleteAccountFailed": "Račun nije mogao biti obrisan. Pokušajte ponovo ili kontaktirajte podršku."
+    "deleteAccountFailed": "Račun nije mogao biti obrisan. Pokušajte ponovo ili kontaktirajte podršku.",
+    "uploadFirstTitle": "Dobrodošao u PitchRusch",
+    "uploadFirstText": "Tvoj profil je spreman. Učitaj prvi highlight i počni pokazivati svoj talent.",
+    "uploadFirstCta": "Učitaj prvi video",
+    "uploadFirstLater": "Kasnije"
   },
   "follow": {
     "loading": "Učitavanje aktivnosti…",
