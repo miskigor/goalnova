@@ -46,3 +46,11 @@ export const APP_PROFILE_SHELL_CLASS = [
 
 export const APP_PROFILE_LOADING_INNER_CLASS =
   "flex min-h-[35vh] w-full min-w-0 max-w-full flex-col items-center justify-center gap-2 text-sm text-gn-text-secondary";
+
+/** `/player/[slug]` only — bounded column with horizontal padding (mobile-first). */
+export const PUBLIC_PLAYER_PROFILE_PAGE_SHELL =
+  "mx-auto box-border w-full min-w-0 max-w-md overflow-x-clip px-4 pb-8 lg:max-w-2xl";
+
+/** Direct children inside {@link PUBLIC_PLAYER_PROFILE_PAGE_SHELL}. */
+export const PUBLIC_PLAYER_PROFILE_SECTION_CLASS =
+  "box-border w-full min-w-0 max-w-full overflow-x-clip";

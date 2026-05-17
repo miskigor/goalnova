@@ -53,15 +53,13 @@ export function ProfileVideoTile({
   const tile = (
     <div
       ref={containerRef}
-      className="group relative h-full w-full overflow-hidden rounded-[0.85rem] border border-white/[0.08] bg-black"
+      className="relative box-border h-full w-full max-w-full min-w-0 overflow-hidden rounded-[0.85rem] border border-white/[0.08] bg-black"
       style={{ aspectRatio: "9 / 16" }}
     >
       {src && loadMedia ? (
         <video
           ref={videoRef}
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out motion-safe:group-hover:scale-[1.02] motion-reduce:transform-none"
-          width={360}
-          height={640}
+          className="pointer-events-none absolute inset-0 h-full w-full max-w-full min-w-0 object-cover"
           muted
           playsInline
           preload="metadata"
@@ -119,10 +117,10 @@ export function ProfileVideoTile({
     );
   }
   return (
-    <div className="relative h-full w-full">
+    <div className="relative box-border h-full w-full min-w-0 max-w-full overflow-hidden">
       <Link
         href={href}
-        className="block h-full w-full outline-none ring-offset-2 ring-offset-gn-bg focus-visible:ring-2 focus-visible:ring-gn-accent/50"
+        className="block box-border h-full w-full min-w-0 max-w-full overflow-hidden outline-none ring-offset-2 ring-offset-gn-bg focus-visible:ring-2 focus-visible:ring-gn-accent/50"
       >
         {tile}
       </Link>

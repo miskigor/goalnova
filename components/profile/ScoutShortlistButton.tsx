@@ -166,21 +166,23 @@ export function ScoutShortlistButton({ scoutUserId, playerUserId }: Props) {
   const isSaved = saved;
 
   return (
-    <div className="space-y-2">
+    <div className="box-border w-full min-w-0 max-w-full space-y-2">
       <button
         type="button"
         onClick={() => void onToggle()}
         disabled={busy}
         aria-busy={busy}
         aria-pressed={isSaved}
-        className={`${isSaved ? SAVED_BUTTON_CLASS : GN_PRIMARY_BUTTON_CLASS} w-full min-w-0 max-w-full sm:w-auto`}
+        className={`${isSaved ? SAVED_BUTTON_CLASS : GN_PRIMARY_BUTTON_CLASS} box-border w-full min-w-0 max-w-full sm:w-auto`}
       >
         {busy ? <InlineSpinner /> : <BookmarkIcon filled={isSaved} />}
-        {busy
-          ? t("working")
-          : isSaved
-            ? t("removeFromShortlist")
-            : t("saveToShortlist")}
+        <span className="min-w-0 truncate">
+          {busy
+            ? t("working")
+            : isSaved
+              ? t("removeFromShortlist")
+              : t("saveToShortlist")}
+        </span>
       </button>
       {actionError ? (
         <p className="text-xs text-red-300/90" role="alert">

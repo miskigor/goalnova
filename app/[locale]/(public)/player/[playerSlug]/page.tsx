@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
+import { PlayerPublicProfilePage } from "@/components/profile/PlayerPublicProfilePage";
 import { routing } from "@/i18n/routing";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 import { createAnonSupabaseServerClient } from "@/lib/supabase/anonServerClient";
@@ -96,5 +96,5 @@ export default async function PlayerProfilePage({ params }: Props) {
   const { locale, playerSlug } = await params;
   setRequestLocale(locale);
 
-  return <PlayerPublicProfile playerSlug={playerSlug} />;
+  return <PlayerPublicProfilePage playerSlug={playerSlug} />;
 }

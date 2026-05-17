@@ -23,7 +23,10 @@ import { ProfileUploadLink } from "@/components/profile/ProfileUploadLink";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
 import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
-import { APP_PROFILE_SHELL_CLASS } from "@/lib/layout/appShellClasses";
+import {
+  APP_PROFILE_SHELL_CLASS,
+  PUBLIC_PLAYER_PROFILE_SECTION_CLASS,
+} from "@/lib/layout/appShellClasses";
 
 function Spinner({ className = "h-5 w-5" }: { className?: string }) {
   return (
@@ -128,8 +131,8 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
     };
   }, [playerSlug]);
 
-  const profileInnerClass =
-    "box-border w-full min-w-0 max-w-full space-y-6 overflow-x-hidden";
+  const profileSectionClass = PUBLIC_PLAYER_PROFILE_SECTION_CLASS;
+  const profileInnerClass = `${profileSectionClass} space-y-6`;
 
   function wrapInProfileShell(node: ReactNode) {
     if (embedded) return node;
@@ -223,7 +226,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
 
   return wrapInProfileShell(
     <div className={profileInnerClass}>
-      <header className="box-border min-w-0 max-w-full space-y-3 overflow-x-clip">
+      <header className={`${profileSectionClass} space-y-3`}>
         <div className="flex min-w-0 items-center gap-3">
           <ProfileAvatar
             name={displayName}
@@ -236,7 +239,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
             </h1>
             <p className="truncate text-sm text-gn-text-secondary">@{displayUsername}</p>
             {profile.founding_player === true || isPlayerPremium(profile) ? (
-              <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-1.5">
+              <div className="mt-1.5 flex min-w-0 max-w-full flex-wrap items-center gap-1.5">
                 {profile.founding_player === true ? <FoundingPlayerBadge /> : null}
                 {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
               </div>
@@ -258,17 +261,17 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
           </div>
         ) : null}
         {userId && profile.id !== userId ? (
-          <div className="mt-3 flex min-w-0 max-w-full flex-col gap-3 overflow-x-clip sm:flex-row sm:flex-wrap sm:items-start">
+          <div className="mt-3 flex w-full min-w-0 max-w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-stretch">
             {canUseScoutMessaging ? (
               <Link
                 href={`/messages/${profile.id}`}
-                className="inline-flex w-full min-w-0 max-w-full items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-center text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated sm:w-auto"
+                className="box-border inline-flex w-full min-w-0 max-w-full items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-center text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated sm:max-w-none sm:flex-1"
               >
-                <span className="truncate">{t("messageUser")}</span>
+                <span className="min-w-0 truncate">{t("messageUser")}</span>
               </Link>
             ) : (
               <p
-                className="min-w-0 max-w-full break-words rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3 text-sm text-gn-text-secondary"
+                className="box-border min-w-0 max-w-full break-words rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3 text-sm text-gn-text-secondary"
                 role="status"
               >
                 {tSv("messagingLockedHint")}{" "}
@@ -281,7 +284,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
               </p>
             )}
             {scoutGate.loaded && scoutGate.isApprovedScout ? (
-              <div className="min-w-0 w-full max-w-full sm:w-auto">
+              <div className="box-border w-full min-w-0 max-w-full sm:max-w-none sm:flex-1">
                 <ScoutShortlistButton scoutUserId={userId} playerUserId={profile.id} />
               </div>
             ) : null}
@@ -289,13 +292,15 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
         ) : null}
       </header>
 
-      <PlayerFollowSection profileUserId={profile.id} />
+      <div className={profileSectionClass}>
+        <PlayerFollowSection profileUserId={profile.id} />
+      </div>
 
       {showUploadFirstBanner ? (
         <UploadFirstVideoBanner variant="profile" onLater={dismissUploadFirst} />
       ) : null}
 
-      <section className="min-w-0 max-w-full overflow-x-clip" aria-label={t("videosSectionAria")}>
+      <section className={profileSectionClass} aria-label={t("videosSectionAria")}>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gn-text-tertiary">
           {t("videosHeading")}
         </h2>

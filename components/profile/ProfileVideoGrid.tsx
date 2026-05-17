@@ -17,11 +17,11 @@ export function ProfileVideoGrid({
   onDelete,
 }: Props) {
   return (
-    <ul className="grid w-full min-w-0 max-w-full grid-cols-3 gap-1.5 overflow-x-clip sm:gap-2">
+    <ul className="box-border grid w-full min-w-0 max-w-full grid-cols-3 gap-1.5 overflow-hidden sm:gap-2 [contain:layout]">
       {videos.map((video, index) => (
         <li
           key={video.id ?? `${video.created_at ?? "video"}-${index}`}
-          className="min-w-0"
+          className="min-w-0 max-w-full overflow-hidden"
         >
           <ProfileVideoTile
             video={video}
