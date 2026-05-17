@@ -223,6 +223,21 @@ export async function rpcAdminSetPremium(
   return { ok: true, error: null };
 }
 
+export async function rpcAdminSetFoundingPlayer(
+  userId: string,
+  enabled: boolean,
+): Promise<{ ok: boolean; error: string | null }> {
+  const { error } = await supabase.rpc("goalnova_admin_set_founding_player", {
+    p_user_id: userId,
+    p_enabled: enabled,
+  });
+  if (error) {
+    logFullSupabaseError("[admin] goalnova_admin_set_founding_player", error);
+    return { ok: false, error: error.message };
+  }
+  return { ok: true, error: null };
+}
+
 export async function rpcAdminSetScoutVerificationStatus(
   userId: string,
   status: string,

@@ -332,6 +332,7 @@ export type Database = {
           referral_code?: string | null;
           referred_by?: string | null;
           featured_player_until?: string | null;
+          founding_player?: boolean | null;
         };
         Insert: {
           id: string;
@@ -363,6 +364,7 @@ export type Database = {
           referral_code?: string | null;
           referred_by?: string | null;
           featured_player_until?: string | null;
+          founding_player?: boolean | null;
         };
         Update: {
           id?: string;
@@ -394,6 +396,7 @@ export type Database = {
           referral_code?: string | null;
           referred_by?: string | null;
           featured_player_until?: string | null;
+          founding_player?: boolean | null;
         };
         Relationships: [];
       };
@@ -1114,6 +1117,10 @@ export type Database = {
       };
       goalnova_admin_set_premium: {
         Args: { p_user_id: string; p_premium: boolean };
+        Returns: Json;
+      };
+      goalnova_admin_set_founding_player: {
+        Args: { p_user_id: string; p_enabled: boolean };
         Returns: Json;
       };
       goalnova_admin_set_scout_verification_status: {

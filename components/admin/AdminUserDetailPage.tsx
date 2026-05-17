@@ -16,6 +16,7 @@ import {
   rpcAdminSetAppRole,
   rpcAdminSetDeleted,
   rpcAdminSetPremium,
+  rpcAdminSetFoundingPlayer,
   rpcAdminSetScoutVerificationStatus,
   rpcAdminSetStaffRole,
   rpcAdminSetSuspended,
@@ -143,6 +144,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
 
   const [appRole, setAppRole] = useState("player");
   const [isPremium, setIsPremium] = useState(false);
+  const [isFoundingPlayer, setIsFoundingPlayer] = useState(false);
   const [scoutVer, setScoutVer] = useState("none");
   const [staffRole, setStaffRole] = useState("");
 
@@ -301,6 +303,13 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
       scout_apply_web_url: str(u.scout_apply_web_url),
     });
 
+    const { data: foundingRow } = await supabase
+      .from("player_profiles")
+      .select("founding_player")
+      .eq("id", userId)
+      .maybeSingle();
+    setIsFoundingPlayer(Boolean(foundingRow?.founding_player ?? pp?.founding_player));
+
     setLoading(false);
   }, [userId, t]);
 
@@ -375,6 +384,13 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
     if (!r2.ok) {
       alert(r2.error ?? tc("failed"));
       return;
+    }
+    if (appRole === "player") {
+      const rFounding = await rpcAdminSetFoundingPlayer(userId, isFoundingPlayer);
+      if (!rFounding.ok) {
+        alert(rFounding.error ?? tc("failed"));
+        return;
+      }
     }
     const r3 = await rpcAdminSetScoutVerificationStatus(userId, scoutVer);
     if (!r3.ok) {
@@ -487,6 +503,17 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
               />
               {t("userDetailLabelPremium")}
             </label>
+            {appRole === "player" ? (
+              <label className="flex items-center gap-2 pt-6 text-sm text-zinc-300 sm:col-span-2">
+                <input
+                  suppressHydrationWarning
+                  type="checkbox"
+                  checked={isFoundingPlayer}
+                  onChange={(e) => setIsFoundingPlayer(e.target.checked)}
+                />
+                {t("userDetailLabelFoundingPlayer")}
+              </label>
+            ) : null}
             <label className="block text-xs text-zinc-500">
               {t("userDetailLabelScoutVerStatus")}
               <select

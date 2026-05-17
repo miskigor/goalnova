@@ -17,7 +17,7 @@ import { userMayMessagePlayers } from "@/lib/scoutVerification";
 import { PlayerFollowSection } from "./PlayerFollowSection";
 import { ScoutShortlistButton } from "./ScoutShortlistButton";
 import { ProfileVideoGrid } from "@/components/profile/ProfileVideoGrid";
-import { PlayerPremiumBadge } from "@/components/premium/PremiumBadges";
+import { FoundingPlayerBadge, PlayerPremiumBadge } from "@/components/premium/PremiumBadges";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
 import { ProfileUploadLink } from "@/components/profile/ProfileUploadLink";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
@@ -235,7 +235,12 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
               {displayName}
             </h1>
             <p className="truncate text-sm text-gn-text-secondary">@{displayUsername}</p>
-            {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
+            {profile.founding_player === true || isPlayerPremium(profile) ? (
+              <div className="mt-1.5 flex min-w-0 flex-wrap items-center gap-1.5">
+                {profile.founding_player === true ? <FoundingPlayerBadge /> : null}
+                {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
+              </div>
+            ) : null}
           </div>
         </div>
         {userId && profile.id === userId ? (

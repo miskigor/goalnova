@@ -218,7 +218,8 @@
     "noticeMessageInappropriateContent": "Uno o più dei tuoi caricamenti potrebbero contenere contenuti inappropriati o non pertinenti. Ti preghiamo di rimuoverli o sostituirli.",
     "noticeMessageScoutVerificationIssue": "Le informazioni per la verifica scout necessitano di revisione. Ti preghiamo di aggiornare i dettagli richiesti.",
     "noticeMessageFinalWarning": "Questo è un avvertimento finale. Ulteriori violazioni possono comportare la sospensione dell’account.",
-    "tasksEmptyAssigned": "No assigned tickets."
+    "tasksEmptyAssigned": "No assigned tickets.",
+    "userDetailLabelFoundingPlayer": "Founding Player"
   },
   "adminAccountRecovery": {
     "title": "Account recovery requests",
@@ -1087,7 +1088,8 @@
       "retry": "Try again",
       "savedToast": "Saved to your shortlist",
       "removedToast": "Removed from shortlist"
-    }
+    },
+    "foundingPlayerBadge": "Giocatore fondatore"
   },
   "ai": {
     "title": "Analisi AI",

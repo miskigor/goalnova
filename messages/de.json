@@ -218,7 +218,8 @@
     "noticeMessageInappropriateContent": "Einer oder mehrere Ihrer Uploads könnten unangemessene oder nicht relevante Inhalte enthalten. Bitte entfernen oder ersetzen Sie diese.",
     "noticeMessageScoutVerificationIssue": "Ihre Scout-Verifizierungsinformationen müssen überprüft werden. Bitte aktualisieren Sie die erforderlichen Angaben.",
     "noticeMessageFinalWarning": "Dies ist eine letzte Warnung. Weitere Verstöße können zur Sperrung des Kontos führen.",
-    "tasksEmptyAssigned": "Keine dir zugewiesenen Tickets."
+    "tasksEmptyAssigned": "Keine dir zugewiesenen Tickets.",
+    "userDetailLabelFoundingPlayer": "Founding Player"
   },
   "adminAccountRecovery": {
     "title": "Account recovery requests",
@@ -1087,7 +1088,8 @@
       "retry": "Try again",
       "savedToast": "Saved to your shortlist",
       "removedToast": "Removed from shortlist"
-    }
+    },
+    "foundingPlayerBadge": "Founding Player"
   },
   "ai": {
     "title": "KI-Analyse",

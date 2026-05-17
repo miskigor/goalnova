@@ -218,7 +218,8 @@
     "noticeMessageInappropriateContent": "One or more of your uploads may contain inappropriate or unrelated content. Please remove or replace it.",
     "noticeMessageScoutVerificationIssue": "Your scout verification information needs review. Please update the required details.",
     "noticeMessageFinalWarning": "This is a final warning. Continued violations may result in account suspension.",
-    "tasksEmptyAssigned": "No assigned tickets."
+    "tasksEmptyAssigned": "No assigned tickets.",
+    "userDetailLabelFoundingPlayer": "Founding Player"
   },
   "adminAccountRecovery": {
     "title": "Account recovery requests",
@@ -1087,7 +1088,8 @@
       "retry": "Try again",
       "savedToast": "Saved to your shortlist",
       "removedToast": "Removed from shortlist"
-    }
+    },
+    "foundingPlayerBadge": "Oprichtende speler"
   },
   "ai": {
     "title": "AI Analysis",

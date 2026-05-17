@@ -218,7 +218,8 @@
     "noticeMessageInappropriateContent": "Jedan ili više vaših uploadova može sadržavati neprikladan ili nepovezan sadržaj. Molimo uklonite ili zamijenite taj sadržaj.",
     "noticeMessageScoutVerificationIssue": "Vaše informacije za verifikaciju skauta zahtijevaju pregled. Molimo ažurirajte potrebne podatke.",
     "noticeMessageFinalWarning": "Ovo je posljednje upozorenje. Daljnja kršenja mogu dovesti do suspenzije računa.",
-    "tasksEmptyAssigned": "Nema vama dodijeljenih prijava."
+    "tasksEmptyAssigned": "Nema vama dodijeljenih prijava.",
+    "userDetailLabelFoundingPlayer": "Founding Player"
   },
   "adminAccountRecovery": {
     "title": "Zahtjevi za oporavak računa",
@@ -1087,7 +1088,8 @@
       "retry": "Pokušaj ponovno",
       "savedToast": "Spremljeno na shortlistu",
       "removedToast": "Uklonjeno sa shortliste"
-    }
+    },
+    "foundingPlayerBadge": "Founding Player"
   },
   "ai": {
     "title": "AI analiza",
