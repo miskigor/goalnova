@@ -937,7 +937,10 @@
     "haveAccount": "Već imate račun?",
     "loginLink": "Prijava",
     "emailAlreadyExists": "Račun s ovom adresom e-pošte već postoji. Prijavite se umjesto toga.",
-    "goToLogin": "Idi na prijavu"
+    "goToLogin": "Idi na prijavu",
+    "confirmEmailTitle": "Provjeri email",
+    "confirmEmailBody": "Poslali smo vam link za potvrdu računa. Otvorite email i potvrdite račun, zatim se prijavite.",
+    "confirmEmailGoToLogin": "Idi na prijavu"
   },
   "authResetPassword": {
     "title": "Set a new password",

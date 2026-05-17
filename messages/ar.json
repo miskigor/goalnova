@@ -937,7 +937,10 @@
     "haveAccount": "لديك حساب بالفعل؟",
     "loginLink": "تسجيل الدخول",
     "emailAlreadyExists": "يوجد حساب بهذا البريد الإلكتروني. سجّل الدخول بدلاً من ذلك.",
-    "goToLogin": "الانتقال إلى تسجيل الدخول"
+    "goToLogin": "الانتقال إلى تسجيل الدخول",
+    "confirmEmailTitle": "تحقق من بريدك",
+    "confirmEmailBody": "أرسلنا لك رابط تأكيد. افتح بريدك الإلكتروني، أكّد حسابك، ثم سجّل الدخول.",
+    "confirmEmailGoToLogin": "الانتقال لتسجيل الدخول"
   },
   "authResetPassword": {
     "title": "Set a new password",

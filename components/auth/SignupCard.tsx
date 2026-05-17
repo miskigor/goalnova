@@ -10,7 +10,10 @@ import {
 } from "@/lib/supabase/auth";
 import { rememberReferralCodeFromQuery, peekPendingReferralCode } from "@/lib/supabase/referrals";
 import { devError } from "@/lib/devLog";
-import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import {
+  GN_PRIMARY_BUTTON_CLASS,
+  GN_SECONDARY_BUTTON_CLASS,
+} from "@/components/ui/gnButtonClasses";
 
 function Spinner() {
   return (
@@ -49,8 +52,7 @@ export function SignupCard() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  /** Prevents duplicate submit after account creation (no success UI). */
-  const [signupComplete, setSignupComplete] = useState(false);
+  const [emailConfirmationPending, setEmailConfirmationPending] = useState(false);
   const [showLoginCta, setShowLoginCta] = useState(false);
 
   useEffect(() => {
@@ -66,9 +68,9 @@ export function SignupCard() {
       trimmed.includes("@") &&
       password.length >= 6 &&
       !loading &&
-      !signupComplete
+      !emailConfirmationPending
     );
-  }, [fullName, email, password, loading, signupComplete]);
+  }, [fullName, email, password, loading, emailConfirmationPending]);
 
   async function onSubmit() {
     setError(null);
@@ -104,15 +106,16 @@ export function SignupCard() {
         pendingReferralCode: pendingCode,
       });
 
-      setSignupComplete(true);
+      if (signupResult.requiresEmailConfirmation) {
+        setEmailConfirmationPending(true);
+        return;
+      }
 
       // Redirect immediately when signup also created a session.
       // Avoid an extra getSession() roundtrip that can race with AuthGate guest redirect.
-      if (!signupResult.requiresEmailConfirmation) {
-        const pending = peekPendingReferralCode();
-        const roleHref = pending ? `/role?ref=${encodeURIComponent(pending)}` : "/role";
-        router.replace(roleHref);
-      }
+      const pending = peekPendingReferralCode();
+      const roleHref = pending ? `/role?ref=${encodeURIComponent(pending)}` : "/role";
+      router.replace(roleHref);
     } catch (err) {
       devError("Signup error:", err);
       if (isSignupEmailAlreadyExistsError(err)) {
@@ -129,6 +132,32 @@ export function SignupCard() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (emailConfirmationPending) {
+    return (
+      <div
+        className="mx-auto w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:p-8"
+        role="status"
+        aria-live="polite"
+      >
+        <div className="text-center">
+          <Logo href="/" variant="entry" className="justify-center" showWordmark={false} />
+          <h1 className="mt-4 text-xl font-semibold tracking-tight text-gn-text sm:mt-6">
+            {tSignup("confirmEmailTitle")}
+          </h1>
+          <p className="mt-3 text-sm leading-relaxed text-gn-text-secondary">
+            {tSignup("confirmEmailBody")}
+          </p>
+        </div>
+        <Link
+          href="/login"
+          className={`${GN_PRIMARY_BUTTON_CLASS} mt-6 flex min-h-11 w-full items-center justify-center px-4 py-3 text-sm`}
+        >
+          {tSignup("confirmEmailGoToLogin")}
+        </Link>
+      </div>
+    );
   }
 
   return (

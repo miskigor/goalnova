@@ -937,7 +937,10 @@
     "haveAccount": "Já tem conta?",
     "loginLink": "Entrar",
     "emailAlreadyExists": "Já existe uma conta com este e-mail. Inicie sessão em vez disso.",
-    "goToLogin": "Ir para o início de sessão"
+    "goToLogin": "Ir para o início de sessão",
+    "confirmEmailTitle": "Verifique o seu email",
+    "confirmEmailBody": "Enviámos um link de confirmação. Abra o email, confirme a sua conta e depois inicie sessão.",
+    "confirmEmailGoToLogin": "Ir para o login"
   },
   "authResetPassword": {
     "title": "Set a new password",

@@ -937,7 +937,10 @@
     "haveAccount": "Heb je al een account?",
     "loginLink": "Inloggen",
     "emailAlreadyExists": "Er bestaat al een account met dit e-mailadres. Log in in plaats daarvan.",
-    "goToLogin": "Naar inloggen"
+    "goToLogin": "Naar inloggen",
+    "confirmEmailTitle": "Controleer je e-mail",
+    "confirmEmailBody": "We hebben je een bevestigingslink gestuurd. Open je e-mail, bevestig je account en log daarna in.",
+    "confirmEmailGoToLogin": "Ga naar inloggen"
   },
   "authResetPassword": {
     "title": "Set a new password",

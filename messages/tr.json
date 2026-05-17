@@ -937,7 +937,10 @@
     "haveAccount": "Zaten hesabın var mı?",
     "loginLink": "Giriş yap",
     "emailAlreadyExists": "Bu e-posta ile zaten bir hesap var. Bunun yerine giriş yap.",
-    "goToLogin": "Girişe git"
+    "goToLogin": "Girişe git",
+    "confirmEmailTitle": "E-postanı kontrol et",
+    "confirmEmailBody": "Sana bir onay bağlantısı gönderdik. E-postanı aç, hesabını onayla, ardından giriş yap.",
+    "confirmEmailGoToLogin": "Girişe git"
   },
   "authResetPassword": {
     "title": "Set a new password",

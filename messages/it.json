@@ -937,7 +937,10 @@
     "haveAccount": "Hai già un account?",
     "loginLink": "Accedi",
     "emailAlreadyExists": "Esiste già un account con questa email. Accedi invece.",
-    "goToLogin": "Vai al login"
+    "goToLogin": "Vai al login",
+    "confirmEmailTitle": "Controlla la tua email",
+    "confirmEmailBody": "Ti abbiamo inviato un link di conferma. Apri l'email, conferma il tuo account e poi accedi.",
+    "confirmEmailGoToLogin": "Vai al login"
   },
   "authResetPassword": {
     "title": "Set a new password",
