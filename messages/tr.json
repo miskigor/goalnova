@@ -2003,6 +2003,9 @@
     "inviteRulesTitle": "Davetler nasıl sayılır:",
     "inviteRulesStep1": "Linkini bir arkadaşına gönder.",
     "inviteRulesStep2": "Arkadaşın yeni bir hesap oluşturmalı.",
-    "inviteRulesStep3": "Davet, Oyuncu rolünü seçtiğinde sayılır."
+    "inviteRulesStep3": "Davet, Oyuncu rolünü seçtiğinde sayılır.",
+    "scoutBenefitsTitle": "Scout avantajları yakında",
+    "scoutBenefitsBody": "Oyuncu davet ödülleri şu an yalnızca oyuncular için. Scout araçları ve Pro avantajları Premium üzerinden yönetilir.",
+    "scoutBenefitsCta": "Premium'a git"
   }
 }

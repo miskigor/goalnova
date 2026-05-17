@@ -2,9 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { hrefWithLocale } from "@/i18n/routing";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
 import { devError } from "@/lib/devLog";
+import { isStaffUser } from "@/lib/supabase/adminScoutVerification";
+import { supabase } from "@/lib/supabase/client";
 import { PITCHRUSCH_PREMIUM_UPDATED_EVENT } from "@/lib/supabase/premium";
 import {
   fetchReferralDashboard,
@@ -12,6 +15,28 @@ import {
   tryConsumePendingReferralWithRetry,
   type ReferralDashboard,
 } from "@/lib/supabase/referrals";
+
+type BenefitsAudience = "loading" | "player" | "scout";
+
+async function resolveBenefitsAudience(): Promise<BenefitsAudience> {
+  const { data: auth } = await supabase.auth.getUser();
+  const uid = auth.user?.id;
+  if (!uid) return "scout";
+
+  const [{ data: userRow }, { data: playerProfile }] = await Promise.all([
+    supabase.from("users").select("role, is_admin, admin_role").eq("id", uid).maybeSingle(),
+    supabase.from("player_profiles").select("id").eq("id", uid).maybeSingle(),
+  ]);
+
+  const role = userRow?.role;
+  const hasPlayerProfile = Boolean(playerProfile?.id);
+  const staff = isStaffUser(userRow);
+
+  if (role === "player" || (staff && hasPlayerProfile)) {
+    return "player";
+  }
+  return "scout";
+}
 
 const cardClass =
   "rounded-xl border border-orange-500/60 bg-gn-surface/20 p-4 shadow-sm sm:p-5";
@@ -23,7 +48,60 @@ function isShareCancelled(err: unknown): boolean {
   return err instanceof DOMException && err.name === "AbortError";
 }
 
+function BenefitsScoutInfo() {
+  const t = useTranslations("benefits");
+
+  return (
+    <div className="mx-auto min-w-0 w-full max-w-full space-y-6 pb-4">
+      <header>
+        <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">
+          {t("scoutBenefitsTitle")}
+        </h1>
+      </header>
+      <section className={cardClass}>
+        <p className="text-sm leading-relaxed text-gn-text-secondary">{t("scoutBenefitsBody")}</p>
+        <Link
+          href="/premium"
+          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-4 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg sm:w-auto sm:min-w-[12rem]"
+        >
+          {t("scoutBenefitsCta")}
+        </Link>
+      </section>
+    </div>
+  );
+}
+
 export function BenefitsReferralPage() {
+  const tCommon = useTranslations("common");
+  const [audience, setAudience] = useState<BenefitsAudience>("loading");
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const next = await resolveBenefitsAudience();
+      if (!cancelled) setAudience(next);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (audience === "loading") {
+    return (
+      <div className="min-w-0 max-w-full py-6">
+        <p className="text-sm text-gn-text-secondary">{tCommon("loadingEllipsis")}</p>
+      </div>
+    );
+  }
+
+  if (audience === "scout") {
+    return <BenefitsScoutInfo />;
+  }
+
+  return <BenefitsPlayerReferralContent />;
+}
+
+function BenefitsPlayerReferralContent() {
   const t = useTranslations("benefits");
   const tCommon = useTranslations("common");
   const locale = useLocale();

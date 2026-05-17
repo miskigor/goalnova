@@ -2003,6 +2003,9 @@
     "inviteRulesTitle": "How invites are counted:",
     "inviteRulesStep1": "Send your link to a friend.",
     "inviteRulesStep2": "Your friend must create a new account.",
-    "inviteRulesStep3": "The invite counts when they choose the Player role."
+    "inviteRulesStep3": "The invite counts when they choose the Player role.",
+    "scoutBenefitsTitle": "Scout benefits are coming soon",
+    "scoutBenefitsBody": "Player referral rewards are currently available for players. Scout tools and Pro benefits are managed from Premium.",
+    "scoutBenefitsCta": "View Premium"
   }
 }

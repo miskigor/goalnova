@@ -2003,6 +2003,9 @@
     "inviteRulesTitle": "Como os convites são contados:",
     "inviteRulesStep1": "Envia o teu link a um amigo.",
     "inviteRulesStep2": "O teu amigo tem de criar uma conta nova.",
-    "inviteRulesStep3": "O convite conta quando escolhe o papel Jogador."
+    "inviteRulesStep3": "O convite conta quando escolhe o papel Jogador.",
+    "scoutBenefitsTitle": "Benefícios de scout em breve",
+    "scoutBenefitsBody": "Recompensas por indicação de jogadores estão disponíveis para jogadores. Ferramentas de scout e benefícios Pro são geridos no Premium.",
+    "scoutBenefitsCta": "Ver Premium"
   }
 }

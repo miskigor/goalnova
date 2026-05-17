@@ -2003,6 +2003,9 @@
     "inviteRulesTitle": "Hoe uitnodigingen worden geteld:",
     "inviteRulesStep1": "Stuur je link naar een vriend.",
     "inviteRulesStep2": "Je vriend moet een nieuw account aanmaken.",
-    "inviteRulesStep3": "De uitnodiging telt wanneer hij de spelersrol kiest."
+    "inviteRulesStep3": "De uitnodiging telt wanneer hij de spelersrol kiest.",
+    "scoutBenefitsTitle": "Scoutvoordelen komen binnenkort",
+    "scoutBenefitsBody": "Spelers-verwijzingsbeloningen zijn nu alleen voor spelers. Scouttools en Pro-voordelen beheer je via Premium.",
+    "scoutBenefitsCta": "Premium bekijken"
   }
 }

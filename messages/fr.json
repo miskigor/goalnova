@@ -2003,6 +2003,9 @@
     "inviteRulesTitle": "Comment les invitations sont comptées :",
     "inviteRulesStep1": "Envoie ton lien à un ami.",
     "inviteRulesStep2": "Ton ami doit créer un nouveau compte.",
-    "inviteRulesStep3": "L’invitation compte lorsqu’il choisit le rôle Joueur."
+    "inviteRulesStep3": "L’invitation compte lorsqu’il choisit le rôle Joueur.",
+    "scoutBenefitsTitle": "Les avantages scout arrivent bientôt",
+    "scoutBenefitsBody": "Les récompenses de parrainage joueur sont réservées aux joueurs. Les outils scout et les avantages Pro se gèrent depuis Premium.",
+    "scoutBenefitsCta": "Voir Premium"
   }
 }

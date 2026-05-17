@@ -2003,6 +2003,9 @@
     "inviteRulesTitle": "Come vengono contati gli inviti:",
     "inviteRulesStep1": "Invia il tuo link a un amico.",
     "inviteRulesStep2": "Il tuo amico deve creare un nuovo account.",
-    "inviteRulesStep3": "L’invito conta quando sceglie il ruolo Giocatore."
+    "inviteRulesStep3": "L’invito conta quando sceglie il ruolo Giocatore.",
+    "scoutBenefitsTitle": "I vantaggi scout arrivano presto",
+    "scoutBenefitsBody": "Le ricompense per inviti sono disponibili per i giocatori. Strumenti scout e vantaggi Pro si gestiscono da Premium.",
+    "scoutBenefitsCta": "Vedi Premium"
   }
 }

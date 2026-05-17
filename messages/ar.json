@@ -2003,6 +2003,9 @@
     "inviteRulesTitle": "كيف تُحسب الدعوات:",
     "inviteRulesStep1": "أرسل رابطك إلى صديق.",
     "inviteRulesStep2": "يجب على صديقك إنشاء حساب جديد.",
-    "inviteRulesStep3": "تُحسب الدعوة عندما يختار دور اللاعب."
+    "inviteRulesStep3": "تُحسب الدعوة عندما يختار دور اللاعب.",
+    "scoutBenefitsTitle": "مزايا الكشّاف قريبًا",
+    "scoutBenefitsBody": "مكافآت دعوة اللاعبين متاحة حاليًا للاعبين فقط. أدوات الكشّاف ومزايا Pro تُدار من Premium.",
+    "scoutBenefitsCta": "عرض Premium"
   }
 }

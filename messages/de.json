@@ -2003,6 +2003,9 @@
     "inviteRulesTitle": "So werden Einladungen gezählt:",
     "inviteRulesStep1": "Sende deinen Link an einen Freund.",
     "inviteRulesStep2": "Dein Freund muss ein neues Konto erstellen.",
-    "inviteRulesStep3": "Die Einladung zählt, wenn er die Spieler-Rolle wählt."
+    "inviteRulesStep3": "Die Einladung zählt, wenn er die Spieler-Rolle wählt.",
+    "scoutBenefitsTitle": "Scout-Vorteile kommen bald",
+    "scoutBenefitsBody": "Spieler-Empfehlungsprämien sind derzeit nur für Spieler verfügbar. Scout-Tools und Pro-Vorteile verwaltest du über Premium.",
+    "scoutBenefitsCta": "Premium ansehen"
   }
 }

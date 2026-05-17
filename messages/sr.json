@@ -2003,6 +2003,9 @@
     "inviteRulesTitle": "Kako se broji poziv:",
     "inviteRulesStep1": "Pošalji svoj link prijatelju.",
     "inviteRulesStep2": "Prijatelj mora napraviti novi nalog.",
-    "inviteRulesStep3": "Poziv se broji kada odabere ulogu Igrač."
+    "inviteRulesStep3": "Poziv se broji kada odabere ulogu Igrač.",
+    "scoutBenefitsTitle": "Scout pogodnosti uskoro stižu",
+    "scoutBenefitsBody": "Nagrade za pozivanje trenutno su dostupne igračima. Scout alati i Pro pogodnosti dostupni su kroz Premium.",
+    "scoutBenefitsCta": "Pogledaj Premium"
   }
 }
