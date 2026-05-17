@@ -35,6 +35,43 @@ export type AppShellNavItem = {
   icon: NavIconName;
 };
 
+export type ScoutShellNavItem = {
+  href:
+    | "/scout-dashboard"
+    | "/scout-apply"
+    | "/discover"
+    | "/rankings"
+    | "/notifications"
+    | "/premium"
+    | "/profile";
+  labelKey:
+    | "dashboard"
+    | "scoutVerification"
+    | "discover"
+    | "rankings"
+    | "notifications"
+    | "profile"
+    | "premium"
+    | "scoutDashboard";
+  icon: NavIconName;
+};
+
+/** Desktop sidebar primary list for verified scouts. */
+export const APP_SHELL_SCOUT_MAIN_NAV_APPROVED: ScoutShellNavItem[] = [
+  { href: "/scout-dashboard", labelKey: "scoutDashboard", icon: "scoutDashboard" },
+  { href: "/discover", labelKey: "discover", icon: "discover" },
+  { href: "/rankings", labelKey: "rankings", icon: "rankings" },
+  { href: "/notifications", labelKey: "notifications", icon: "notifications" },
+  { href: "/premium", labelKey: "premium", icon: "premium" },
+  { href: "/profile", labelKey: "profile", icon: "profile" },
+];
+
+/** Desktop sidebar for scouts pending verification (no player-centric routes). */
+export const APP_SHELL_SCOUT_MAIN_NAV_UNVERIFIED: ScoutShellNavItem[] = [
+  { href: "/premium", labelKey: "premium", icon: "premium" },
+  { href: "/profile", labelKey: "profile", icon: "profile" },
+];
+
 /**
  * Desktop sidebar primary list (order preserved).
  * Mobile bottom bar uses {@link APP_SHELL_MOBILE_BOTTOM_NAV} only (max 5 items).
@@ -52,8 +89,28 @@ export const APP_SHELL_MAIN_NAV: AppShellNavItem[] = [
 
 /** Mobile bottom navigation: exactly five primary destinations (no overflow on small phones). */
 export type ShellMobileNavItem = {
-  href: "/home" | "/challenges" | "/upload" | "/explore" | "/premium" | "/profile";
-  labelKey: "home" | "challenges" | "upload" | "explore" | "premium" | "profile";
+  href:
+    | "/home"
+    | "/challenges"
+    | "/upload"
+    | "/explore"
+    | "/premium"
+    | "/profile"
+    | "/scout-dashboard"
+    | "/scout-apply"
+    | "/discover"
+    | "/rankings";
+  labelKey:
+    | "home"
+    | "challenges"
+    | "upload"
+    | "explore"
+    | "premium"
+    | "profile"
+    | "dashboard"
+    | "scoutVerification"
+    | "discover"
+    | "rankings";
   icon: NavIconName;
 };
 
@@ -61,6 +118,24 @@ export const APP_SHELL_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
   { href: "/home", labelKey: "home", icon: "home" },
   { href: "/challenges", labelKey: "challenges", icon: "challenges" },
   { href: "/upload", labelKey: "upload", icon: "upload" },
+  { href: "/premium", labelKey: "premium", icon: "premium" },
+  { href: "/profile", labelKey: "profile", icon: "profile" },
+];
+
+/** Mobile bottom nav for verified scouts (no Upload / player-centric tabs). */
+export const APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
+  { href: "/scout-dashboard", labelKey: "dashboard", icon: "scoutDashboard" },
+  { href: "/discover", labelKey: "discover", icon: "discover" },
+  { href: "/rankings", labelKey: "rankings", icon: "rankings" },
+  { href: "/premium", labelKey: "premium", icon: "premium" },
+  { href: "/profile", labelKey: "profile", icon: "profile" },
+];
+
+/** Mobile bottom nav for scouts pending verification. */
+export const APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED: ShellMobileNavItem[] = [
+  { href: "/scout-apply", labelKey: "scoutVerification", icon: "scoutDashboard" },
+  { href: "/discover", labelKey: "discover", icon: "discover" },
+  { href: "/rankings", labelKey: "rankings", icon: "rankings" },
   { href: "/premium", labelKey: "premium", icon: "premium" },
   { href: "/profile", labelKey: "profile", icon: "profile" },
 ];

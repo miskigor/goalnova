@@ -585,7 +585,11 @@
     "myBenefits": "Moje mogućnosti",
     "support": "Podrška",
     "quickLinksSection": "Račun i mogućnosti",
-    "moreInMenu": "Više u aplikaciji"
+    "moreInMenu": "Više u aplikaciji",
+    "dashboard": "Dashboard",
+    "scoutVerification": "Verifikacija",
+    "scoutVerificationCta": "Dovrši verifikaciju",
+    "scoutVerificationBanner": "Verificiraj skaut račun za dashboard, Discover i poruke."
   },
   "music": {
     "addMusic": "Dodaj muziku",
@@ -1933,12 +1937,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
-      "description": "Za skaute koji žele brže otkrivati talente i koristiti napredne alate pretrage.",
-      "f1": "Napredna pretraga igrača",
-      "f2": "Spremi obećavajuće igrače u shortlistu",
-      "f3": "Usporedi profile talenata",
-      "f4": "Uštedi vrijeme u pronalasku pravih igrača",
-      "f5": "Direktne poruke"
+      "description": "Za skaute koji žele brži radni tijek kako PitchRush raste.",
+      "f1": "Više skaut alata kako PitchRush raste",
+      "f2": "Rani pristup nadolazećim nadogradnjama",
+      "f3": "Pomozi oblikovati skaut iskustvo na PitchRushu",
+      "f4": "Prioritet za nove skaut beta značajke",
+      "f5": "Podrška daljnjem razvoju skaut alata"
     },
     "club": {
       "title": "Klub / Akademija",
@@ -1947,6 +1951,19 @@
       "f3": "Dijeljene shortliste",
       "f4": "Klupski dashboard",
       "f5": "PDF izvještaji"
+    },
+    "scoutProDescription": "Za skaute koji žele brži radni tijek kako PitchRush raste.",
+    "scoutPlans": {
+      "pro": {
+        "f1": "Više skaut alata kako PitchRush raste",
+        "f2": "Nadogradnje radnog tijeka s vremenom",
+        "f3": "Rani pristup novim skaut značajkama",
+        "f4": "Prošireni limiti kad krene primjena",
+        "f5": "Shortliste i usporedbe (planirano)",
+        "f6": "AI skautiranje (planirano)",
+        "f7": "Nadogradnje poruka (planirano)",
+        "f8": "Poboljšanja otkrivanja talenata (planirano)"
+      }
     }
   },
   "payment": {

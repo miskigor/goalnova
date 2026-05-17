@@ -6,6 +6,7 @@ import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppMobileHeader } from "@/components/layout/AppMobileHeader";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
+import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBanner";
 import {
   APP_SHELL_COLUMN_CLASS,
   APP_SHELL_MAIN_CLASS,
@@ -27,6 +28,7 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
             <AppMobileHeader />
             <main data-app-main className={APP_SHELL_MAIN_CLASS}>
               <div data-app-main-inner className={APP_SHELL_MAIN_INNER_CLASS}>
+                <ScoutVerificationBanner />
                 {children}
               </div>
             </main>

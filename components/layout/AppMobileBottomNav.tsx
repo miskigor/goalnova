@@ -4,9 +4,13 @@ import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { NavIcon } from "@/components/icons/NavIcons";
-import { APP_SHELL_MOBILE_BOTTOM_NAV } from "@/lib/constants/navigation";
+import {
+  APP_SHELL_MOBILE_BOTTOM_NAV,
+  APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV,
+  APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED,
+} from "@/lib/constants/navigation";
 import { navItemActive } from "@/lib/navigation/navItemActive";
-import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
+import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { APP_MOBILE_BOTTOM_NAV_CLASS } from "@/lib/layout/appShellClasses";
 
 function bottomItemClass(pathname: string, href: string) {
@@ -22,19 +26,14 @@ function bottomItemClass(pathname: string, href: string) {
 export function AppMobileBottomNav() {
   const pathname = usePathname();
   const tNav = useTranslations("nav");
-  const uploadEligibility = useVideoUploadEligibility();
+  const { loaded, row, isApprovedScout } = useScoutVerification();
 
   const items = useMemo(() => {
-    return APP_SHELL_MOBILE_BOTTOM_NAV.map((item) => {
-      if (item.href !== "/upload") return item;
-      if (uploadEligibility === "player") return item;
-      return {
-        href: "/explore" as const,
-        labelKey: "explore" as const,
-        icon: "explore" as const,
-      };
-    });
-  }, [uploadEligibility]);
+    const isScout = loaded && row?.role === "scout";
+    if (!isScout) return APP_SHELL_MOBILE_BOTTOM_NAV;
+    if (isApprovedScout) return APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV;
+    return APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED;
+  }, [loaded, row?.role, isApprovedScout]);
 
   return (
     <nav

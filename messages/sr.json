@@ -585,7 +585,11 @@
     "myBenefits": "Moje mogućnosti",
     "support": "Podrška",
     "quickLinksSection": "Nalog i mogućnosti",
-    "moreInMenu": "Više u aplikaciji"
+    "moreInMenu": "Više u aplikaciji",
+    "dashboard": "Dashboard",
+    "scoutVerification": "Verifikacija",
+    "scoutVerificationCta": "Završi verifikaciju",
+    "scoutVerificationBanner": "Verifikuj skaut nalog za dashboard, Discover i poruke."
   },
   "music": {
     "addMusic": "Add music",
@@ -1931,12 +1935,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
-      "f1": "Napredna pretraga igrača",
-      "f2": "Spremi obećavajuće igrače u shortlistu",
-      "f3": "Usporedi profile talenata",
-      "f4": "Uštedi vrijeme u pronalasku pravih igrača",
-      "f5": "Direktne poruke",
-      "description": "Za skaute koji žele brže otkrivati talente i koristiti napredne alate pretrage."
+      "f1": "Više skaut alata kako PitchRush raste",
+      "f2": "Rani pristup nadolazećim nadogradnjama",
+      "f3": "Pomozi oblikovati skaut iskustvo na PitchRushu",
+      "f4": "Prioritet za nove skaut beta funkcije",
+      "f5": "Podrška daljnjem razvoju skaut alata",
+      "description": "Za skaute koji žele brži radni tok kako PitchRush raste."
     },
     "club": {
       "title": "Club / Academy",
@@ -1947,7 +1951,20 @@
       "f5": "PDF reports"
     },
     "upgradePlayerPremium": "Nadogradi na Player Premium",
-    "upgradeScoutPro": "Nadogradi na Scout Pro"
+    "upgradeScoutPro": "Nadogradi na Scout Pro",
+    "scoutProDescription": "Za skaute koji žele brži radni tok kako PitchRush raste.",
+    "scoutPlans": {
+      "pro": {
+        "f1": "Više skaut alata kako PitchRush raste",
+        "f2": "Nadogradnje radnog toka s vremenom",
+        "f3": "Rani pristup novim skaut funkcijama",
+        "f4": "Prošireni limiti kad krene primena",
+        "f5": "Shortliste i poređenja (planirano)",
+        "f6": "AI skautiranje (planirano)",
+        "f7": "Nadogradnje poruka (planirano)",
+        "f8": "Poboljšanja otkrivanja talenata (planirano)"
+      }
+    }
   },
   "payment": {
     "successTitle": "Plaćanje uspešno",

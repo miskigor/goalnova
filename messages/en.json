@@ -579,6 +579,10 @@
     "messages": "Messages",
     "admin": "Admin",
     "scoutDashboard": "Scout dashboard",
+    "dashboard": "Dashboard",
+    "scoutVerification": "Verification",
+    "scoutVerificationCta": "Complete verification",
+    "scoutVerificationBanner": "Verify your scout account to unlock the dashboard, Discover, and messaging.",
     "adminScoutVerifications": "Scout verifications",
     "adminPanel": "Admin",
     "adminUnreadShort": "{count, plural, one {# message} other {# messages}}",
@@ -1349,7 +1353,7 @@
     "upgradeToPlayerPremium": "Upgrade to Player Premium",
     "playerPremiumDescription": "For players who want more visibility and a stronger profile.",
     "scoutPro": "Scout Pro",
-    "scoutProDescription": "For scouts who want faster talent discovery and advanced search tools.",
+    "scoutProDescription": "Built for scouts who want a faster talent workflow as PitchRush grows.",
     "upgradeToScoutPro": "Upgrade to Scout Pro",
     "moreVideoUploads": "More video uploads",
     "priorityScoutVisibility": "Priority scout visibility",
@@ -1405,14 +1409,14 @@
       "pro": {
         "title": "Scout Pro",
         "price": "9.99 €/month",
-        "f1": "Unlimited player profiles",
-        "f2": "Advanced search",
-        "f3": "Talent Map",
-        "f4": "Unlimited favorites",
-        "f5": "Shortlists",
-        "f6": "AI scores",
-        "f7": "Player comparison",
-        "f8": "Direct messaging"
+        "f1": "More scout tools as PitchRush grows",
+        "f2": "Workflow upgrades over time",
+        "f3": "Early access to new scout features",
+        "f4": "Expanded limits when enforcement goes live",
+        "f5": "Shortlists and comparison (planned)",
+        "f6": "AI-assisted scouting (planned)",
+        "f7": "Messaging upgrades (planned)",
+        "f8": "Talent discovery improvements (planned)"
       },
       "club": {
         "title": "Club / Academy",
@@ -1933,12 +1937,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
-      "description": "For scouts who want faster talent discovery and advanced search tools.",
-      "f1": "Advanced player search",
-      "f2": "Shortlist promising players",
-      "f3": "Compare talent profiles",
-      "f4": "Save time finding the right players",
-      "f5": "Direct messaging"
+      "description": "Built for scouts who want a faster talent workflow as PitchRush grows.",
+      "f1": "More scout tools as PitchRush grows",
+      "f2": "Early access to upcoming workflow upgrades",
+      "f3": "Help shape the scout experience on PitchRush",
+      "f4": "Priority consideration for new scout betas",
+      "f5": "Support continued scout tooling improvements"
     },
     "club": {
       "title": "Club / Academy",

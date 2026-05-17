@@ -23,6 +23,12 @@ export function navItemActive(pathname: string, href: string): boolean {
     return pathname === "/messages" || pathname.startsWith("/messages/");
   if (href === "/discover")
     return pathname === "/discover" || pathname.startsWith("/discover/");
+  if (href === "/scout-dashboard")
+    return (
+      pathname === "/scout-dashboard" || pathname.startsWith("/scout-dashboard/")
+    );
+  if (href === "/scout-apply")
+    return pathname === "/scout-apply" || pathname.startsWith("/scout-apply/");
   if (href === "/upload")
     return pathname === "/upload" || pathname.startsWith("/upload/");
   if (href === "/settings")

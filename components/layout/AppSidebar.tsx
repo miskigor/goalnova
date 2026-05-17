@@ -6,7 +6,12 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { InlineLogoutButton } from "@/components/auth/InlineLogoutButton";
 import { Logo } from "@/components/brand/Logo";
 import { NavIcon } from "@/components/icons/NavIcons";
-import { APP_SHELL_MAIN_NAV } from "@/lib/constants/navigation";
+import {
+  APP_SHELL_MAIN_NAV,
+  APP_SHELL_SCOUT_MAIN_NAV_APPROVED,
+  APP_SHELL_SCOUT_MAIN_NAV_UNVERIFIED,
+  type ScoutShellNavItem,
+} from "@/lib/constants/navigation";
 import { navItemActive } from "@/lib/navigation/navItemActive";
 import { HeaderNotificationsLink } from "@/components/notifications/HeaderNotificationsLink";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
@@ -40,12 +45,22 @@ export function AppSidebar() {
   const tSettings = useTranslations("settings");
   const { authed, user } = useNavSession();
   const uploadEligibility = useVideoUploadEligibility();
-  const { isApprovedScout } = useScoutVerification();
+  const scoutGate = useScoutVerification();
+  const { isApprovedScout, isUnverifiedScout } = scoutGate;
+  const isScout = scoutGate.loaded && scoutGate.row?.role === "scout";
   const { loaded: adminLoaded, isAdmin } = useAdminAccess();
   const adminSupportUnread = useAdminSupportUnread();
   const [userSupportUnread, setUserSupportUnread] = useState(0);
-  const showPlayerUpload = uploadEligibility === "player";
+  const showPlayerUpload = uploadEligibility === "player" && !isScout;
   const uploadActive = navItemActive(pathname, "/upload");
+  const scoutMainNav: ScoutShellNavItem[] = isApprovedScout
+    ? APP_SHELL_SCOUT_MAIN_NAV_APPROVED
+    : APP_SHELL_SCOUT_MAIN_NAV_UNVERIFIED;
+  const logoHref = isScout
+    ? isApprovedScout
+      ? "/scout-dashboard"
+      : "/scout-apply"
+    : "/home";
 
   useEffect(() => {
     if (!authed || !user || isAdmin) {
@@ -83,14 +98,30 @@ export function AppSidebar() {
       aria-label={tNav("sections")}
     >
       <div className="flex h-16 shrink-0 items-center border-b border-gn-border-subtle px-4">
-        <Logo href="/home" variant="header" className="min-w-0" />
+        <Logo href={logoHref} variant="header" className="min-w-0" />
       </div>
 
       <nav
         className="flex flex-1 flex-col gap-1 overflow-y-auto overscroll-contain p-3"
         aria-label={tNav("primary")}
       >
-        {APP_SHELL_MAIN_NAV.map((item) => {
+        {isUnverifiedScout ? (
+          <Link
+            href="/scout-apply"
+            className={[
+              "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-[color,background-color,box-shadow,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors",
+              navItemActive(pathname, "/scout-apply")
+                ? "bg-gn-accent text-black ring-1 ring-gn-accent/50"
+                : "bg-gn-accent/90 text-black hover:bg-gn-accent motion-safe:hover:translate-x-0.5 rtl:motion-safe:hover:-translate-x-0.5",
+            ].join(" ")}
+            aria-current={navItemActive(pathname, "/scout-apply") ? "page" : undefined}
+          >
+            <NavIcon name="scoutDashboard" className="size-5 shrink-0 text-black" />
+            <span className="min-w-0 truncate">{tNav("scoutVerificationCta")}</span>
+          </Link>
+        ) : null}
+
+        {(isScout ? scoutMainNav : APP_SHELL_MAIN_NAV).map((item) => {
           if (item.href === "/notifications") {
             return (
               <HeaderNotificationsLink key={item.href} layout="sidebar" />
@@ -113,6 +144,20 @@ export function AppSidebar() {
             </Link>
           );
         })}
+
+        {isUnverifiedScout ? (
+          <Link
+            href="/discover"
+            className={sidebarLinkClass(pathname, "/discover")}
+            aria-current={navItemActive(pathname, "/discover") ? "page" : undefined}
+          >
+            <NavIcon
+              name="discover"
+              className="size-5 shrink-0 transition-transform duration-300 ease-gn-smooth motion-safe:group-hover:scale-110"
+            />
+            <span className="min-w-0 truncate">{tNav("discover")}</span>
+          </Link>
+        ) : null}
       </nav>
 
       <div className="space-y-2 border-t border-gn-border-subtle p-3">
@@ -124,27 +169,6 @@ export function AppSidebar() {
           >
             <NavIcon name="upload" className="size-5 shrink-0 text-black" />
             <span className="min-w-0 truncate">{tNav("upload")}</span>
-          </Link>
-        ) : null}
-
-        {isApprovedScout ? (
-          <Link
-            href="/scout-dashboard"
-            className={[
-              "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-[color,background-color,box-shadow,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors",
-              navItemActive(pathname, "/scout-dashboard")
-                ? "bg-gn-accent/15 text-gn-accent ring-1 ring-gn-accent/35"
-                : "text-gn-text-secondary hover:bg-white/[0.06] hover:text-gn-text motion-safe:hover:translate-x-0.5 rtl:motion-safe:hover:-translate-x-0.5",
-            ].join(" ")}
-            aria-current={
-              navItemActive(pathname, "/scout-dashboard") ? "page" : undefined
-            }
-          >
-            <NavIcon
-              name="scoutDashboard"
-              className="size-5 shrink-0 transition-transform duration-300 ease-gn-smooth motion-safe:group-hover:scale-110"
-            />
-            <span className="truncate">{tNav("scoutDashboard")}</span>
           </Link>
         ) : null}
 

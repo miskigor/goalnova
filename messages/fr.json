@@ -585,7 +585,11 @@
     "myBenefits": "Mes avantages",
     "support": "Assistance",
     "quickLinksSection": "Compte et avantages",
-    "moreInMenu": "Plus dans l’app"
+    "moreInMenu": "Plus dans l’app",
+    "dashboard": "Tableau de bord",
+    "scoutVerification": "Vérification",
+    "scoutVerificationCta": "Terminer la vérification",
+    "scoutVerificationBanner": "Vérifiez votre compte scout pour débloquer le tableau de bord, Discover et la messagerie."
   },
   "music": {
     "addMusic": "Ajouter de la musique",
@@ -1931,12 +1935,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
-      "f1": "Recherche avancée de joueurs",
-      "f2": "Shortlist de joueurs prometteurs",
-      "f3": "Comparer les profils de talents",
-      "f4": "Gagnez du temps pour trouver les bons joueurs",
-      "f5": "Messagerie directe",
-      "description": "Pour les scouts qui veulent découvrir les talents plus vite et utiliser une recherche avancée."
+      "f1": "Más herramientas de scout a medida que crece PitchRush",
+      "f2": "Acceso anticipado a mejoras del flujo de trabajo",
+      "f3": "Ayuda a dar forma a la experiencia scout en PitchRush",
+      "f4": "Prioridad en nuevas betas scout",
+      "f5": "Apoya la mejora continua de herramientas scout",
+      "description": "Para scouts que quieren un flujo de trabajo más rápido mientras PitchRush crece."
     },
     "club": {
       "title": "Club / Academy",
@@ -1947,7 +1951,20 @@
       "f5": "PDF reports"
     },
     "upgradePlayerPremium": "Passer à Player Premium",
-    "upgradeScoutPro": "Passer à Scout Pro"
+    "upgradeScoutPro": "Passer à Scout Pro",
+    "scoutProDescription": "Para scouts que quieren un flujo de trabajo más rápido mientras PitchRush crece.",
+    "scoutPlans": {
+      "pro": {
+        "f1": "More scout tools as PitchRush grows",
+        "f2": "Workflow upgrades over time",
+        "f3": "Early access to new scout features",
+        "f4": "Expanded limits when enforcement goes live",
+        "f5": "Shortlists and comparison (planned)",
+        "f6": "AI-assisted scouting (planned)",
+        "f7": "Messaging upgrades (planned)",
+        "f8": "Talent discovery improvements (planned)"
+      }
+    }
   },
   "payment": {
     "successTitle": "Payment successful",
