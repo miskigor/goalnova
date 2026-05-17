@@ -14,10 +14,9 @@ import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 import { getPublicVideoPageData } from "@/lib/supabase/publicVideoPageData";
 import { videoPlaybackCandidates, videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { VideoMusicCredit } from "@/components/video/VideoMusicCredit";
-import { PlaybackVideo } from "@/components/video/PlaybackVideo";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { PublicVideoDetailPanel } from "@/components/video/PublicVideoDetailPanel";
-import { PublicVideoEngagementRow } from "@/components/video/PublicVideoEngagementRow";
+import { PublicVideoWatchPlayer } from "@/components/video/PublicVideoWatchPlayer";
 
 type Props = {
   params: Promise<{ locale: string; videoId: string }>;
@@ -83,7 +82,7 @@ export default async function PublicVideoPage({ params }: Props) {
     data.video.caption?.trim() || t("metaDescriptionFallback");
 
   return (
-    <div className="mx-auto w-full max-w-lg space-y-6 px-4 py-8 pb-16 sm:px-6 lg:max-w-2xl">
+    <div className="mx-auto w-full min-w-0 max-w-lg space-y-6 overflow-x-hidden px-4 py-8 pb-16 sm:px-6 lg:max-w-2xl">
       <PublicVideoJsonLd
         locale={locale}
         videoId={videoId}
@@ -92,11 +91,11 @@ export default async function PublicVideoPage({ params }: Props) {
         videoContentUrl={videoUrl}
         uploadDateIso={data.video.created_at ?? null}
       />
-      <header className="space-y-3 pb-2">
+      <header className="min-w-0 space-y-3 pb-2">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gn-accent">
           {t("branding")}
         </p>
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <ProfileAvatar
             name={displayName}
             imageUrl={data.userAvatarUrl?.trim() || undefined}
@@ -108,7 +107,7 @@ export default async function PublicVideoPage({ params }: Props) {
             <p className="text-sm text-gn-text-secondary">{t("highlightSubtitle")}</p>
             <Link
               href={profileHref}
-              className="inline-flex text-sm font-medium text-gn-accent hover:underline"
+              className="inline-flex max-w-full truncate text-sm font-medium text-gn-accent hover:underline"
             >
               @{data.profile?.username?.trim() || displayName}
             </Link>
@@ -116,29 +115,15 @@ export default async function PublicVideoPage({ params }: Props) {
         </div>
       </header>
 
-      <div className="space-y-3">
-        <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 sm:left-0 sm:w-full sm:max-w-none sm:translate-x-0">
-          <div className="overflow-hidden bg-black shadow-lg max-sm:rounded-none sm:rounded-2xl sm:border sm:border-gn-border-subtle">
-            <div className="relative w-full overflow-hidden bg-black max-sm:aspect-[9/16] sm:aspect-auto sm:min-h-0">
-              <PlaybackVideo
-                className="absolute inset-0 z-0 h-full w-full object-cover sm:relative sm:inset-auto sm:z-auto sm:block sm:max-h-[min(75vh,640px)] sm:w-full sm:object-contain"
-                sources={playbackSources}
-                preload="auto"
-                fetchPriority="high"
-              />
-            </div>
-          </div>
-        </div>
-
-        <PublicVideoEngagementRow
-          videoId={videoId}
-          playerDisplayName={displayName}
-          caption={data.video.caption}
-        />
-      </div>
+      <PublicVideoWatchPlayer
+        videoId={videoId}
+        sources={playbackSources}
+        playerDisplayName={displayName}
+        caption={data.video.caption}
+      />
 
       {data.challenge ? (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex min-w-0 max-w-full flex-wrap gap-2">
           <ChallengeTagPill
             routeSegment={challengeLinkSegment(data.challenge)}
             displayTitle={challengeDisplayTitle(data.challenge)}
@@ -146,22 +131,22 @@ export default async function PublicVideoPage({ params }: Props) {
         </div>
       ) : null}
 
-      <section className="space-y-2 rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4">
+      <section className="min-w-0 space-y-2 rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4">
         <h2 className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
           {t("captionLabel")}
         </h2>
-        <p className="text-sm leading-relaxed text-gn-text">{caption}</p>
+        <p className="break-words text-sm leading-relaxed text-gn-text">{caption}</p>
       </section>
 
       {data.musicTrack ? (
-        <section className="rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3">
+        <section className="min-w-0 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3">
           <VideoMusicCredit track={data.musicTrack} />
         </section>
       ) : null}
 
       <PublicVideoDetailPanel videoId={videoId} ownerUserId={data.video.user_id} />
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Link
           href="/signup"
           className="inline-flex items-center justify-center rounded-xl bg-gn-accent px-5 py-3 text-center text-sm font-semibold text-black transition-opacity hover:opacity-90"

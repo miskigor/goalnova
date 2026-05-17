@@ -41,7 +41,7 @@ export const APP_PROFILE_CONTENT_CLASS =
 
 export const APP_PROFILE_SHELL_CLASS = [
   APP_PROFILE_CONTENT_CLASS,
-  "space-y-6 pb-8 lg:max-w-2xl",
+  "space-y-6 overflow-x-hidden pb-8 lg:max-w-2xl",
 ].join(" ");
 
 export const APP_PROFILE_LOADING_INNER_CLASS =

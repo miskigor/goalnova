@@ -129,7 +129,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
   }, [playerSlug]);
 
   const profileInnerClass =
-    "box-border w-full min-w-0 max-w-full space-y-6";
+    "box-border w-full min-w-0 max-w-full space-y-6 overflow-x-hidden";
 
   function wrapInProfileShell(node: ReactNode) {
     if (embedded) return node;
@@ -258,17 +258,17 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
           </div>
         ) : null}
         {userId && profile.id !== userId ? (
-          <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start">
+          <div className="mt-3 flex min-w-0 max-w-full flex-col gap-3 overflow-x-clip sm:flex-row sm:flex-wrap sm:items-start">
             {canUseScoutMessaging ? (
               <Link
                 href={`/messages/${profile.id}`}
-                className="inline-flex items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
+                className="inline-flex w-full min-w-0 max-w-full items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-center text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated sm:w-auto"
               >
-                {t("messageUser")}
+                <span className="truncate">{t("messageUser")}</span>
               </Link>
             ) : (
               <p
-                className="rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3 text-sm text-gn-text-secondary sm:max-w-md"
+                className="min-w-0 max-w-full break-words rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3 text-sm text-gn-text-secondary"
                 role="status"
               >
                 {tSv("messagingLockedHint")}{" "}
@@ -281,7 +281,9 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
               </p>
             )}
             {scoutGate.loaded && scoutGate.isApprovedScout ? (
-              <ScoutShortlistButton scoutUserId={userId} playerUserId={profile.id} />
+              <div className="min-w-0 w-full max-w-full sm:w-auto">
+                <ScoutShortlistButton scoutUserId={userId} playerUserId={profile.id} />
+              </div>
             ) : null}
           </div>
         ) : null}

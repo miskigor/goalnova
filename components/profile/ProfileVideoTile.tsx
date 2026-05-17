@@ -59,7 +59,7 @@ export function ProfileVideoTile({
       {src && loadMedia ? (
         <video
           ref={videoRef}
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out motion-safe:group-hover:scale-[1.02] motion-reduce:transform-none"
           width={360}
           height={640}
           muted

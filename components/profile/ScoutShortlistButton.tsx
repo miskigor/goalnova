@@ -173,7 +173,7 @@ export function ScoutShortlistButton({ scoutUserId, playerUserId }: Props) {
         disabled={busy}
         aria-busy={busy}
         aria-pressed={isSaved}
-        className={isSaved ? SAVED_BUTTON_CLASS : GN_PRIMARY_BUTTON_CLASS}
+        className={`${isSaved ? SAVED_BUTTON_CLASS : GN_PRIMARY_BUTTON_CLASS} w-full min-w-0 max-w-full sm:w-auto`}
       >
         {busy ? <InlineSpinner /> : <BookmarkIcon filled={isSaved} />}
         {busy
