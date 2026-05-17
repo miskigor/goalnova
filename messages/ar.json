@@ -1976,6 +1976,10 @@
     "copyLink": "نسخ الرابط",
     "shareLink": "مشاركة",
     "inviteLinkCopied": "تم نسخ رابط الدعوة.",
-    "referralLinkUnavailable": "رابط الدعوة غير متاح حالياً. يرجى تحديث الصفحة."
+    "referralLinkUnavailable": "رابط الدعوة غير متاح حالياً. يرجى تحديث الصفحة.",
+    "inviteRulesTitle": "كيف تُحسب الدعوات:",
+    "inviteRulesStep1": "أرسل رابطك إلى صديق.",
+    "inviteRulesStep2": "يجب على صديقك إنشاء حساب جديد.",
+    "inviteRulesStep3": "تُحسب الدعوة عندما يختار دور اللاعب."
   }
 }

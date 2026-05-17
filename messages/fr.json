@@ -1976,6 +1976,10 @@
     "copyLink": "Copier le lien",
     "shareLink": "Partager",
     "inviteLinkCopied": "Lien d’invitation copié.",
-    "referralLinkUnavailable": "Le lien d’invitation est actuellement indisponible. Veuillez actualiser la page."
+    "referralLinkUnavailable": "Le lien d’invitation est actuellement indisponible. Veuillez actualiser la page.",
+    "inviteRulesTitle": "Comment les invitations sont comptées :",
+    "inviteRulesStep1": "Envoie ton lien à un ami.",
+    "inviteRulesStep2": "Ton ami doit créer un nouveau compte.",
+    "inviteRulesStep3": "L’invitation compte lorsqu’il choisit le rôle Joueur."
   }
 }

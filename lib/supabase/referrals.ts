@@ -94,6 +94,26 @@ function storageClearPending() {
   }
 }
 
+/** Clears auth metadata copy so email-confirm / new-tab flows do not retry forever. */
+async function clearPendingReferralCodeFromAuthMetadata() {
+  try {
+    const { data: auth, error: authErr } = await supabase.auth.getUser();
+    if (authErr || !auth.user) return;
+    const raw = auth.user.user_metadata?.pending_referral_code;
+    if (typeof raw !== "string" || !raw.trim()) return;
+    const { error } = await supabase.auth.updateUser({
+      data: { pending_referral_code: "" },
+    });
+    if (error) {
+      devLog("[referral] clear metadata failed", error.message);
+      return;
+    }
+    devLog("[referral] cleared pending_referral_code from user_metadata");
+  } catch {
+    /* ignore */
+  }
+}
+
 export function rememberReferralCodeFromQuery(ref: string | null | undefined) {
   const raw = (ref ?? "").trim();
   const code = raw.toUpperCase();
@@ -174,7 +194,8 @@ export async function resolvePendingReferralCode(): Promise<string | null> {
 
 export function clearPendingReferralCode() {
   storageClearPending();
-  devLog("[referral] cleared pending referral code (session + local)");
+  void clearPendingReferralCodeFromAuthMetadata();
+  devLog("[referral] cleared pending referral code (session + local + metadata)");
 }
 
 /**
@@ -283,10 +304,7 @@ async function tryConsumePendingReferralOnce(): Promise<OnceOutcome> {
   }
 
   if (DEFINITIVE_FAIL_REASONS.has(reason)) {
-    // Keep pending when code may still exist only in auth metadata (RPC ran before client resolved it).
-    if (reason !== "invalid_code") {
-      clearPendingReferralCode();
-    }
+    clearPendingReferralCode();
     return "definitive_fail";
   }
 

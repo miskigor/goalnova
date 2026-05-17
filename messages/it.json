@@ -1976,6 +1976,10 @@
     "copyLink": "Copia link",
     "shareLink": "Condividi",
     "inviteLinkCopied": "Link di invito copiato.",
-    "referralLinkUnavailable": "Il link di invito non è al momento disponibile. Aggiorna la pagina."
+    "referralLinkUnavailable": "Il link di invito non è al momento disponibile. Aggiorna la pagina.",
+    "inviteRulesTitle": "Come vengono contati gli inviti:",
+    "inviteRulesStep1": "Invia il tuo link a un amico.",
+    "inviteRulesStep2": "Il tuo amico deve creare un nuovo account.",
+    "inviteRulesStep3": "L’invito conta quando sceglie il ruolo Giocatore."
   }
 }

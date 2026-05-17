@@ -1976,6 +1976,10 @@
     "copyLink": "Copiar link",
     "shareLink": "Partilhar",
     "inviteLinkCopied": "Link de convite copiado.",
-    "referralLinkUnavailable": "O link de convite não está disponível no momento. Atualiza a página."
+    "referralLinkUnavailable": "O link de convite não está disponível no momento. Atualiza a página.",
+    "inviteRulesTitle": "Como os convites são contados:",
+    "inviteRulesStep1": "Envia o teu link a um amigo.",
+    "inviteRulesStep2": "O teu amigo tem de criar uma conta nova.",
+    "inviteRulesStep3": "O convite conta quando escolhe o papel Jogador."
   }
 }

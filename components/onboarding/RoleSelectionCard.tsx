@@ -10,8 +10,7 @@ import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { ensureOnboardingNotificationsForRole } from "@/lib/supabase/onboardingNotifications";
 import {
   rememberReferralCodeFromQuery,
-  syncPendingReferralCodeToUserMetadata,
-  tryConsumePendingReferralWithRetry,
+  tryConsumePendingReferralWhenPlayerReady,
 } from "@/lib/supabase/referrals";
 import { InviteFriendsSection } from "@/components/referrals/InviteFriendsSection";
 
@@ -248,8 +247,7 @@ export function RoleSelectionCard() {
       if (role === "player") {
         void (async () => {
           try {
-            await syncPendingReferralCodeToUserMetadata();
-            await tryConsumePendingReferralWithRetry();
+            await tryConsumePendingReferralWhenPlayerReady();
           } catch (e) {
             devError("[RoleSelection] referral consume failed", e);
           }

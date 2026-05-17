@@ -207,6 +207,20 @@ export function BenefitsReferralPage() {
           </p>
         ) : null}
 
+        <div
+          className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4"
+          aria-labelledby="benefits-invite-rules-heading"
+        >
+          <h3 id="benefits-invite-rules-heading" className="text-sm font-semibold text-gn-text">
+            {t("inviteRulesTitle")}
+          </h3>
+          <ol className="mt-2 list-decimal space-y-1.5 ps-4 text-sm leading-relaxed text-gn-text-secondary">
+            <li>{t("inviteRulesStep1")}</li>
+            <li>{t("inviteRulesStep2")}</li>
+            <li>{t("inviteRulesStep3")}</li>
+          </ol>
+        </div>
+
         <p className="text-sm font-medium text-gn-text">{t("invitedPlayers", { count: n })}</p>
 
         <div className="space-y-2 text-sm text-gn-text-secondary">

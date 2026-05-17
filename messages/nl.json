@@ -1976,6 +1976,10 @@
     "copyLink": "Link kopiëren",
     "shareLink": "Delen",
     "inviteLinkCopied": "Uitnodigingslink gekopieerd.",
-    "referralLinkUnavailable": "Uitnodigingslink is momenteel niet beschikbaar. Vernieuw de pagina."
+    "referralLinkUnavailable": "Uitnodigingslink is momenteel niet beschikbaar. Vernieuw de pagina.",
+    "inviteRulesTitle": "Hoe uitnodigingen worden geteld:",
+    "inviteRulesStep1": "Stuur je link naar een vriend.",
+    "inviteRulesStep2": "Je vriend moet een nieuw account aanmaken.",
+    "inviteRulesStep3": "De uitnodiging telt wanneer hij de spelersrol kiest."
   }
 }

@@ -1976,6 +1976,10 @@
     "copyLink": "Linki kopyala",
     "shareLink": "Paylaş",
     "inviteLinkCopied": "Davet linki kopyalandı.",
-    "referralLinkUnavailable": "Davet linki şu anda kullanılamıyor. Lütfen sayfayı yenile."
+    "referralLinkUnavailable": "Davet linki şu anda kullanılamıyor. Lütfen sayfayı yenile.",
+    "inviteRulesTitle": "Davetler nasıl sayılır:",
+    "inviteRulesStep1": "Linkini bir arkadaşına gönder.",
+    "inviteRulesStep2": "Arkadaşın yeni bir hesap oluşturmalı.",
+    "inviteRulesStep3": "Davet, Oyuncu rolünü seçtiğinde sayılır."
   }
 }

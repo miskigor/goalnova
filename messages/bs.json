@@ -1976,6 +1976,10 @@
     "copyLink": "Kopiraj link",
     "shareLink": "Podijeli",
     "inviteLinkCopied": "Pozivni link je kopiran.",
-    "referralLinkUnavailable": "Pozivni link trenutno nije dostupan. Pokušajte osvježiti stranicu."
+    "referralLinkUnavailable": "Pozivni link trenutno nije dostupan. Pokušajte osvježiti stranicu.",
+    "inviteRulesTitle": "Kako se broji poziv:",
+    "inviteRulesStep1": "Pošalji svoj link prijatelju.",
+    "inviteRulesStep2": "Prijatelj mora napraviti novi račun.",
+    "inviteRulesStep3": "Poziv se broji kada odabere ulogu Igrač."
   }
 }

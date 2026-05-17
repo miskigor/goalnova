@@ -1976,6 +1976,10 @@
     "copyLink": "Copy link",
     "shareLink": "Share",
     "inviteLinkCopied": "Invite link copied.",
-    "referralLinkUnavailable": "Invite link is currently unavailable. Please refresh the page."
+    "referralLinkUnavailable": "Invite link is currently unavailable. Please refresh the page.",
+    "inviteRulesTitle": "How invites are counted:",
+    "inviteRulesStep1": "Send your link to a friend.",
+    "inviteRulesStep2": "Your friend must create a new account.",
+    "inviteRulesStep3": "The invite counts when they choose the Player role."
   }
 }
