@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { Link, useRouter } from "@/i18n/navigation";
 import { usePremium } from "@/components/premium/PremiumProvider";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
-import { mockUpgradeToPremium } from "@/lib/supabase/premium";
+import { createStripeCheckout } from "@/lib/stripe/client";
+import type { PaidSubscriptionPlan } from "@/lib/stripe/plans";
 import { supabase } from "@/lib/supabase/client";
 
 const FREE_FEATURE_KEYS = ["f1", "f2", "f3", "f4", "f5"] as const;
@@ -14,8 +15,11 @@ const CLUB_FEATURE_KEYS = ["f1", "f2", "f3", "f4", "f5", "f6", "f7"] as const;
 
 export function PremiumUpgradeView() {
   const t = useTranslations("premium");
+  const tBilling = useTranslations("billing");
   const tErr = useTranslations("errors");
-  const { userId, isPremium, premiumLoaded, refreshPremium } = usePremium();
+  const locale = useLocale();
+  const router = useRouter();
+  const { userId, isPremium, premiumLoaded } = usePremium();
 
   const [upgradeBusy, setUpgradeBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,24 +60,25 @@ export function PremiumUpgradeView() {
   }, [userId]);
 
   async function onUpgrade(plan: "pro" | "club") {
-    if (!userId) return;
+    if (!userId) {
+      router.push("/login");
+      return;
+    }
+    if (plan === "club") {
+      window.location.href = contactHref;
+      return;
+    }
     setError(null);
     setUpgradeBusy(true);
     try {
-      const res = await mockUpgradeToPremium(userId);
-      if (!res.ok) {
-        if (res.errorMessage) {
-          logFullSupabaseError(
-            "[premium page] mockUpgradeToPremium",
-            new Error(res.errorMessage),
-            { userId },
-          );
-        }
-        setError(t("error"));
+      const stripePlan: PaidSubscriptionPlan = "scout_pro";
+      const { url, error: checkoutError } = await createStripeCheckout(stripePlan, locale);
+      if (checkoutError || !url) {
+        setError(checkoutError ?? tBilling("checkoutError"));
         return;
       }
       setJustUpgradedPlan(plan);
-      await refreshPremium();
+      window.location.assign(url);
     } catch (e) {
       logFullSupabaseError("[premium page] onUpgrade", e, { userId });
       setError(tErr("premium"));

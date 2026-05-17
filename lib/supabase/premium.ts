@@ -2,13 +2,8 @@ import { supabase } from "./client";
 import { logFullSupabaseError, supabaseErrorToUserMessage } from "./logError";
 import { isSubscriptionActive, isClubPlan, isPlayerPremium, isScoutPro } from "@/lib/subscription/access";
 
-/** Dispatched after a successful mock upgrade so headers, profile, and AI gates refetch premium. */
+/** Dispatched after premium changes so headers, profile, and AI gates refetch premium. */
 export const PITCHRUSCH_PREMIUM_UPDATED_EVENT = "pitchrusch-premium-updated" as const;
-
-function dispatchPremiumUpdated() {
-  if (typeof window === "undefined") return;
-  window.dispatchEvent(new CustomEvent(PITCHRUSCH_PREMIUM_UPDATED_EVENT));
-}
 
 /**
  * Premium gating (v1): `public.users.is_premium` must be explicitly `true`.
@@ -164,69 +159,15 @@ function isMissingSubscriptionColumnsError(err: unknown): boolean {
 }
 
 /**
- * Mock upgrade (no Stripe): sets `public.users.is_premium = true` for the signed-in user.
- * Tries client UPDATE first, then RPC fallback (`pitchrusch_*` -> `goalnova_*`) if denied.
+ * @deprecated Self-serve premium grants are disabled. Use `/premium` (Stripe checkout) or admin grant.
  */
 export async function mockUpgradeToPremium(
   userId: string,
 ): Promise<{ ok: true } | { ok: false; errorMessage: string }> {
-  try {
-    const { data: authData, error: authErr } = await supabase.auth.getUser();
-    if (authErr) {
-      logFullSupabaseError("[premium] mockUpgradeToPremium getUser", authErr, {
-        userId,
-      });
-      return { ok: false, errorMessage: supabaseErrorToUserMessage(authErr) };
-    }
-    const uid = authData.user?.id;
-    if (!uid || uid !== userId) {
-      return { ok: false, errorMessage: "You must be signed in to upgrade." };
-    }
-
-    const { error: updateErr } = await supabase
-      .from("users")
-      .update({ is_premium: true })
-      .eq("id", userId);
-
-    if (!updateErr) {
-      dispatchPremiumUpdated();
-      return { ok: true };
-    }
-
-    logFullSupabaseError("[premium] mockUpgradeToPremium update", updateErr, {
-      userId,
-    });
-
-    const rpc = supabase.rpc.bind(supabase) as unknown as (
-      fn: string,
-      params?: Record<string, unknown>,
-    ) => Promise<{ error: { message?: string; code?: string } | null }>;
-    const primaryRpc = await rpc("pitchrusch_set_self_premium", { p_is_premium: true });
-    const rpcErr =
-      primaryRpc.error?.code === "PGRST202"
-        ? (await rpc("goalnova_set_self_premium", { p_is_premium: true })).error
-        : primaryRpc.error;
-
-    if (!rpcErr) {
-      dispatchPremiumUpdated();
-      return { ok: true };
-    }
-
-    logFullSupabaseError("[premium] mockUpgradeToPremium rpc", rpcErr, {
-      userId,
-    });
-    return {
-      ok: false,
-      errorMessage: supabaseErrorToUserMessage(rpcErr ?? updateErr),
-    };
-  } catch (err) {
-    logFullSupabaseError("[premium] mockUpgradeToPremium unexpected", err, {
-      userId,
-    });
-    return {
-      ok: false,
-      errorMessage:
-        err instanceof Error ? err.message : supabaseErrorToUserMessage(err),
-    };
-  }
+  void userId;
+  return {
+    ok: false,
+    errorMessage:
+      "Self-serve premium activation is disabled. Subscribe on the Premium page or contact support.",
+  };
 }

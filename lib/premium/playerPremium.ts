@@ -21,7 +21,8 @@ export type PremiumLikeVideo = {
   visibility_boost?: number | null;
 };
 
-export const FREE_PLAYER_MAX_VIDEOS_TOTAL = 5;
+/** Source of truth for free-tier upload cap (must match billing.freePlayer.f2 copy). */
+export const FREE_PLAYER_MAX_VIDEOS_TOTAL = 3;
 export const PLAYER_PREMIUM_MAX_VIDEOS_TOTAL = 20;
 
 export function isPlayerPremium(profile: PremiumLikeProfile | null | undefined): boolean {
