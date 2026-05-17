@@ -12,12 +12,10 @@ import {
   getSignupAuthErrorKind,
   SIGNUP_ERROR_I18N_KEY,
 } from "@/lib/supabase/signupAuthErrors";
+import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { rememberReferralCodeFromQuery, peekPendingReferralCode } from "@/lib/supabase/referrals";
 import { devError, isDev } from "@/lib/devLog";
-import {
-  GN_PRIMARY_BUTTON_CLASS,
-  GN_SECONDARY_BUTTON_CLASS,
-} from "@/components/ui/gnButtonClasses";
+import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
 function Spinner() {
   return (
@@ -56,7 +54,6 @@ export function SignupCard() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [emailConfirmationPending, setEmailConfirmationPending] = useState(false);
   const [showLoginCta, setShowLoginCta] = useState(false);
 
   useEffect(() => {
@@ -71,10 +68,9 @@ export function SignupCard() {
       fullName.trim().length > 0 &&
       trimmed.includes("@") &&
       password.length >= 6 &&
-      !loading &&
-      !emailConfirmationPending
+      !loading
     );
-  }, [fullName, email, password, loading, emailConfirmationPending]);
+  }, [fullName, email, password, loading]);
 
   async function onSubmit() {
     setError(null);
@@ -111,7 +107,8 @@ export function SignupCard() {
       });
 
       if (signupResult.requiresEmailConfirmation) {
-        setEmailConfirmationPending(true);
+        rememberPendingConfirmEmail(trimmedEmail);
+        router.replace("/confirm-email");
         return;
       }
 
@@ -142,32 +139,6 @@ export function SignupCard() {
     } finally {
       setLoading(false);
     }
-  }
-
-  if (emailConfirmationPending) {
-    return (
-      <div
-        className="mx-auto w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:p-8"
-        role="status"
-        aria-live="polite"
-      >
-        <div className="text-center">
-          <Logo href="/" variant="entry" className="justify-center" showWordmark={false} />
-          <h1 className="mt-4 text-xl font-semibold tracking-tight text-gn-text sm:mt-6">
-            {tSignup("confirmEmailTitle")}
-          </h1>
-          <p className="mt-3 text-sm leading-relaxed text-gn-text-secondary">
-            {tSignup("confirmEmailBody")}
-          </p>
-        </div>
-        <Link
-          href="/login"
-          className={`${GN_PRIMARY_BUTTON_CLASS} mt-6 flex min-h-11 w-full items-center justify-center px-4 py-3 text-sm`}
-        >
-          {tSignup("confirmEmailGoToLogin")}
-        </Link>
-      </div>
-    );
   }
 
   return (

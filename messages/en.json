@@ -913,7 +913,7 @@
     "submit": "Log in",
     "signingIn": "Signing in…",
     "invalidCredentials": "Invalid email or password. Please try again.",
-    "emailNotConfirmed": "Please confirm your email before signing in. Check your inbox for the confirmation link.",
+    "emailNotConfirmed": "Confirm your email address first.",
     "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
     "accountBanned": "This account has been suspended. Contact support if you think this is a mistake.",
     "rateLimited": "Too many sign-in attempts. Please wait a minute and try again.",
@@ -950,7 +950,12 @@
     "signupErrorInvalidEmail": "Enter a valid email address.",
     "signupErrorSignupDisabled": "Sign-up is currently unavailable.",
     "signupErrorRateLimited": "Too many attempts. Please try again later.",
-    "signupErrorEmailProviderDisabled": "Email sign-up is currently disabled."
+    "signupErrorEmailProviderDisabled": "Email sign-up is currently disabled.",
+    "confirmEmailResend": "Resend confirmation email",
+    "confirmEmailResending": "Sending…",
+    "confirmEmailResent": "Confirmation email sent. Check your inbox.",
+    "confirmEmailResendError": "Could not resend the email. Try again in a moment.",
+    "confirmEmailResendRateLimited": "Too many requests. Please wait a minute and try again."
   },
   "authResetPassword": {
     "title": "Set a new password",

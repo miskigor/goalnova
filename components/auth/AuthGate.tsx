@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
+import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { roleOnboardingHref } from "@/lib/onboarding/roleOnboardingPaths";
 import { devError } from "@/lib/devLog";
 import {
@@ -67,12 +69,16 @@ function InlineSpinner() {
   );
 }
 
+const CONFIRM_EMAIL_PATH = "/confirm-email";
+
 export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const tCommon = useTranslations("authCommon");
   const router = useRouter();
+  const pathname = usePathname();
 
   const [session, setSession] = useState<Session | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [emailConfirmed, setEmailConfirmed] = useState<boolean | null>(null);
   const [checking, setChecking] = useState(true);
 
   // Prevent redirect loops from repeated auth-state events.
@@ -113,12 +119,18 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
           if (userErr) {
             devError("AuthGate: getUser fallback error", userErr);
           }
-          const hasUser = Boolean(userData.user?.id);
+          const user = userData.user;
+          const hasUser = Boolean(user?.id);
           setSession(null);
           setIsAuthenticated(hasUser);
+          setEmailConfirmed(hasUser ? isEmailConfirmed(user) : null);
         } else {
-          setSession(result.data.session ?? null);
-          setIsAuthenticated(Boolean(result.data.session));
+          const nextSession = result.data.session ?? null;
+          setSession(nextSession);
+          setIsAuthenticated(Boolean(nextSession));
+          setEmailConfirmed(
+            nextSession ? isEmailConfirmed(nextSession.user) : null,
+          );
         }
       } catch (err) {
         if (isInvalidRefreshTokenError(err)) {
@@ -128,6 +140,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
           if (!mounted) return;
           setSession(null);
           setIsAuthenticated(false);
+          setEmailConfirmed(null);
           return;
         }
         devError("AuthGate: getSession error", err);
@@ -137,12 +150,15 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
           if (userErr) {
             devError("AuthGate: getUser fallback-after-error failed", userErr);
           }
+          const user = userData.user;
           setSession(null);
-          setIsAuthenticated(Boolean(userData.user?.id));
+          setIsAuthenticated(Boolean(user?.id));
+          setEmailConfirmed(user ? isEmailConfirmed(user) : null);
         } catch (fallbackErr) {
           devError("AuthGate: getUser fallback-after-error exception", fallbackErr);
           setSession(null);
           setIsAuthenticated(false);
+          setEmailConfirmed(null);
         }
       } finally {
         if (!mounted) return;
@@ -156,7 +172,10 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
       (_event, nextSession) => {
         setSession(nextSession);
         setIsAuthenticated(Boolean(nextSession));
-      }
+        setEmailConfirmed(
+          nextSession ? isEmailConfirmed(nextSession.user) : null,
+        );
+      },
     );
 
     return () => {
@@ -174,6 +193,17 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
       if (!isLoggedIn && !didRedirectRef.current) {
         didRedirectRef.current = true;
         router.replace(redirectTo);
+        return;
+      }
+      if (isLoggedIn && emailConfirmed === false && !didRedirectRef.current) {
+        didRedirectRef.current = true;
+        void (async () => {
+          const { data: userData } = await supabase.auth.getUser();
+          const user = userData.user ?? session?.user;
+          rememberPendingConfirmEmail(user?.email ?? session?.user.email);
+          await supabase.auth.signOut({ scope: "local" });
+          router.replace(CONFIRM_EMAIL_PATH);
+        })();
       }
       return;
     }
@@ -181,6 +211,24 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     if (isLoggedIn && !didRedirectRef.current) {
       didRedirectRef.current = true;
       void (async () => {
+        const { data: userData } = await supabase.auth.getUser();
+        const user = userData.user ?? session?.user;
+        const confirmed = isEmailConfirmed(user);
+
+        if (!confirmed) {
+          rememberPendingConfirmEmail(user?.email ?? session?.user.email);
+          await supabase.auth.signOut({ scope: "local" });
+          if (pathname !== CONFIRM_EMAIL_PATH) {
+            router.replace(CONFIRM_EMAIL_PATH);
+          }
+          return;
+        }
+
+        if (pathname === CONFIRM_EMAIL_PATH) {
+          router.replace(redirectTo);
+          return;
+        }
+
         try {
           await syncPendingReferralCodeToUserMetadata();
           const needsRole = await needsRoleOnboardingPage();
@@ -194,7 +242,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
         router.replace(redirectTo);
       })();
     }
-  }, [checking, isAuthenticated, mode, redirectTo, router, session]);
+  }, [checking, isAuthenticated, emailConfirmed, mode, pathname, redirectTo, router, session]);
 
   if (checking) {
     return (
@@ -218,7 +266,10 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const guestAuthSnapshotPending =
     mode === "guest" && !checking && isAuthenticated === null && session === null;
 
-  if (mode === "protected" && !isLoggedIn) {
+  const blockedUnconfirmed =
+    mode === "protected" && isLoggedIn && emailConfirmed === false;
+
+  if ((mode === "protected" && !isLoggedIn) || blockedUnconfirmed) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <div className="flex items-center gap-2 text-sm text-gn-text-secondary">
@@ -228,7 +279,12 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
       </div>
     );
   }
-  if (mode === "guest" && (isLoggedIn || guestAuthSnapshotPending)) {
+  const onConfirmEmailPage = pathname === CONFIRM_EMAIL_PATH;
+  const guestAwaitingRedirect =
+    mode === "guest" &&
+    (guestAuthSnapshotPending || (isLoggedIn && !onConfirmEmailPage));
+
+  if (guestAwaitingRedirect) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <div className="flex items-center gap-2 text-sm text-gn-text-secondary">

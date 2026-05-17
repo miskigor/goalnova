@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { AuthGate } from "@/components/auth/AuthGate";
+import { EmailConfirmationGate } from "@/components/auth/EmailConfirmationGate";
 import { RoleOnboardingGate } from "@/components/auth/RoleOnboardingGate";
 import { RequireReauthOnReturn } from "@/components/auth/RequireReauthOnReturn";
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
@@ -15,6 +16,7 @@ export default function OnboardingLayout({
 }) {
   return (
     <AuthGate mode="protected" redirectTo="/login">
+      <EmailConfirmationGate>
       <RoleOnboardingGate mode="require-complete">
         <RequireReauthOnReturn />
         <Suspense fallback={null}>
@@ -39,6 +41,7 @@ export default function OnboardingLayout({
         </NotificationsInboxProvider>
         </PremiumProvider>
       </RoleOnboardingGate>
+      </EmailConfirmationGate>
     </AuthGate>
   );
 }

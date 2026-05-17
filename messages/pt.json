@@ -913,7 +913,7 @@
     "submit": "Entrar",
     "signingIn": "A iniciar sessão…",
     "invalidCredentials": "E-mail ou palavra-passe incorretos. Tente novamente.",
-    "emailNotConfirmed": "Please confirm your email before signing in. Check your inbox for the confirmation link.",
+    "emailNotConfirmed": "Confirme primeiro o seu endereço de email.",
     "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
     "accountBanned": "This account has been suspended. Contact support if you think this is a mistake.",
     "rateLimited": "Too many sign-in attempts. Please wait a minute and try again.",
@@ -950,7 +950,12 @@
     "signupErrorInvalidEmail": "Introduza um email válido.",
     "signupErrorSignupDisabled": "O registo não está disponível de momento.",
     "signupErrorRateLimited": "Demasiadas tentativas. Tente mais tarde.",
-    "signupErrorEmailProviderDisabled": "O registo por email não está ativo."
+    "signupErrorEmailProviderDisabled": "O registo por email não está ativo.",
+    "confirmEmailResend": "Reenviar email de confirmação",
+    "confirmEmailResending": "A enviar…",
+    "confirmEmailResent": "Email de confirmação enviado. Verifique a sua caixa de entrada.",
+    "confirmEmailResendError": "Não foi possível reenviar o email. Tente novamente dentro de instantes.",
+    "confirmEmailResendRateLimited": "Demasiados pedidos. Aguarde um minuto e tente novamente."
   },
   "authResetPassword": {
     "title": "Set a new password",

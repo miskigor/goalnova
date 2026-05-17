@@ -6,7 +6,10 @@ import type { User } from "@supabase/supabase-js";
 import { Link, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { devError } from "@/lib/devLog";
+import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
+import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { signInWithEmailPassword } from "@/lib/supabase/auth";
+import { supabase } from "@/lib/supabase/client";
 import { roleOnboardingHref } from "@/lib/onboarding/roleOnboardingPaths";
 import {
   needsRoleOnboardingPage,
@@ -14,7 +17,6 @@ import {
   syncPendingReferralCodeToUserMetadata,
   tryConsumePendingReferralWhenPlayerReady,
 } from "@/lib/supabase/referrals";
-import { supabase } from "@/lib/supabase/client";
 import { Logo } from "@/components/brand/Logo";
 
 function homeUrlForLocale(locale: string): string {
@@ -262,6 +264,12 @@ export function LoginCard({ labels }: Props) {
   useLayoutEffect(() => {
     if (!sessionUser || signInFlowRef.current) return;
     void (async () => {
+      if (!isEmailConfirmed(sessionUser)) {
+        rememberPendingConfirmEmail(sessionUser.email);
+        await supabase.auth.signOut({ scope: "local" });
+        router.replace("/confirm-email");
+        return;
+      }
       await syncPendingReferralCodeToUserMetadata();
       const needsRole = await needsRoleOnboardingPage();
       if (needsRole) {
@@ -310,6 +318,13 @@ export function LoginCard({ labels }: Props) {
           }, 20000);
         }),
       ]);
+      const { data: userData } = await supabase.auth.getUser();
+      if (!isEmailConfirmed(userData.user)) {
+        rememberPendingConfirmEmail(trimmedEmail);
+        await supabase.auth.signOut({ scope: "local" });
+        router.replace("/confirm-email");
+        return;
+      }
       setRedirecting(true);
       await syncPendingReferralCodeToUserMetadata();
       const needsRole = await needsRoleOnboardingPage();

@@ -1,4 +1,5 @@
 import { supabase, assertSupabaseConfigured, type Database } from "./client";
+import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import {
   classifySupabaseSignupError,
   SignupAuthError,
@@ -319,7 +320,11 @@ export async function signUpWithEmailPassword({
   }
 
   const authUser = data.user;
-  const requiresEmailConfirmation = !data.session;
+  const requiresEmailConfirmation = !isEmailConfirmed(authUser);
+
+  if (requiresEmailConfirmation && data.session) {
+    await supabase.auth.signOut({ scope: "local" });
+  }
 
   if (!authUser?.id) {
     // Requirement: do not silently continue if auth user is null.
@@ -393,6 +398,15 @@ export async function signInWithEmailPassword({
     throw error;
   }
 
+  const signedInUser = data.user ?? data.session?.user;
+  if (!isEmailConfirmed(signedInUser)) {
+    await supabase.auth.signOut({ scope: "local" });
+    const notConfirmed = Object.assign(new Error("Email not confirmed"), {
+      code: "email_not_confirmed",
+    });
+    throw notConfirmed;
+  }
+
   // Do not block navigation on profile sync (multiple DB round-trips + getUser); runs in background.
   void withTimeout(ensureUserRow({ role: "player" }), 20000, "Post-login profile sync")
     .then((ensureResult) => {
@@ -405,6 +419,49 @@ export async function signInWithEmailPassword({
     });
 
   return data;
+}
+
+export type ResendConfirmationResult =
+  | { status: "sent" }
+  | { status: "rate_limited" }
+  | { status: "failed" };
+
+export async function resendSignupConfirmationEmail(
+  email: string,
+): Promise<ResendConfirmationResult> {
+  assertSupabaseConfigured();
+  const trimmed = email.trim();
+  if (!trimmed.includes("@")) {
+    return { status: "failed" };
+  }
+
+  const { error } = await withTimeout(
+    supabase.auth.resend({ type: "signup", email: trimmed }),
+    20000,
+    "Confirmation email resend",
+  );
+
+  if (!error) {
+    return { status: "sent" };
+  }
+
+  logSupabaseError("Supabase: resend signup confirmation", error);
+
+  const msg = (error.message ?? "").toLowerCase();
+  const status =
+    typeof (error as { status?: number }).status === "number"
+      ? (error as { status: number }).status
+      : undefined;
+
+  if (
+    status === 429 ||
+    msg.includes("rate limit") ||
+    msg.includes("too many requests")
+  ) {
+    return { status: "rate_limited" };
+  }
+
+  return { status: "failed" };
 }
 
 export async function signOut() {

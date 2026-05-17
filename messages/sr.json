@@ -913,7 +913,7 @@
     "submit": "Prijava",
     "signingIn": "Prijava…",
     "invalidCredentials": "Neispravna adresa e-pošte ili lozinka. Pokušajte ponovo.",
-    "emailNotConfirmed": "Please confirm your email before signing in. Check your inbox for the confirmation link.",
+    "emailNotConfirmed": "Prvo potvrdi email adresu.",
     "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
     "accountBanned": "This account has been suspended. Contact support if you think this is a mistake.",
     "rateLimited": "Too many sign-in attempts. Please wait a minute and try again.",
@@ -950,7 +950,12 @@
     "signupErrorInvalidEmail": "Unesite ispravnu e-poštu.",
     "signupErrorSignupDisabled": "Registracija trenutno nije dostupna.",
     "signupErrorRateLimited": "Previše pokušaja. Pokušajte kasnije.",
-    "signupErrorEmailProviderDisabled": "Registracija putem e-pošte trenutno nije omogućena."
+    "signupErrorEmailProviderDisabled": "Registracija putem e-pošte trenutno nije omogućena.",
+    "confirmEmailResend": "Pošalji email ponovno",
+    "confirmEmailResending": "Slanje…",
+    "confirmEmailResent": "Email za potvrdu je poslat. Proveri ulaznu poštu.",
+    "confirmEmailResendError": "Email nije poslat. Pokušaj ponovo za trenutak.",
+    "confirmEmailResendRateLimited": "Previše zahteva. Sačekaj minut i pokušaj ponovo."
   },
   "authResetPassword": {
     "title": "Set a new password",

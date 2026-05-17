@@ -913,7 +913,7 @@
     "submit": "Anmelden",
     "signingIn": "Anmeldung läuft…",
     "invalidCredentials": "Ungültige E-Mail oder Passwort. Bitte versuchen Sie es erneut.",
-    "emailNotConfirmed": "Please confirm your email before signing in. Check your inbox for the confirmation link.",
+    "emailNotConfirmed": "Bestätige zuerst deine E-Mail-Adresse.",
     "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
     "accountBanned": "This account has been suspended. Contact support if you think this is a mistake.",
     "rateLimited": "Too many sign-in attempts. Please wait a minute and try again.",
@@ -950,7 +950,12 @@
     "signupErrorInvalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
     "signupErrorSignupDisabled": "Registrierung ist derzeit nicht verfügbar.",
     "signupErrorRateLimited": "Zu viele Versuche. Bitte versuche es später erneut.",
-    "signupErrorEmailProviderDisabled": "Registrierung per E-Mail ist derzeit deaktiviert."
+    "signupErrorEmailProviderDisabled": "Registrierung per E-Mail ist derzeit deaktiviert.",
+    "confirmEmailResend": "Bestätigungs-E-Mail erneut senden",
+    "confirmEmailResending": "Wird gesendet…",
+    "confirmEmailResent": "Bestätigungs-E-Mail gesendet. Prüfe dein Postfach.",
+    "confirmEmailResendError": "E-Mail konnte nicht gesendet werden. Versuche es gleich erneut.",
+    "confirmEmailResendRateLimited": "Zu viele Anfragen. Warte eine Minute und versuche es erneut."
   },
   "authResetPassword": {
     "title": "Set a new password",

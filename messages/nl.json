@@ -913,7 +913,7 @@
     "submit": "Inloggen",
     "signingIn": "Bezig met inloggen…",
     "invalidCredentials": "Onjuist e-mailadres of wachtwoord. Probeer het opnieuw.",
-    "emailNotConfirmed": "Please confirm your email before signing in. Check your inbox for the confirmation link.",
+    "emailNotConfirmed": "Bevestig eerst je e-mailadres.",
     "configMissing": "The app cannot reach the server. Check that this deployment has the correct Supabase URL and anon key.",
     "accountBanned": "This account has been suspended. Contact support if you think this is a mistake.",
     "rateLimited": "Too many sign-in attempts. Please wait a minute and try again.",
@@ -950,7 +950,12 @@
     "signupErrorInvalidEmail": "Voer een geldig e-mailadres in.",
     "signupErrorSignupDisabled": "Registratie is momenteel niet beschikbaar.",
     "signupErrorRateLimited": "Te veel pogingen. Probeer het later opnieuw.",
-    "signupErrorEmailProviderDisabled": "Registratie via e-mail is uitgeschakeld."
+    "signupErrorEmailProviderDisabled": "Registratie via e-mail is uitgeschakeld.",
+    "confirmEmailResend": "Bevestigingsmail opnieuw versturen",
+    "confirmEmailResending": "Verzenden…",
+    "confirmEmailResent": "Bevestigingsmail verzonden. Controleer je inbox.",
+    "confirmEmailResendError": "Kon de e-mail niet opnieuw versturen. Probeer het zo opnieuw.",
+    "confirmEmailResendRateLimited": "Te veel verzoeken. Wacht een minuut en probeer het opnieuw."
   },
   "authResetPassword": {
     "title": "Set a new password",
