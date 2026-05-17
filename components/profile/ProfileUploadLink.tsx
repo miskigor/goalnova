@@ -22,13 +22,13 @@ export function ProfileUploadLink({ className = "" }: Props) {
     <Link
       href="/upload"
       className={[
-        "inline-flex items-center justify-center gap-2 rounded-xl border border-gn-accent bg-gn-accent px-3 py-2.5 text-sm font-semibold text-black shadow-sm transition-[transform,background-color,box-shadow] duration-200 ease-out hover:bg-gn-accent-hover motion-safe:active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/55 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg",
+        "box-border flex w-full max-w-full min-w-0 items-center justify-center gap-2 rounded-xl border border-gn-accent bg-gn-accent px-3 py-2.5 text-sm font-semibold text-black shadow-sm transition-[transform,background-color,box-shadow] duration-200 ease-out hover:bg-gn-accent-hover motion-safe:active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/55 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg",
         className,
       ].join(" ")}
       aria-label={t("floatingUploadAria")}
     >
       <NavIcon name="upload" className="size-4 shrink-0 text-black" aria-hidden />
-      {t("upload")}
+      <span className="min-w-0 truncate">{t("upload")}</span>
     </Link>
   );
 }

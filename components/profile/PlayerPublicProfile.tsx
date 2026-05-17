@@ -202,8 +202,8 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
   }
 
   return (
-    <div className="mx-auto w-full min-w-0 max-w-full space-y-6 overflow-x-clip pb-8 lg:max-w-2xl">
-      <header className="min-w-0 space-y-3">
+    <div className="box-border mx-auto w-full min-w-0 max-w-full space-y-6 overflow-x-clip pb-8 lg:max-w-2xl">
+      <header className="min-w-0 max-w-full space-y-3 overflow-hidden">
         <div className="flex min-w-0 items-center gap-3">
           <ProfileAvatar
             name={displayName}
@@ -219,14 +219,14 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
           </div>
         </div>
         {userId && profile.id === userId ? (
-          <div className="grid w-full min-w-0 grid-cols-1 gap-2 min-[380px]:grid-cols-2">
+          <div className="grid w-full max-w-full min-w-0 grid-cols-1 gap-3 overflow-hidden min-[430px]:grid-cols-2">
             <Link
               href="/settings/profile"
-              className="inline-flex min-h-11 min-w-0 items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-3 py-2.5 text-center text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
+              className="box-border flex min-h-11 w-full max-w-full min-w-0 items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-3 py-2.5 text-center text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
             >
               {tProfile("editProfile")}
             </Link>
-            <ProfileUploadLink className="min-h-11 min-w-0 w-full justify-center" />
+            <ProfileUploadLink className="min-h-11" />
           </div>
         ) : null}
         {userId && profile.id !== userId ? (
@@ -265,7 +265,7 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
         <UploadFirstVideoBanner variant="profile" onLater={dismissUploadFirst} />
       ) : null}
 
-      <section aria-label={t("videosSectionAria")}>
+      <section className="min-w-0 max-w-full overflow-hidden" aria-label={t("videosSectionAria")}>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gn-text-tertiary">
           {t("videosHeading")}
         </h2>

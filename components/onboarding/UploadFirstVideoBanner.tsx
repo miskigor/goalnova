@@ -12,6 +12,9 @@ type Props = {
   onLater: () => void;
 };
 
+const buttonClass =
+  "box-border !flex w-full max-w-full min-w-0 justify-center !py-2.5 text-sm";
+
 export function UploadFirstVideoBanner({ variant = "profile", onLater }: Props) {
   const t = useTranslations("profile");
 
@@ -21,48 +24,37 @@ export function UploadFirstVideoBanner({ variant = "profile", onLater }: Props) 
     <section
       role="region"
       aria-labelledby="upload-first-video-title"
-      className={
-        isCompact
-          ? "min-w-0 max-w-full rounded-xl border border-gn-accent/35 bg-gradient-to-br from-gn-accent/12 via-gn-surface/40 to-gn-surface/20 p-3 shadow-[0_8px_32px_-16px_rgba(249,115,22,0.35)] sm:p-4"
-          : "min-w-0 max-w-full rounded-2xl border border-gn-accent/35 bg-gradient-to-br from-gn-accent/12 via-gn-surface/40 to-gn-surface/20 p-4 shadow-[0_12px_40px_-16px_rgba(249,115,22,0.35)] sm:p-5"
-      }
+      className={[
+        "box-border w-full max-w-full min-w-0 overflow-hidden rounded-2xl border border-gn-accent/35",
+        "bg-gradient-to-br from-gn-accent/12 via-gn-surface/40 to-gn-surface/20",
+        isCompact ? "p-4 shadow-[0_8px_32px_-16px_rgba(249,115,22,0.35)]" : "p-4 shadow-[0_12px_40px_-16px_rgba(249,115,22,0.35)] sm:p-5",
+      ].join(" ")}
     >
       <h2
         id="upload-first-video-title"
-        className={
-          isCompact
-            ? "text-sm font-semibold text-gn-text"
-            : "text-base font-semibold text-gn-text sm:text-lg"
-        }
+        className={[
+          "break-words font-semibold leading-snug text-gn-text",
+          isCompact ? "text-sm" : "text-base sm:text-lg",
+        ].join(" ")}
       >
         {t("uploadFirstTitle")}
       </h2>
       <p
-        className={
-          isCompact
-            ? "mt-1 text-xs leading-relaxed text-gn-text-secondary sm:text-sm"
-            : "mt-2 text-sm leading-relaxed text-gn-text-secondary"
-        }
+        className={[
+          "mt-2 break-words leading-normal text-gn-text-secondary",
+          isCompact ? "text-xs sm:text-sm" : "text-sm",
+        ].join(" ")}
       >
         {t("uploadFirstText")}
       </p>
-      <div
-        className={
-          isCompact
-            ? "mt-3 flex flex-col gap-2 min-[380px]:flex-row min-[380px]:items-center"
-            : "mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center"
-        }
-      >
-        <Link
-          href="/upload"
-          className={`${GN_PRIMARY_BUTTON_CLASS} min-h-10 w-full min-w-0 justify-center !py-2.5 text-sm sm:w-auto`}
-        >
+      <div className="mt-4 grid w-full max-w-full min-w-0 grid-cols-1 gap-3 min-[430px]:grid-cols-2">
+        <Link href="/upload" className={`${GN_PRIMARY_BUTTON_CLASS} ${buttonClass}`}>
           {t("uploadFirstCta")}
         </Link>
         <button
           type="button"
           onClick={onLater}
-          className={`${GN_SECONDARY_BUTTON_CLASS} min-h-10 w-full min-w-0 justify-center !py-2.5 text-sm sm:w-auto`}
+          className={`${GN_SECONDARY_BUTTON_CLASS} ${buttonClass}`}
         >
           {t("uploadFirstLater")}
         </button>
