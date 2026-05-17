@@ -145,8 +145,16 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
   const [appRole, setAppRole] = useState("player");
   const [isPremium, setIsPremium] = useState(false);
   const [isFoundingPlayer, setIsFoundingPlayer] = useState(false);
+  const [savingFoundingPlayer, setSavingFoundingPlayer] = useState(false);
   const [scoutVer, setScoutVer] = useState("none");
   const [staffRole, setStaffRole] = useState("");
+  const [savedAccountFlags, setSavedAccountFlags] = useState({
+    appRole: "player",
+    isPremium: false,
+    isFoundingPlayer: false,
+    scoutVer: "none",
+    staffRole: "",
+  });
 
   const [pf, setPf] = useState({
     full_name: "",
@@ -308,7 +316,15 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
       .select("founding_player")
       .eq("id", userId)
       .maybeSingle();
-    setIsFoundingPlayer(Boolean(foundingRow?.founding_player ?? pp?.founding_player));
+    const foundingPlayer = Boolean(foundingRow?.founding_player ?? pp?.founding_player);
+    setIsFoundingPlayer(foundingPlayer);
+    setSavedAccountFlags({
+      appRole: str(u.role) || "player",
+      isPremium: Boolean(u.is_premium),
+      isFoundingPlayer: foundingPlayer,
+      scoutVer: str(u.scout_verification_status) || "none",
+      staffRole: str(u.admin_role) || "",
+    });
 
     setLoading(false);
   }, [userId, t]);
@@ -370,37 +386,63 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
     else void load();
   }
 
+  async function saveFoundingPlayerFlag(enabled: boolean) {
+    if (!isSuperAdmin) return;
+    const role = appRole === "scout" ? "scout" : "player";
+    if (role !== "player") return;
+
+    setSavingFoundingPlayer(true);
+    const r = await rpcAdminSetFoundingPlayer(userId, enabled);
+    setSavingFoundingPlayer(false);
+
+    if (!r.ok) {
+      setIsFoundingPlayer(savedAccountFlags.isFoundingPlayer);
+      alert(r.error ?? tc("failed"));
+      return;
+    }
+    setSavedAccountFlags((prev) => ({ ...prev, isFoundingPlayer: enabled }));
+  }
+
   async function saveUserFlags() {
     if (!isSuperAdmin) return;
-    const r1 = await rpcAdminSetAppRole(
-      userId,
-      appRole === "scout" ? "scout" : "player",
-    );
-    if (!r1.ok) {
-      alert(r1.error ?? tc("failed"));
-      return;
-    }
-    const r2 = await rpcAdminSetPremium(userId, isPremium);
-    if (!r2.ok) {
-      alert(r2.error ?? tc("failed"));
-      return;
-    }
-    if (appRole === "player") {
-      const rFounding = await rpcAdminSetFoundingPlayer(userId, isFoundingPlayer);
-      if (!rFounding.ok) {
-        alert(rFounding.error ?? tc("failed"));
+
+    const nextAppRole = appRole === "scout" ? "scout" : "player";
+
+    if (nextAppRole !== savedAccountFlags.appRole) {
+      const r1 = await rpcAdminSetAppRole(userId, nextAppRole);
+      if (!r1.ok) {
+        alert(r1.error ?? tc("failed"));
         return;
       }
     }
-    const r3 = await rpcAdminSetScoutVerificationStatus(userId, scoutVer);
-    if (!r3.ok) {
-      alert(r3.error ?? tc("failed"));
-      return;
+
+    if (isPremium !== savedAccountFlags.isPremium) {
+      const r2 = await rpcAdminSetPremium(userId, isPremium);
+      if (!r2.ok) {
+        alert(r2.error ?? tc("failed"));
+        return;
+      }
     }
+
+    if (scoutVer !== savedAccountFlags.scoutVer) {
+      const r3 = await rpcAdminSetScoutVerificationStatus(userId, scoutVer);
+      if (!r3.ok) {
+        alert(r3.error ?? tc("failed"));
+        return;
+      }
+    }
+
     const roleVal = staffRole.trim() || null;
-    const r4 = await rpcAdminSetStaffRole(userId, roleVal);
-    if (!r4.ok) alert(r4.error ?? tc("failed"));
-    else void load();
+    const savedStaffVal = savedAccountFlags.staffRole.trim() || null;
+    if (roleVal !== savedStaffVal) {
+      const r4 = await rpcAdminSetStaffRole(userId, roleVal);
+      if (!r4.ok) {
+        alert(r4.error ?? tc("failed"));
+        return;
+      }
+    }
+
+    void load();
   }
 
   function applyNoticeTemplate(templateId: string) {
@@ -509,9 +551,17 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                   suppressHydrationWarning
                   type="checkbox"
                   checked={isFoundingPlayer}
-                  onChange={(e) => setIsFoundingPlayer(e.target.checked)}
+                  disabled={savingFoundingPlayer}
+                  onChange={(e) => {
+                    const next = e.target.checked;
+                    setIsFoundingPlayer(next);
+                    void saveFoundingPlayerFlag(next);
+                  }}
                 />
                 {t("userDetailLabelFoundingPlayer")}
+                {savingFoundingPlayer ? (
+                  <span className="text-xs text-zinc-500">{tc("loadingEllipsis")}</span>
+                ) : null}
               </label>
             ) : null}
             <label className="block text-xs text-zinc-500">
