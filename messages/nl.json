@@ -546,14 +546,17 @@
     "step3Title": "Word ontdekt",
     "step3Desc": "Bouw een spelersprofiel dat scouts kunnen bekijken.",
     "foundingTitle": "Word Founding Player",
-    "foundingText": "De eerste spelers op PitchRusch krijgen vroege zichtbaarheid, referral-beloningen en kans op een feature.",
-    "foundingCta": "Nu starten",
+    "foundingCta": "Meedoen als Founding Player",
     "previewBadge": "Highlight",
     "previewCaption": "Skills · Challenges · Profiel",
     "login": "Inloggen",
     "signup": "Registreren",
     "footer": "© {year} PitchRusch. Alle rechten voorbehouden.",
-    "forgotPasswordLink": "Wachtwoord vergeten?"
+    "forgotPasswordLink": "Wachtwoord vergeten?",
+    "foundingBody": "Sluit je aan bij de eerste golf voetbaltalenten op PitchRusch. Upload je highlights, doe mee aan challenges en bouw je spelersprofiel op vóór iedereen.",
+    "foundingBullet1": "Early player-badge",
+    "foundingBullet2": "Kans om uitgelicht te worden",
+    "foundingBullet3": "Nodig vrienden uit en ontgrendel beloningen"
   },
   "nav": {
     "primary": "Primary navigation",

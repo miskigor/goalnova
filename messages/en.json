@@ -546,14 +546,17 @@
     "step3Title": "Get discovered",
     "step3Desc": "Build a player profile that scouts can review.",
     "foundingTitle": "Become a Founding Player",
-    "foundingText": "The first players on PitchRusch get early visibility, referral rewards and a chance to be featured.",
-    "foundingCta": "Start now",
+    "foundingCta": "Join as Founding Player",
     "previewBadge": "Highlight",
     "previewCaption": "Skills · Challenges · Profile",
     "login": "Log in",
     "signup": "Sign up",
     "footer": "© {year} PitchRusch. All rights reserved.",
-    "forgotPasswordLink": "Forgot password?"
+    "forgotPasswordLink": "Forgot password?",
+    "foundingBody": "Join the first wave of football talents on PitchRusch. Upload your highlights, enter challenges, and start building your player profile before everyone else.",
+    "foundingBullet1": "Early player badge",
+    "foundingBullet2": "Chance to be featured",
+    "foundingBullet3": "Invite friends and unlock rewards"
   },
   "nav": {
     "primary": "Primary navigation",

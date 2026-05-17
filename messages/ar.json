@@ -546,14 +546,17 @@
     "step3Title": "اكتشف موهبتك",
     "step3Desc": "أنشئ ملف لاعب يمكن للكشافة مراجعته.",
     "foundingTitle": "كن لاعبًا مؤسسًا",
-    "foundingText": "أول اللاعبين على PitchRusch يحصلون على ظهور مبكر ومكافآت إحالة وفرصة للظهور في الواجهة.",
-    "foundingCta": "ابدأ الآن",
+    "foundingCta": "انضم كـ Founding Player",
     "previewBadge": "هايلايت",
     "previewCaption": "مهارات · تحديات · ملف",
     "login": "تسجيل الدخول",
     "signup": "إنشاء حساب",
     "footer": "© {year} PitchRusch. جميع الحقوق محفوظة.",
-    "forgotPasswordLink": "نسيت كلمة المرور؟"
+    "forgotPasswordLink": "نسيت كلمة المرور؟",
+    "foundingBody": "انضم إلى الموجة الأولى من مواهب كرة القدم على PitchRusch. ارفع لحظاتك البارزة، شارك في التحديات وابدأ ببناء ملف اللاعب قبل الجميع.",
+    "foundingBullet1": "شارة اللاعب المبكر",
+    "foundingBullet2": "فرصة للظهور في الواجهة",
+    "foundingBullet3": "ادعُ الأصدقاء وافتح المكافآت"
   },
   "nav": {
     "primary": "التنقل الرئيسي",

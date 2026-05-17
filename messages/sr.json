@@ -546,14 +546,17 @@
     "step3Title": "Budi primećen",
     "step3Desc": "Izgradi profil igrača koji skauti mogu pregledati.",
     "foundingTitle": "Postani Founding Player",
-    "foundingText": "Prvi igrači na PitchRuschu dobijaju veću vidljivost, referral nagrade i šansu da budu istaknuti.",
-    "foundingCta": "Započni odmah",
+    "foundingCta": "Pridruži se kao Founding Player",
     "previewBadge": "Highlight",
     "previewCaption": "Veštine · Izazovi · Profil",
     "login": "Prijava",
     "signup": "Registracija",
     "footer": "© {year} PitchRusch. Sva prava zadržana.",
-    "forgotPasswordLink": "Zaboravljena lozinka?"
+    "forgotPasswordLink": "Zaboravljena lozinka?",
+    "foundingBody": "Pridruži se prvom valu fudbalskih talenata na PitchRuschu. Otpremi svoje highlightse, učestvuj u izazovima i počni da gradiš svoj igrački profil pre svih.",
+    "foundingBullet1": "Early player badge",
+    "foundingBullet2": "Mogućnost isticanja profila",
+    "foundingBullet3": "Pozovi prijatelje i otključaj nagrade"
   },
   "nav": {
     "primary": "Primary navigation",

@@ -111,7 +111,8 @@ export default async function LandingPage({ params }: Props) {
         <LandingFoundingPlayer
           signupHref={h("/signup")}
           title={t("foundingTitle")}
-          text={t("foundingText")}
+          body={t("foundingBody")}
+          bullets={[t("foundingBullet1"), t("foundingBullet2"), t("foundingBullet3")]}
           cta={t("foundingCta")}
         />
       </main>

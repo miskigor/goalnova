@@ -546,14 +546,17 @@
     "step3Title": "Fatti scoprire",
     "step3Desc": "Crea un profilo giocatore che gli scout possono consultare.",
     "foundingTitle": "Diventa Founding Player",
-    "foundingText": "I primi giocatori su PitchRusch ottengono visibilità anticipata, premi referral e la possibilità di essere in evidenza.",
-    "foundingCta": "Inizia ora",
+    "foundingCta": "Unisciti come Founding Player",
     "previewBadge": "Highlight",
     "previewCaption": "Skill · Sfide · Profilo",
     "login": "Accedi",
     "signup": "Registrati",
     "footer": "© {year} PitchRusch. Tutti i diritti riservati.",
-    "forgotPasswordLink": "Password dimenticata?"
+    "forgotPasswordLink": "Password dimenticata?",
+    "foundingBody": "Unisciti alla prima ondata di talenti del calcio su PitchRusch. Carica i tuoi highlight, partecipa alle sfide e inizia a costruire il tuo profilo giocatore prima di tutti.",
+    "foundingBullet1": "Badge early player",
+    "foundingBullet2": "Possibilità di essere in evidenza",
+    "foundingBullet3": "Invita amici e sblocca ricompense"
   },
   "nav": {
     "primary": "Navigazione principale",

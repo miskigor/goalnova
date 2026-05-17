@@ -546,14 +546,17 @@
     "step3Title": "Keşfedil",
     "step3Desc": "Scoutların inceleyebileceği bir oyuncu profili oluştur.",
     "foundingTitle": "Founding Player ol",
-    "foundingText": "PitchRusch'taki ilk oyuncular erken görünürlük, referans ödülleri ve öne çıkma şansı kazanır.",
-    "foundingCta": "Hemen başla",
+    "foundingCta": "Founding Player olarak katıl",
     "previewBadge": "Highlight",
     "previewCaption": "Beceriler · Meydan okumalar · Profil",
     "login": "Giriş yap",
     "signup": "Kayıt ol",
     "footer": "© {year} PitchRusch. Tüm hakları saklıdır.",
-    "forgotPasswordLink": "Şifreni mi unuttun?"
+    "forgotPasswordLink": "Şifreni mi unuttun?",
+    "foundingBody": "PitchRusch'taki ilk futbol yetenekleri dalgasına katıl. Highlightlarını yükle, challenge'lara gir ve herkesten önce oyuncu profilini oluşturmaya başla.",
+    "foundingBullet1": "Erken oyuncu rozeti",
+    "foundingBullet2": "Öne çıkma şansı",
+    "foundingBullet3": "Arkadaşlarını davet et ve ödülleri aç"
   },
   "nav": {
     "primary": "Primary navigation",

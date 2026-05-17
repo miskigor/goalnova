@@ -545,15 +545,18 @@
     "step2Desc": "Tritt in wöchentlichen Skill-Challenges an und steige in der Rangliste auf.",
     "step3Title": "Entdeckt werden",
     "step3Desc": "Erstelle ein Spielerprofil, das Scouts einsehen können.",
-    "foundingTitle": "Founding Player werden",
-    "foundingText": "Die ersten Spieler auf PitchRusch erhalten frühe Sichtbarkeit, Referral-Belohnungen und die Chance, vorgestellt zu werden.",
-    "foundingCta": "Jetzt starten",
+    "foundingTitle": "Werde Founding Player",
+    "foundingCta": "Als Founding Player beitreten",
     "previewBadge": "Highlight",
     "previewCaption": "Skills · Challenges · Profil",
     "login": "Anmelden",
     "signup": "Registrieren",
     "footer": "© {year} PitchRusch. Alle Rechte vorbehalten.",
-    "forgotPasswordLink": "Passwort vergessen?"
+    "forgotPasswordLink": "Passwort vergessen?",
+    "foundingBody": "Sei Teil der ersten Welle an Fußballtalenten auf PitchRusch. Lade deine Highlights hoch, nimm an Challenges teil und baue dein Spielerprofil auf, bevor es alle anderen tun.",
+    "foundingBullet1": "Early-Player-Badge",
+    "foundingBullet2": "Chance, vorgestellt zu werden",
+    "foundingBullet3": "Freunde einladen und Belohnungen freischalten"
   },
   "nav": {
     "primary": "Hauptnavigation",

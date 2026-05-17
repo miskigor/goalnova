@@ -546,14 +546,17 @@
     "step3Title": "Fais-toi repérer",
     "step3Desc": "Crée un profil joueur que les recruteurs peuvent consulter.",
     "foundingTitle": "Deviens Founding Player",
-    "foundingText": "Les premiers joueurs sur PitchRusch bénéficient d'une visibilité anticipée, de récompenses de parrainage et d'une chance d'être mis en avant.",
-    "foundingCta": "Commencer",
+    "foundingCta": "Rejoindre en Founding Player",
     "previewBadge": "Highlight",
     "previewCaption": "Skills · Défis · Profil",
     "login": "Connexion",
     "signup": "Inscription",
     "footer": "© {year} PitchRusch. Tous droits réservés.",
-    "forgotPasswordLink": "Mot de passe oublié ?"
+    "forgotPasswordLink": "Mot de passe oublié ?",
+    "foundingBody": "Rejoins la première vague de talents du football sur PitchRusch. Publie tes highlights, participe aux défis et commence à construire ton profil joueur avant tout le monde.",
+    "foundingBullet1": "Badge early player",
+    "foundingBullet2": "Chance d'être mis en avant",
+    "foundingBullet3": "Invite des amis et débloque des récompenses"
   },
   "nav": {
     "primary": "Navigation principale",
