@@ -1626,7 +1626,7 @@
     "fileTooLargeSimple": "Video file is too large. Please upload a smaller file.",
     "selectedFileDetails": "Selected file: {name} ({size})",
     "caption": "Caption",
-    "captionPlaceholder": "What should scouts focus on?",
+    "captionPlaceholder": "Videoda ne gösterdiğini kısaca yaz…",
     "skillType": "Skill type",
     "skillTypePlaceholder": "e.g. Finishing, Dribbling, Passing",
     "challengeLabel": "Challenge (optional)",
@@ -1693,7 +1693,9 @@
     "uploadSuccessTitle": "Video yayınlandı",
     "uploadSuccessText": "Highlight'ın artık profilinde.",
     "uploadSuccessViewProfile": "Profili görüntüle",
-    "uploadSuccessUploadAnother": "Başka bir video yükle"
+    "uploadSuccessUploadAnother": "Başka bir video yükle",
+    "captionLabel": "Açıklama",
+    "captionTooLong": "Açıklama en fazla 160 karakter olabilir."
   },
   "publicVideo": {
     "metaTitle": "{name}",

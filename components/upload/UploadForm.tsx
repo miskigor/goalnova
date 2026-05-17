@@ -107,6 +107,73 @@ function isVideoFile(file: File): boolean {
   );
 }
 
+const UPLOAD_CAPTION_MAX_LENGTH = 160;
+
+type UploadCaptionFieldProps = {
+  id: string;
+  value: string;
+  onChange: (value: string) => void;
+  disabled: boolean;
+  label: string;
+  placeholder: string;
+  tooLongMessage: string;
+};
+
+function UploadCaptionField({
+  id,
+  value,
+  onChange,
+  disabled,
+  label,
+  placeholder,
+  tooLongMessage,
+}: UploadCaptionFieldProps) {
+  const length = value.length;
+  const tooLong = length > UPLOAD_CAPTION_MAX_LENGTH;
+
+  return (
+    <div className="box-border w-full min-w-0 max-w-full space-y-1.5">
+      <label htmlFor={id} className="block text-sm font-medium text-gn-text">
+        {label}
+      </label>
+      <textarea
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        disabled={disabled}
+        rows={3}
+        aria-invalid={tooLong}
+        aria-describedby={tooLong ? `${id}-error ${id}-counter` : `${id}-counter`}
+        className={[
+          "box-border w-full min-w-0 max-w-full resize-y rounded-xl border bg-gn-bg px-3 py-2.5 text-sm text-gn-text",
+          "placeholder:text-gn-text-tertiary focus:outline-none focus:ring-2 focus:ring-gn-accent/40",
+          tooLong ? "border-red-500/60" : "border-gn-border-subtle",
+          disabled ? "cursor-not-allowed opacity-60" : "",
+        ].join(" ")}
+      />
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        {tooLong ? (
+          <p id={`${id}-error`} role="alert" className="min-w-0 flex-1 text-xs text-red-300/95">
+            {tooLongMessage}
+          </p>
+        ) : (
+          <span className="flex-1" />
+        )}
+        <p
+          id={`${id}-counter`}
+          className={[
+            "shrink-0 tabular-nums text-xs",
+            tooLong ? "font-medium text-red-300/95" : "text-gn-text-tertiary",
+          ].join(" ")}
+        >
+          {length}/{UPLOAD_CAPTION_MAX_LENGTH}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function UploadForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -176,6 +243,8 @@ export function UploadForm() {
   const [wizardStep, setWizardStep] = useState<UploadWizardStep>(1);
   const [draftVideoFile, setDraftVideoFile] = useState<File | null>(null);
   const [videoDurationProbeFailed, setVideoDurationProbeFailed] = useState(false);
+  const [caption, setCaption] = useState("");
+  const captionTooLong = caption.length > UPLOAD_CAPTION_MAX_LENGTH;
 
   const draftVideoObjectUrl = useMemo(() => {
     if (!draftVideoFile) return null;
@@ -258,6 +327,7 @@ export function UploadForm() {
         setWizardStep(1);
         setDraftVideoFile(null);
         setVideoDurationProbeFailed(false);
+        setCaption("");
         setPickerChallengeId("");
       }
       try {
@@ -514,6 +584,12 @@ export function UploadForm() {
       setFailureDetail(null);
       setInitError(null);
       setSelectedFileMeta({ name: file.name, size: file.size });
+
+      if (caption.length > UPLOAD_CAPTION_MAX_LENGTH) {
+        setUploadPhase("failed");
+        setFailureDetail(t("captionTooLong"));
+        return;
+      }
 
       if (file.size > VIDEO_UPLOAD_MAX_BYTES) {
         setUploadPhase("failed");
@@ -881,12 +957,13 @@ export function UploadForm() {
             : Math.max(normalizedMusicStartSeconds, Math.ceil(storeEnd));
 
         /** Only persist music metadata when we have a merged file URL (matches videos.processed_video_url). */
+        const captionTrimmed = caption.trim();
         const insertPayload: Database["public"]["Tables"]["videos"]["Insert"] = {
           user_id: authUserId,
           video_url: publishUrl,
           source_video_url: sourceUrl,
           processed_video_url: processedVideoUrl,
-          caption: null,
+          caption: captionTrimmed.length > 0 ? captionTrimmed : null,
           skill_type: null,
           city: null,
           country: null,
@@ -978,6 +1055,7 @@ export function UploadForm() {
         setMusicEndSec(0);
         setMusicVolume(1);
         setSelectedFileMeta(null);
+        setCaption("");
       } catch (e) {
         logFullSupabaseError("[PitchRusch upload] catch block", e);
         const raw =
@@ -1005,6 +1083,7 @@ export function UploadForm() {
       musicStartSec,
       musicEndSec,
       musicVolume,
+      caption,
     ],
   );
 
@@ -1052,6 +1131,11 @@ export function UploadForm() {
       return;
     }
     if (videoDurationSeconds == null || videoDurationSeconds <= 0) return;
+    if (caption.length > UPLOAD_CAPTION_MAX_LENGTH) {
+      setUploadPhase("failed");
+      setFailureDetail(t("captionTooLong"));
+      return;
+    }
 
     const vd = videoDurationSeconds;
     if (selectedMusicTrackId) {
@@ -1087,10 +1171,16 @@ export function UploadForm() {
     setMusicEndSec(0);
     setMusicVolume(1);
     setVideoDurationProbeFailed(false);
+    setCaption("");
   }
 
   function publishDraftVideo() {
     if (isUploadBusy) return;
+    if (caption.length > UPLOAD_CAPTION_MAX_LENGTH) {
+      setUploadPhase("failed");
+      setFailureDetail(t("captionTooLong"));
+      return;
+    }
     if (!draftVideoFile) {
       setUploadPhase("failed");
       setFailureDetail(t("fileRequired"));
@@ -1116,7 +1206,8 @@ export function UploadForm() {
     videoDurationSeconds != null &&
     videoDurationSeconds > 0 &&
     !isUploadBusy &&
-    !challengeUrlBlocksUpload;
+    !challengeUrlBlocksUpload &&
+    !captionTooLong;
 
   const isChallengeUploadFlow = effectiveJoinChallengeId.trim().length > 0;
   const uploadFormRendered = Boolean(userId) && playerGate === "allowed";
@@ -1343,6 +1434,16 @@ export function UploadForm() {
                 ) : null}
               </div>
 
+              <UploadCaptionField
+                id="gn-upload-caption-step1"
+                value={caption}
+                onChange={setCaption}
+                disabled={isUploadBusy || challengeUrlBlocksUpload}
+                label={t("captionLabel")}
+                placeholder={t("captionPlaceholder")}
+                tooLongMessage={t("captionTooLong")}
+              />
+
               <div className="mx-auto w-full max-w-xl">
                 <MusicTrackPicker
                   value={selectedMusicTrackId}
@@ -1430,6 +1531,16 @@ export function UploadForm() {
                 ) : null}
               </div>
 
+              <UploadCaptionField
+                id="gn-upload-caption-step2"
+                value={caption}
+                onChange={setCaption}
+                disabled={isUploadBusy}
+                label={t("captionLabel")}
+                placeholder={t("captionPlaceholder")}
+                tooLongMessage={t("captionTooLong")}
+              />
+
               {selectedMusicTrackId ? (
                 <MusicMergeTrimPanel
                   trackTitle={
@@ -1501,7 +1612,8 @@ export function UploadForm() {
                     !draftVideoFile ||
                     draftVideoFile.size > VIDEO_UPLOAD_MAX_BYTES ||
                     challengeUrlBlocksUpload ||
-                    videoDurationProbeFailed
+                    videoDurationProbeFailed ||
+                    captionTooLong
                   }
                   aria-busy={isUploadBusy}
                   className={`${GN_PRIMARY_BUTTON_CLASS} order-1 min-h-[3rem] w-full flex-1 justify-center px-8 py-3 text-base disabled:cursor-not-allowed sm:order-2`}

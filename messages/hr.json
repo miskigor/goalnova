@@ -1626,7 +1626,7 @@
     "fileTooLargeSimple": "Video datoteka je prevelika. Učitaj manju datoteku.",
     "selectedFileDetails": "Odabrana datoteka: {name} ({size})",
     "caption": "Opis",
-    "captionPlaceholder": "Na što bi skauti trebali obratiti pažnju?",
+    "captionPlaceholder": "Napiši kratko što pokazuješ u videu…",
     "skillType": "Vrsta vještine",
     "skillTypePlaceholder": "npr. završavanje, dribling, dodavanje",
     "challengeLabel": "Izazov (opcionalno)",
@@ -1693,7 +1693,9 @@
     "uploadSuccessTitle": "Video je objavljen",
     "uploadSuccessText": "Tvoj highlight je sada na tvom profilu.",
     "uploadSuccessViewProfile": "Pogledaj profil",
-    "uploadSuccessUploadAnother": "Učitaj još jedan video"
+    "uploadSuccessUploadAnother": "Učitaj još jedan video",
+    "captionLabel": "Opis",
+    "captionTooLong": "Opis mora imati najviše 160 znakova."
   },
   "publicVideo": {
     "metaTitle": "{name}",

@@ -1626,7 +1626,7 @@
     "fileTooLargeSimple": "Video file is too large. Please upload a smaller file.",
     "selectedFileDetails": "Selected file: {name} ({size})",
     "caption": "Caption",
-    "captionPlaceholder": "What should scouts focus on?",
+    "captionPlaceholder": "Schrijf kort wat je in de video laat zien…",
     "skillType": "Skill type",
     "skillTypePlaceholder": "e.g. Finishing, Dribbling, Passing",
     "challengeLabel": "Challenge (optional)",
@@ -1693,7 +1693,9 @@
     "uploadSuccessTitle": "Video gepubliceerd",
     "uploadSuccessText": "Je highlight staat nu op je profiel.",
     "uploadSuccessViewProfile": "Profiel bekijken",
-    "uploadSuccessUploadAnother": "Nog een video uploaden"
+    "uploadSuccessUploadAnother": "Nog een video uploaden",
+    "captionLabel": "Bijschrift",
+    "captionTooLong": "Het bijschrift mag maximaal 160 tekens bevatten."
   },
   "publicVideo": {
     "metaTitle": "{name}",

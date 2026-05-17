@@ -1626,7 +1626,7 @@
     "fileTooLargeSimple": "Le fichier vidéo est trop volumineux. Veuillez envoyer un fichier plus petit.",
     "selectedFileDetails": "Fichier sélectionné : {name} ({size})",
     "caption": "Caption",
-    "captionPlaceholder": "What should scouts focus on?",
+    "captionPlaceholder": "Décris brièvement ce que tu montres dans la vidéo…",
     "skillType": "Skill type",
     "skillTypePlaceholder": "e.g. Finishing, Dribbling, Passing",
     "challengeLabel": "Challenge (optional)",
@@ -1693,7 +1693,9 @@
     "uploadSuccessTitle": "Vidéo publiée",
     "uploadSuccessText": "Ton highlight est maintenant sur ton profil.",
     "uploadSuccessViewProfile": "Voir le profil",
-    "uploadSuccessUploadAnother": "Téléverser une autre vidéo"
+    "uploadSuccessUploadAnother": "Téléverser une autre vidéo",
+    "captionLabel": "Description",
+    "captionTooLong": "La description doit contenir au maximum 160 caractères."
   },
   "publicVideo": {
     "metaTitle": "{name}",

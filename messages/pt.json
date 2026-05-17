@@ -1626,7 +1626,7 @@
     "fileTooLargeSimple": "O ficheiro de vídeo é demasiado grande. Envia um ficheiro mais pequeno.",
     "selectedFileDetails": "Ficheiro selecionado: {name} ({size})",
     "caption": "Caption",
-    "captionPlaceholder": "What should scouts focus on?",
+    "captionPlaceholder": "Escreve brevemente o que mostras no vídeo…",
     "skillType": "Skill type",
     "skillTypePlaceholder": "e.g. Finishing, Dribbling, Passing",
     "challengeLabel": "Challenge (optional)",
@@ -1693,7 +1693,9 @@
     "uploadSuccessTitle": "Vídeo publicado",
     "uploadSuccessText": "O teu highlight está agora no teu perfil.",
     "uploadSuccessViewProfile": "Ver perfil",
-    "uploadSuccessUploadAnother": "Carregar outro vídeo"
+    "uploadSuccessUploadAnother": "Carregar outro vídeo",
+    "captionLabel": "Legenda",
+    "captionTooLong": "A legenda deve ter no máximo 160 caracteres."
   },
   "publicVideo": {
     "metaTitle": "{name}",

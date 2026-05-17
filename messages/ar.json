@@ -1626,7 +1626,7 @@
     "fileTooLargeSimple": "ملف الفيديو كبير جدًا. يُرجى تحميل ملف أصغر.",
     "selectedFileDetails": "Selected file: {name} ({size})",
     "caption": "Caption",
-    "captionPlaceholder": "What should scouts focus on?",
+    "captionPlaceholder": "اكتب وصفًا قصيرًا لما تعرضه في الفيديو…",
     "skillType": "Skill type",
     "skillTypePlaceholder": "e.g. Finishing, Dribbling, Passing",
     "challengeLabel": "Challenge (optional)",
@@ -1693,7 +1693,9 @@
     "uploadSuccessTitle": "تم نشر الفيديو",
     "uploadSuccessText": "أصبح الهايلايت الخاص بك متاحًا على ملفك الشخصي.",
     "uploadSuccessViewProfile": "عرض الملف الشخصي",
-    "uploadSuccessUploadAnother": "تحميل فيديو آخر"
+    "uploadSuccessUploadAnother": "تحميل فيديو آخر",
+    "captionLabel": "الوصف",
+    "captionTooLong": "يجب ألا يتجاوز الوصف 160 حرفًا."
   },
   "publicVideo": {
     "metaTitle": "{name}",

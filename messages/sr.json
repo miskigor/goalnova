@@ -1626,7 +1626,7 @@
     "fileTooLargeSimple": "Video file is too large. Please upload a smaller file.",
     "selectedFileDetails": "Selected file: {name} ({size})",
     "caption": "Caption",
-    "captionPlaceholder": "What should scouts focus on?",
+    "captionPlaceholder": "Napiši kratko šta pokazuješ u videu…",
     "skillType": "Skill type",
     "skillTypePlaceholder": "e.g. Finishing, Dribbling, Passing",
     "challengeLabel": "Challenge (optional)",
@@ -1693,7 +1693,9 @@
     "uploadSuccessTitle": "Video je objavljen",
     "uploadSuccessText": "Tvoj highlight je sada na tvom profilu.",
     "uploadSuccessViewProfile": "Pogledaj profil",
-    "uploadSuccessUploadAnother": "Otpremi još jedan video"
+    "uploadSuccessUploadAnother": "Otpremi još jedan video",
+    "captionLabel": "Opis",
+    "captionTooLong": "Opis mora imati najviše 160 znakova."
   },
   "publicVideo": {
     "metaTitle": "{name}",
