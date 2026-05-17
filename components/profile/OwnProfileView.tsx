@@ -90,7 +90,7 @@ export function OwnProfileView() {
 
   if (scoutBundle) {
     return (
-      <>
+      <div className="w-full min-w-0 max-w-full overflow-x-clip">
         {showSavedBanner ? (
           <div
             role="status"
@@ -101,7 +101,7 @@ export function OwnProfileView() {
         ) : null}
         <ScoutOwnProfileView user={scoutBundle.user} profile={scoutBundle.profile} />
         <DeleteAccountSection />
-      </>
+      </div>
     );
   }
 
@@ -115,7 +115,7 @@ export function OwnProfileView() {
   }
 
   return (
-    <>
+    <div className="w-full min-w-0 max-w-full overflow-x-clip">
       {showSavedBanner ? (
         <div
           role="status"
@@ -126,6 +126,6 @@ export function OwnProfileView() {
       ) : null}
       <PlayerPublicProfile playerSlug={playerSlug} />
       <DeleteAccountSection />
-    </>
+    </div>
   );
 }

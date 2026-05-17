@@ -25,8 +25,8 @@ export function AppMobileHeader() {
   const adminActive = navItemActive(pathname, "/admin");
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[45] shrink-0 overflow-x-clip border-b border-gn-border-subtle bg-gn-bg/95 pt-[env(safe-area-inset-top,0px)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:hidden">
-      <div className="mx-auto flex h-14 w-full min-w-0 max-w-lg items-center gap-2 md:max-w-2xl pl-[max(0.75rem,env(safe-area-inset-left,0px))] pr-[max(0.75rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.25rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.25rem,env(safe-area-inset-right,0px))]">
+    <header className="fixed left-0 right-0 top-0 z-[55] shrink-0 overflow-x-clip border-b border-gn-border-subtle bg-gn-bg/95 pt-[env(safe-area-inset-top,0px)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:hidden">
+      <div className="mx-auto flex h-14 w-full min-w-0 max-w-full items-center gap-2 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
         <div className="flex min-w-0 flex-1 items-center overflow-hidden">
           <Logo href="/home" variant="header" className="min-w-0 max-w-full" />
         </div>

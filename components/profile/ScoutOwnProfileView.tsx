@@ -77,11 +77,11 @@ export function ScoutOwnProfileView({ user, profile }: ScoutOwnProfileViewProps)
   const avatarUrl = user.avatar_url?.trim() || null;
 
   return (
-    <div className="mx-auto w-full max-w-lg space-y-6 pb-8 lg:max-w-2xl">
-      <header className="space-y-3">
-        <div className="flex items-start gap-3">
-          <ProfileAvatar name={displayName} imageUrl={avatarUrl || undefined} />
-          <div className="min-w-0 flex-1 space-y-1">
+    <div className="mx-auto w-full min-w-0 max-w-full space-y-6 overflow-x-clip pb-8 lg:max-w-2xl">
+      <header className="min-w-0 space-y-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <ProfileAvatar name={displayName} imageUrl={avatarUrl || undefined} className="shrink-0" />
+          <div className="min-w-0 flex-1 overflow-hidden space-y-1">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="min-w-0 max-w-full break-words text-2xl font-semibold tracking-tight text-gn-text-primary">
                 {displayName}
@@ -102,7 +102,7 @@ export function ScoutOwnProfileView({ user, profile }: ScoutOwnProfileViewProps)
         ) : null}
         <Link
           href="/settings/profile"
-          className="inline-flex items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
+          className="inline-flex min-h-11 w-full min-w-0 max-w-full items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2.5 text-center text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated sm:w-auto"
         >
           {tProfile("editProfile")}
         </Link>

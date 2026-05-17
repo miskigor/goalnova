@@ -134,7 +134,10 @@ export default async function LocaleLayout({ children, params }: Props) {
       className={`${geistSans.variable} ${bebasNeue.variable} ${notoArabic.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body style={{ backgroundColor: "#000" }} className="flex min-h-dvh min-w-0 flex-col bg-gn-bg text-gn-text">
+      <body
+        style={{ backgroundColor: "#000" }}
+        className="flex min-h-dvh min-w-0 max-w-full flex-col overflow-x-hidden bg-gn-bg text-gn-text"
+      >
         <Suspense fallback={<LocaleRouteFallback />}>
           <LocaleIntlProvider locale={locale as AppLocale}>{children}</LocaleIntlProvider>
         </Suspense>

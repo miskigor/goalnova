@@ -191,32 +191,31 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-lg space-y-6 pb-8 lg:max-w-2xl">
-      <header className="space-y-3">
-        <div className="flex items-start gap-3">
+    <div className="mx-auto w-full min-w-0 max-w-full space-y-6 overflow-x-clip pb-8 lg:max-w-2xl">
+      <header className="min-w-0 space-y-3">
+        <div className="flex min-w-0 items-center gap-3">
           <ProfileAvatar
             name={displayName}
             imageUrl={userAvatarUrl?.trim() || undefined}
+            className="shrink-0"
           />
-          <div className="min-w-0 flex-1 space-y-1">
-            <h1 className="truncate text-2xl font-semibold tracking-tight text-gn-text-primary">
+          <div className="min-w-0 flex-1 overflow-hidden">
+            <h1 className="truncate text-xl font-semibold tracking-tight text-gn-text-primary sm:text-2xl">
               {displayName}
             </h1>
-            <p className="min-w-0 break-words text-sm text-gn-text-secondary">
-              @{displayUsername}
-            </p>
+            <p className="truncate text-sm text-gn-text-secondary">@{displayUsername}</p>
             {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
           </div>
         </div>
         {userId && profile.id === userId ? (
-          <div className="mt-3 flex flex-wrap items-center gap-2">
+          <div className="grid w-full min-w-0 grid-cols-1 gap-2 min-[380px]:grid-cols-2">
             <Link
               href="/settings/profile"
-              className="inline-flex items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2 text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
+              className="inline-flex min-h-11 min-w-0 items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-3 py-2.5 text-center text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
             >
               {tProfile("editProfile")}
             </Link>
-            <ProfileUploadLink />
+            <ProfileUploadLink className="min-h-11 min-w-0 w-full justify-center" />
           </div>
         ) : null}
         {userId && profile.id !== userId ? (
