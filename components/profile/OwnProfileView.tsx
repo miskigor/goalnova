@@ -8,7 +8,10 @@ import { loadAndEnsureProfile } from "@/lib/supabase/profile";
 import { tryConsumePendingReferralWithRetry } from "@/lib/supabase/referrals";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { DeleteAccountSection } from "@/components/profile/DeleteAccountSection";
-import { APP_PROFILE_SHELL_CLASS } from "@/lib/layout/appShellClasses";
+import {
+  APP_PROFILE_LOADING_INNER_CLASS,
+  APP_PROFILE_SHELL_CLASS,
+} from "@/lib/layout/appShellClasses";
 import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
 import { ScoutOwnProfileView } from "@/components/profile/ScoutOwnProfileView";
 import type { Database } from "@/lib/supabase/client";
@@ -26,8 +29,20 @@ function Spinner({ className = "h-5 w-5" }: { className?: string }) {
       aria-hidden
     >
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a12 12 0 00-12 12h4z" />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v4l3-3-3-3v4a12 12 0 00-12 12h4z"
+      />
     </svg>
+  );
+}
+
+function ProfilePageShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div data-profile-shell className={APP_PROFILE_SHELL_CLASS}>
+      {children}
+    </div>
   );
 }
 
@@ -75,58 +90,57 @@ export function OwnProfileView() {
     };
   }, [tCommon]);
 
+  const savedBanner = showSavedBanner ? (
+    <div
+      role="status"
+      className="box-border w-full min-w-0 max-w-full rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-100/95"
+    >
+      {tProfileEditor("saved")}
+    </div>
+  ) : null;
+
   if (error) {
     return (
-      <div className="space-y-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4">
-        <p className="text-sm text-gn-text-secondary">{tPlayer("loadFailed")}</p>
-        <Link
-          href="/settings/profile"
-          className="text-sm font-medium text-gn-accent hover:underline"
-        >
-          {tProfile("editProfile")}
-        </Link>
-      </div>
+      <ProfilePageShell>
+        <div className="box-border w-full min-w-0 max-w-full space-y-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4">
+          <p className="break-words text-sm text-gn-text-secondary">{tPlayer("loadFailed")}</p>
+          <Link
+            href="/settings/profile"
+            className="text-sm font-medium text-gn-accent hover:underline"
+          >
+            {tProfile("editProfile")}
+          </Link>
+        </div>
+      </ProfilePageShell>
     );
   }
 
   if (scoutBundle) {
     return (
-      <div data-profile-shell className={APP_PROFILE_SHELL_CLASS}>
-        {showSavedBanner ? (
-          <div
-            role="status"
-            className="mb-4 rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-100/95"
-          >
-            {tProfileEditor("saved")}
-          </div>
-        ) : null}
-        <ScoutOwnProfileView user={scoutBundle.user} profile={scoutBundle.profile} />
+      <ProfilePageShell>
+        {savedBanner}
+        <ScoutOwnProfileView embedded user={scoutBundle.user} profile={scoutBundle.profile} />
         <DeleteAccountSection />
-      </div>
+      </ProfilePageShell>
     );
   }
 
   if (!playerSlug) {
     return (
-      <div className="flex min-h-[35vh] items-center justify-center gap-2 text-sm text-gn-text-secondary">
-        <Spinner />
-        {tCommon("loading")}
-      </div>
+      <ProfilePageShell>
+        <div className={APP_PROFILE_LOADING_INNER_CLASS} role="status">
+          <Spinner className="h-8 w-8" />
+          {tCommon("loading")}
+        </div>
+      </ProfilePageShell>
     );
   }
 
   return (
-    <div data-profile-shell className={APP_PROFILE_SHELL_CLASS}>
-      {showSavedBanner ? (
-        <div
-          role="status"
-          className="mb-4 rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-100/95"
-        >
-          {tProfileEditor("saved")}
-        </div>
-      ) : null}
-      <PlayerPublicProfile playerSlug={playerSlug} />
+    <ProfilePageShell>
+      {savedBanner}
+      <PlayerPublicProfile embedded playerSlug={playerSlug} />
       <DeleteAccountSection />
-    </div>
+    </ProfilePageShell>
   );
 }

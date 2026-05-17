@@ -277,7 +277,7 @@ export function PlayerFollowSection({ profileUserId }: Props) {
   );
 
   return (
-    <div className="min-w-0 max-w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4">
+    <div className="box-border min-w-0 w-full max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4">
       {loading ? (
         <p className="text-sm text-gn-text-secondary" role="status">
           {t("loading")}

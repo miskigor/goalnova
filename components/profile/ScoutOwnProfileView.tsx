@@ -9,6 +9,7 @@ import {
 } from "@/lib/scoutVerification";
 import { VerifiedScoutBadge } from "@/components/scout/VerifiedScoutBadge";
 import type { Database } from "@/lib/supabase/client";
+import { APP_PROFILE_SHELL_CLASS } from "@/lib/layout/appShellClasses";
 
 const FREE_SCOUT_FEATURE_KEYS = ["f1", "f2", "f3", "f4", "f5"] as const;
 
@@ -18,6 +19,8 @@ type ScoutProfileRow = Database["public"]["Tables"]["scout_profiles"]["Row"];
 export type ScoutOwnProfileViewProps = {
   user: UserRow;
   profile: ScoutProfileRow;
+  /** When true, parent already provides {@link APP_PROFILE_SHELL_CLASS}. */
+  embedded?: boolean;
 };
 
 function emailLocalPart(email: string | null | undefined): string | null {
@@ -46,7 +49,11 @@ function DetailRow({
   );
 }
 
-export function ScoutOwnProfileView({ user, profile }: ScoutOwnProfileViewProps) {
+export function ScoutOwnProfileView({
+  user,
+  profile,
+  embedded = false,
+}: ScoutOwnProfileViewProps) {
   const tProfile = useTranslations("profile");
   const tPremium = useTranslations("premium");
   const tFields = useTranslations("profileEditor");
@@ -76,8 +83,8 @@ export function ScoutOwnProfileView({ user, profile }: ScoutOwnProfileViewProps)
 
   const avatarUrl = user.avatar_url?.trim() || null;
 
-  return (
-    <div className="mx-auto w-full min-w-0 max-w-full space-y-6 overflow-x-clip pb-8 lg:max-w-2xl">
+  const inner = (
+    <div className="box-border w-full min-w-0 max-w-full space-y-6">
       <header className="min-w-0 space-y-3">
         <div className="flex min-w-0 items-center gap-3">
           <ProfileAvatar name={displayName} imageUrl={avatarUrl || undefined} className="shrink-0" />
@@ -154,6 +161,13 @@ export function ScoutOwnProfileView({ user, profile }: ScoutOwnProfileViewProps)
         ) : null}
         <p className="text-xs leading-relaxed text-gn-text-tertiary">{tProfile("scoutPlanLimitsNote")}</p>
       </section>
+    </div>
+  );
+
+  if (embedded) return inner;
+  return (
+    <div data-profile-shell className={APP_PROFILE_SHELL_CLASS}>
+      {inner}
     </div>
   );
 }

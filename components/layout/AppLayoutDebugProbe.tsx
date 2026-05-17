@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { isDev } from "@/lib/devLog";
+import { logHorizontalOverflowOffenders } from "@/lib/layout/detectHorizontalOverflow";
 
 const PROBE_SELECTORS = [
   "[data-app-root]",
@@ -52,12 +53,21 @@ export function AppLayoutDebugProbe() {
       });
     };
 
-    probe();
-    const t = window.setTimeout(probe, 500);
-    window.addEventListener("resize", probe);
+    const runProbe = () => {
+      probe();
+      logHorizontalOverflowOffenders(document.body, 20);
+    };
+
+    runProbe();
+    const t0 = window.setTimeout(runProbe, 0);
+    const t1 = window.setTimeout(runProbe, 500);
+    const t2 = window.setTimeout(runProbe, 1500);
+    window.addEventListener("resize", runProbe);
     return () => {
-      window.clearTimeout(t);
-      window.removeEventListener("resize", probe);
+      window.clearTimeout(t0);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.removeEventListener("resize", runProbe);
       style.remove();
     };
   }, []);

@@ -35,7 +35,7 @@ export function DeleteAccountSection() {
 
   return (
     <section
-      className="mx-auto mt-10 box-border w-full min-w-0 max-w-full overflow-x-hidden border-t border-gn-border-subtle pt-8"
+      className="mt-10 box-border w-full min-w-0 max-w-full overflow-x-clip border-t border-gn-border-subtle pt-8"
       aria-labelledby="delete-account-heading"
     >
       <h2 id="delete-account-heading" className="text-sm font-semibold text-gn-text">

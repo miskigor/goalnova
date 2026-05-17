@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
@@ -51,9 +51,13 @@ function Spinner({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
-type Props = { playerSlug: string };
+type Props = {
+  playerSlug: string;
+  /** When true, parent already provides {@link APP_PROFILE_SHELL_CLASS}. */
+  embedded?: boolean;
+};
 
-export function PlayerPublicProfile({ playerSlug }: Props) {
+export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
   const t = useTranslations("playerProfile");
   const tProfile = useTranslations("profile");
   const tSv = useTranslations("scoutVerification");
@@ -124,18 +128,33 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
     };
   }, [playerSlug]);
 
-  if (profile === undefined) {
+  const profileInnerClass =
+    "box-border w-full min-w-0 max-w-full space-y-6";
+
+  function wrapInProfileShell(node: ReactNode) {
+    if (embedded) return node;
     return (
-      <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 px-4 text-sm text-gn-text-secondary">
-        <Spinner className="h-8 w-8" />
-        {t("loading")}
+      <div data-profile-shell className={APP_PROFILE_SHELL_CLASS}>
+        {node}
       </div>
     );
   }
 
+  if (profile === undefined) {
+    return wrapInProfileShell(
+      <div
+        className="flex min-h-[40vh] w-full min-w-0 max-w-full flex-col items-center justify-center gap-3 text-sm text-gn-text-secondary"
+        role="status"
+      >
+        <Spinner className="h-8 w-8" />
+        {t("loading")}
+      </div>,
+    );
+  }
+
   if (loadError) {
-    return (
-      <div className="mx-auto w-full min-w-0 max-w-full space-y-4">
+    return wrapInProfileShell(
+      <div className="box-border w-full min-w-0 max-w-full space-y-4">
         <p role="alert" className="break-words text-sm text-red-300/90">
           {t("loadFailed")} {loadError}
         </p>
@@ -145,13 +164,13 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
         >
           {t("backToDiscover")}
         </Link>
-      </div>
+      </div>,
     );
   }
 
   if (!profile) {
-    return (
-      <div className="mx-auto w-full min-w-0 max-w-lg space-y-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-10 text-center">
+    return wrapInProfileShell(
+      <div className="box-border w-full min-w-0 max-w-full space-y-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-10 text-center">
         <h1 className="text-lg font-semibold text-gn-text-primary">
           {t("notFoundTitle")}
         </h1>
@@ -162,7 +181,7 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
         >
           {t("backToDiscover")}
         </Link>
-      </div>
+      </div>,
     );
   }
 
@@ -202,12 +221,9 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
     setVideos((prev) => prev.filter((v) => v.id !== videoId));
   }
 
-  return (
-    <div
-      data-profile-shell
-      className={`${APP_PROFILE_SHELL_CLASS} space-y-6 pb-8 lg:mx-auto lg:max-w-2xl`}
-    >
-      <header className="box-border min-w-0 max-w-full space-y-3 overflow-hidden">
+  return wrapInProfileShell(
+    <div className={profileInnerClass}>
+      <header className="box-border min-w-0 max-w-full space-y-3 overflow-x-clip">
         <div className="flex min-w-0 items-center gap-3">
           <ProfileAvatar
             name={displayName}
@@ -224,7 +240,7 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
         </div>
         {userId && profile.id === userId ? (
           <div
-            className="profile-actions box-border grid w-full max-w-full min-w-0 grid-cols-1 gap-3 overflow-hidden sm:grid-cols-2"
+            className="profile-actions box-border grid w-full max-w-full min-w-0 grid-cols-1 gap-3 overflow-x-clip max-sm:grid-cols-1 sm:grid-cols-2"
             data-profile-actions
           >
             <Link
@@ -272,7 +288,7 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
         <UploadFirstVideoBanner variant="profile" onLater={dismissUploadFirst} />
       ) : null}
 
-      <section className="min-w-0 max-w-full overflow-hidden" aria-label={t("videosSectionAria")}>
+      <section className="min-w-0 max-w-full overflow-x-clip" aria-label={t("videosSectionAria")}>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gn-text-tertiary">
           {t("videosHeading")}
         </h2>
@@ -304,7 +320,6 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
           />
         )}
       </section>
-
-    </div>
+    </div>,
   );
 }
