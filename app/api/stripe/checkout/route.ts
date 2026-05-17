@@ -14,6 +14,30 @@ function withLocalePrefix(pathname: string, locale: string) {
   return `/${locale}${safePath}`;
 }
 
+/** TEMP: remove after Stripe price/key mismatch is resolved. Never log full secret key. */
+function stripeSecretKeyDiagnostic(): { prefix: "sk_live" | "sk_test" | "missing" | "unknown"; last4: string } {
+  const key = process.env.STRIPE_SECRET_KEY?.trim() ?? "";
+  if (!key) return { prefix: "missing", last4: "none" };
+  if (key.startsWith("sk_live")) return { prefix: "sk_live", last4: key.slice(-4) };
+  if (key.startsWith("sk_test")) return { prefix: "sk_test", last4: key.slice(-4) };
+  return { prefix: "unknown", last4: key.slice(-4) };
+}
+
+/** TEMP: remove after Stripe price/key mismatch is resolved. */
+function logStripeCheckoutDiagnostics(plan: PaidSubscriptionPlan, priceId: string) {
+  const { prefix, last4 } = stripeSecretKeyDiagnostic();
+  console.warn("[stripe/checkout][TEMP DIAG]", {
+    selectedPlan: plan,
+    selectedPriceId: priceId,
+    stripeSecretKeyPrefix: prefix,
+    stripeSecretKeyLast4: last4,
+    STRIPE_PLAYER_PREMIUM_PRICE_ID: process.env.STRIPE_PLAYER_PREMIUM_PRICE_ID ?? "",
+    NEXT_PUBLIC_STRIPE_PLAYER_PREMIUM_PRICE_ID:
+      process.env.NEXT_PUBLIC_STRIPE_PLAYER_PREMIUM_PRICE_ID ?? "",
+    NODE_ENV: process.env.NODE_ENV ?? "",
+  });
+}
+
 export async function POST(request: Request) {
   try {
     const userId = await resolveAuthenticatedUserIdFromBearer(request.headers.get("authorization"));
@@ -70,6 +94,7 @@ export async function POST(request: Request) {
     const root = appUrlForRequest(request).replace(/\/$/, "");
     const successPath = withLocalePrefix("/payment/success", locale);
     const cancelPath = withLocalePrefix("/premium", locale);
+    logStripeCheckoutDiagnostics(plan, priceId);
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer: customerId,
