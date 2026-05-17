@@ -8,6 +8,7 @@ import { loadAndEnsureProfile } from "@/lib/supabase/profile";
 import { tryConsumePendingReferralWithRetry } from "@/lib/supabase/referrals";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { DeleteAccountSection } from "@/components/profile/DeleteAccountSection";
+import { APP_PROFILE_SHELL_CLASS } from "@/lib/layout/appShellClasses";
 import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
 import { ScoutOwnProfileView } from "@/components/profile/ScoutOwnProfileView";
 import type { Database } from "@/lib/supabase/client";
@@ -90,7 +91,7 @@ export function OwnProfileView() {
 
   if (scoutBundle) {
     return (
-      <div className="box-border w-full min-w-0 max-w-full overflow-x-hidden">
+      <div data-profile-shell className={APP_PROFILE_SHELL_CLASS}>
         {showSavedBanner ? (
           <div
             role="status"
@@ -115,7 +116,7 @@ export function OwnProfileView() {
   }
 
   return (
-    <div className="box-border w-full min-w-0 max-w-full overflow-x-hidden">
+    <div data-profile-shell className={APP_PROFILE_SHELL_CLASS}>
       {showSavedBanner ? (
         <div
           role="status"

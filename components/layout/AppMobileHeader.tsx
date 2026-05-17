@@ -10,6 +10,10 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { navItemActive } from "@/lib/navigation/navItemActive";
 import { NavIcon } from "@/components/icons/NavIcons";
+import {
+  APP_MOBILE_HEADER_CLASS,
+  APP_MOBILE_HEADER_INNER_CLASS,
+} from "@/lib/layout/appShellClasses";
 
 /**
  * Fixed top bar on small screens: brand + compact actions (admin, benefits, account menu).
@@ -25,11 +29,9 @@ export function AppMobileHeader() {
   const adminActive = navItemActive(pathname, "/admin");
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[55] w-full max-w-full shrink-0 border-b border-gn-border-subtle bg-gn-bg/95 pt-[env(safe-area-inset-top,0px)] shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:hidden">
-      <div className="mx-auto flex h-14 w-full min-w-0 max-w-full items-center gap-1 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:gap-2 sm:pl-[max(1.5rem,env(safe-area-inset-left,0px))] sm:pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
-        <div className="flex min-w-0 flex-1 items-center overflow-hidden">
-          <Logo href="/home" variant="header" className="min-w-0 max-w-full" />
-        </div>
+    <header data-app-mobile-header className={APP_MOBILE_HEADER_CLASS}>
+      <div className={APP_MOBILE_HEADER_INNER_CLASS}>
+        <Logo href="/home" variant="header" className="shrink-0" />
 
         <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
           {authed && user && adminLoaded && isAdmin ? (

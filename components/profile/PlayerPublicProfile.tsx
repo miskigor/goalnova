@@ -23,6 +23,7 @@ import { ProfileUploadLink } from "@/components/profile/ProfileUploadLink";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
 import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
+import { APP_PROFILE_SHELL_CLASS } from "@/lib/layout/appShellClasses";
 
 function Spinner({ className = "h-5 w-5" }: { className?: string }) {
   return (
@@ -134,7 +135,7 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
 
   if (loadError) {
     return (
-      <div className="mx-auto w-full min-w-0 max-w-lg space-y-4 px-1">
+      <div className="mx-auto w-full min-w-0 max-w-full space-y-4">
         <p role="alert" className="break-words text-sm text-red-300/90">
           {t("loadFailed")} {loadError}
         </p>
@@ -202,7 +203,10 @@ export function PlayerPublicProfile({ playerSlug }: Props) {
   }
 
   return (
-    <div className="box-border mx-auto w-full min-w-0 max-w-full space-y-6 overflow-x-hidden pb-8 lg:max-w-2xl">
+    <div
+      data-profile-shell
+      className={`${APP_PROFILE_SHELL_CLASS} space-y-6 pb-8 lg:mx-auto lg:max-w-2xl`}
+    >
       <header className="box-border min-w-0 max-w-full space-y-3 overflow-hidden">
         <div className="flex min-w-0 items-center gap-3">
           <ProfileAvatar

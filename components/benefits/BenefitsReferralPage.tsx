@@ -154,7 +154,7 @@ export function BenefitsReferralPage() {
   }
 
   return (
-    <div className="min-w-0 max-w-full space-y-8 pb-4 sm:space-y-10">
+    <div className="mx-auto min-w-0 w-full max-w-full space-y-8 pb-4 sm:space-y-10">
       <header>
         <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">{t("benefitsTitle")}</h1>
       </header>

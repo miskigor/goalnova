@@ -7,6 +7,7 @@ import { NavIcon } from "@/components/icons/NavIcons";
 import { APP_SHELL_MOBILE_BOTTOM_NAV } from "@/lib/constants/navigation";
 import { navItemActive } from "@/lib/navigation/navItemActive";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
+import { APP_MOBILE_BOTTOM_NAV_CLASS } from "@/lib/layout/appShellClasses";
 
 function bottomItemClass(pathname: string, href: string) {
   const active = navItemActive(pathname, href);
@@ -37,7 +38,8 @@ export function AppMobileBottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-[60] flex min-w-0 w-full overflow-x-clip border-t border-gn-border-subtle bg-gn-bg/95 pb-[max(0.5rem,env(safe-area-inset-bottom))] pl-[max(0px,env(safe-area-inset-left,0px))] pr-[max(0px,env(safe-area-inset-right,0px))] pt-1 shadow-[0_-8px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:hidden"
+      data-app-bottom-nav
+      className={APP_MOBILE_BOTTOM_NAV_CLASS}
       aria-label={tNav("primary")}
     >
       {items.map((item) => (

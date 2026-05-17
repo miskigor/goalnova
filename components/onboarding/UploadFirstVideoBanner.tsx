@@ -25,7 +25,7 @@ export function UploadFirstVideoBanner({ variant = "profile", onLater }: Props) 
       role="region"
       aria-labelledby="upload-first-video-title"
       className={[
-        "box-border w-full max-w-full min-w-0 overflow-hidden rounded-2xl border border-gn-accent/35",
+        "mx-auto box-border w-full max-w-full min-w-0 overflow-hidden rounded-2xl border border-gn-accent/35",
         "bg-gradient-to-br from-gn-accent/12 via-gn-surface/40 to-gn-surface/20",
         isCompact ? "p-4 shadow-[0_8px_32px_-16px_rgba(249,115,22,0.35)]" : "p-4 shadow-[0_12px_40px_-16px_rgba(249,115,22,0.35)] sm:p-5",
       ].join(" ")}
