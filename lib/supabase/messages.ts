@@ -607,13 +607,13 @@ export async function fetchConversationMessages(
     (data ?? []) as unknown as MessageRow[],
     "fetchConversationMessages",
   );
-  console.log("[messages] fetchConversationMessages rows", {
+  devLog("[messages] fetchConversationMessages rows", {
     currentUserId,
     chatPartnerId: otherUserId,
     fetchedRowsCount: rows.length,
   });
   for (const row of rows) {
-    console.log("[messages] fetchConversationMessages row", {
+    devLog("[messages] fetchConversationMessages row", {
       currentUserId,
       chatPartnerId: otherUserId,
       id: row.id,

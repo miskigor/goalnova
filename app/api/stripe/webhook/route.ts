@@ -110,7 +110,9 @@ export async function POST(request: Request) {
   }
 
   try {
-    console.info("[stripe webhook] event received", { eventType: event.type });
+    if (process.env.NODE_ENV === "development") {
+      console.info("[stripe webhook] event received", { eventType: event.type });
+    }
 
     switch (event.type) {
       case "checkout.session.completed": {
@@ -122,13 +124,15 @@ export async function POST(request: Request) {
         const plan = planFromMetadata(session.metadata?.plan);
         const table = profileTableForPlan(plan);
 
-        console.info("[stripe webhook] checkout.session.completed", {
-          eventType: event.type,
-          user_id: userId || null,
-          plan,
-          customer_id: customerId,
-          subscription_id: subscriptionId,
-        });
+        if (process.env.NODE_ENV === "development") {
+          console.info("[stripe webhook] checkout.session.completed", {
+            eventType: event.type,
+            user_id: userId || null,
+            plan,
+            customer_id: customerId,
+            subscription_id: subscriptionId,
+          });
+        }
 
         if (customerId && userId && table && isPaidSubscriptionPlan(plan)) {
           const sub = subscriptionId
@@ -158,13 +162,15 @@ export async function POST(request: Request) {
         const userId = metadataUserId || (await resolveUserIdByCustomerId(sb, customerId));
         const basePlan = planFromMetadata(sub.metadata?.plan);
         const table = profileTableForPlan(basePlan);
-        console.info("[stripe webhook] subscription event", {
-          eventType: event.type,
-          user_id: userId || null,
-          plan: basePlan,
-          customer_id: customerId || null,
-          subscription_id: sub.id,
-        });
+        if (process.env.NODE_ENV === "development") {
+          console.info("[stripe webhook] subscription event", {
+            eventType: event.type,
+            user_id: userId || null,
+            plan: basePlan,
+            customer_id: customerId || null,
+            subscription_id: sub.id,
+          });
+        }
         if (!userId) break;
         if (!table && event.type !== "customer.subscription.deleted") break;
 
@@ -209,16 +215,18 @@ export async function POST(request: Request) {
         const userId = customerId
           ? await resolveUserIdByCustomerId(sb, customerId)
           : null;
-        console.info("[stripe webhook] invoice event", {
-          eventType: event.type,
-          user_id: userId || null,
-          plan: null,
-          customer_id: customerId || null,
-          subscription_id:
-            typeof (invoice as { subscription?: unknown }).subscription === "string"
-              ? ((invoice as { subscription?: string }).subscription ?? null)
-              : null,
-        });
+        if (process.env.NODE_ENV === "development") {
+          console.info("[stripe webhook] invoice event", {
+            eventType: event.type,
+            user_id: userId || null,
+            plan: null,
+            customer_id: customerId || null,
+            subscription_id:
+              typeof (invoice as { subscription?: unknown }).subscription === "string"
+                ? ((invoice as { subscription?: string }).subscription ?? null)
+                : null,
+          });
+        }
         if (!userId) break;
 
         if (event.type === "invoice.payment_failed") {

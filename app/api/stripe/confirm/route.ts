@@ -141,14 +141,16 @@ export async function POST(request: Request) {
     });
   }
 
-  console.info("[stripe confirm] subscription confirmed", {
-    user_id: userId,
-    plan,
-    table,
-    status: normalizedStatus,
-    customer_id: customerId || null,
-    subscription_id: subscriptionId || null,
-  });
+  if (process.env.NODE_ENV === "development") {
+    console.info("[stripe confirm] subscription confirmed", {
+      user_id: userId,
+      plan,
+      table,
+      status: normalizedStatus,
+      customer_id: customerId || null,
+      subscription_id: subscriptionId || null,
+    });
+  }
 
   return Response.json({ ok: true, plan, status: normalizedStatus });
 }

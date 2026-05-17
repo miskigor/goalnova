@@ -21,6 +21,7 @@ import {
   rpcAdminSetSuspended,
   rpcAdminCreateTicketForUser,
 } from "@/lib/supabase/adminSystem";
+import { devLog } from "@/lib/devLog";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 import {
   handleProfileFieldPaste,
@@ -210,12 +211,12 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
       return;
     }
     const u = detail.user;
-    console.log("ADMIN USER DETAIL PROFILE SOURCE", {
+    devLog("ADMIN USER DETAIL PROFILE SOURCE", {
       userId,
       sourceTable: detail.player_profile_source ?? "unknown",
       playerProfileRowExists: Boolean(detail.player_profile_exists),
     });
-    console.log("ADMIN USER DETAIL PAYLOAD", detail);
+    devLog("ADMIN USER DETAIL PAYLOAD", detail);
     setUser(u);
     setPlayer(detail.player_profile);
     setScout(detail.scout_profile);
@@ -261,7 +262,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
           preferred_foot: pp?.preferred_foot ?? userFallback.preferred_foot ?? null,
         };
       }
-      console.log("ADMIN USER DETAIL FALLBACK PROFILE FETCH", {
+      devLog("ADMIN USER DETAIL FALLBACK PROFILE FETCH", {
         userId,
         hadRpcProfile: Boolean(detail.player_profile),
         hadDirectPlayerProfile: Boolean(ppDirect),

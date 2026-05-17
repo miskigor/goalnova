@@ -12,6 +12,7 @@ import {
   rpcAdminSetSuspended,
   type AdminUserListRow,
 } from "@/lib/supabase/adminSystem";
+import { devLog } from "@/lib/devLog";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 
 export function AdminUsersPage() {
@@ -91,7 +92,7 @@ export function AdminUsersPage() {
       alert(e ?? tc("failed"));
       return;
     }
-    console.log("ADMIN SOFT DELETE CLICK", {
+    devLog("ADMIN SOFT DELETE CLICK", {
       userId: row.id,
       p_deleted: nextDeleted,
       columnUsed: "is_deleted",

@@ -11,7 +11,9 @@ const MISSING_MESSAGE = "MISSING_MESSAGE";
 const nextIntlErrorHandling = {
   onError(error: { code?: string; message?: string }) {
     if (error.code === MISSING_MESSAGE) {
-      console.warn("[next-intl]", error.message);
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[next-intl]", error.message);
+      }
       return;
     }
     console.error(error);

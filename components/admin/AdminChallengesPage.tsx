@@ -8,6 +8,7 @@ import type { Database } from "@/lib/supabase/client";
 import { supabase } from "@/lib/supabase/client";
 import { slugifyChallengeTitle } from "@/lib/challenges/challengeRowUtils";
 import { isLooseUuid } from "@/lib/uuid";
+import { devLog } from "@/lib/devLog";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
   fetchManualWinnerRows,
@@ -182,7 +183,7 @@ export function AdminChallengesPage({ defaultMode = "idle" }: AdminChallengesPag
 
   const cancelForm = useCallback(() => {
     if (mode === "create") {
-      console.log("challenge form cancel", { navigateTo: "/admin/challenges" });
+      devLog("challenge form cancel", { navigateTo: "/admin/challenges" });
       router.push("/admin/challenges");
       return;
     }
@@ -386,7 +387,7 @@ export function AdminChallengesPage({ defaultMode = "idle" }: AdminChallengesPag
       }
       setFormSuccess(t("createSuccess"));
       await loadList();
-      console.log("challenge created; navigating to list", { route: "/admin/challenges" });
+      devLog("challenge created; navigating to list", { route: "/admin/challenges" });
       router.replace("/admin/challenges");
       return;
     }
@@ -612,7 +613,7 @@ export function AdminChallengesPage({ defaultMode = "idle" }: AdminChallengesPag
           href="/admin/challenges/new"
           className="inline-flex items-center justify-center rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-black hover:bg-orange-400"
           onClick={() => {
-            console.log("new challenge clicked", {
+            devLog("new challenge clicked", {
               targetRoute: "/admin/challenges/new",
             });
           }}
@@ -1046,7 +1047,7 @@ export function AdminChallengesPage({ defaultMode = "idle" }: AdminChallengesPag
                   type="button"
                   disabled={formLoading}
                   onClick={() => {
-                    console.log("challenge form cancel click", { mode });
+                    devLog("challenge form cancel click", { mode });
                     cancelForm();
                   }}
                   className="rounded-lg border border-white/20 px-4 py-2 text-sm text-zinc-300 hover:bg-white/5"

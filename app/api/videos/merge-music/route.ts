@@ -51,8 +51,8 @@ function mergeDebugEnabled(): boolean {
   );
 }
 
-/** TEMP: always log merge diagnostics (remove when stable). */
 function logMergeTempDebug(payload: Record<string, unknown>) {
+  if (!mergeDebugEnabled()) return;
   console.info("[merge-music TEMP DEBUG]", payload);
 }
 
@@ -129,7 +129,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  console.info("[merge-music] POST received");
+  if (mergeDebugEnabled()) {
+    console.info("[merge-music] POST received");
+  }
 
   let source_video_url: string | null = null;
   let selected_music_track_id: string | null = null;
@@ -389,7 +391,9 @@ export async function POST(req: Request) {
       final_response_payload,
     });
 
-    console.info("[merge-music] SUCCESS", { processed_video_url: finalPublicUrl });
+    if (mergeDebugEnabled()) {
+      console.info("[merge-music] SUCCESS", { processed_video_url: finalPublicUrl });
+    }
 
     return mergeHttpResponse(success, 200);
   } catch (e) {

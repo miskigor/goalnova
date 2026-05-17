@@ -5,6 +5,7 @@ import {
 } from "@/lib/profileFieldSanitize";
 import { supabase } from "@/lib/supabase/client";
 import type { Database, Json } from "@/lib/supabase/database.types";
+import { devLog, devWarn } from "@/lib/devLog";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 
 export type AdminUserListRow =
@@ -154,7 +155,7 @@ export async function rpcAdminSetDeleted(
         .update({ is_deleted: deleted })
         .eq("id", userId);
       if (!fallback.error) {
-        console.warn(
+        devWarn(
           "[admin] goalnova_admin_set_deleted missing; used users.is_deleted fallback",
           { userId, deleted },
         );
@@ -170,7 +171,7 @@ export async function rpcAdminSetDeleted(
     logFullSupabaseError("[admin] goalnova_admin_set_deleted", error);
     return { ok: false, error: error.message };
   }
-  console.log("ADMIN SOFT DELETE RESULT", {
+  devLog("ADMIN SOFT DELETE RESULT", {
     userId,
     p_deleted: deleted,
     payload: data ?? null,
@@ -199,7 +200,7 @@ export async function rpcAdminSendUserNotice(args: {
     });
     return { ok: false, error: error.message };
   }
-  console.log("ADMIN USER NOTICE SENT", {
+  devLog("ADMIN USER NOTICE SENT", {
     userId: args.userId,
     noticeType: args.noticeType,
     payload: data ?? null,
@@ -421,7 +422,7 @@ export async function rpcAdminListSupportTicketMessages(
         );
         return { rows: [], error: fallback.error.message };
       }
-      console.warn(
+      devWarn(
         "[admin] goalnova_admin_list_support_ticket_messages missing; using table fallback",
         { ticketId },
       );
@@ -491,7 +492,7 @@ export async function rpcAdminReplySupportTicket(args: {
         );
       }
 
-      console.warn(
+      devWarn(
         "[admin] goalnova_admin_reply_support_ticket missing; using table fallback",
         { ticketId: args.ticketId },
       );

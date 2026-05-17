@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
 import { supabase } from "@/lib/supabase/client";
+import { devLog } from "@/lib/devLog";
 import {
   extractPostgrestErrorFields,
   isLikelyTransientNetworkFailure,
@@ -38,7 +39,7 @@ function logUnreadFetchFailed(
   // Avoid noisy repeated console spam from polls/realtime retries.
   if (now - lastUnreadFetchFailureLogAt < 15000) return;
   lastUnreadFetchFailureLogAt = now;
-  console.log("UNREAD FETCH FAILED", {
+  devLog("UNREAD FETCH FAILED", {
     userId,
     error: extractPostgrestErrorFields(error),
     ...meta,
@@ -420,7 +421,7 @@ export async function fetchUnreadNotificationCount(
 ): Promise<{ count: number; error: PostgrestErrorFields | null }> {
   const currentUserId = userId.trim();
   if (!currentUserId) {
-    console.log("UNREAD COUNT", { currentUserId, count: 0 });
+    devLog("UNREAD COUNT", { currentUserId, count: 0 });
     return { count: 0, error: null };
   }
   const { count, error } = await client
@@ -436,7 +437,7 @@ export async function fetchUnreadNotificationCount(
     return { count: 0, error: extractPostgrestErrorFields(error) };
   }
   const unread = count ?? 0;
-  console.log("UNREAD COUNT", { currentUserId, count: unread });
+  devLog("UNREAD COUNT", { currentUserId, count: unread });
   return { count: unread, error: null };
 }
 
@@ -651,7 +652,7 @@ export async function markNotificationRead(
   userId: string,
   notificationId: string,
 ): Promise<{ ok: true } | { ok: false; error: PostgrestErrorFields }> {
-  console.log("MARK NOTIFICATION READ", {
+  devLog("MARK NOTIFICATION READ", {
     notificationId,
     currentUserId: userId,
   });
@@ -662,7 +663,7 @@ export async function markNotificationRead(
     .eq("user_id", userId)
     .select("id");
 
-  console.log("MARK NOTIFICATION READ RESULT", {
+  devLog("MARK NOTIFICATION READ RESULT", {
     notificationId,
     currentUserId: userId,
     data,
@@ -677,7 +678,7 @@ export async function markNotificationRead(
     return { ok: false, error: extractPostgrestErrorFields(error) };
   }
   const unreadAfter = await fetchUnreadNotificationCount(client, userId);
-  console.log("UNREAD COUNT AFTER MARK READ", {
+  devLog("UNREAD COUNT AFTER MARK READ", {
     currentUserId: userId,
     notificationId,
     unreadCount: unreadAfter.count,
@@ -718,7 +719,7 @@ export async function markThreadMessageNotificationsRead(
   const other = otherUserId.trim();
   if (!uid || !other) return { ok: true };
 
-  console.log("MARK THREAD NOTIFICATIONS READ", {
+  devLog("MARK THREAD NOTIFICATIONS READ", {
     currentUserId: uid,
     otherUserId: other,
   });
@@ -746,7 +747,7 @@ export async function markThreadMessageNotificationsRead(
   ];
   const error = messageRes.error ?? adminNoticeRes.error;
 
-  console.log("MARK THREAD NOTIFICATIONS READ RESULT", {
+  devLog("MARK THREAD NOTIFICATIONS READ RESULT", {
     currentUserId: uid,
     otherUserId: other,
     messageMarked: (messageRes.data ?? []).length,
@@ -763,7 +764,7 @@ export async function markThreadMessageNotificationsRead(
     return { ok: false, error: extractPostgrestErrorFields(error) };
   }
   const unreadAfter = await fetchUnreadNotificationCount(client, uid);
-  console.log("UNREAD COUNT AFTER THREAD MARK READ", {
+  devLog("UNREAD COUNT AFTER THREAD MARK READ", {
     currentUserId: uid,
     otherUserId: other,
     unreadCount: unreadAfter.count,
@@ -777,14 +778,14 @@ async function deleteNotificationViaTable(
   userId: string,
   notificationId: string,
 ): Promise<{ ok: true } | { ok: false; error: PostgrestErrorFields }> {
-  console.log("DELETE NOTIFICATION", { notificationId, currentUserId: userId });
+  devLog("DELETE NOTIFICATION", { notificationId, currentUserId: userId });
   const { data, error } = await client
     .from("notifications")
     .delete()
     .eq("id", notificationId)
     .eq("user_id", userId);
 
-  console.log("DELETE RESULT", { data, error });
+  devLog("DELETE RESULT", { data, error });
 
   if (error) {
     const fields = extractPostgrestErrorFields(error);
@@ -831,14 +832,14 @@ export async function deleteReadNotificationsForUser(
   client: SupabaseClient<Database>,
   userId: string,
 ): Promise<{ ok: true } | { ok: false; error: PostgrestErrorFields }> {
-  console.log("DELETE READ NOTIFICATIONS", { currentUserId: userId });
+  devLog("DELETE READ NOTIFICATIONS", { currentUserId: userId });
   const { data, error } = await client
     .from("notifications")
     .delete()
     .eq("user_id", userId)
     .eq("is_read", true);
 
-  console.log("DELETE RESULT", { data, error });
+  devLog("DELETE RESULT", { data, error });
 
   if (error) {
     const fields = extractPostgrestErrorFields(error);
@@ -861,10 +862,10 @@ export async function deleteAllNotificationsForUser(
   client: SupabaseClient<Database>,
   userId: string,
 ): Promise<{ ok: true } | { ok: false; error: PostgrestErrorFields }> {
-  console.log("DELETE ALL NOTIFICATIONS", { currentUserId: userId });
+  devLog("DELETE ALL NOTIFICATIONS", { currentUserId: userId });
   const { data, error } = await client.from("notifications").delete().eq("user_id", userId);
 
-  console.log("DELETE RESULT", { data, error });
+  devLog("DELETE RESULT", { data, error });
 
   if (error) {
     const fields = extractPostgrestErrorFields(error);

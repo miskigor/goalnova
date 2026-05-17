@@ -668,9 +668,10 @@ export function UploadForm() {
           setUploadPhase("processing_merge");
           if (isPublishWithMusicBlocked()) {
             mergeFailed = true;
-            console.info(
-              "[PitchRusch upload] publish-with-music blocked (temp gate or NEXT_PUBLIC_DISABLE_MUSIC_MERGE_PUBLISH; allow via NEXT_PUBLIC_ALLOW_PUBLISH_WITH_MUSIC=true)",
-            );
+            tempDebugMergeUpload("publish-with-music blocked", {
+              reason:
+                "temp gate or NEXT_PUBLIC_DISABLE_MUSIC_MERGE_PUBLISH; allow via NEXT_PUBLIC_ALLOW_PUBLISH_WITH_MUSIC=true",
+            });
           } else {
             const { data: sess } = await supabase.auth.getSession();
             const accessToken = sess.session?.access_token;
@@ -741,7 +742,7 @@ export function UploadForm() {
                   { httpStatus: mergeRes.status, mergeEndpoint, rawLength: rawBody.length },
                 );
               }
-              console.info("[PitchRusch upload] merge API full response", {
+              tempDebugMergeUpload("merge API full response", {
                 httpStatus: mergeRes.status,
                 fetchOk: mergeRes.ok,
                 mergeApiHeader,
@@ -791,7 +792,7 @@ export function UploadForm() {
                 storeStart = applied?.musicStartSeconds ?? musicStartSec;
                 storeEnd = applied?.musicEndSeconds ?? musicEndSec;
                 storeVol = applied?.musicVolume ?? musicVolume;
-                console.info("[PitchRusch upload] merge accepted merged video", {
+                tempDebugMergeUpload("merge accepted merged video", {
                   processed_video_url: processedVideoUrl,
                 });
               } else {
@@ -856,7 +857,7 @@ export function UploadForm() {
         }
 
         if (hasProcessedMergedVideo) {
-          console.info("[PitchRusch upload] merge succeeded — will persist processed_video_url", {
+          tempDebugMergeUpload("merge succeeded — will persist processed_video_url", {
             video_url: publishUrl,
             processed_video_url: processedVideoUrl,
             source_video_url: sourceUrl,

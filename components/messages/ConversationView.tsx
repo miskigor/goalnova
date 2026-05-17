@@ -23,7 +23,7 @@ import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { useNotificationsInboxOptional } from "@/components/notifications/NotificationsInboxContext";
 import { markThreadMessageNotificationsRead } from "@/lib/supabase/notifications";
 import { useAppFeedback } from "@/components/feedback/FeedbackProvider";
-import { devLog } from "@/lib/devLog";
+import { devLog, devTable, devWarn } from "@/lib/devLog";
 import { generateClientId, isLooseUuid } from "@/lib/uuid";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { VerifiedScoutBadge } from "@/components/scout/VerifiedScoutBadge";
@@ -197,8 +197,8 @@ export function ConversationView({ otherUserId }: Props) {
             setOtherName(teamLabel);
           }
         }
-        console.log("FETCH ROWS BEFORE FILTER", data);
-        console.table(
+        devLog("FETCH ROWS BEFORE FILTER", data);
+        devTable(
           (data ?? []).map((row) => ({
             id: row.id,
             sender_id: row.sender_id,
@@ -208,15 +208,15 @@ export function ConversationView({ otherUserId }: Props) {
             deleted_for_recipient: row.deleted_for_recipient,
           })),
         );
-        console.log("FETCH ROWS BEFORE FILTER", {
+        devLog("FETCH ROWS BEFORE FILTER", {
           currentUserId: me,
           chatPartnerId: otherUserId,
           count: rows.length,
         });
-        console.table(rows.map((row) => toMessageDebugRow(row, me)));
+        devTable(rows.map((row) => toMessageDebugRow(row, me)));
         const visible = rows.filter((message) => {
           const insertedIntoUI = isMessageVisibleForUser(message, me);
-          console.log("CHAT SOURCE", {
+          devLog("CHAT SOURCE", {
             source: "initial fetch",
             messageId: message.id,
             sender_id: message.sender_id,
@@ -227,13 +227,13 @@ export function ConversationView({ otherUserId }: Props) {
           });
           return insertedIntoUI;
         });
-        console.log("FETCH ROWS AFTER FILTER", {
+        devLog("FETCH ROWS AFTER FILTER", {
           currentUserId: me,
           chatPartnerId: otherUserId,
           count: visible.length,
         });
-        console.log("FETCH ROWS AFTER FILTER", visible);
-        console.table(
+        devLog("FETCH ROWS AFTER FILTER", visible);
+        devTable(
           visible.map((row) => ({
             id: row.id,
             sender_id: row.sender_id ?? (row as { senderId?: string }).senderId,
@@ -248,7 +248,7 @@ export function ConversationView({ otherUserId }: Props) {
               (row as { deletedForRecipient?: boolean }).deletedForRecipient,
           })),
         );
-        console.table(visible.map((row) => toMessageDebugRow(row, me)));
+        devTable(visible.map((row) => toMessageDebugRow(row, me)));
         setMessages(visible);
       }
     } catch (e) {
@@ -318,8 +318,8 @@ export function ConversationView({ otherUserId }: Props) {
       } else {
         setMessages((prev) => {
           const pending = prev.filter((m) => m.pending);
-          console.log("FETCH ROWS BEFORE FILTER", data);
-          console.table(
+          devLog("FETCH ROWS BEFORE FILTER", data);
+          devTable(
             (data ?? []).map((row) => ({
               id: row.id,
               sender_id: row.sender_id,
@@ -329,15 +329,15 @@ export function ConversationView({ otherUserId }: Props) {
               deleted_for_recipient: row.deleted_for_recipient,
             })),
           );
-          console.log("FETCH ROWS BEFORE FILTER", {
+          devLog("FETCH ROWS BEFORE FILTER", {
             currentUserId,
             chatPartnerId: otherUserId,
             count: rows.length,
           });
-          console.table(rows.map((row) => toMessageDebugRow(row, currentUserId)));
+          devTable(rows.map((row) => toMessageDebugRow(row, currentUserId)));
           const live = rows.filter((message) => {
             const insertedIntoUI = isMessageVisibleForUser(message, currentUserId);
-            console.log("CHAT SOURCE", {
+            devLog("CHAT SOURCE", {
               source: "refresh",
               messageId: message.id,
               sender_id: message.sender_id,
@@ -348,13 +348,13 @@ export function ConversationView({ otherUserId }: Props) {
             });
             return insertedIntoUI;
           });
-          console.log("FETCH ROWS AFTER FILTER", {
+          devLog("FETCH ROWS AFTER FILTER", {
             currentUserId,
             chatPartnerId: otherUserId,
             count: live.length,
           });
-          console.log("FETCH ROWS AFTER FILTER", live);
-          console.table(
+          devLog("FETCH ROWS AFTER FILTER", live);
+          devTable(
             live.map((row) => ({
               id: row.id,
               sender_id: row.sender_id ?? (row as { senderId?: string }).senderId,
@@ -369,7 +369,7 @@ export function ConversationView({ otherUserId }: Props) {
                 (row as { deletedForRecipient?: boolean }).deletedForRecipient,
             })),
           );
-          console.table(live.map((row) => toMessageDebugRow(row, currentUserId)));
+          devTable(live.map((row) => toMessageDebugRow(row, currentUserId)));
           return [...live, ...pending].sort(byCreatedAt);
         });
       }
@@ -403,8 +403,8 @@ export function ConversationView({ otherUserId }: Props) {
           table: "messages",
         },
         (payload) => {
-          console.log("REALTIME MESSAGE RECEIVED", payload.new);
-          console.table([
+          devLog("REALTIME MESSAGE RECEIVED", payload.new);
+          devTable([
             {
               id: (payload.new as { id?: unknown } | null)?.id,
               sender_id: (payload.new as { sender_id?: unknown } | null)?.sender_id,
@@ -423,7 +423,7 @@ export function ConversationView({ otherUserId }: Props) {
           if (!row) return;
           if (!isMessageInConversation(row, me, them)) return;
           const incoming = row;
-          console.log("REALTIME MESSAGE RECEIVED", {
+          devLog("REALTIME MESSAGE RECEIVED", {
             source: "realtime INSERT",
             messageId: incoming.id,
             sender_id: incoming.sender_id,
@@ -431,9 +431,9 @@ export function ConversationView({ otherUserId }: Props) {
             deleted_for_sender: incoming.deleted_for_sender,
             deleted_for_recipient: incoming.deleted_for_recipient,
           });
-          console.table([toMessageDebugRow(incoming, me)]);
+          devTable([toMessageDebugRow(incoming, me)]);
           const insertedIntoUI = isMessageVisibleForUser(incoming, me);
-          console.log("CHAT SOURCE", {
+          devLog("CHAT SOURCE", {
             source: "realtime",
             messageId: incoming.id,
             sender_id: incoming.sender_id,
@@ -443,7 +443,7 @@ export function ConversationView({ otherUserId }: Props) {
             insertedIntoUI,
           });
           if (!insertedIntoUI) {
-            console.log("REALTIME MESSAGE FILTERED OUT", { messageId: incoming.id });
+            devLog("REALTIME MESSAGE FILTERED OUT", { messageId: incoming.id });
             setMessages((prev) => prev.filter((m) => m.id !== incoming.id));
             return;
           }
@@ -458,8 +458,8 @@ export function ConversationView({ otherUserId }: Props) {
           table: "messages",
         },
         (payload) => {
-          console.log("REALTIME MESSAGE RECEIVED", payload.new);
-          console.table([
+          devLog("REALTIME MESSAGE RECEIVED", payload.new);
+          devTable([
             {
               id: (payload.new as { id?: unknown } | null)?.id,
               sender_id: (payload.new as { sender_id?: unknown } | null)?.sender_id,
@@ -478,7 +478,7 @@ export function ConversationView({ otherUserId }: Props) {
           if (!row) return;
           if (!isMessageInConversation(row, me, them)) return;
           const incoming = row;
-          console.log("REALTIME MESSAGE RECEIVED", {
+          devLog("REALTIME MESSAGE RECEIVED", {
             source: "realtime UPDATE",
             messageId: incoming.id,
             sender_id: incoming.sender_id,
@@ -486,9 +486,9 @@ export function ConversationView({ otherUserId }: Props) {
             deleted_for_sender: incoming.deleted_for_sender,
             deleted_for_recipient: incoming.deleted_for_recipient,
           });
-          console.table([toMessageDebugRow(incoming, me)]);
+          devTable([toMessageDebugRow(incoming, me)]);
           const insertedIntoUI = isMessageVisibleForUser(incoming, me);
-          console.log("CHAT SOURCE", {
+          devLog("CHAT SOURCE", {
             source: "realtime",
             messageId: incoming.id,
             sender_id: incoming.sender_id,
@@ -499,7 +499,7 @@ export function ConversationView({ otherUserId }: Props) {
           });
           setMessages((prev) => {
             if (!insertedIntoUI) {
-              console.log("REALTIME MESSAGE FILTERED OUT", { messageId: incoming.id });
+              devLog("REALTIME MESSAGE FILTERED OUT", { messageId: incoming.id });
               return prev.filter((m) => m.id !== incoming.id);
             }
             const next = prev.some((m) => m.id === incoming.id)
@@ -518,7 +518,7 @@ export function ConversationView({ otherUserId }: Props) {
         if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
           // Realtime can transiently fail on flaky networks or tab wake-ups.
           // Keep UI on polling/manual refresh without noisy hard console errors.
-          console.warn("[messages] realtime subscribe transient issue", {
+          devWarn("[messages] realtime subscribe transient issue", {
             status,
             me,
             them,
@@ -642,19 +642,19 @@ export function ConversationView({ otherUserId }: Props) {
     if (m.id.startsWith("pending:")) return;
 
     const messageId = m.id;
-    console.log("DELETE CLICK", {
+    devLog("DELETE CLICK", {
       messageId,
       currentUserId,
       message: m,
     });
-    console.log("DELETE SHAPE", {
+    devLog("DELETE SHAPE", {
       id: m?.id,
       sender_id: (m as Record<string, unknown>)?.sender_id,
       receiver_id: (m as Record<string, unknown>)?.receiver_id,
       senderId: (m as Record<string, unknown>)?.senderId,
       receiverId: (m as Record<string, unknown>)?.receiverId,
     });
-    console.log("DELETE CHECK", {
+    devLog("DELETE CHECK", {
       currentUserId,
       senderId: m.sender_id,
       receiverId: m.receiver_id,

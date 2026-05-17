@@ -1,3 +1,4 @@
+import { devLog } from "@/lib/devLog";
 import type { MessageRow } from "@/lib/supabase/messages";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
@@ -26,7 +27,7 @@ export async function deleteMessageForCurrentUser(
   const uid = currentUserId.trim();
   const messageId = message.id.trim();
 
-  console.log("DELETE START", {
+  devLog("DELETE START", {
     currentUserId: uid,
     messageId,
     sender_id: message.sender_id,
@@ -60,7 +61,7 @@ export async function deleteMessageForCurrentUser(
     throw new Error("Delete update returned no row.");
   }
 
-  console.log("DELETE UPDATED ROW", {
+  devLog("DELETE UPDATED ROW", {
     id: data.id,
     sender_id: data.sender_id,
     receiver_id: data.receiver_id,

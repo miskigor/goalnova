@@ -16,6 +16,7 @@ import {
   type ExploreFeedItem,
   type ExploreSort,
 } from "@/lib/supabase/exploreFeed";
+import { devLog } from "@/lib/devLog";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
   exploreTileHasVisualMedia,
@@ -144,7 +145,7 @@ function ExploreTileMedia({
           : renderKind === "NO_SRC"
             ? "(no source)"
             : "(load failed)";
-    console.log("[PitchRusch ExploreTile]", {
+    devLog("[PitchRusch ExploreTile]", {
       video_id: videoId,
       thumbnail_url: thumbRaw,
       poster_url: posterRaw,

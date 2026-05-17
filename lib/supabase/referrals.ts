@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
-import { devLog } from "@/lib/devLog";
+import { devLog, isDev } from "@/lib/devLog";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { PITCHRUSCH_PREMIUM_UPDATED_EVENT } from "@/lib/supabase/premium";
 
@@ -59,7 +59,7 @@ function rpcOk(row: Record<string, unknown> | null): boolean {
 }
 
 function persistLastReferralResult(payload: Record<string, unknown>) {
-  if (typeof window === "undefined") return;
+  if (!isDev || typeof window === "undefined") return;
   try {
     const merged = { ...payload, at: new Date().toISOString() };
     localStorage.setItem(PITCHRUSCH_LAST_REFERRAL_RESULT_KEY, JSON.stringify(merged));
