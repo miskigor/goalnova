@@ -5,6 +5,7 @@ import type { AbstractIntlMessages } from "next-intl";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { LocalePreferenceSync } from "@/components/i18n/LocalePreferenceSync";
 import { LocaleRouteFallback } from "@/components/loading/LocaleRouteFallback";
 import type { AppLocale } from "@/i18n/routing";
 import { RTL_LOCALES, routing } from "@/i18n/routing";
@@ -107,6 +108,7 @@ async function LocaleIntlProvider({
   }
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
+      <LocalePreferenceSync />
       {children}
     </NextIntlClientProvider>
   );

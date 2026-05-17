@@ -23,7 +23,7 @@ export const routing = defineRouting({
   locales: [...locales],
   defaultLocale: "en",
   localePrefix: "as-needed",
-  /** No `Accept-Language` / cookie guess — first visit uses English until the user picks a locale (URL prefix). */
+  /** Locale from URL + `pitchrusch_locale` cookie (see `proxy.ts`); first visit defaults to English. */
   localeDetection: false,
 });
 

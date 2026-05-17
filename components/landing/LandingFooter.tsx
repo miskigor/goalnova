@@ -1,5 +1,3 @@
-import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
-
 type Props = {
   footerText: string;
   termsHref: string;
@@ -28,9 +26,6 @@ export function LandingFooter({
   return (
     <footer className="border-t border-white/[0.06] px-4 py-8 sm:px-6">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4">
-        <div className="min-[400px]:hidden">
-          <LanguageSwitcher variant="landing" />
-        </div>
         <nav
           className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-medium text-gn-text-secondary sm:text-sm"
           aria-label={navAriaLabel}

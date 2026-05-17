@@ -1429,7 +1429,8 @@
     "accountMenu": "Account menu",
     "settingsIcon": "Postavke",
     "searchIcon": "Search players",
-    "changeLanguage": "Promijeni jezik"
+    "changeLanguage": "Promijeni jezik",
+    "closeLanguageMenu": "Zatvori izbornik jezika"
   },
   "language": {
     "en": "English",

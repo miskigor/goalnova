@@ -1429,7 +1429,8 @@
     "accountMenu": "Account menu",
     "settingsIcon": "Ajustes",
     "searchIcon": "Search players",
-    "changeLanguage": "Cambiar idioma"
+    "changeLanguage": "Cambiar idioma",
+    "closeLanguageMenu": "Cerrar menú de idioma"
   },
   "language": {
     "en": "English",
