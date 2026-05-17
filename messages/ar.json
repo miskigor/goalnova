@@ -14,7 +14,7 @@
     "messagesTitle": "Messages",
     "messagesConversationTitle": "{name}",
     "notificationsTitle": "Notifications",
-    "premiumPageTitle": "Upgrade to Premium",
+    "premiumPageTitle": "اختر خطة PitchRusch",
     "exploreTitle": "استكشاف",
     "searchTitle": "Search players",
     "challengeDetailTitle": "Challenge",
@@ -1099,7 +1099,7 @@
     "lockedInlineHint": "Premium feature — unlock to run AI on this clip.",
     "checkingPremium": "Checking access…",
     "premiumLockedBody": "Upgrade to run AI breakdowns on your highlights: speed, technique, decision-making, and more.",
-    "unlockFooterHint": "Billing and plans will appear here soon. For now, premium is enabled per account.",
+    "unlockFooterHint": "اختر خطة في صفحة Premium لفتح تحليل الذكاء الاصطناعي.",
     "loadingExisting": "Loading your analysis…",
     "loadingSavedAnalysis": "Loading saved analysis…",
     "loadingSubtle": "This usually takes just a moment.",
@@ -1321,14 +1321,14 @@
     "priceAmount": "$9.99",
     "pricePeriod": "/ month",
     "planName": "PitchRusch Premium — billed monthly (mock)",
-    "mockBillingNote": "Stripe checkout is not connected yet. This button only enables Premium on your account for testing.",
+    "mockBillingNote": "تُدار الاشتراكات بأمان عبر Stripe Checkout.",
     "headerUpgradeCta": "Upgrade",
     "profileYouArePremium": "You are Premium",
     "profileUpgradeCta": "Upgrade to Premium",
     "playerPremium": "Player Premium",
     "freePlayer": "لاعب مجاني",
     "upgradeToPlayerPremium": "الترقية إلى Player Premium",
-    "playerPremiumDescription": "احصل على ظهور أكبر، وارفع المزيد من الفيديوهات، وابرز أمام الكشافين.",
+    "playerPremiumDescription": "للاعبين الذين يريدون مزيدًا من الظهور وملفًا أقوى.",
     "moreVideoUploads": "تحميل فيديوهات أكثر",
     "priorityScoutVisibility": "أولوية الظهور للكشافين",
     "premiumBadge": "شارة Premium",
@@ -1411,15 +1411,17 @@
         "upgrading": "جارٍ الترقية…"
       },
       "contactMailSubject": "ترقية باقة النادي"
-    }
+    },
+    "scoutPro": "Scout Pro",
+    "scoutProDescription": "للكشافة الذين يريدون اكتشاف المواهب أسرع واستخدام أدوات بحث متقدمة.",
+    "upgradeToScoutPro": "الترقية إلى Scout Pro"
   },
   "settings": {
     "title": "الإعدادات",
     "subtitle": "التفضيلات وضبط الحساب.",
     "premiumTitle": "PitchRusch Premium",
-    "premiumBody": "Subscriptions and in-app upgrades are coming soon. AI Analysis and other premium tools use your account’s premium flag until then.",
-    "premiumBadgeActive": "Active on your account",
-    "premiumBadgeLocked": "Not active — contact support or wait for launch pricing",
+    "premiumBadgeActive": "خطة Premium الخاصة بك نشطة.",
+    "premiumBadgeLocked": "لا يوجد اشتراك نشط",
     "premiumChecking": "Checking…",
     "notifications": "الإشعارات",
     "support": "Support",
@@ -1427,7 +1429,9 @@
     "appearance": "المظهر",
     "soon": "قريبًا",
     "language": "اللغة",
-    "languageHint": "تُطبَّق على PitchRusch على هذا الجهاز."
+    "languageHint": "تُطبَّق على PitchRusch على هذا الجهاز.",
+    "premiumBodyUpgrade": "قم بترقية خطتك للحصول على مزيد من الظهور والأدوات المتقدمة.",
+    "premiumBodyActive": "خطة Premium الخاصة بك نشطة."
   },
   "a11y": {
     "accountMenu": "Account menu",
@@ -1866,8 +1870,8 @@
     "noResultsBody": "جرّب تعديل المرشحات أو البحث."
   },
   "billing": {
-    "title": "Pricing",
-    "subtitle": "Choose the subscription plan that fits your role.",
+    "title": "اختر خطة PitchRusch",
+    "subtitle": "طوّر مسيرتك في كرة القدم بمزيد من الظهور وأدوات أفضل ووصول متقدم للكشافة.",
     "freePrice": "0 EUR",
     "playerPremiumPrice": "4.99 EUR / month",
     "scoutProPrice": "9.99 EUR / month",
@@ -1887,11 +1891,12 @@
     },
     "playerPremium": {
       "title": "Player Premium",
-      "f1": "Up to 20 videos",
-      "f2": "Priority scout visibility",
-      "f3": "Premium badge",
-      "f4": "Featured video",
-      "f5": "Profile statistics"
+      "f1": "عزّز ظهور ملفك",
+      "f2": "فرص اللاعب المميز",
+      "f3": "افتح إحصائيات الملف المتقدمة",
+      "f4": "تميّز في التحديات واكتشاف المواهب",
+      "f5": "حتى 20 فيديو",
+      "description": "للاعبين الذين يريدون مزيدًا من الظهور وملفًا أقوى."
     },
     "freeScout": {
       "title": "Free Scout",
@@ -1901,11 +1906,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
-      "f1": "Unlimited profiles",
-      "f2": "Advanced search",
-      "f3": "Talent Map",
-      "f4": "Shortlists",
-      "f5": "Direct messaging"
+      "f1": "بحث متقدم عن اللاعبين",
+      "f2": "قائمة مختصرة للاعبين الواعدين",
+      "f3": "قارن ملفات المواهب",
+      "f4": "وفّر الوقت في إيجاد اللاعبين المناسبين",
+      "f5": "رسائل مباشرة",
+      "description": "للكشافة الذين يريدون اكتشاف المواهب أسرع واستخدام أدوات بحث متقدمة."
     },
     "club": {
       "title": "Club / Academy",
@@ -1914,7 +1920,9 @@
       "f3": "Shared shortlists",
       "f4": "Club dashboard",
       "f5": "PDF reports"
-    }
+    },
+    "upgradePlayerPremium": "الترقية إلى Player Premium",
+    "upgradeScoutPro": "الترقية إلى Scout Pro"
   },
   "payment": {
     "successTitle": "Payment successful",

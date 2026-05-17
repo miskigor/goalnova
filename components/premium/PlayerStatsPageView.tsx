@@ -45,7 +45,7 @@ export function PlayerStatsPageView() {
         <div className="space-y-3">
           <p className="text-sm text-gn-text-secondary">{t("playerStatisticsAvailableInPlayerPremium")}</p>
           <Link
-            href="/player/premium"
+            href="/premium"
             className="inline-flex rounded-xl bg-gn-accent px-4 py-2 font-semibold text-black"
           >
             {t("upgradeToPlayerPremium")}

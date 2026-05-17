@@ -14,7 +14,7 @@
     "messagesTitle": "Messages",
     "messagesConversationTitle": "{name}",
     "notificationsTitle": "Notifications",
-    "premiumPageTitle": "Upgrade to Premium",
+    "premiumPageTitle": "PitchRusch planını seç",
     "exploreTitle": "Explore",
     "searchTitle": "Search players",
     "challengeDetailTitle": "Challenge",
@@ -1099,7 +1099,7 @@
     "lockedInlineHint": "Premium feature — unlock to run AI on this clip.",
     "checkingPremium": "Checking access…",
     "premiumLockedBody": "Upgrade to run AI breakdowns on your highlights: speed, technique, decision-making, and more.",
-    "unlockFooterHint": "Billing and plans will appear here soon. For now, premium is enabled per account.",
+    "unlockFooterHint": "Yapay zeka analizini açmak için Premium sayfasından bir plan seç.",
     "loadingExisting": "Loading your analysis…",
     "loadingSavedAnalysis": "Loading saved analysis…",
     "loadingSubtle": "This usually takes just a moment.",
@@ -1321,14 +1321,14 @@
     "priceAmount": "$9.99",
     "pricePeriod": "/ month",
     "planName": "PitchRusch Premium — billed monthly (mock)",
-    "mockBillingNote": "Stripe checkout is not connected yet. This button only enables Premium on your account for testing.",
+    "mockBillingNote": "Abonelikler Stripe Checkout ile güvenle yönetilir.",
     "headerUpgradeCta": "Upgrade",
     "profileYouArePremium": "You are Premium",
     "profileUpgradeCta": "Upgrade to Premium",
     "playerPremium": "Player Premium",
     "freePlayer": "Free Player",
     "upgradeToPlayerPremium": "Upgrade to Player Premium",
-    "playerPremiumDescription": "Get more visibility, upload more videos, and stand out to scouts.",
+    "playerPremiumDescription": "Daha fazla görünürlük ve daha güçlü bir profil isteyen oyuncular için.",
     "moreVideoUploads": "More video uploads",
     "priorityScoutVisibility": "Priority scout visibility",
     "premiumBadge": "Premium badge",
@@ -1411,15 +1411,17 @@
         "upgrading": "Upgrading…"
       },
       "contactMailSubject": "Club plan upgrade"
-    }
+    },
+    "scoutPro": "Scout Pro",
+    "scoutProDescription": "Yetenekleri daha hızlı keşfetmek ve gelişmiş arama araçları kullanmak isteyen scoutlar için.",
+    "upgradeToScoutPro": "Scout Pro'ya yükselt"
   },
   "settings": {
     "title": "Settings",
     "subtitle": "Preferences and account controls.",
     "premiumTitle": "PitchRusch Premium",
-    "premiumBody": "Subscriptions and in-app upgrades are coming soon. AI Analysis and other premium tools use your account’s premium flag until then.",
-    "premiumBadgeActive": "Active on your account",
-    "premiumBadgeLocked": "Not active — contact support or wait for launch pricing",
+    "premiumBadgeActive": "Premium planın aktif.",
+    "premiumBadgeLocked": "Aktif abonelik yok",
     "premiumChecking": "Checking…",
     "notifications": "Notifications",
     "support": "Support",
@@ -1427,7 +1429,9 @@
     "appearance": "Appearance",
     "soon": "Soon",
     "language": "Language",
-    "languageHint": "Applies across PitchRusch on this device."
+    "languageHint": "Applies across PitchRusch on this device.",
+    "premiumBodyUpgrade": "Daha fazla görünürlük ve gelişmiş araçlar için planını yükselt.",
+    "premiumBodyActive": "Premium planın aktif."
   },
   "a11y": {
     "accountMenu": "Account menu",
@@ -1866,8 +1870,8 @@
     "noResultsBody": "Try adjusting your filters or search."
   },
   "billing": {
-    "title": "Fiyatlandırma",
-    "subtitle": "Rolüne uygun aboneliği seç.",
+    "title": "PitchRusch planını seç",
+    "subtitle": "Daha fazla görünürlük, daha iyi araçlar ve gelişmiş scout erişimiyle futbol yolculuğunu güçlendir.",
     "freePrice": "0 EUR",
     "playerPremiumPrice": "4.99 EUR / ay",
     "scoutProPrice": "9.99 EUR / ay",
@@ -1887,11 +1891,12 @@
     },
     "playerPremium": {
       "title": "Player Premium",
-      "f1": "Up to 20 videos",
-      "f2": "Priority scout visibility",
-      "f3": "Premium badge",
-      "f4": "Featured video",
-      "f5": "Profile statistics"
+      "f1": "Profil görünürlüğünü artır",
+      "f2": "Öne çıkan oyuncu fırsatları",
+      "f3": "Gelişmiş profil istatistiklerinin kilidini aç",
+      "f4": "Meydan okumalarda ve keşifte öne çık",
+      "f5": "20 videoya kadar",
+      "description": "Daha fazla görünürlük ve daha güçlü bir profil isteyen oyuncular için."
     },
     "freeScout": {
       "title": "Free Scout",
@@ -1901,11 +1906,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
-      "f1": "Unlimited profiles",
-      "f2": "Advanced search",
-      "f3": "Talent Map",
-      "f4": "Shortlists",
-      "f5": "Direct messaging"
+      "f1": "Gelişmiş oyuncu araması",
+      "f2": "Umut veren oyuncuları kısa listeye al",
+      "f3": "Yetenek profillerini karşılaştır",
+      "f4": "Doğru oyuncuları bulurken zaman kazan",
+      "f5": "Doğrudan mesajlaşma",
+      "description": "Yetenekleri daha hızlı keşfetmek ve gelişmiş arama araçları kullanmak isteyen scoutlar için."
     },
     "club": {
       "title": "Club / Academy",
@@ -1914,7 +1920,9 @@
       "f3": "Shared shortlists",
       "f4": "Club dashboard",
       "f5": "PDF reports"
-    }
+    },
+    "upgradePlayerPremium": "Player Premium'a yükselt",
+    "upgradeScoutPro": "Scout Pro'ya yükselt"
   },
   "payment": {
     "successTitle": "Ödeme başarılı",

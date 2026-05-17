@@ -1,22 +1,9 @@
-import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { PricingView } from "@/components/premium/PricingView";
+import { redirect } from "@/i18n/navigation";
 
 type Props = { params: Promise<{ locale: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "billing" });
-  return { title: t("title") };
-}
-
+/** Canonical plans live at `/premium`. */
 export default async function PricingPage({ params }: Props) {
   const { locale } = await params;
-  setRequestLocale(locale);
-  return (
-    <div className="mx-auto w-full max-w-6xl px-4 pb-10 sm:px-5">
-      <PricingView />
-    </div>
-  );
+  redirect({ href: "/premium", locale });
 }
-

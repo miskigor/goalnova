@@ -9,7 +9,7 @@ export default function PaymentCancelPage() {
           Payment was cancelled. You can try again anytime.
         </p>
         <Link
-          href="/pricing"
+          href="/premium"
           className="mt-5 inline-flex rounded-xl border border-gn-border-subtle bg-gn-surface/60 px-4 py-2.5 text-sm font-semibold text-gn-text"
         >
           Back to pricing

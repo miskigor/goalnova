@@ -14,7 +14,7 @@
     "messagesTitle": "Messages",
     "messagesConversationTitle": "{name}",
     "notificationsTitle": "Notifications",
-    "premiumPageTitle": "Upgrade to Premium",
+    "premiumPageTitle": "Odaberi svoj PitchRusch plan",
     "exploreTitle": "Explore",
     "searchTitle": "Search players",
     "challengeDetailTitle": "Challenge",
@@ -1099,7 +1099,7 @@
     "lockedInlineHint": "Premium feature — unlock to run AI on this clip.",
     "checkingPremium": "Checking access…",
     "premiumLockedBody": "Upgrade to run AI breakdowns on your highlights: speed, technique, decision-making, and more.",
-    "unlockFooterHint": "Billing and plans will appear here soon. For now, premium is enabled per account.",
+    "unlockFooterHint": "Odaberi plan na Premium stranici da otključaš AI analizu.",
     "loadingExisting": "Loading your analysis…",
     "loadingSavedAnalysis": "Loading saved analysis…",
     "loadingSubtle": "This usually takes just a moment.",
@@ -1321,14 +1321,14 @@
     "priceAmount": "$9.99",
     "pricePeriod": "/ month",
     "planName": "PitchRusch Premium — billed monthly (mock)",
-    "mockBillingNote": "Stripe checkout is not connected yet. This button only enables Premium on your account for testing.",
+    "mockBillingNote": "Pretplate se sigurno upravljaju putem Stripe naplate.",
     "headerUpgradeCta": "Upgrade",
     "profileYouArePremium": "You are Premium",
     "profileUpgradeCta": "Upgrade to Premium",
     "playerPremium": "Player Premium",
     "freePlayer": "Free Player",
     "upgradeToPlayerPremium": "Upgrade to Player Premium",
-    "playerPremiumDescription": "Get more visibility, upload more videos, and stand out to scouts.",
+    "playerPremiumDescription": "Za igrače koji žele veću vidljivost i jači profil.",
     "moreVideoUploads": "More video uploads",
     "priorityScoutVisibility": "Priority scout visibility",
     "premiumBadge": "Premium badge",
@@ -1411,15 +1411,17 @@
         "upgrading": "Upgrading…"
       },
       "contactMailSubject": "Club plan upgrade"
-    }
+    },
+    "scoutPro": "Scout Pro",
+    "scoutProDescription": "Za skaute koji žele brže otkrivati talente i koristiti napredne alate pretrage.",
+    "upgradeToScoutPro": "Nadogradi na Scout Pro"
   },
   "settings": {
     "title": "Settings",
     "subtitle": "Preferences and account controls.",
     "premiumTitle": "PitchRusch Premium",
-    "premiumBody": "Subscriptions and in-app upgrades are coming soon. AI Analysis and other premium tools use your account’s premium flag until then.",
-    "premiumBadgeActive": "Active on your account",
-    "premiumBadgeLocked": "Not active — contact support or wait for launch pricing",
+    "premiumBadgeActive": "Tvoj Premium plan je aktivan.",
+    "premiumBadgeLocked": "Nema aktivne pretplate",
     "premiumChecking": "Checking…",
     "notifications": "Notifications",
     "support": "Support",
@@ -1427,7 +1429,9 @@
     "appearance": "Appearance",
     "soon": "Soon",
     "language": "Language",
-    "languageHint": "Applies across PitchRusch on this device."
+    "languageHint": "Applies across PitchRusch on this device.",
+    "premiumBodyUpgrade": "Nadogradi svoj plan i otključaj veću vidljivost i napredne alate.",
+    "premiumBodyActive": "Tvoj Premium plan je aktivan."
   },
   "a11y": {
     "accountMenu": "Account menu",
@@ -1866,8 +1870,8 @@
     "noResultsBody": "Try adjusting your filters or search."
   },
   "billing": {
-    "title": "Cenovnik",
-    "subtitle": "Izaberite pretplatu koja odgovara vašoj ulozi.",
+    "title": "Odaberi svoj PitchRusch plan",
+    "subtitle": "Nadogradi svoj nogometni put s većom vidljivošću, boljim alatima i naprednim pristupom za skaute.",
     "freePrice": "0 EUR",
     "playerPremiumPrice": "4.99 EUR / mesec",
     "scoutProPrice": "9.99 EUR / mesec",
@@ -1887,11 +1891,12 @@
     },
     "playerPremium": {
       "title": "Player Premium",
-      "f1": "Up to 20 videos",
-      "f2": "Priority scout visibility",
-      "f3": "Premium badge",
-      "f4": "Featured video",
-      "f5": "Profile statistics"
+      "f1": "Povećaj vidljivost svog profila",
+      "f2": "Dobij priliku biti istaknuti igrač",
+      "f3": "Otključaj naprednu statistiku profila",
+      "f4": "Istakni se u izazovima i otkrivanju talenata",
+      "f5": "Do 20 videa",
+      "description": "Za igrače koji žele veću vidljivost i jači profil."
     },
     "freeScout": {
       "title": "Free Scout",
@@ -1901,11 +1906,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
-      "f1": "Unlimited profiles",
-      "f2": "Advanced search",
-      "f3": "Talent Map",
-      "f4": "Shortlists",
-      "f5": "Direct messaging"
+      "f1": "Napredna pretraga igrača",
+      "f2": "Spremi obećavajuće igrače u shortlistu",
+      "f3": "Usporedi profile talenata",
+      "f4": "Uštedi vrijeme u pronalasku pravih igrača",
+      "f5": "Direktne poruke",
+      "description": "Za skaute koji žele brže otkrivati talente i koristiti napredne alate pretrage."
     },
     "club": {
       "title": "Club / Academy",
@@ -1914,7 +1920,9 @@
       "f3": "Shared shortlists",
       "f4": "Club dashboard",
       "f5": "PDF reports"
-    }
+    },
+    "upgradePlayerPremium": "Nadogradi na Player Premium",
+    "upgradeScoutPro": "Nadogradi na Scout Pro"
   },
   "payment": {
     "successTitle": "Plaćanje uspešno",

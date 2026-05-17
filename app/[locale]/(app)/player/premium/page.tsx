@@ -1,5 +1,9 @@
-import { PlayerPremiumPageView } from "@/components/premium/PlayerPremiumPageView";
+import { redirect } from "@/i18n/navigation";
 
-export default function PlayerPremiumPage() {
-  return <PlayerPremiumPageView />;
+type Props = { params: Promise<{ locale: string }> };
+
+/** Canonical plans live at `/premium`. */
+export default async function PlayerPremiumPage({ params }: Props) {
+  const { locale } = await params;
+  redirect({ href: "/premium", locale });
 }

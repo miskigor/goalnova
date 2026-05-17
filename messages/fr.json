@@ -14,7 +14,7 @@
     "messagesTitle": "Messages",
     "messagesConversationTitle": "{name}",
     "notificationsTitle": "Notifications",
-    "premiumPageTitle": "Passer à Premium",
+    "premiumPageTitle": "Choisissez votre forfait PitchRusch",
     "exploreTitle": "Explorer",
     "searchTitle": "Search players",
     "challengeDetailTitle": "Challenge",
@@ -1099,7 +1099,7 @@
     "lockedInlineHint": "Fonction Premium — débloquez pour lancer l’IA sur ce clip.",
     "checkingPremium": "Vérification de l’accès…",
     "premiumLockedBody": "Passez à Premium pour des analyses IA de vos temps forts : vitesse, technique, décisions et plus.",
-    "unlockFooterHint": "Facturation et offres arrivent bientôt. Pour l’instant, le premium est activé par compte.",
+    "unlockFooterHint": "Choisissez un forfait sur la page Premium pour débloquer l’analyse IA.",
     "loadingExisting": "Chargement de votre analyse…",
     "loadingSavedAnalysis": "Chargement de l’analyse enregistrée…",
     "loadingSubtle": "Cela ne prend généralement qu’un instant.",
@@ -1321,14 +1321,14 @@
     "priceAmount": "$9.99",
     "pricePeriod": "/ mois",
     "planName": "PitchRusch Premium — facturation mensuelle (mock)",
-    "mockBillingNote": "Le paiement Stripe n’est pas encore connecté. Ce bouton active Premium sur votre compte à des fins de test.",
+    "mockBillingNote": "Les abonnements sont gérés en toute sécurité via Stripe Checkout.",
     "headerUpgradeCta": "Passer",
     "profileYouArePremium": "Vous êtes Premium",
     "profileUpgradeCta": "Passer à Premium",
     "playerPremium": "Player Premium",
     "freePlayer": "Joueur gratuit",
     "upgradeToPlayerPremium": "Passer a Player Premium",
-    "playerPremiumDescription": "Obtiens plus de visibilite, publie plus de videos et fais-toi remarquer par les scouts.",
+    "playerPremiumDescription": "Pour les joueurs qui veulent plus de visibilité et un profil plus fort.",
     "moreVideoUploads": "Plus de videos publiees",
     "priorityScoutVisibility": "Visibilite prioritaire aupres des scouts",
     "premiumBadge": "Badge Premium",
@@ -1411,15 +1411,17 @@
         "upgrading": "Mise à niveau…"
       },
       "contactMailSubject": "Mise à niveau offre Club"
-    }
+    },
+    "scoutPro": "Scout Pro",
+    "scoutProDescription": "Pour les scouts qui veulent découvrir les talents plus vite et utiliser une recherche avancée.",
+    "upgradeToScoutPro": "Passer à Scout Pro"
   },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Préférences et contrôle du compte.",
     "premiumTitle": "PitchRusch Premium",
-    "premiumBody": "Subscriptions and in-app upgrades are coming soon. AI Analysis and other premium tools use your account’s premium flag until then.",
-    "premiumBadgeActive": "Active on your account",
-    "premiumBadgeLocked": "Not active — contact support or wait for launch pricing",
+    "premiumBadgeActive": "Votre forfait Premium est actif.",
+    "premiumBadgeLocked": "Aucun abonnement actif",
     "premiumChecking": "Checking…",
     "notifications": "Notifications",
     "support": "Support",
@@ -1427,7 +1429,9 @@
     "appearance": "Apparence",
     "soon": "Bientôt",
     "language": "Langue",
-    "languageHint": "S’applique à PitchRusch sur cet appareil."
+    "languageHint": "S’applique à PitchRusch sur cet appareil.",
+    "premiumBodyUpgrade": "Passez à un forfait supérieur pour plus de visibilité et d’outils avancés.",
+    "premiumBodyActive": "Votre forfait Premium est actif."
   },
   "a11y": {
     "accountMenu": "Account menu",
@@ -1866,8 +1870,8 @@
     "noResultsBody": "Modifiez les filtres ou la recherche."
   },
   "billing": {
-    "title": "Pricing",
-    "subtitle": "Choose the subscription plan that fits your role.",
+    "title": "Choisissez votre forfait PitchRusch",
+    "subtitle": "Améliorez votre parcours football avec plus de visibilité, de meilleurs outils et un accès scout avancé.",
     "freePrice": "0 EUR",
     "playerPremiumPrice": "4.99 EUR / month",
     "scoutProPrice": "9.99 EUR / month",
@@ -1887,11 +1891,12 @@
     },
     "playerPremium": {
       "title": "Player Premium",
-      "f1": "Up to 20 videos",
-      "f2": "Priority scout visibility",
-      "f3": "Premium badge",
-      "f4": "Featured video",
-      "f5": "Profile statistics"
+      "f1": "Augmentez la visibilité de votre profil",
+      "f2": "Opportunités de joueur mis en avant",
+      "f3": "Statistiques de profil avancées",
+      "f4": "Démarquez-vous dans les défis et la découverte",
+      "f5": "Jusqu’à 20 vidéos",
+      "description": "Pour les joueurs qui veulent plus de visibilité et un profil plus fort."
     },
     "freeScout": {
       "title": "Free Scout",
@@ -1901,11 +1906,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
-      "f1": "Unlimited profiles",
-      "f2": "Advanced search",
-      "f3": "Talent Map",
-      "f4": "Shortlists",
-      "f5": "Direct messaging"
+      "f1": "Recherche avancée de joueurs",
+      "f2": "Shortlist de joueurs prometteurs",
+      "f3": "Comparer les profils de talents",
+      "f4": "Gagnez du temps pour trouver les bons joueurs",
+      "f5": "Messagerie directe",
+      "description": "Pour les scouts qui veulent découvrir les talents plus vite et utiliser une recherche avancée."
     },
     "club": {
       "title": "Club / Academy",
@@ -1914,7 +1920,9 @@
       "f3": "Shared shortlists",
       "f4": "Club dashboard",
       "f5": "PDF reports"
-    }
+    },
+    "upgradePlayerPremium": "Passer à Player Premium",
+    "upgradeScoutPro": "Passer à Scout Pro"
   },
   "payment": {
     "successTitle": "Payment successful",

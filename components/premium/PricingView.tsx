@@ -123,7 +123,10 @@ export function PricingView() {
             className="rounded-2xl border border-gn-border-subtle bg-gn-surface/35 p-5"
           >
             <h2 className="text-lg font-semibold text-gn-text">{t(`${card.key}.title`)}</h2>
-            <p className="mt-1 text-sm text-gn-text-secondary">{t(card.priceKey)}</p>
+            {card.key === "playerPremium" || card.key === "scoutPro" ? (
+              <p className="mt-2 text-sm text-gn-text-secondary">{t(`${card.key}.description`)}</p>
+            ) : null}
+            <p className="mt-1 text-sm font-medium text-gn-text">{t(card.priceKey)}</p>
             <ul className="mt-4 list-disc space-y-1.5 ps-5 text-sm text-gn-text-secondary">
               {card.featureKeys.map((f) => (
                 <li key={f}>{t(`${card.key}.${f}`)}</li>
@@ -136,7 +139,13 @@ export function PricingView() {
                 disabled={busyPlan === card.paidPlan}
                 className="mt-4 w-full rounded-xl bg-gn-accent px-4 py-2.5 text-sm font-semibold text-black disabled:opacity-55"
               >
-                {busyPlan === card.paidPlan ? t("loadingCheckout") : t("subscribe")}
+                {busyPlan === card.paidPlan
+                  ? t("loadingCheckout")
+                  : card.paidPlan === "player_premium"
+                    ? t("upgradePlayerPremium")
+                    : card.paidPlan === "scout_pro"
+                      ? t("upgradeScoutPro")
+                      : t("subscribe")}
               </button>
             ) : (
               <button

@@ -69,7 +69,7 @@ export async function POST(request: Request) {
 
     const root = appUrlForRequest(request).replace(/\/$/, "");
     const successPath = withLocalePrefix("/payment/success", locale);
-    const cancelPath = withLocalePrefix("/pricing", locale);
+    const cancelPath = withLocalePrefix("/premium", locale);
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer: customerId,

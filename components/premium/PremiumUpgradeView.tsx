@@ -162,7 +162,7 @@ export function PremiumUpgradeView() {
           </ul>
           <div className="mt-4 flex flex-wrap gap-2">
             <Link
-              href="/player/premium"
+              href="/premium"
               className="inline-flex rounded-xl bg-gn-accent px-4 py-2 text-sm font-semibold text-black"
             >
               {t("upgradeToPlayerPremium")}

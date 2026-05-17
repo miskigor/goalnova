@@ -31,7 +31,11 @@ export function PremiumSettingsSection() {
       <p className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
         {t("premiumTitle")}
       </p>
-      <p className="mt-2 text-sm text-gn-text-secondary">{t("premiumBody")}</p>
+      {premiumLoaded ? (
+        <p className="mt-2 text-sm text-gn-text-secondary">
+          {isPremium ? t("premiumBodyActive") : t("premiumBodyUpgrade")}
+        </p>
+      ) : null}
       <p className="mt-3 rounded-lg border border-white/10 bg-gn-bg/40 px-3 py-2 text-xs text-gn-text-tertiary">
         {!premiumLoaded
           ? t("premiumChecking")
@@ -41,7 +45,7 @@ export function PremiumSettingsSection() {
       </p>
       {!isPremium && premiumLoaded ? (
         <Link
-          href="/pricing"
+          href="/premium"
           className="mt-3 inline-flex rounded-xl bg-gn-accent px-4 py-2.5 text-sm font-semibold text-black"
         >
           {tp("cta")}
