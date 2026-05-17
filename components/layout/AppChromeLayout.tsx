@@ -13,10 +13,13 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
   return (
     <FeedbackProvider>
       <AdminSupportUnreadProvider>
-        <div className="relative flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text">
+        <div
+          data-app-root
+          className="relative flex min-h-dvh min-w-0 w-full max-w-full overflow-x-hidden bg-gn-bg text-gn-text"
+        >
           <AppSidebar />
           {/* No overflow-x on <main>: clip on main breaks WebKit fixed positioning for the home feed. */}
-          <div className="flex min-h-dvh min-w-0 w-full max-w-full flex-1 flex-col overflow-x-clip ps-0 lg:ps-[15.5rem]">
+          <div className="flex min-h-dvh min-w-0 w-full max-w-full flex-1 flex-col overflow-x-hidden ps-0 lg:ps-[15.5rem]">
             <AppMobileHeader />
             <main
               className={[
@@ -29,7 +32,7 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
                 "lg:pl-[max(2rem,env(safe-area-inset-left,0px))] lg:pr-[max(2rem,env(safe-area-inset-right,0px))]",
               ].join(" ")}
             >
-              <div className="mx-auto w-full min-w-0 max-w-full overflow-x-clip">{children}</div>
+              <div className="mx-auto w-full min-w-0 max-w-full overflow-x-hidden">{children}</div>
             </main>
           </div>
           <AppMobileBottomNav />

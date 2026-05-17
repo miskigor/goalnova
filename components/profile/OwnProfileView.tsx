@@ -90,7 +90,7 @@ export function OwnProfileView() {
 
   if (scoutBundle) {
     return (
-      <div className="box-border w-full min-w-0 max-w-full overflow-x-clip">
+      <div className="box-border w-full min-w-0 max-w-full overflow-x-hidden">
         {showSavedBanner ? (
           <div
             role="status"
@@ -115,7 +115,7 @@ export function OwnProfileView() {
   }
 
   return (
-    <div className="box-border w-full min-w-0 max-w-full overflow-x-clip">
+    <div className="box-border w-full min-w-0 max-w-full overflow-x-hidden">
       {showSavedBanner ? (
         <div
           role="status"

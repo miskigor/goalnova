@@ -53,6 +53,13 @@ html {
   }
 }
 
+[data-app-root] {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
 body {
   min-width: 0;
   width: 100%;

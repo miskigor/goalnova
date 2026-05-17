@@ -13,7 +13,7 @@ type Props = {
 };
 
 const buttonClass =
-  "box-border !flex w-full max-w-full min-w-0 justify-center !py-2.5 text-sm";
+  "box-border flex w-full max-w-full min-w-0 items-center justify-center truncate !py-2.5 text-sm";
 
 export function UploadFirstVideoBanner({ variant = "profile", onLater }: Props) {
   const t = useTranslations("profile");
@@ -47,7 +47,7 @@ export function UploadFirstVideoBanner({ variant = "profile", onLater }: Props) 
       >
         {t("uploadFirstText")}
       </p>
-      <div className="mt-4 grid w-full max-w-full min-w-0 grid-cols-1 gap-3 min-[430px]:grid-cols-2">
+      <div className="mt-4 grid w-full max-w-full min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
         <Link href="/upload" className={`${GN_PRIMARY_BUTTON_CLASS} ${buttonClass}`}>
           {t("uploadFirstCta")}
         </Link>
