@@ -1,4 +1,8 @@
 import { supabase, assertSupabaseConfigured, type Database } from "./client";
+import {
+  classifySupabaseSignupError,
+  SignupAuthError,
+} from "./signupAuthErrors";
 
 type Role = "player";
 
@@ -36,23 +40,6 @@ export function isSignupEmailAlreadyExistsError(err: unknown): boolean {
     typeof err === "object" &&
     err !== null &&
     (err as { name?: string }).name === "SignupEmailAlreadyExistsError"
-  );
-}
-
-function isSignUpEmailAlreadyExistsError(error: {
-  code?: string;
-  message?: string;
-}): boolean {
-  const code = (error.code ?? "").toLowerCase();
-  if (code === "user_already_exists" || code === "email_exists") {
-    return true;
-  }
-  const msg = (error.message ?? "").toLowerCase();
-  return (
-    msg.includes("user already registered") ||
-    msg.includes("already been registered") ||
-    msg.includes("email address is already registered") ||
-    msg.includes("a user with this email address has already been registered")
   );
 }
 
@@ -321,30 +308,14 @@ export async function signUpWithEmailPassword({
   });
 
   if (error) {
-    // Full error (code, message, status) logged here — never shown raw in signup UI.
     logSupabaseError("Supabase: signUp error", error);
-
-    if (isSignUpEmailAlreadyExistsError(error as { code?: string; message?: string })) {
+    const kind = classifySupabaseSignupError(
+      error as { code?: string; message?: string },
+    );
+    if (kind === "email_exists") {
       throw new SignupEmailAlreadyExistsError();
     }
-
-    const rawMessage =
-      typeof (error as { message?: unknown }).message === "string"
-        ? (error as { message: string }).message
-        : "";
-    const normalized = rawMessage.toLowerCase();
-
-    // GoTrue rate limiting (commonly: "email rate limit exceeded")
-    if (
-      normalized.includes("email rate limit exceeded") ||
-      normalized.includes("rate limit exceeded")
-    ) {
-      throw new Error(
-        "Too many signup attempts. Please wait a bit and try again, or log in if you already created an account."
-      );
-    }
-
-    throw new SignupGenericError();
+    throw new SignupAuthError(kind);
   }
 
   const authUser = data.user;
@@ -364,7 +335,16 @@ export async function signUpWithEmailPassword({
   const userId = authUser.id;
   const userEmail = authUser.email ?? email;
 
-  // Requirement: always create a matching row after successful Supabase signup.
+  // No session yet (email confirmation): auth user exists; `users` row is created after login/onboarding.
+  if (requiresEmailConfirmation) {
+    return {
+      userId,
+      userEmail,
+      requiresEmailConfirmation: true,
+    };
+  }
+
+  // Requirement: always create a matching row when signup also established a session.
   const ensureResult = await ensureUserRow({
     role,
     providedAuthUser: { id: userId, email: userEmail ?? null },
@@ -372,13 +352,13 @@ export async function signUpWithEmailPassword({
 
   if (!ensureResult.success) {
     console.error("Supabase: ensureUserRow after signUp failed", ensureResult.error);
-    throw new SignupGenericError();
+    throw new SignupAuthError("generic");
   }
 
   return {
     userId,
     userEmail,
-    requiresEmailConfirmation,
+    requiresEmailConfirmation: false,
   };
 }
 

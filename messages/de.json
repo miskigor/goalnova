@@ -940,7 +940,13 @@
     "goToLogin": "Zur Anmeldung",
     "confirmEmailTitle": "E-Mail prüfen",
     "confirmEmailBody": "Wir haben dir einen Bestätigungslink gesendet. Öffne deine E-Mail, bestätige dein Konto und melde dich dann an.",
-    "confirmEmailGoToLogin": "Zur Anmeldung"
+    "confirmEmailGoToLogin": "Zur Anmeldung",
+    "signupErrorEmailExists": "Diese E-Mail hat bereits ein Konto. Bitte melde dich an.",
+    "signupErrorPasswordTooShort": "Das Passwort muss mindestens 6 Zeichen haben.",
+    "signupErrorInvalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "signupErrorSignupDisabled": "Registrierung ist derzeit nicht verfügbar.",
+    "signupErrorRateLimited": "Zu viele Versuche. Bitte versuche es später erneut.",
+    "signupErrorEmailProviderDisabled": "Registrierung per E-Mail ist derzeit deaktiviert."
   },
   "authResetPassword": {
     "title": "Set a new password",

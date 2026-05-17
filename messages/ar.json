@@ -940,7 +940,13 @@
     "goToLogin": "الانتقال إلى تسجيل الدخول",
     "confirmEmailTitle": "تحقق من بريدك",
     "confirmEmailBody": "أرسلنا لك رابط تأكيد. افتح بريدك الإلكتروني، أكّد حسابك، ثم سجّل الدخول.",
-    "confirmEmailGoToLogin": "الانتقال لتسجيل الدخول"
+    "confirmEmailGoToLogin": "الانتقال لتسجيل الدخول",
+    "signupErrorEmailExists": "هذا البريد مرتبط بحساب موجود. سجّل الدخول.",
+    "signupErrorPasswordTooShort": "يجب أن تكون كلمة المرور 6 أحرف على الأقل.",
+    "signupErrorInvalidEmail": "أدخل بريدًا إلكترونيًا صالحًا.",
+    "signupErrorSignupDisabled": "التسجيل غير متاح حاليًا.",
+    "signupErrorRateLimited": "محاولات كثيرة جدًا. حاول لاحقًا.",
+    "signupErrorEmailProviderDisabled": "التسجيل عبر البريد غير مفعّل حاليًا."
   },
   "authResetPassword": {
     "title": "Set a new password",

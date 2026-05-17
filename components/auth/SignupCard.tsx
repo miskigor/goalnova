@@ -8,8 +8,12 @@ import {
   isSignupEmailAlreadyExistsError,
   signUpWithEmailPassword,
 } from "@/lib/supabase/auth";
+import {
+  getSignupAuthErrorKind,
+  SIGNUP_ERROR_I18N_KEY,
+} from "@/lib/supabase/signupAuthErrors";
 import { rememberReferralCodeFromQuery, peekPendingReferralCode } from "@/lib/supabase/referrals";
-import { devError } from "@/lib/devLog";
+import { devError, isDev } from "@/lib/devLog";
 import {
   GN_PRIMARY_BUTTON_CLASS,
   GN_SECONDARY_BUTTON_CLASS,
@@ -118,16 +122,22 @@ export function SignupCard() {
       router.replace(roleHref);
     } catch (err) {
       devError("Signup error:", err);
-      if (isSignupEmailAlreadyExistsError(err)) {
-        setError(tSignup("emailAlreadyExists"));
+      const authKind = getSignupAuthErrorKind(err);
+      if (isDev && authKind === "generic") {
+        console.error("[Signup] signup failed (generic)", err);
+      } else if (isDev && !isSignupEmailAlreadyExistsError(err) && !authKind) {
+        console.error("[Signup] unmapped signup error", err);
+      }
+
+      if (isSignupEmailAlreadyExistsError(err) || authKind === "email_exists") {
+        setError(tSignup("signupErrorEmailExists"));
         setShowLoginCta(true);
-      } else if (
-        err instanceof Error &&
-        /too many signup attempts/i.test(err.message)
-      ) {
-        setError(tCommon("rateLimited"));
+      } else if (authKind && authKind !== "generic") {
+        setError(tSignup(SIGNUP_ERROR_I18N_KEY[authKind]));
+        setShowLoginCta(false);
       } else {
         setError(tCommon("genericError"));
+        setShowLoginCta(false);
       }
     } finally {
       setLoading(false);

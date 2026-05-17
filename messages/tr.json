@@ -940,7 +940,13 @@
     "goToLogin": "Girişe git",
     "confirmEmailTitle": "E-postanı kontrol et",
     "confirmEmailBody": "Sana bir onay bağlantısı gönderdik. E-postanı aç, hesabını onayla, ardından giriş yap.",
-    "confirmEmailGoToLogin": "Girişe git"
+    "confirmEmailGoToLogin": "Girişe git",
+    "signupErrorEmailExists": "Bu e-posta zaten bir hesaba sahip. Giriş yapın.",
+    "signupErrorPasswordTooShort": "Şifre en az 6 karakter olmalıdır.",
+    "signupErrorInvalidEmail": "Geçerli bir e-posta girin.",
+    "signupErrorSignupDisabled": "Kayıt şu anda kullanılamıyor.",
+    "signupErrorRateLimited": "Çok fazla deneme. Lütfen daha sonra tekrar deneyin.",
+    "signupErrorEmailProviderDisabled": "E-posta ile kayıt şu anda kapalı."
   },
   "authResetPassword": {
     "title": "Set a new password",

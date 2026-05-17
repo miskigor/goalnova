@@ -940,7 +940,13 @@
     "goToLogin": "Naar inloggen",
     "confirmEmailTitle": "Controleer je e-mail",
     "confirmEmailBody": "We hebben je een bevestigingslink gestuurd. Open je e-mail, bevestig je account en log daarna in.",
-    "confirmEmailGoToLogin": "Ga naar inloggen"
+    "confirmEmailGoToLogin": "Ga naar inloggen",
+    "signupErrorEmailExists": "Dit e-mailadres heeft al een account. Log in.",
+    "signupErrorPasswordTooShort": "Wachtwoord moet minstens 6 tekens zijn.",
+    "signupErrorInvalidEmail": "Voer een geldig e-mailadres in.",
+    "signupErrorSignupDisabled": "Registratie is momenteel niet beschikbaar.",
+    "signupErrorRateLimited": "Te veel pogingen. Probeer het later opnieuw.",
+    "signupErrorEmailProviderDisabled": "Registratie via e-mail is uitgeschakeld."
   },
   "authResetPassword": {
     "title": "Set a new password",

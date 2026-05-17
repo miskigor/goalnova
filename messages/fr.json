@@ -940,7 +940,13 @@
     "goToLogin": "Aller à la connexion",
     "confirmEmailTitle": "Vérifiez votre e-mail",
     "confirmEmailBody": "Nous vous avons envoyé un lien de confirmation. Ouvrez votre e-mail, confirmez votre compte, puis connectez-vous.",
-    "confirmEmailGoToLogin": "Aller à la connexion"
+    "confirmEmailGoToLogin": "Aller à la connexion",
+    "signupErrorEmailExists": "Cet e-mail a déjà un compte. Connectez-vous.",
+    "signupErrorPasswordTooShort": "Le mot de passe doit contenir au moins 6 caractères.",
+    "signupErrorInvalidEmail": "Entrez une adresse e-mail valide.",
+    "signupErrorSignupDisabled": "L’inscription n’est pas disponible pour le moment.",
+    "signupErrorRateLimited": "Trop de tentatives. Réessayez plus tard.",
+    "signupErrorEmailProviderDisabled": "L’inscription par e-mail n’est pas activée."
   },
   "authResetPassword": {
     "title": "Set a new password",

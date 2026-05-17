@@ -940,7 +940,13 @@
     "goToLogin": "Ir al inicio de sesión",
     "confirmEmailTitle": "Revisa tu correo",
     "confirmEmailBody": "Te enviamos un enlace de confirmación. Abre tu correo, confirma tu cuenta y luego inicia sesión.",
-    "confirmEmailGoToLogin": "Ir a inicio de sesión"
+    "confirmEmailGoToLogin": "Ir a inicio de sesión",
+    "signupErrorEmailExists": "Este correo ya tiene una cuenta. Inicia sesión.",
+    "signupErrorPasswordTooShort": "La contraseña debe tener al menos 6 caracteres.",
+    "signupErrorInvalidEmail": "Introduce un correo válido.",
+    "signupErrorSignupDisabled": "El registro no está disponible en este momento.",
+    "signupErrorRateLimited": "Demasiados intentos. Inténtalo más tarde.",
+    "signupErrorEmailProviderDisabled": "El registro por correo no está habilitado."
   },
   "authResetPassword": {
     "title": "Set a new password",

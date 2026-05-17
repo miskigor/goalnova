@@ -940,7 +940,13 @@
     "goToLogin": "Go to Login",
     "confirmEmailTitle": "Check your email",
     "confirmEmailBody": "We sent you a confirmation link. Open your email, confirm your account, then sign in.",
-    "confirmEmailGoToLogin": "Go to login"
+    "confirmEmailGoToLogin": "Go to login",
+    "signupErrorEmailExists": "This email already has an account. Please sign in.",
+    "signupErrorPasswordTooShort": "Password must be at least 6 characters.",
+    "signupErrorInvalidEmail": "Enter a valid email address.",
+    "signupErrorSignupDisabled": "Sign-up is currently unavailable.",
+    "signupErrorRateLimited": "Too many attempts. Please try again later.",
+    "signupErrorEmailProviderDisabled": "Email sign-up is currently disabled."
   },
   "authResetPassword": {
     "title": "Set a new password",

@@ -940,7 +940,13 @@
     "goToLogin": "Vai al login",
     "confirmEmailTitle": "Controlla la tua email",
     "confirmEmailBody": "Ti abbiamo inviato un link di conferma. Apri l'email, conferma il tuo account e poi accedi.",
-    "confirmEmailGoToLogin": "Vai al login"
+    "confirmEmailGoToLogin": "Vai al login",
+    "signupErrorEmailExists": "Questa email ha già un account. Accedi.",
+    "signupErrorPasswordTooShort": "La password deve avere almeno 6 caratteri.",
+    "signupErrorInvalidEmail": "Inserisci un indirizzo email valido.",
+    "signupErrorSignupDisabled": "La registrazione non è disponibile al momento.",
+    "signupErrorRateLimited": "Troppi tentativi. Riprova più tardi.",
+    "signupErrorEmailProviderDisabled": "La registrazione via email non è abilitata."
   },
   "authResetPassword": {
     "title": "Set a new password",

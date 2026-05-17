@@ -940,7 +940,13 @@
     "goToLogin": "Ir para o início de sessão",
     "confirmEmailTitle": "Verifique o seu email",
     "confirmEmailBody": "Enviámos um link de confirmação. Abra o email, confirme a sua conta e depois inicie sessão.",
-    "confirmEmailGoToLogin": "Ir para o login"
+    "confirmEmailGoToLogin": "Ir para o login",
+    "signupErrorEmailExists": "Este email já tem uma conta. Inicie sessão.",
+    "signupErrorPasswordTooShort": "A palavra-passe deve ter pelo menos 6 caracteres.",
+    "signupErrorInvalidEmail": "Introduza um email válido.",
+    "signupErrorSignupDisabled": "O registo não está disponível de momento.",
+    "signupErrorRateLimited": "Demasiadas tentativas. Tente mais tarde.",
+    "signupErrorEmailProviderDisabled": "O registo por email não está ativo."
   },
   "authResetPassword": {
     "title": "Set a new password",

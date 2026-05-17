@@ -940,7 +940,13 @@
     "goToLogin": "Na prijavu",
     "confirmEmailTitle": "Provjeri email",
     "confirmEmailBody": "Poslali smo ti link za potvrdu računa. Otvori email i potvrdi račun, zatim se prijavi.",
-    "confirmEmailGoToLogin": "Idi na prijavu"
+    "confirmEmailGoToLogin": "Idi na prijavu",
+    "signupErrorEmailExists": "Ovaj email već ima račun. Prijavite se.",
+    "signupErrorPasswordTooShort": "Lozinka mora imati najmanje 6 znakova.",
+    "signupErrorInvalidEmail": "Unesite ispravnu e-poštu.",
+    "signupErrorSignupDisabled": "Registracija trenutno nije dostupna.",
+    "signupErrorRateLimited": "Previše pokušaja. Pokušajte kasnije.",
+    "signupErrorEmailProviderDisabled": "Registracija putem e-pošte trenutno nije omogućena."
   },
   "authResetPassword": {
     "title": "Nova šifra",
