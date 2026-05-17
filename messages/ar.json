@@ -1689,7 +1689,11 @@
     "upgradeToUploadMoreVideos": "قم بالترقية إلى Player Premium لرفع المزيد من الفيديوهات.",
     "uploadVideoCta": "رفع فيديو",
     "browseChallengesCta": "تصفح التحديات",
-    "continueWithoutChallenge": "المتابعة بدون تحدٍ"
+    "continueWithoutChallenge": "المتابعة بدون تحدٍ",
+    "uploadSuccessTitle": "تم نشر الفيديو",
+    "uploadSuccessText": "أصبح الهايلايت الخاص بك متاحًا على ملفك الشخصي.",
+    "uploadSuccessViewProfile": "عرض الملف الشخصي",
+    "uploadSuccessUploadAnother": "تحميل فيديو آخر"
   },
   "publicVideo": {
     "metaTitle": "{name}",

@@ -1689,7 +1689,11 @@
     "upgradeToUploadMoreVideos": "Nadogradi na Player Premium za više učitavanja videa.",
     "uploadVideoCta": "Učitaj video",
     "browseChallengesCta": "Pregledaj izazove",
-    "continueWithoutChallenge": "Nastavi bez izazova"
+    "continueWithoutChallenge": "Nastavi bez izazova",
+    "uploadSuccessTitle": "Video je objavljen",
+    "uploadSuccessText": "Tvoj highlight je sada na tvom profilu.",
+    "uploadSuccessViewProfile": "Pogledaj profil",
+    "uploadSuccessUploadAnother": "Učitaj još jedan video"
   },
   "publicVideo": {
     "metaTitle": "{name}",

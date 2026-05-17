@@ -1689,7 +1689,11 @@
     "upgradeToUploadMoreVideos": "Upgrade to Player Premium to upload more videos.",
     "uploadVideoCta": "Upload Video",
     "browseChallengesCta": "Browse Challenges",
-    "continueWithoutChallenge": "Continue without challenge"
+    "continueWithoutChallenge": "Continue without challenge",
+    "uploadSuccessTitle": "Video gepubliceerd",
+    "uploadSuccessText": "Je highlight staat nu op je profiel.",
+    "uploadSuccessViewProfile": "Profiel bekijken",
+    "uploadSuccessUploadAnother": "Nog een video uploaden"
   },
   "publicVideo": {
     "metaTitle": "{name}",

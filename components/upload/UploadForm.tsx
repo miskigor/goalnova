@@ -30,6 +30,7 @@ import { recordChallengeEntryForNewVideo } from "@/lib/supabase/challengeEntries
 import { runAndPersistChallengeVideoAiAnalysis } from "@/lib/ai/challengeUploadAiAnalysis";
 import { MusicTrackPicker } from "@/components/upload/MusicTrackPicker";
 import { MusicMergeTrimPanel } from "@/components/upload/MusicMergeTrimPanel";
+import { UploadSuccessNextSteps } from "@/components/upload/UploadSuccessNextSteps";
 import {
   VIDEO_UPLOAD_MAX_BYTES,
   VIDEO_UPLOAD_MAX_MB,
@@ -1069,6 +1070,25 @@ export function UploadForm() {
     setWizardStep(1);
   }
 
+  function resetUploadFormForAnother() {
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setUploadPhase("idle");
+    setFailureDetail(null);
+    setDraftVideoFile(null);
+    setWizardStep(1);
+    setSelectedFileMeta(null);
+    setSelectedMusicTrackId(null);
+    setSelectedMusicTitle("");
+    setSelectedMusicArtist("");
+    setMusicTrackDurationSec(null);
+    setSelectedMusicAudioUrl(null);
+    setVideoDurationSeconds(null);
+    setMusicStartSec(0);
+    setMusicEndSec(0);
+    setMusicVolume(1);
+    setVideoDurationProbeFailed(false);
+  }
+
   function publishDraftVideo() {
     if (isUploadBusy) return;
     if (!draftVideoFile) {
@@ -1100,6 +1120,8 @@ export function UploadForm() {
 
   const isChallengeUploadFlow = effectiveJoinChallengeId.trim().length > 0;
   const uploadFormRendered = Boolean(userId) && playerGate === "allowed";
+  const showGeneralUploadSuccess =
+    uploadPhase === "success" && resolvedJoinChallengeId.trim().length === 0;
 
   const pageTitle = t("uploadTitle");
   const pageSubtitle = isChallengeUploadFlow
@@ -1267,6 +1289,9 @@ export function UploadForm() {
       ) : null}
 
       {uploadFormRendered ? (
+        showGeneralUploadSuccess ? (
+          <UploadSuccessNextSteps onUploadAnother={resetUploadFormForAnother} />
+        ) : (
         <div className="space-y-5">
           {wizardStep === 1 ? (
             <>
@@ -1487,6 +1512,7 @@ export function UploadForm() {
             </>
           )}
         </div>
+        )
       ) : null}
     </div>
   );

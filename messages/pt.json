@@ -1689,7 +1689,11 @@
     "upgradeToUploadMoreVideos": "Faz upgrade para Player Premium para enviar mais vídeos.",
     "uploadVideoCta": "Carregar vídeo",
     "browseChallengesCta": "Ver desafios",
-    "continueWithoutChallenge": "Continuar sem desafio"
+    "continueWithoutChallenge": "Continuar sem desafio",
+    "uploadSuccessTitle": "Vídeo publicado",
+    "uploadSuccessText": "O teu highlight está agora no teu perfil.",
+    "uploadSuccessViewProfile": "Ver perfil",
+    "uploadSuccessUploadAnother": "Carregar outro vídeo"
   },
   "publicVideo": {
     "metaTitle": "{name}",
