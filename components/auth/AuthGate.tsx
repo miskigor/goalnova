@@ -3,7 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { roleOnboardingHref } from "@/lib/onboarding/roleOnboardingPaths";
 import { devError } from "@/lib/devLog";
+import {
+  needsRoleOnboardingPage,
+  syncPendingReferralCodeToUserMetadata,
+} from "@/lib/supabase/referrals";
 import { supabase } from "@/lib/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 
@@ -175,7 +180,19 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
 
     if (isLoggedIn && !didRedirectRef.current) {
       didRedirectRef.current = true;
-      router.replace(redirectTo);
+      void (async () => {
+        try {
+          await syncPendingReferralCodeToUserMetadata();
+          const needsRole = await needsRoleOnboardingPage();
+          if (needsRole) {
+            router.replace(await roleOnboardingHref());
+            return;
+          }
+        } catch (err) {
+          devError("AuthGate: guest logged-in redirect failed", err);
+        }
+        router.replace(redirectTo);
+      })();
     }
   }, [checking, isAuthenticated, mode, redirectTo, router, session]);
 

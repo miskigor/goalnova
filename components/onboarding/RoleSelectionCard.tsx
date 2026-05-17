@@ -8,7 +8,9 @@ import { supabase } from "@/lib/supabase/client";
 import { signOut } from "@/lib/supabase/auth";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { ensureOnboardingNotificationsForRole } from "@/lib/supabase/onboardingNotifications";
+import { resolvePostOnboardingHomePath } from "@/lib/onboarding/roleOnboardingPaths";
 import {
+  needsRoleOnboardingPage,
   rememberReferralCodeFromQuery,
   tryConsumePendingReferralWhenPlayerReady,
 } from "@/lib/supabase/referrals";
@@ -114,6 +116,12 @@ export function RoleSelectionCard() {
         if (role === "player" || role === "scout") {
           setSelected(role);
         }
+
+        const needsRole = await needsRoleOnboardingPage();
+        if (!needsRole) {
+          router.replace(await resolvePostOnboardingHomePath());
+          return;
+        }
       } catch (e) {
         devError("RoleSelection init error", e);
       } finally {
@@ -122,7 +130,7 @@ export function RoleSelectionCard() {
     }
 
     init();
-  }, []);
+  }, [router]);
 
   async function chooseRole(role: Role) {
     setError(null);

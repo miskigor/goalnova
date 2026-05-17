@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { AuthGate } from "@/components/auth/AuthGate";
+import { RoleOnboardingGate } from "@/components/auth/RoleOnboardingGate";
 import { RequireReauthOnReturn } from "@/components/auth/RequireReauthOnReturn";
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
 import { MinimalAppHeader } from "@/components/layout/MinimalAppHeader";
@@ -14,11 +15,12 @@ export default function OnboardingLayout({
 }) {
   return (
     <AuthGate mode="protected" redirectTo="/login">
-      <RequireReauthOnReturn />
-      <Suspense fallback={null}>
-        <ReferralBootstrap />
-      </Suspense>
-      <PremiumProvider>
+      <RoleOnboardingGate mode="require-complete">
+        <RequireReauthOnReturn />
+        <Suspense fallback={null}>
+          <ReferralBootstrap />
+        </Suspense>
+        <PremiumProvider>
         <NotificationsInboxProvider>
           <FeedbackProvider>
             <div className="relative flex min-h-dvh min-w-0 w-full flex-col overflow-x-clip bg-gn-bg">
@@ -35,7 +37,8 @@ export default function OnboardingLayout({
             </div>
           </FeedbackProvider>
         </NotificationsInboxProvider>
-      </PremiumProvider>
+        </PremiumProvider>
+      </RoleOnboardingGate>
     </AuthGate>
   );
 }

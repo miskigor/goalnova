@@ -7,10 +7,10 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { devError } from "@/lib/devLog";
 import { signInWithEmailPassword } from "@/lib/supabase/auth";
+import { roleOnboardingHref } from "@/lib/onboarding/roleOnboardingPaths";
 import {
   needsRoleOnboardingPage,
   rememberReferralCodeFromQuery,
-  resolvePendingReferralCode,
   syncPendingReferralCodeToUserMetadata,
   tryConsumePendingReferralWhenPlayerReady,
 } from "@/lib/supabase/referrals";
@@ -265,8 +265,7 @@ export function LoginCard({ labels }: Props) {
       await syncPendingReferralCodeToUserMetadata();
       const needsRole = await needsRoleOnboardingPage();
       if (needsRole) {
-        const pendingRef = await resolvePendingReferralCode();
-        router.replace(pendingRef ? `/role?ref=${encodeURIComponent(pendingRef)}` : "/role");
+        router.replace(await roleOnboardingHref());
         return;
       }
       router.replace("/home");
@@ -313,11 +312,9 @@ export function LoginCard({ labels }: Props) {
       ]);
       setRedirecting(true);
       await syncPendingReferralCodeToUserMetadata();
-      const pendingRef = await resolvePendingReferralCode();
       const needsRole = await needsRoleOnboardingPage();
       if (needsRole) {
-        const roleHref = pendingRef ? `/role?ref=${encodeURIComponent(pendingRef)}` : "/role";
-        router.replace(roleHref);
+        router.replace(await roleOnboardingHref());
       } else {
         void tryConsumePendingReferralWhenPlayerReady();
         window.location.assign(homeUrlForLocale(locale));

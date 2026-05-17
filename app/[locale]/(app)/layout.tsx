@@ -1,5 +1,6 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { AuthGate } from "@/components/auth/AuthGate";
+import { RoleOnboardingGate } from "@/components/auth/RoleOnboardingGate";
 import { RequireReauthOnReturn } from "@/components/auth/RequireReauthOnReturn";
 
 export default function AppSectionLayout({
@@ -9,8 +10,10 @@ export default function AppSectionLayout({
 }) {
   return (
     <AuthGate mode="protected" redirectTo="/login">
-      <RequireReauthOnReturn />
-      <AppShell>{children}</AppShell>
+      <RoleOnboardingGate mode="require-onboarding">
+        <RequireReauthOnReturn />
+        <AppShell>{children}</AppShell>
+      </RoleOnboardingGate>
     </AuthGate>
   );
 }
