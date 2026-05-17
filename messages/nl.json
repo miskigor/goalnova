@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — Football talent discovery",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Premium football talent discovery. Scouts, clubs, and players in one place.",
-    "landingTitle": "PitchRusch — Discover football talent",
+    "landingTitle": "PitchRusch | Voetbaltalent ontdekken",
     "loginTitle": "Log in",
     "signupTitle": "Sign up",
     "homeTitle": "Discover",
@@ -30,7 +30,8 @@
     "supportTitle": "Support",
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
-    "accountRecoveryTitle": "Account recovery"
+    "accountRecoveryTitle": "Account recovery",
+    "landingDescription": "Upload voetbal-highlights, doe mee aan challenges en bouw een spelersprofiel voor scouts."
   },
   "common": {
     "save": "Save",
@@ -532,14 +533,27 @@
     }
   },
   "landing": {
-    "headline": "Discover the Next Football Star",
-    "subhead": "The global stage for football talent",
-    "ctaPrimary": "Log in",
-    "ctaSecondary": "Sign up",
-    "login": "Log in",
-    "signup": "Sign up",
-    "footer": "© {year} PitchRusch. All rights reserved.",
-    "forgotPasswordLink": "Forgot password?"
+    "headline": "Laat je voetbaltalent zien.",
+    "subhead": "Upload je highlights, doe mee aan challenges en val op bij scouts.",
+    "ctaPrimary": "Word lid van PitchRusch",
+    "ctaSecondary": "Challenges verkennen",
+    "navLogin": "Inloggen",
+    "navJoin": "Meedoen",
+    "step1Title": "Upload je video",
+    "step1Desc": "Deel je beste voetbalmomenten in seconden.",
+    "step2Title": "Doe mee aan challenges",
+    "step2Desc": "Strijd in wekelijkse skill-challenges en klim op het leaderboard.",
+    "step3Title": "Word ontdekt",
+    "step3Desc": "Bouw een spelersprofiel dat scouts kunnen bekijken.",
+    "foundingTitle": "Word Founding Player",
+    "foundingText": "De eerste spelers op PitchRusch krijgen vroege zichtbaarheid, referral-beloningen en kans op een feature.",
+    "foundingCta": "Nu starten",
+    "previewBadge": "Highlight",
+    "previewCaption": "Skills · Challenges · Profiel",
+    "login": "Inloggen",
+    "signup": "Registreren",
+    "footer": "© {year} PitchRusch. Alle rechten voorbehouden.",
+    "forgotPasswordLink": "Wachtwoord vergeten?"
   },
   "nav": {
     "primary": "Primary navigation",

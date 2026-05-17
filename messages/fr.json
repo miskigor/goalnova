@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — Découverte de talents football",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Plateforme premium de découverte de talents football. Recruteurs, clubs et joueurs au même endroit.",
-    "landingTitle": "PitchRusch — Découvrir les talents football",
+    "landingTitle": "PitchRusch | Découvrir les talents football",
     "loginTitle": "Connexion",
     "signupTitle": "Inscription",
     "homeTitle": "Accueil",
@@ -30,7 +30,8 @@
     "supportTitle": "Support",
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
-    "accountRecoveryTitle": "Account recovery"
+    "accountRecoveryTitle": "Account recovery",
+    "landingDescription": "Publie tes highlights, rejoins des défis et crée un profil joueur visible par les recruteurs."
   },
   "common": {
     "save": "Enregistrer",
@@ -532,14 +533,27 @@
     }
   },
   "landing": {
-    "headline": "Découvrez la prochaine star du football",
-    "subhead": "La scène mondiale des talents football",
-    "ctaPrimary": "Connexion",
-    "ctaSecondary": "Inscription",
+    "headline": "Montre ton talent football.",
+    "subhead": "Publie tes highlights, rejoins des défis et fais-toi remarquer par les recruteurs.",
+    "ctaPrimary": "Rejoindre PitchRusch",
+    "ctaSecondary": "Explorer les défis",
+    "navLogin": "Connexion",
+    "navJoin": "Rejoindre",
+    "step1Title": "Publie ta vidéo",
+    "step1Desc": "Partage tes meilleurs moments de foot en quelques secondes.",
+    "step2Title": "Rejoins des défis",
+    "step2Desc": "Participe à des défis hebdomadaires et grimpe au classement.",
+    "step3Title": "Fais-toi repérer",
+    "step3Desc": "Crée un profil joueur que les recruteurs peuvent consulter.",
+    "foundingTitle": "Deviens Founding Player",
+    "foundingText": "Les premiers joueurs sur PitchRusch bénéficient d'une visibilité anticipée, de récompenses de parrainage et d'une chance d'être mis en avant.",
+    "foundingCta": "Commencer",
+    "previewBadge": "Highlight",
+    "previewCaption": "Skills · Défis · Profil",
     "login": "Connexion",
     "signup": "Inscription",
     "footer": "© {year} PitchRusch. Tous droits réservés.",
-    "forgotPasswordLink": "Forgot password?"
+    "forgotPasswordLink": "Mot de passe oublié ?"
   },
   "nav": {
     "primary": "Navigation principale",

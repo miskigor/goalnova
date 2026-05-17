@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — اكتشاف مواهب كرة القدم",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "منصة متميزة لاكتشاف مواهب كرة القدم. كشافة، أندية ولاعبون في مكان واحد.",
-    "landingTitle": "PitchRusch — اكتشاف مواهب كرة القدم",
+    "landingTitle": "PitchRusch | اكتشاف مواهب كرة القدم",
     "loginTitle": "تسجيل الدخول",
     "signupTitle": "إنشاء حساب",
     "homeTitle": "الرئيسية",
@@ -30,7 +30,8 @@
     "supportTitle": "Support",
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
-    "accountRecoveryTitle": "Account recovery"
+    "accountRecoveryTitle": "Account recovery",
+    "landingDescription": "ارفع لحظات كرة القدم البارزة، شارك في التحديات وأنشئ ملف لاعب يمكن للكشافة اكتشافه."
   },
   "common": {
     "save": "حفظ",
@@ -532,14 +533,27 @@
     }
   },
   "landing": {
-    "headline": "اكتشف النجم القادم في كرة القدم",
-    "subhead": "المسرح العالمي لمواهب كرة القدم",
-    "ctaPrimary": "تسجيل الدخول",
-    "ctaSecondary": "إنشاء حساب",
+    "headline": "أظهر موهبتك في كرة القدم.",
+    "subhead": "ارفع أبرز لحظاتك، شارك في التحديات ولفت أنظار الكشافة.",
+    "ctaPrimary": "انضم إلى PitchRusch",
+    "ctaSecondary": "استكشف التحديات",
+    "navLogin": "تسجيل الدخول",
+    "navJoin": "انضم",
+    "step1Title": "ارفع الفيديو",
+    "step1Desc": "شارك أفضل لحظاتك في كرة القدم خلال ثوانٍ.",
+    "step2Title": "شارك في التحديات",
+    "step2Desc": "نافس في تحديات المهارات الأسبوعية وتسلق لوحة المتصدرين.",
+    "step3Title": "اكتشف موهبتك",
+    "step3Desc": "أنشئ ملف لاعب يمكن للكشافة مراجعته.",
+    "foundingTitle": "كن لاعبًا مؤسسًا",
+    "foundingText": "أول اللاعبين على PitchRusch يحصلون على ظهور مبكر ومكافآت إحالة وفرصة للظهور في الواجهة.",
+    "foundingCta": "ابدأ الآن",
+    "previewBadge": "هايلايت",
+    "previewCaption": "مهارات · تحديات · ملف",
     "login": "تسجيل الدخول",
     "signup": "إنشاء حساب",
     "footer": "© {year} PitchRusch. جميع الحقوق محفوظة.",
-    "forgotPasswordLink": "Forgot password?"
+    "forgotPasswordLink": "نسيت كلمة المرور؟"
   },
   "nav": {
     "primary": "التنقل الرئيسي",

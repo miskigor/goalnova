@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — Football talent discovery",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Premium football talent discovery. Scouts, clubs, and players in one place.",
-    "landingTitle": "PitchRusch — Discover football talent",
+    "landingTitle": "PitchRusch | Otkrij nogometni talent",
     "loginTitle": "Log in",
     "signupTitle": "Sign up",
     "homeTitle": "Discover",
@@ -30,7 +30,8 @@
     "supportTitle": "Support",
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
-    "accountRecoveryTitle": "Account recovery"
+    "accountRecoveryTitle": "Account recovery",
+    "landingDescription": "Prenesi nogometne highlightse, učestvuj u izazovima i izgradi profil koji skauti mogu otkriti."
   },
   "common": {
     "save": "Save",
@@ -532,14 +533,27 @@
     }
   },
   "landing": {
-    "headline": "Discover the Next Football Star",
-    "subhead": "The global stage for football talent",
-    "ctaPrimary": "Log in",
-    "ctaSecondary": "Sign up",
-    "login": "Log in",
-    "signup": "Sign up",
-    "footer": "© {year} PitchRusch. All rights reserved.",
-    "forgotPasswordLink": "Forgot password?"
+    "headline": "Pokaži svoj nogometni talent.",
+    "subhead": "Prenesi svoje highlightse, učestvuj u izazovima i budi primijećen.",
+    "ctaPrimary": "Pridruži se PitchRuschu",
+    "ctaSecondary": "Istraži izazove",
+    "navLogin": "Prijava",
+    "navJoin": "Pridruži se",
+    "step1Title": "Prenesi video",
+    "step1Desc": "Podijeli svoje najbolje nogometne trenutke za nekoliko sekundi.",
+    "step2Title": "Učestvuj u izazovima",
+    "step2Desc": "Takmiči se u sedmičnim skill izazovima i penji se na ljestvici.",
+    "step3Title": "Budi primijećen",
+    "step3Desc": "Izgradi profil igrača koji skauti mogu pregledati.",
+    "foundingTitle": "Postani Founding Player",
+    "foundingText": "Prvi igrači na PitchRuschu dobijaju veću vidljivost, referral nagrade i šansu da budu istaknuti.",
+    "foundingCta": "Započni sada",
+    "previewBadge": "Highlight",
+    "previewCaption": "Vještine · Izazovi · Profil",
+    "login": "Prijava",
+    "signup": "Registracija",
+    "footer": "© {year} PitchRusch. Sva prava zadržana.",
+    "forgotPasswordLink": "Zaboravljena lozinka?"
   },
   "nav": {
     "primary": "Primary navigation",

@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — Football talent discovery",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Premium football talent discovery. Scouts, clubs, and players in one place.",
-    "landingTitle": "PitchRusch — Discover football talent",
+    "landingTitle": "PitchRusch | Futbol yeteneği keşfi",
     "loginTitle": "Log in",
     "signupTitle": "Sign up",
     "homeTitle": "Discover",
@@ -30,7 +30,8 @@
     "supportTitle": "Support",
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
-    "accountRecoveryTitle": "Account recovery"
+    "accountRecoveryTitle": "Account recovery",
+    "landingDescription": "Futbol highlightlarını yükle, meydan okumalara katıl ve scoutların keşfedebileceği bir profil oluştur."
   },
   "common": {
     "save": "Save",
@@ -532,14 +533,27 @@
     }
   },
   "landing": {
-    "headline": "Discover the Next Football Star",
-    "subhead": "The global stage for football talent",
-    "ctaPrimary": "Log in",
-    "ctaSecondary": "Sign up",
-    "login": "Log in",
-    "signup": "Sign up",
-    "footer": "© {year} PitchRusch. All rights reserved.",
-    "forgotPasswordLink": "Forgot password?"
+    "headline": "Futbol yeteneğini göster.",
+    "subhead": "Highlightlarını yükle, meydan okumalara katıl ve scoutların dikkatini çek.",
+    "ctaPrimary": "PitchRusch'a katıl",
+    "ctaSecondary": "Meydan okumaları keşfet",
+    "navLogin": "Giriş yap",
+    "navJoin": "Katıl",
+    "step1Title": "Videonu yükle",
+    "step1Desc": "En iyi futbol anlarını saniyeler içinde paylaş.",
+    "step2Title": "Meydan okumalara katıl",
+    "step2Desc": "Haftalık beceri meydan okumalarında yarış ve sıralamada yüksel.",
+    "step3Title": "Keşfedil",
+    "step3Desc": "Scoutların inceleyebileceği bir oyuncu profili oluştur.",
+    "foundingTitle": "Founding Player ol",
+    "foundingText": "PitchRusch'taki ilk oyuncular erken görünürlük, referans ödülleri ve öne çıkma şansı kazanır.",
+    "foundingCta": "Hemen başla",
+    "previewBadge": "Highlight",
+    "previewCaption": "Beceriler · Meydan okumalar · Profil",
+    "login": "Giriş yap",
+    "signup": "Kayıt ol",
+    "footer": "© {year} PitchRusch. Tüm hakları saklıdır.",
+    "forgotPasswordLink": "Şifreni mi unuttun?"
   },
   "nav": {
     "primary": "Primary navigation",

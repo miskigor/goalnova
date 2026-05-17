@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — Scoperta talenti calcistici",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Piattaforma premium per la scoperta di talenti calcistici. Osservatori, club e calciatori in un unico posto.",
-    "landingTitle": "PitchRusch — Scopri i talenti calcistici",
+    "landingTitle": "PitchRusch | Scopri talenti calcistici",
     "loginTitle": "Accedi",
     "signupTitle": "Registrati",
     "homeTitle": "Home",
@@ -30,7 +30,8 @@
     "supportTitle": "Support",
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
-    "accountRecoveryTitle": "Account recovery"
+    "accountRecoveryTitle": "Account recovery",
+    "landingDescription": "Carica highlight di calcio, partecipa alle sfide e crea un profilo giocatore per gli scout."
   },
   "common": {
     "save": "Salva",
@@ -532,14 +533,27 @@
     }
   },
   "landing": {
-    "headline": "Scopri la prossima stella del calcio",
-    "subhead": "Il palcoscenico globale dei talenti calcistici",
-    "ctaPrimary": "Accedi",
-    "ctaSecondary": "Registrati",
+    "headline": "Mostra il tuo talento calcistico.",
+    "subhead": "Carica i tuoi highlight, partecipa alle sfide e fatti notare dagli scout.",
+    "ctaPrimary": "Unisciti a PitchRusch",
+    "ctaSecondary": "Esplora le sfide",
+    "navLogin": "Accedi",
+    "navJoin": "Unisciti",
+    "step1Title": "Carica il video",
+    "step1Desc": "Condividi i tuoi migliori momenti di calcio in pochi secondi.",
+    "step2Title": "Partecipa alle sfide",
+    "step2Desc": "Competi nelle sfide settimanali di skill e scala la classifica.",
+    "step3Title": "Fatti scoprire",
+    "step3Desc": "Crea un profilo giocatore che gli scout possono consultare.",
+    "foundingTitle": "Diventa Founding Player",
+    "foundingText": "I primi giocatori su PitchRusch ottengono visibilità anticipata, premi referral e la possibilità di essere in evidenza.",
+    "foundingCta": "Inizia ora",
+    "previewBadge": "Highlight",
+    "previewCaption": "Skill · Sfide · Profilo",
     "login": "Accedi",
     "signup": "Registrati",
     "footer": "© {year} PitchRusch. Tutti i diritti riservati.",
-    "forgotPasswordLink": "Forgot password?"
+    "forgotPasswordLink": "Password dimenticata?"
   },
   "nav": {
     "primary": "Navigazione principale",
