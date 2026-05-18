@@ -14,6 +14,12 @@ type Props = {
   videoId: string;
   databaseVideoIdMissing?: boolean;
   viewerId: string | null;
+  /** Scout AI Insight: bypass player premium gate. */
+  skipPremiumGate?: boolean;
+  /** Optional modal title (e.g. scout insight). */
+  titleOverride?: string;
+  /** Called before running analysis; return false to abort. */
+  onBeforeReanalyze?: () => Promise<boolean>;
 };
 
 function LockGlyph({ className }: { className?: string }) {
@@ -604,10 +610,15 @@ export function AiAnalysisModal({
   videoId,
   databaseVideoIdMissing = false,
   viewerId,
+  skipPremiumGate = false,
+  titleOverride,
+  onBeforeReanalyze,
 }: Props) {
   const t = useTranslations("ai");
   const tp = useTranslations("premium");
-  const { isPremium, premiumLoaded: premiumStatusLoaded } = usePremium();
+  const { isPremium: premiumFromCtx, premiumLoaded: premiumStatusLoaded } = usePremium();
+  const isPremium = skipPremiumGate || premiumFromCtx;
+  const premiumLoaded = skipPremiumGate ? true : premiumStatusLoaded;
 
   const {
     scores,
@@ -621,9 +632,17 @@ export function AiAnalysisModal({
     videoId,
     viewerId,
     isPremium,
-    premiumStatusLoaded,
+    premiumStatusLoaded: premiumLoaded,
     databaseVideoIdMissing,
   });
+
+  const handleReanalyze = async () => {
+    if (onBeforeReanalyze) {
+      const allowed = await onBeforeReanalyze();
+      if (!allowed) return;
+    }
+    await reanalyze();
+  };
 
   if (!open) return null;
 
@@ -662,7 +681,7 @@ export function AiAnalysisModal({
             id="ai-analysis-title"
             className="text-lg font-semibold tracking-tight text-gn-text"
           >
-            {t("modalTitle")}
+            {titleOverride ?? t("modalTitle")}
           </h2>
           <button
             type="button"
@@ -758,7 +777,7 @@ export function AiAnalysisModal({
 
               <AiAnalysisResultPanel
                 scores={scores}
-                onReanalyze={() => void reanalyze()}
+                onReanalyze={() => void handleReanalyze()}
                 reanalyzeBusy={runBusy}
               />
             </div>
@@ -771,7 +790,7 @@ export function AiAnalysisModal({
                 type="button"
                 disabled={runBusy}
                 aria-busy={runBusy}
-                onClick={() => void reanalyze()}
+                onClick={() => void handleReanalyze()}
                 className="w-full rounded-xl bg-gn-accent py-3.5 text-sm font-semibold text-gn-bg shadow-lg shadow-gn-accent/20 transition-opacity hover:opacity-92 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {runBusy ? t("runningAnalysis") : t("runAnalysis")}

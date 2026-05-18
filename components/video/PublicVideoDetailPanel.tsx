@@ -8,6 +8,7 @@ import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { mapAiAnalysisRowToScores } from "@/lib/ai/videoAiAnalysis";
 import { AiAnalysisModal, AiAnalysisResultPanel } from "@/components/ai/AiAnalysisModal";
 import { OwnerVideoAiActions } from "@/components/ai/OwnerVideoAiActions";
+import { ScoutAiInsightBlock } from "@/components/scout/ScoutAiInsightBlock";
 
 type Props = {
   videoId: string;
@@ -18,17 +19,45 @@ export function PublicVideoDetailPanel({ videoId, ownerUserId }: Props) {
   const tAi = useTranslations("ai");
   const tVideo = useTranslations("publicVideo");
   const [viewerId, setViewerId] = useState<string | null>(null);
+  const [viewerRole, setViewerRole] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<AiAnalysisRow | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [analysisOpen, setAnalysisOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    void supabase.auth.getSession().then(({ data }) => {
-      if (!cancelled) setViewerId(data.session?.user?.id ?? null);
+    void supabase.auth.getSession().then(async ({ data }) => {
+      const uid = data.session?.user?.id ?? null;
+      if (cancelled) return;
+      setViewerId(uid);
+      if (!uid) {
+        setViewerRole(null);
+        return;
+      }
+      const { data: userRow } = await supabase
+        .from("users")
+        .select("role")
+        .eq("id", uid)
+        .maybeSingle();
+      if (!cancelled) {
+        setViewerRole(String(userRow?.role ?? "").trim() || null);
+      }
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setViewerId(session?.user?.id ?? null);
+      const uid = session?.user?.id ?? null;
+      setViewerId(uid);
+      if (!uid) {
+        setViewerRole(null);
+        return;
+      }
+      void supabase
+        .from("users")
+        .select("role")
+        .eq("id", uid)
+        .maybeSingle()
+        .then(({ data: userRow }) => {
+          setViewerRole(String(userRow?.role ?? "").trim() || null);
+        });
     });
     return () => {
       cancelled = true;
@@ -55,6 +84,7 @@ export function PublicVideoDetailPanel({ videoId, ownerUserId }: Props) {
   }, [videoId, tAi]);
 
   const isOwner = Boolean(viewerId) && viewerId === ownerUserId;
+  const isScoutViewer = viewerRole === "scout";
 
   return (
     <section className="space-y-4 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4">
@@ -62,7 +92,14 @@ export function PublicVideoDetailPanel({ videoId, ownerUserId }: Props) {
         {tVideo("captionLabel")}
       </h2>
 
-      {analysis ? (
+      {isScoutViewer ? (
+        <ScoutAiInsightBlock
+          videoId={videoId}
+          viewerId={viewerId}
+          initialAnalysis={analysis}
+          onAnalysisChange={setAnalysis}
+        />
+      ) : analysis ? (
         <AiAnalysisResultPanel
           scores={mapAiAnalysisRowToScores(analysis)}
           onReanalyze={() => setAnalysisOpen(true)}
@@ -78,7 +115,7 @@ export function PublicVideoDetailPanel({ videoId, ownerUserId }: Props) {
         </p>
       ) : null}
 
-      {analysisOpen ? (
+      {analysisOpen && !isScoutViewer ? (
         <AiAnalysisModal
           open
           onClose={() => setAnalysisOpen(false)}

@@ -842,6 +842,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      scout_ai_insight_events: {
+        Row: {
+          id: string;
+          scout_id: string;
+          video_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          scout_id: string;
+          video_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          scout_id?: string;
+          video_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       ai_analyses: {
         Row: {
           id: string;
@@ -1049,6 +1070,10 @@ export type Database = {
       goalnova_staff_effective_role: {
         Args: Record<string, never>;
         Returns: string | null;
+      };
+      goalnova_consume_scout_ai_preview: {
+        Args: { p_video_id: string; p_for_run?: boolean };
+        Returns: Json;
       };
       goalnova_hide_message_for_me: {
         Args: { p_message_id: string };

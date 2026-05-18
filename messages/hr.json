@@ -1835,6 +1835,18 @@
     "retryLoadComments": "Ponovno učitaj komentare",
     "commentEmpty": "Komentar ne može biti prazan."
   },
+  "scoutAiInsight": {
+    "title": "AI Scout Insight",
+    "run": "Pokreni AI Scout Insight",
+    "view": "Pogledaj AI Scout Insight",
+    "previewsLeft": "Preostalo AI pregleda: {count}/{limit}",
+    "verificationRequired": "AI uvidi dostupni su nakon verifikacije skauta.",
+    "completeVerification": "Dovrši verifikaciju",
+    "upgradeTitle": "Otključaj Scout Pro",
+    "upgradeBody": "Nadogradi na Scout Pro za više AI uvida na videozapisima.",
+    "upgradeCta": "Nadogradi na Scout Pro",
+    "actionFailed": "Nije moguće pokrenuti AI uvid. Pokušaj ponovno."
+  },
   "messages": {
     "title": "Poruke",
     "inboxLinkAria": "Otvori inbox poruka",

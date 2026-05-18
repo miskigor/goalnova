@@ -1835,6 +1835,18 @@
     "retryLoadComments": "Retry loading comments",
     "commentEmpty": "Comment cannot be empty."
   },
+  "scoutAiInsight": {
+    "title": "AI Scout Insight",
+    "run": "Run AI Scout Insight",
+    "view": "View AI Scout Insight",
+    "previewsLeft": "AI previews left: {count}/{limit}",
+    "verificationRequired": "AI insights are available after scout verification.",
+    "completeVerification": "Complete verification",
+    "upgradeTitle": "Unlock Scout Pro",
+    "upgradeBody": "Upgrade to Scout Pro for more AI insights on videos.",
+    "upgradeCta": "Upgrade to Scout Pro",
+    "actionFailed": "Could not start AI insight. Please try again."
+  },
   "messages": {
     "title": "Messaggi",
     "inboxLinkAria": "Apri la posta dei messaggi",
