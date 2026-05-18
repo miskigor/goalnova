@@ -287,6 +287,8 @@ const APP_SHELL_PROBE_SELECTORS = [
   "[data-profile-shell]",
   "[data-messages-inbox]",
   "[data-messages-thread]",
+  "[data-account-menu]",
+  "[data-account-menu-backdrop]",
 ] as const;
 
 /**

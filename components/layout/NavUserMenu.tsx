@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { User } from "@supabase/supabase-js";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { devError } from "@/lib/devLog";
+import { devError, isDev } from "@/lib/devLog";
 import { signOut } from "@/lib/supabase/auth";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { UnreadNotificationBadge } from "@/components/notifications/UnreadNotificationBadge";
@@ -22,6 +23,7 @@ import { supabase } from "@/lib/supabase/client";
 import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadContext";
 import { countMyUnreadSupportReplies } from "@/lib/supabase/supportTickets";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { logAppShellPageOverflowOffenders } from "@/lib/layout/detectHorizontalOverflow";
 
 function displayNameFromUser(user: User): string {
   return (
@@ -50,6 +52,21 @@ function newRealtimeChannelSuffix(): string {
   return `rt-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 }
 
+const ACCOUNT_MENU_PANEL_BASE_CLASS =
+  "box-border overflow-x-hidden overflow-y-auto overscroll-y-contain rounded-xl border border-gn-border-subtle bg-gn-surface-elevated/95 py-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.45)] backdrop-blur-xl";
+
+/** Mobile header account menu: fixed inside viewport (portal), never wider than screen. */
+const ACCOUNT_MENU_PANEL_MOBILE_CLASS = [
+  ACCOUNT_MENU_PANEL_BASE_CLASS,
+  "fixed z-[120] w-[min(20rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)]",
+  "end-4 start-auto",
+  "top-[calc(var(--gn-app-header-offset,3.5rem)+0.5rem)]",
+  "max-h-[min(calc(100dvh-var(--gn-app-header-offset,3.5rem)-var(--gn-app-bottom-nav-offset,4.25rem)-1rem),32rem)]",
+].join(" ");
+
+const ACCOUNT_MENU_BACKDROP_CLASS =
+  "fixed inset-0 z-[115] box-border max-w-full overflow-x-hidden bg-black/55";
+
 export function NavUserMenu({
   user,
   onNavigate,
@@ -58,12 +75,14 @@ export function NavUserMenu({
   compactTrigger = false,
 }: NavUserMenuProps) {
   const menuId = useId();
+  const useMobileFixedMenu = mobileMoreInMenu;
   /** AppSidebar + AppMobileHeader both mount NavUserMenu; `supabase.channel(name)` reuses one RealtimeChannel per name, so a second mount cannot chain `.on()` after the first `.subscribe()`. */
   const supportUnreadChannelSuffixRef = useRef<string>("");
   if (!supportUnreadChannelSuffixRef.current) {
     supportUnreadChannelSuffixRef.current = newRealtimeChannelSuffix();
   }
   const [open, setOpen] = useState(false);
+  const [portalReady, setPortalReady] = useState(false);
   const [logoutBusy, setLogoutBusy] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -80,6 +99,10 @@ export function NavUserMenu({
   const { showError } = useAppFeedback();
 
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -152,7 +175,11 @@ export function NavUserMenu({
   useEffect(() => {
     if (!open) return;
     function onDoc(e: MouseEvent) {
-      if (!wrapRef.current?.contains(e.target as Node)) setOpen(false);
+      if (!wrapRef.current?.contains(e.target as Node)) {
+        const menu = document.getElementById(menuId);
+        if (menu?.contains(e.target as Node)) return;
+        setOpen(false);
+      }
     }
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
@@ -163,7 +190,34 @@ export function NavUserMenu({
       document.removeEventListener("mousedown", onDoc);
       document.removeEventListener("keydown", onKey);
     };
-  }, [open]);
+  }, [open, menuId]);
+
+  useEffect(() => {
+    if (!open || !useMobileFixedMenu) return;
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = body.style.overflow;
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      body.style.overflow = prevBodyOverflow;
+    };
+  }, [open, useMobileFixedMenu]);
+
+  useEffect(() => {
+    if (!open || !useMobileFixedMenu || !isDev) return;
+    const run = () => logAppShellPageOverflowOffenders(`${pathname}#account-menu`);
+    const t0 = window.setTimeout(run, 0);
+    const t1 = window.setTimeout(run, 500);
+    const t2 = window.setTimeout(run, 1500);
+    return () => {
+      window.clearTimeout(t0);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [open, useMobileFixedMenu, pathname]);
 
   async function onLogout() {
     if (logoutBusy) return;
@@ -182,15 +236,194 @@ export function NavUserMenu({
   }
 
   const linkClass =
-    "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-gn-text-secondary transition-colors duration-200 hover:bg-gn-surface-elevated hover:text-gn-text";
+    "flex w-full min-w-0 max-w-full items-center gap-3 overflow-x-hidden rounded-lg px-3 py-2.5 text-left text-sm font-medium text-gn-text-secondary transition-colors duration-200 hover:bg-gn-surface-elevated hover:text-gn-text";
 
   const showUploadInMenu =
     uploadEligibility !== "non_player" && uploadEligibility !== "signed_out";
   const uploadMenuPrimary = uploadEligibility === "player";
   const uploadPathActive = navItemActive(pathname, "/upload");
 
+  const desktopMenuClass = [
+    ACCOUNT_MENU_PANEL_BASE_CLASS,
+    "absolute end-0 z-[120] min-w-[13.5rem] w-[min(20rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)]",
+    menuPlacement === "above"
+      ? "bottom-[calc(100%+0.5rem)]"
+      : "top-[calc(100%+0.5rem)]",
+  ].join(" ");
+
+  const menuPanel = (
+    <div
+      id={menuId}
+      data-account-menu
+      role="menu"
+      className={useMobileFixedMenu ? ACCOUNT_MENU_PANEL_MOBILE_CLASS : desktopMenuClass}
+    >
+      {uploadMenuPrimary ? (
+        <Link
+          href="/upload"
+          role="menuitem"
+          className={`${NAV_MENU_PLAYER_UPLOAD_CLASS} ${uploadPathActive ? "bg-gn-accent/18 ring-1 ring-inset ring-gn-accent/45" : ""}`.trim()}
+          aria-current={uploadPathActive ? "page" : undefined}
+          onClick={() => {
+            setOpen(false);
+            onNavigate?.();
+          }}
+        >
+          <NavIcon name="upload" className="size-4 shrink-0 opacity-90" />
+          {tNav("upload")}
+        </Link>
+      ) : null}
+
+      <Link
+        href="/profile"
+        role="menuitem"
+        className={linkClass}
+        onClick={() => {
+          setOpen(false);
+          onNavigate?.();
+        }}
+      >
+        {tNav("profile")}
+      </Link>
+      <Link
+        href="/settings"
+        role="menuitem"
+        className={linkClass}
+        onClick={() => {
+          setOpen(false);
+          onNavigate?.();
+        }}
+      >
+        {tNav("settings")}
+      </Link>
+      <Link
+        href="/support"
+        role="menuitem"
+        className={linkClass}
+        aria-label={
+          userSupportUnread > 0
+            ? `${tSettings("support")}, ${userSupportUnread} unread`
+            : tSettings("support")
+        }
+        onClick={() => {
+          setOpen(false);
+          onNavigate?.();
+        }}
+      >
+        <span className="relative inline-flex shrink-0">
+          <NavIcon name="settings" className="size-4 shrink-0 opacity-90" />
+          <UnreadNotificationBadge
+            count={isAdmin ? 0 : userSupportUnread}
+            variant="navSidebar"
+          />
+        </span>
+        {tSettings("support")}
+      </Link>
+
+      {adminLoaded && isAdmin ? (
+        <Link
+          href="/admin"
+          role="menuitem"
+          className={linkClass}
+          aria-label={
+            adminSupportUnread > 0
+              ? `${tNav("adminPanel")}, ${adminSupportUnread} unread`
+              : tNav("adminPanel")
+          }
+          onClick={() => {
+            setOpen(false);
+            onNavigate?.();
+          }}
+        >
+          <span className="relative inline-flex shrink-0">
+            <NavIcon name="settings" className="size-4 shrink-0 opacity-90" />
+            <UnreadNotificationBadge count={adminSupportUnread} variant="navSidebar" />
+          </span>
+          {tNav("adminPanel")}
+        </Link>
+      ) : null}
+
+      {showUploadInMenu && !uploadMenuPrimary ? (
+        <Link
+          href="/upload"
+          role="menuitem"
+          className={linkClass}
+          onClick={() => {
+            setOpen(false);
+            onNavigate?.();
+          }}
+        >
+          {tNav("upload")}
+        </Link>
+      ) : null}
+
+      {mobileMoreInMenu ? (
+        <>
+          <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
+          <p className="min-w-0 truncate px-3 pt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-gn-text-tertiary">
+            {tNav("moreInMenu")}
+          </p>
+          <Link
+            href="/explore"
+            role="menuitem"
+            className={linkClass}
+            onClick={() => {
+              setOpen(false);
+              onNavigate?.();
+            }}
+          >
+            <NavIcon name="explore" className="size-4 shrink-0 opacity-90" />
+            {tNav("explore")}
+          </Link>
+          <Link
+            href="/rankings"
+            role="menuitem"
+            className={linkClass}
+            onClick={() => {
+              setOpen(false);
+              onNavigate?.();
+            }}
+          >
+            <NavIcon name="rankings" className="size-4 shrink-0 opacity-90" />
+            {tNav("rankings")}
+          </Link>
+          <Link
+            href="/notifications"
+            role="menuitem"
+            className={linkClass}
+            onClick={() => {
+              setOpen(false);
+              onNavigate?.();
+            }}
+          >
+            <NavIcon name="messages" className="size-4 shrink-0 opacity-90" />
+            {tNav("messages")}
+          </Link>
+        </>
+      ) : null}
+
+      {mobileMoreInMenu ? (
+        <div className="box-border min-w-0 max-w-full overflow-x-hidden border-t border-gn-border-subtle px-2 py-2">
+          <LanguageSwitcher className="w-full min-w-0 max-w-full [&_select]:w-full [&_select]:max-w-full" />
+        </div>
+      ) : null}
+
+      <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
+      <button
+        type="button"
+        role="menuitem"
+        disabled={logoutBusy}
+        aria-busy={logoutBusy}
+        className={`${linkClass} text-gn-text-secondary hover:text-gn-text disabled:pointer-events-none disabled:opacity-50`}
+        onClick={() => void onLogout()}
+      >
+        {logoutBusy ? tAuth("loading") : tAuth("logout")}
+      </button>
+    </div>
+  );
+
   return (
-    <div className="relative shrink-0" ref={wrapRef}>
+    <div className="relative shrink-0 overflow-visible" ref={wrapRef}>
       <button
         type="button"
         aria-expanded={open}
@@ -223,179 +456,24 @@ export function NavUserMenu({
         )}
       </button>
 
-      {open ? (
-        <div
-          id={menuId}
-          role="menu"
-          className={`absolute end-0 z-[120] min-w-[13.5rem] rounded-xl border border-gn-border-subtle bg-gn-surface-elevated/95 py-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-opacity duration-200 ${
-            menuPlacement === "above"
-              ? "bottom-[calc(100%+0.5rem)]"
-              : "top-[calc(100%+0.5rem)]"
-          }`}
-        >
-          {uploadMenuPrimary ? (
-            <Link
-              href="/upload"
-              role="menuitem"
-              className={`${NAV_MENU_PLAYER_UPLOAD_CLASS} ${uploadPathActive ? "bg-gn-accent/18 ring-1 ring-inset ring-gn-accent/45" : ""}`.trim()}
-              aria-current={uploadPathActive ? "page" : undefined}
-              onClick={() => {
-                setOpen(false);
-                onNavigate?.();
-              }}
-            >
-              <NavIcon name="upload" className="size-4 shrink-0 opacity-90" />
-              {tNav("upload")}
-            </Link>
-          ) : null}
-
-          <Link
-            href="/profile"
-            role="menuitem"
-            className={linkClass}
-            onClick={() => {
-              setOpen(false);
-              onNavigate?.();
-            }}
-          >
-            {tNav("profile")}
-          </Link>
-          <Link
-            href="/settings"
-            role="menuitem"
-            className={linkClass}
-            onClick={() => {
-              setOpen(false);
-              onNavigate?.();
-            }}
-          >
-            {tNav("settings")}
-          </Link>
-          <Link
-            href="/support"
-            role="menuitem"
-            className={linkClass}
-            aria-label={
-              userSupportUnread > 0
-                ? `${tSettings("support")}, ${userSupportUnread} unread`
-                : tSettings("support")
-            }
-            onClick={() => {
-              setOpen(false);
-              onNavigate?.();
-            }}
-          >
-            <span className="relative inline-flex shrink-0">
-              <NavIcon name="settings" className="size-4 shrink-0 opacity-90" />
-              <UnreadNotificationBadge
-                count={isAdmin ? 0 : userSupportUnread}
-                variant="navSidebar"
-              />
-            </span>
-            {tSettings("support")}
-          </Link>
-
-          {adminLoaded && isAdmin ? (
-            <Link
-              href="/admin"
-              role="menuitem"
-              className={linkClass}
-              aria-label={
-                adminSupportUnread > 0
-                  ? `${tNav("adminPanel")}, ${adminSupportUnread} unread`
-                  : tNav("adminPanel")
-              }
-              onClick={() => {
-                setOpen(false);
-                onNavigate?.();
-              }}
-            >
-              <span className="relative inline-flex shrink-0">
-                <NavIcon name="settings" className="size-4 shrink-0 opacity-90" />
-                <UnreadNotificationBadge count={adminSupportUnread} variant="navSidebar" />
-              </span>
-              {tNav("adminPanel")}
-            </Link>
-          ) : null}
-
-          {showUploadInMenu && !uploadMenuPrimary ? (
-            <Link
-              href="/upload"
-              role="menuitem"
-              className={linkClass}
-              onClick={() => {
-                setOpen(false);
-                onNavigate?.();
-              }}
-            >
-              {tNav("upload")}
-            </Link>
-          ) : null}
-
-          {mobileMoreInMenu ? (
+      {open && useMobileFixedMenu && portalReady
+        ? createPortal(
             <>
-              <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
-              <p className="px-3 pt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-gn-text-tertiary">
-                {tNav("moreInMenu")}
-              </p>
-              <Link
-                href="/explore"
-                role="menuitem"
-                className={linkClass}
-                onClick={() => {
-                  setOpen(false);
-                  onNavigate?.();
-                }}
-              >
-                <NavIcon name="explore" className="size-4 shrink-0 opacity-90" />
-                {tNav("explore")}
-              </Link>
-              <Link
-                href="/rankings"
-                role="menuitem"
-                className={linkClass}
-                onClick={() => {
-                  setOpen(false);
-                  onNavigate?.();
-                }}
-              >
-                <NavIcon name="rankings" className="size-4 shrink-0 opacity-90" />
-                {tNav("rankings")}
-              </Link>
-              <Link
-                href="/notifications"
-                role="menuitem"
-                className={linkClass}
-                onClick={() => {
-                  setOpen(false);
-                  onNavigate?.();
-                }}
-              >
-                <NavIcon name="messages" className="size-4 shrink-0 opacity-90" />
-                {tNav("messages")}
-              </Link>
-            </>
-          ) : null}
+              <button
+                type="button"
+                data-account-menu-backdrop
+                className={ACCOUNT_MENU_BACKDROP_CLASS}
+                aria-hidden
+                tabIndex={-1}
+                onClick={() => setOpen(false)}
+              />
+              {menuPanel}
+            </>,
+            document.body,
+          )
+        : null}
 
-          {mobileMoreInMenu ? (
-            <div className="border-t border-gn-border-subtle px-2 py-2">
-              <LanguageSwitcher className="w-full [&_select]:w-full" />
-            </div>
-          ) : null}
-
-          <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
-          <button
-            type="button"
-            role="menuitem"
-            disabled={logoutBusy}
-            aria-busy={logoutBusy}
-            className={`${linkClass} text-gn-text-secondary hover:text-gn-text disabled:pointer-events-none disabled:opacity-50`}
-            onClick={() => void onLogout()}
-          >
-            {logoutBusy ? tAuth("loading") : tAuth("logout")}
-          </button>
-        </div>
-      ) : null}
+      {open && !useMobileFixedMenu ? menuPanel : null}
     </div>
   );
 }

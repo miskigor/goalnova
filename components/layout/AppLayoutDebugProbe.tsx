@@ -15,6 +15,8 @@ const PROBE_SELECTORS = [
   "[data-profile-shell]",
   "[data-messages-inbox]",
   "[data-messages-thread]",
+  "[data-account-menu]",
+  "[data-account-menu-backdrop]",
 ].join(",");
 
 const OUTLINE_CSS = `
@@ -26,7 +28,9 @@ const OUTLINE_CSS = `
   [data-app-bottom-nav],
   [data-profile-shell],
   [data-messages-inbox],
-  [data-messages-thread] {
+  [data-messages-thread],
+  [data-account-menu],
+  [data-account-menu-backdrop] {
     outline: 1px dashed rgba(249, 115, 22, 0.35);
     outline-offset: -1px;
   }
