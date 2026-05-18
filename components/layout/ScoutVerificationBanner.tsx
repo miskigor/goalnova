@@ -18,7 +18,8 @@ export function ScoutVerificationBanner() {
     !loaded ||
     !isUnverifiedScout ||
     row?.role !== "scout" ||
-    navItemActive(pathname, "/scout-apply")
+    navItemActive(pathname, "/scout-apply") ||
+    navItemActive(pathname, "/scout-dashboard")
   ) {
     return null;
   }

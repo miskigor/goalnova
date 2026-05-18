@@ -203,3 +203,74 @@ export function logScoutApplyPageOverflowOffenders(
 
   return merged;
 }
+
+const SCOUT_DASHBOARD_PROBE_SELECTORS = [
+  "html",
+  "body",
+  "[data-app-root]",
+  "[data-app-column]",
+  "[data-app-main]",
+  "[data-app-main-inner]",
+  "[data-app-mobile-header]",
+  "[data-app-bottom-nav]",
+  "[data-scout-dashboard-page]",
+  "[data-pitchrusch-feed-card]",
+] as const;
+
+/**
+ * Development-only: detailed overflow log for `/scout-dashboard`.
+ */
+export function logScoutDashboardPageOverflowOffenders(
+  viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0,
+): PageOverflowHit[] {
+  if (!isDev || typeof document === "undefined" || viewportWidth <= 0) return [];
+
+  const docEl = document.documentElement;
+  const allHits = collectPageOverflowHits(docEl, viewportWidth);
+
+  const probeHits: PageOverflowHit[] = [];
+  for (const selector of SCOUT_DASHBOARD_PROBE_SELECTORS) {
+    const el = document.querySelector(selector);
+    if (!(el instanceof HTMLElement)) continue;
+    const rect = el.getBoundingClientRect();
+    const reasons: string[] = [];
+    if (el.scrollWidth > el.clientWidth + 1) {
+      reasons.push("scrollWidth>clientWidth");
+    }
+    if (rect.left < -1) reasons.push("rect.left<0");
+    if (rect.right > viewportWidth + 1) reasons.push("rect.right>viewport");
+    if (reasons.length === 0) continue;
+    probeHits.push({
+      tag: el.tagName.toLowerCase(),
+      id: el.id || null,
+      className: String(el.className).slice(0, 160),
+      textPreview: `[probe ${selector}]`,
+      rectLeft: Math.round(rect.left * 10) / 10,
+      rectRight: Math.round(rect.right * 10) / 10,
+      scrollWidth: el.scrollWidth,
+      clientWidth: el.clientWidth,
+      parentClassName: el.parentElement
+        ? String(el.parentElement.className).slice(0, 120)
+        : "",
+      reasons: [...reasons, `selector:${selector}`],
+    });
+  }
+
+  const merged = [...probeHits, ...allHits];
+  const docScroll = docEl.scrollWidth;
+  const canScrollX = docScroll > viewportWidth + 1;
+
+  if (merged.length > 0 || canScrollX) {
+    console.warn(
+      `[scout-dashboard-overflow] ${merged.length} suspect(s) @ viewport ${viewportWidth}px` +
+        (canScrollX ? ` — document.scrollWidth=${docScroll}` : ""),
+      merged.slice(0, 30),
+    );
+  } else {
+    console.info(
+      `[scout-dashboard-overflow] no overflow suspects @ viewport ${viewportWidth}px`,
+    );
+  }
+
+  return merged;
+}

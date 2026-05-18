@@ -20,6 +20,21 @@ import { FeedItemCard } from "@/components/home/FeedItemCard";
 import { HomeFeedSoundProvider } from "@/components/home/HomeFeedSoundContext";
 import { feedItemVideoKey } from "@/lib/feed/feedItemVideoKey";
 import { VerifiedScoutBadge } from "@/components/scout/VerifiedScoutBadge";
+import { ScoutDashboardOverflowDebug } from "@/components/scout/ScoutDashboardOverflowDebug";
+import { SCOUT_DASHBOARD_SECTION_CLASS } from "@/lib/layout/appShellClasses";
+
+const dashboardContentClass =
+  "box-border w-full min-w-0 max-w-full space-y-8 overflow-x-clip pb-12 pt-2";
+
+const sectionCardClass = `${SCOUT_DASHBOARD_SECTION_CLASS} rounded-2xl border border-gn-border-subtle bg-gn-surface/40 shadow-sm backdrop-blur-sm`;
+
+const scoutPrimaryCtaClass = `${GN_PRIMARY_BUTTON_CLASS} box-border flex w-full min-w-0 max-w-full items-center justify-center truncate py-3.5 shadow-none sm:inline-flex sm:w-auto sm:shadow-[0_8px_28px_-6px_rgba(249,115,22,0.45)]`;
+
+const scoutSecondaryCtaClass =
+  "box-border flex w-full min-w-0 max-w-full items-center justify-center truncate rounded-xl border border-gn-border-subtle px-4 py-2.5 text-sm font-medium text-gn-text-secondary transition hover:bg-white/[0.06] hover:text-gn-text sm:inline-flex sm:w-auto";
+
+const dashboardFeedSlideClass =
+  "min-h-[20rem] w-full min-w-0 max-w-full overflow-hidden rounded-2xl border border-white/[0.06] bg-black sm:min-h-[24rem]";
 
 type LoadSlice<T> = {
   loading: boolean;
@@ -41,11 +56,11 @@ function SectionFrame({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4 shadow-sm backdrop-blur-sm sm:p-5">
-      <h2 className="mb-4 text-lg font-semibold tracking-tight text-gn-text">
+    <section className={`${sectionCardClass} p-4 sm:p-5`}>
+      <h2 className="mb-4 break-words text-lg font-semibold tracking-tight text-gn-text">
         {title}
       </h2>
-      {children}
+      <div className="min-w-0 max-w-full">{children}</div>
     </section>
   );
 }
@@ -92,14 +107,13 @@ function SliceBody<T>({
   if (isEmptySliceData(slice.data)) {
     if (emptyState) {
       return (
-        <div className="rounded-xl border border-gn-border-subtle bg-gn-bg/20 px-4 py-8 text-center">
-          <p className="text-sm font-medium text-gn-text">{emptyState.title}</p>
-          <p className="mt-2 text-sm text-gn-text-secondary">{emptyState.body}</p>
+        <div
+          className={`${SCOUT_DASHBOARD_SECTION_CLASS} rounded-xl border border-gn-border-subtle bg-gn-bg/20 px-4 py-8 text-center`}
+        >
+          <p className="break-words text-sm font-medium text-gn-text">{emptyState.title}</p>
+          <p className="mt-2 break-words text-sm text-gn-text-secondary">{emptyState.body}</p>
           {emptyState.ctaHref && emptyState.ctaLabel ? (
-            <Link
-              href={emptyState.ctaHref}
-              className={`${GN_PRIMARY_BUTTON_CLASS} mt-6 inline-flex justify-center`}
-            >
+            <Link href={emptyState.ctaHref} className={`${scoutPrimaryCtaClass} mt-6`}>
               {emptyState.ctaLabel}
             </Link>
           ) : null}
@@ -166,6 +180,15 @@ function PlayerRowMeta({
 }
 
 export function ScoutDashboardView() {
+  return (
+    <>
+      <ScoutDashboardOverflowDebug />
+      <ScoutDashboardBody />
+    </>
+  );
+}
+
+function ScoutDashboardBody() {
   const t = useTranslations("scoutDashboard");
   const th = useTranslations("homeFeed");
   const tCommon = useTranslations("authCommon");
@@ -239,7 +262,7 @@ export function ScoutDashboardView() {
 
   if (!loaded) {
     return (
-      <div className="mx-auto w-full max-w-4xl space-y-6 pb-10 pt-2">
+      <div className={`${dashboardContentClass} space-y-6 pb-10`}>
         <div className="h-9 w-48 animate-pulse rounded-lg bg-gn-surface/50" />
         <div className="h-40 animate-pulse rounded-2xl bg-gn-surface/40" />
         <div className="h-40 animate-pulse rounded-2xl bg-gn-surface/40" />
@@ -249,22 +272,16 @@ export function ScoutDashboardView() {
 
   if (!isApprovedScout) {
     return (
-      <div className="mx-auto w-full max-w-lg space-y-6 pb-10 pt-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-gn-text">
+      <div className={`${dashboardContentClass} space-y-6 pb-10`}>
+        <h1 className="break-words text-2xl font-semibold tracking-tight text-gn-text">
           {t("accessDeniedTitle")}
         </h1>
-        <p className="text-sm text-gn-text-secondary">{t("accessDeniedBody")}</p>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            href="/scout-apply"
-            className="inline-flex rounded-xl bg-gn-accent px-4 py-2.5 text-sm font-semibold text-black transition hover:opacity-90"
-          >
+        <p className="break-words text-sm text-gn-text-secondary">{t("accessDeniedBody")}</p>
+        <div className="flex min-w-0 max-w-full flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Link href="/scout-apply" className={scoutPrimaryCtaClass}>
             {t("applyCta")}
           </Link>
-          <Link
-            href="/home"
-            className="inline-flex rounded-xl border border-gn-border-subtle px-4 py-2.5 text-sm font-medium text-gn-text-secondary transition hover:bg-white/[0.06] hover:text-gn-text"
-          >
+          <Link href="/home" className={scoutSecondaryCtaClass}>
             {t("backHome")}
           </Link>
         </div>
@@ -273,21 +290,21 @@ export function ScoutDashboardView() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-8 pb-12 pt-2">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-semibold tracking-tight text-gn-text">
+    <div className={dashboardContentClass}>
+      <header className="flex min-w-0 max-w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <h1 className="break-words text-2xl font-semibold tracking-tight text-gn-text">
               {t("pageTitle")}
             </h1>
             <VerifiedScoutBadge withTooltip={false} className="shrink-0" />
           </div>
-          <p className="mt-1 text-sm text-gn-text-secondary">{t("pageSubtitle")}</p>
+          <p className="mt-1 break-words text-sm text-gn-text-secondary">{t("pageSubtitle")}</p>
         </div>
         <button
           type="button"
           onClick={() => void loadDashboard()}
-          className="rounded-xl border border-gn-border-subtle px-3 py-2 text-sm font-medium text-gn-text-secondary transition hover:bg-white/[0.06] hover:text-gn-text"
+          className="box-border w-full min-w-0 max-w-full shrink-0 rounded-xl border border-gn-border-subtle px-3 py-2 text-sm font-medium text-gn-text-secondary transition hover:bg-white/[0.06] hover:text-gn-text sm:w-auto"
         >
           {t("refresh")}
         </button>
@@ -305,12 +322,12 @@ export function ScoutDashboardView() {
           }}
         >
           {(rows: ScoutSavedPlayerDashboardRow[]) => (
-            <ul className="divide-y divide-gn-border-subtle">
+            <ul className="min-w-0 max-w-full divide-y divide-gn-border-subtle">
               {rows.map((row) => (
                 <li key={row.playerUserId} className="py-1">
                   <Link
                     href={playerProfileHref(row.profile)}
-                    className="block rounded-xl px-1 transition hover:bg-white/[0.04]"
+                    className="block min-w-0 max-w-full rounded-xl px-1 transition hover:bg-white/[0.04]"
                   >
                     <PlayerRowMeta
                       profile={row.profile}
@@ -346,12 +363,12 @@ export function ScoutDashboardView() {
           emptyLabel={t("contactsEmpty")}
         >
           {(rows: ScoutRecentContactRow[]) => (
-            <ul className="space-y-1">
+            <ul className="min-w-0 max-w-full space-y-1">
               {rows.map((row) => (
                 <li key={row.playerUserId}>
                   <Link
                     href={playerProfileHref(row.profile)}
-                    className="flex items-center justify-between gap-3 rounded-xl px-2 py-2 transition hover:bg-white/[0.04]"
+                    className="flex min-w-0 max-w-full items-center justify-between gap-3 rounded-xl px-2 py-2 transition hover:bg-white/[0.04]"
                   >
                     <div className="min-w-0">
                       <p className="truncate font-medium text-gn-text">
@@ -389,12 +406,14 @@ export function ScoutDashboardView() {
                 items.length > 0 ? feedItemVideoKey(items[0]) : null
               }
             >
-              <div className="flex flex-col gap-6">
+              <div className="flex min-w-0 max-w-full flex-col gap-6 overflow-x-clip">
                 {items.map((item, i) => (
-                  <FeedItemCard
-                    key={item.video.id ?? `${item.video.user_id}-${i}`}
-                    item={item}
-                  />
+                  <div key={item.video.id ?? `${item.video.user_id}-${i}`} className="min-w-0 max-w-full">
+                    <FeedItemCard
+                      item={item}
+                      slideClassName={dashboardFeedSlideClass}
+                    />
+                  </div>
                 ))}
               </div>
             </HomeFeedSoundProvider>
@@ -403,12 +422,9 @@ export function ScoutDashboardView() {
       </SectionFrame>
 
       <SectionFrame title={t("sprint20mTopTitle")}>
-        <div className="rounded-xl border border-gn-border-subtle bg-gn-bg/20 px-4 py-4">
-          <p className="text-sm text-gn-text-secondary">{t("sprint20mTopBody")}</p>
-          <Link
-            href="/challenges/sprint-20m-challenge"
-            className={`${GN_PRIMARY_BUTTON_CLASS} mt-4 inline-flex justify-center`}
-          >
+        <div className={`${SCOUT_DASHBOARD_SECTION_CLASS} rounded-xl border border-gn-border-subtle bg-gn-bg/20 px-4 py-4`}>
+          <p className="break-words text-sm text-gn-text-secondary">{t("sprint20mTopBody")}</p>
+          <Link href="/challenges/sprint-20m-challenge" className={`${scoutPrimaryCtaClass} mt-4`}>
             {t("sprint20mTopCta")}
           </Link>
         </div>
