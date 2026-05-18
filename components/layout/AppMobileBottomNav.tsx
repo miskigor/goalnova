@@ -11,12 +11,17 @@ import {
 } from "@/lib/constants/navigation";
 import { navItemActive } from "@/lib/navigation/navItemActive";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
-import { APP_MOBILE_BOTTOM_NAV_CLASS } from "@/lib/layout/appShellClasses";
+import {
+  APP_MOBILE_BOTTOM_NAV_CLASS,
+  APP_MOBILE_BOTTOM_NAV_INNER_CLASS,
+  APP_MOBILE_BOTTOM_NAV_ITEM_CLASS,
+} from "@/lib/layout/appShellClasses";
 
 function bottomItemClass(pathname: string, href: string) {
   const active = navItemActive(pathname, href);
   return [
-    "group flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 text-[clamp(7.5px,2.35vw,10px)] font-semibold leading-[1.05] tracking-tight transition-[color,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors sm:text-[10px]",
+    APP_MOBILE_BOTTOM_NAV_ITEM_CLASS,
+    "transition-[color,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors",
     active
       ? "text-gn-accent"
       : "text-gn-text-tertiary hover:text-gn-text-secondary",
@@ -41,20 +46,24 @@ export function AppMobileBottomNav() {
       className={APP_MOBILE_BOTTOM_NAV_CLASS}
       aria-label={tNav("primary")}
     >
-      {items.map((item) => (
-        <Link
-          key={`${item.href}-${item.labelKey}`}
-          href={item.href}
-          className={bottomItemClass(pathname, item.href)}
-          aria-current={navItemActive(pathname, item.href) ? "page" : undefined}
-        >
-          <NavIcon
-            name={item.icon}
-            className="size-[21px] shrink-0 transition-transform duration-300 ease-gn-smooth motion-safe:group-hover:scale-110 min-[430px]:size-[22px]"
-          />
-          <span className="max-w-full truncate px-0.5 text-center">{tNav(item.labelKey)}</span>
-        </Link>
-      ))}
+      <div className={APP_MOBILE_BOTTOM_NAV_INNER_CLASS}>
+        {items.map((item) => (
+          <Link
+            key={`${item.href}-${item.labelKey}`}
+            href={item.href}
+            className={bottomItemClass(pathname, item.href)}
+            aria-current={navItemActive(pathname, item.href) ? "page" : undefined}
+          >
+            <NavIcon
+              name={item.icon}
+              className="size-5 shrink-0 min-[390px]:size-[21px] min-[430px]:size-[22px]"
+            />
+            <span className="w-full min-w-0 truncate px-0.5 text-center">
+              {tNav(item.labelKey)}
+            </span>
+          </Link>
+        ))}
+      </div>
     </nav>
   );
 }

@@ -758,8 +758,8 @@ export function ConversationView({ otherUserId }: Props) {
     : messages;
 
   return (
-    <div className="flex min-h-[min(70vh,calc(100dvh-12rem))] min-w-0 flex-col">
-      <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2 border-b border-gn-border-subtle pb-3">
+    <div className="flex h-full min-h-0 min-w-0 max-w-full flex-1 flex-col overflow-x-clip">
+      <div className="mb-3 flex min-w-0 max-w-full flex-wrap items-center gap-2 border-b border-gn-border-subtle pb-3">
         <Link
           href="/notifications"
           className="shrink-0 text-sm font-medium text-gn-accent hover:underline"
@@ -801,7 +801,7 @@ export function ConversationView({ otherUserId }: Props) {
 
       <div
         ref={scrollRef}
-        className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pb-4"
+        className="flex min-h-0 min-w-0 max-w-full flex-1 flex-col gap-2 overflow-x-clip overflow-y-auto overscroll-y-contain pb-4"
       >
         {visibleMessages.length === 0 ? (
           <p className="py-8 text-center text-sm text-gn-text-tertiary">
@@ -813,10 +813,10 @@ export function ConversationView({ otherUserId }: Props) {
             return (
               <div
                 key={m.clientTempId ?? m.id}
-                className={`flex w-full ${mine ? "justify-end" : "justify-start"}`}
+                className={`flex w-full min-w-0 max-w-full ${mine ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[min(100%,20rem)] rounded-2xl px-3.5 py-2 text-sm ${
+                  className={`max-w-[min(85%,20rem)] min-w-0 rounded-2xl px-3.5 py-2 text-sm ${
                     mine
                       ? `bg-gn-accent/25 text-gn-text border ${
                           m.pending
@@ -826,7 +826,9 @@ export function ConversationView({ otherUserId }: Props) {
                       : "bg-gn-surface-elevated text-gn-text border border-gn-border-subtle"
                   }`}
                 >
-                  <p className="whitespace-pre-wrap break-words">{m.message}</p>
+                  <p className="whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
+                    {m.message}
+                  </p>
                   <div
                     className={`mt-1 flex items-center gap-2 ${!m.pending ? "justify-between" : ""}`}
                   >
@@ -863,7 +865,7 @@ export function ConversationView({ otherUserId }: Props) {
         <div ref={endRef} className="h-px w-full shrink-0" aria-hidden />
       </div>
 
-      <div className="sticky bottom-0 border-t border-gn-border-subtle bg-gn-bg pt-3 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+      <div className="shrink-0 border-t border-gn-border-subtle bg-gn-bg pt-3">
         {scoutGate.loaded && scoutGate.isUnverifiedScout ? (
           <p className="mb-2 rounded-xl border border-gn-border-subtle bg-gn-surface/40 px-3 py-3 text-sm text-gn-text-secondary">
             {tSv("messagingComposerLocked")}
@@ -880,7 +882,7 @@ export function ConversationView({ otherUserId }: Props) {
             {sendError}
           </p>
         ) : null}
-        <div className="flex gap-2">
+        <div className="flex min-w-0 max-w-full gap-2">
           <input
             suppressHydrationWarning
             type="text"
@@ -888,7 +890,7 @@ export function ConversationView({ otherUserId }: Props) {
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder={t("messagePlaceholder")}
-            className="min-w-0 flex-1 rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-3 py-2.5 text-sm text-gn-text placeholder:text-gn-text-tertiary focus:border-gn-accent focus:outline-none focus:ring-1 focus:ring-gn-accent/40"
+            className="min-w-0 max-w-full flex-1 rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-3 py-2.5 text-sm text-gn-text placeholder:text-gn-text-tertiary focus:border-gn-accent focus:outline-none focus:ring-1 focus:ring-gn-accent/40"
             disabled={
               sending ||
               !currentUserId ||

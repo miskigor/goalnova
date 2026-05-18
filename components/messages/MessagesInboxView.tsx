@@ -171,7 +171,7 @@ export function MessagesInboxView() {
         <li key={c.otherUserId}>
           <Link
             href={`/messages/${c.otherUserId}`}
-            className="block rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3 transition-[border-color,background-color,box-shadow,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors hover:border-white/[0.1] hover:bg-gn-surface-elevated/60 hover:shadow-[0_10px_36px_-16px_rgba(0,0,0,0.45)] motion-safe:hover:translate-y-[-1px]"
+            className="block min-w-0 max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3 transition-[border-color,background-color,box-shadow] duration-300 ease-gn-smooth motion-reduce:transition-colors hover:border-white/[0.1] hover:bg-gn-surface-elevated/60 hover:shadow-[0_10px_36px_-16px_rgba(0,0,0,0.45)]"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">

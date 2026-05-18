@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ConversationView } from "@/components/messages/ConversationView";
+import { APP_MESSAGES_THREAD_PAGE_CLASS } from "@/lib/layout/appShellClasses";
 import { isLooseUuid } from "@/lib/uuid";
 
 type Props = {
@@ -23,7 +24,7 @@ export default async function ConversationPage({ params }: Props) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-lg pb-8 lg:max-w-2xl">
+    <div data-messages-thread className={APP_MESSAGES_THREAD_PAGE_CLASS}>
       <ConversationView otherUserId={otherUserId} />
     </div>
   );

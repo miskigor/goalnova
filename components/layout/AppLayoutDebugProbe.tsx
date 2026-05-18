@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "@/i18n/navigation";
 import { isDev } from "@/lib/devLog";
-import { logHorizontalOverflowOffenders } from "@/lib/layout/detectHorizontalOverflow";
+import { logAppShellPageOverflowOffenders } from "@/lib/layout/detectHorizontalOverflow";
 
 const PROBE_SELECTORS = [
   "[data-app-root]",
@@ -10,7 +11,10 @@ const PROBE_SELECTORS = [
   "[data-app-main]",
   "[data-app-main-inner]",
   "[data-app-mobile-header]",
+  "[data-app-bottom-nav]",
   "[data-profile-shell]",
+  "[data-messages-inbox]",
+  "[data-messages-thread]",
 ].join(",");
 
 const OUTLINE_CSS = `
@@ -19,16 +23,23 @@ const OUTLINE_CSS = `
   [data-app-main],
   [data-app-main-inner],
   [data-app-mobile-header],
-  [data-profile-shell] {
+  [data-app-bottom-nav],
+  [data-profile-shell],
+  [data-messages-inbox],
+  [data-messages-thread] {
     outline: 1px dashed rgba(249, 115, 22, 0.35);
     outline-offset: -1px;
   }
 `;
 
+const SCAN_DELAYS_MS = [0, 500, 1500] as const;
+
 /**
- * Development-only: outline main wrappers + log horizontal overflow / negative offsetLeft.
+ * Development-only: outline main wrappers + log horizontal overflow on app routes.
  */
 export function AppLayoutDebugProbe() {
+  const pathname = usePathname();
+
   useEffect(() => {
     if (!isDev || typeof window === "undefined") return;
 
@@ -37,40 +48,40 @@ export function AppLayoutDebugProbe() {
     style.textContent = OUTLINE_CSS;
     document.head.appendChild(style);
 
-    const probe = () => {
+    const runProbe = () => {
+      const viewportWidth = window.innerWidth;
       document.querySelectorAll(PROBE_SELECTORS).forEach((node) => {
         const el = node as HTMLElement;
+        const rect = el.getBoundingClientRect();
         const overflow = el.scrollWidth > el.clientWidth + 1;
         const offset = el.offsetLeft < -1;
-        if (!overflow && !offset) return;
+        const pastViewport = rect.right > viewportWidth + 1 || rect.left < -1;
+        if (!overflow && !offset && !pastViewport) return;
         console.warn("[layout-debug] suspect wrapper", {
+          pathname,
           tag: el.tagName,
           dataset: { ...el.dataset },
           offsetLeft: el.offsetLeft,
           scrollWidth: el.scrollWidth,
           clientWidth: el.clientWidth,
+          rectLeft: rect.left,
+          rectRight: rect.right,
+          viewportWidth,
         });
       });
+      logAppShellPageOverflowOffenders(pathname, viewportWidth);
     };
 
-    const runProbe = () => {
-      probe();
-      logHorizontalOverflowOffenders(document.body, 20);
-    };
-
-    runProbe();
-    const t0 = window.setTimeout(runProbe, 0);
-    const t1 = window.setTimeout(runProbe, 500);
-    const t2 = window.setTimeout(runProbe, 1500);
+    const timeoutIds = SCAN_DELAYS_MS.map((delay) =>
+      window.setTimeout(runProbe, delay),
+    );
     window.addEventListener("resize", runProbe);
     return () => {
-      window.clearTimeout(t0);
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
+      for (const id of timeoutIds) window.clearTimeout(id);
       window.removeEventListener("resize", runProbe);
       style.remove();
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }

@@ -32,8 +32,8 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
                 {children}
               </div>
             </main>
+            <AppMobileBottomNav />
           </div>
-          <AppMobileBottomNav />
         </div>
       </AdminSupportUnreadProvider>
     </FeedbackProvider>

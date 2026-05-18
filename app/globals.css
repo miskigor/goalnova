@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
 :root {
+  --gn-app-header-offset: calc(3.5rem + env(safe-area-inset-top, 0px));
+  --gn-app-bottom-nav-offset: calc(
+    4.25rem + max(0.5rem, env(safe-area-inset-bottom, 0px))
+  );
   --gn-bg: #000000;
   --gn-surface: #0a0b0c;
   --gn-surface-elevated: #121314;
@@ -58,7 +62,7 @@ html {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 [data-app-column],
@@ -66,6 +70,14 @@ html {
 [data-app-main-inner] {
   max-width: 100%;
   min-width: 0;
+  overflow-x: clip;
+}
+
+[data-app-bottom-nav] {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  inset-inline: 0;
 }
 
 body {
@@ -74,7 +86,7 @@ body {
   min-width: 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: hidden;
   overscroll-behavior-x: none;
   touch-action: pan-y;
   background-color: var(--gn-bg);

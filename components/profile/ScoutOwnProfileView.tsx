@@ -84,9 +84,9 @@ export function ScoutOwnProfileView({
   const avatarUrl = user.avatar_url?.trim() || null;
 
   const inner = (
-    <div className="box-border w-full min-w-0 max-w-full space-y-6">
-      <header className="min-w-0 space-y-3">
-        <div className="flex min-w-0 items-center gap-3">
+    <div className="box-border w-full min-w-0 max-w-full space-y-6 overflow-x-clip">
+      <header className="min-w-0 max-w-full space-y-3 overflow-x-clip">
+        <div className="flex min-w-0 max-w-full items-center gap-3">
           <ProfileAvatar name={displayName} imageUrl={avatarUrl || undefined} className="shrink-0" />
           <div className="min-w-0 flex-1 overflow-hidden space-y-1">
             <div className="flex flex-wrap items-center gap-2">
@@ -117,7 +117,7 @@ export function ScoutOwnProfileView({
 
       <section
         aria-label={tProfile("scoutDetailsAria")}
-        className="space-y-4 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4 sm:p-5"
+        className="box-border w-full min-w-0 max-w-full space-y-4 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4 sm:p-5"
       >
         <DetailRow label={tFields("organization")} value={profile.organization} />
         <DetailRow label={tFields("scoutRole")} value={profile.role} />
@@ -139,7 +139,7 @@ export function ScoutOwnProfileView({
 
       <section
         aria-label={tProfile("scoutPlanSectionAria")}
-        className="space-y-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/25 p-4 sm:p-5"
+        className="box-border w-full min-w-0 max-w-full space-y-3 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/25 p-4 sm:p-5"
       >
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-gn-text-tertiary">

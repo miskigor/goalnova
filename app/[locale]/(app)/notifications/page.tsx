@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MessagesInboxView } from "@/components/messages/MessagesInboxView";
+import { APP_MESSAGES_INBOX_PAGE_CLASS } from "@/lib/layout/appShellClasses";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -16,8 +17,8 @@ export default async function NotificationsPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "messages" });
 
   return (
-    <div className="mx-auto w-full min-w-0 max-w-lg pb-8 lg:max-w-2xl">
-      <h1 className="mb-5 text-xl font-semibold tracking-tight text-gn-text sm:mb-6 sm:text-2xl">
+    <div data-messages-inbox className={APP_MESSAGES_INBOX_PAGE_CLASS}>
+      <h1 className="mb-5 min-w-0 break-words text-xl font-semibold tracking-tight text-gn-text sm:mb-6 sm:text-2xl">
         {t("title")}
       </h1>
       <MessagesInboxView />
