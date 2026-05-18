@@ -55,11 +55,11 @@ export const APP_MESSAGES_THREAD_PAGE_CLASS = [
 
 /** Stable profile column — same width on loading skeleton and loaded content (mobile-first). */
 export const APP_PROFILE_CONTENT_CLASS =
-  "mx-auto box-border w-full min-w-0 max-w-md overflow-x-clip [contain:inline-size]";
+  "mx-auto box-border w-full min-w-0 max-w-md overflow-x-clip px-4";
 
 export const APP_PROFILE_SHELL_CLASS = [
   APP_PROFILE_CONTENT_CLASS,
-  "space-y-6 overflow-x-hidden pb-8 lg:max-w-2xl",
+  "space-y-6 overflow-x-clip pb-8 lg:max-w-2xl",
 ].join(" ");
 
 export const APP_PROFILE_LOADING_INNER_CLASS =
@@ -75,7 +75,7 @@ export const PUBLIC_PLAYER_PROFILE_SECTION_CLASS =
 
 /** `/scout-apply` — centered column; main shell already applies horizontal padding. */
 export const SCOUT_APPLY_PAGE_SHELL_CLASS =
-  "mx-auto box-border w-full min-w-0 max-w-lg overflow-x-clip [contain:inline-size]";
+  "mx-auto box-border w-full min-w-0 max-w-lg overflow-x-clip";
 
 /** Scout verification form and status cards. */
 export const SCOUT_APPLY_SECTION_CLASS =
@@ -83,7 +83,11 @@ export const SCOUT_APPLY_SECTION_CLASS =
 
 /** `/scout-dashboard` — centered column; main shell already applies horizontal padding. */
 export const SCOUT_DASHBOARD_PAGE_SHELL_CLASS =
-  "mx-auto box-border w-full min-w-0 max-w-lg overflow-x-clip [contain:inline-size] lg:max-w-4xl";
+  "mx-auto box-border w-full min-w-0 max-w-lg overflow-x-clip lg:max-w-4xl";
+
+/** `/discover` — bounded column inside main shell padding (no extra horizontal px). */
+export const DISCOVER_PAGE_SHELL_CLASS =
+  "mx-auto box-border w-full min-w-0 max-w-lg overflow-x-clip pb-12 pt-4 lg:max-w-3xl lg:pb-8 lg:pt-6";
 
 /** Scout dashboard sections, cards, and lists. */
 export const SCOUT_DASHBOARD_SECTION_CLASS =

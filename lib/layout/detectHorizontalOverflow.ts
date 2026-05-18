@@ -51,6 +51,7 @@ export type PageOverflowHit = {
   tag: string;
   id: string | null;
   className: string;
+  dataAttributes: string;
   textPreview: string;
   rectLeft: number;
   rectRight: number;
@@ -59,6 +60,12 @@ export type PageOverflowHit = {
   parentClassName: string;
   reasons: string[];
 };
+
+function formatElementDataAttributes(el: HTMLElement): string {
+  return Object.entries(el.dataset)
+    .map(([key, value]) => `data-${key}="${value ?? ""}"`)
+    .join(" ");
+}
 
 function collectPageOverflowHits(
   root: HTMLElement,
@@ -85,6 +92,7 @@ function collectPageOverflowHits(
         tag: el.tagName.toLowerCase(),
         id: el.id || null,
         className: String(el.className).slice(0, 160),
+        dataAttributes: formatElementDataAttributes(el).slice(0, 160),
         textPreview: text,
         rectLeft: Math.round(rect.left * 10) / 10,
         rectRight: Math.round(rect.right * 10) / 10,
@@ -173,6 +181,7 @@ export function logScoutApplyPageOverflowOffenders(
       tag: el.tagName.toLowerCase(),
       id: el.id || null,
       className: String(el.className).slice(0, 160),
+      dataAttributes: formatElementDataAttributes(el).slice(0, 160),
       textPreview: `[probe ${selector}]`,
       rectLeft: Math.round(rect.left * 10) / 10,
       rectRight: Math.round(rect.right * 10) / 10,
@@ -244,6 +253,7 @@ export function logScoutDashboardPageOverflowOffenders(
       tag: el.tagName.toLowerCase(),
       id: el.id || null,
       className: String(el.className).slice(0, 160),
+      dataAttributes: formatElementDataAttributes(el).slice(0, 160),
       textPreview: `[probe ${selector}]`,
       rectLeft: Math.round(rect.left * 10) / 10,
       rectRight: Math.round(rect.right * 10) / 10,
@@ -289,6 +299,8 @@ const APP_SHELL_PROBE_SELECTORS = [
   "[data-messages-thread]",
   "[data-account-menu]",
   "[data-account-menu-backdrop]",
+  "[data-scout-ai-insight]",
+  "[data-public-video-detail]",
 ] as const;
 
 /**
@@ -319,6 +331,7 @@ export function logAppShellPageOverflowOffenders(
       tag: el.tagName.toLowerCase(),
       id: el.id || null,
       className: String(el.className).slice(0, 160),
+      dataAttributes: formatElementDataAttributes(el).slice(0, 160),
       textPreview: `[probe ${selector}]`,
       rectLeft: Math.round(rect.left * 10) / 10,
       rectRight: Math.round(rect.right * 10) / 10,

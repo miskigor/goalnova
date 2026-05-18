@@ -87,7 +87,10 @@ export function PublicVideoDetailPanel({ videoId, ownerUserId }: Props) {
   const isScoutViewer = viewerRole === "scout";
 
   return (
-    <section className="space-y-4 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4">
+    <section
+      data-public-video-detail
+      className="box-border w-full min-w-0 max-w-full space-y-4 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4"
+    >
       <h2 className="text-xs font-semibold uppercase tracking-wider text-gn-text-tertiary">
         {tVideo("captionLabel")}
       </h2>

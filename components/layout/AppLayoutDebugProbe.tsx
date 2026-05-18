@@ -17,6 +17,8 @@ const PROBE_SELECTORS = [
   "[data-messages-thread]",
   "[data-account-menu]",
   "[data-account-menu-backdrop]",
+  "[data-scout-ai-insight]",
+  "[data-public-video-detail]",
 ].join(",");
 
 const OUTLINE_CSS = `
@@ -30,7 +32,9 @@ const OUTLINE_CSS = `
   [data-messages-inbox],
   [data-messages-thread],
   [data-account-menu],
-  [data-account-menu-backdrop] {
+  [data-account-menu-backdrop],
+  [data-scout-ai-insight],
+  [data-public-video-detail] {
     outline: 1px dashed rgba(249, 115, 22, 0.35);
     outline-offset: -1px;
   }

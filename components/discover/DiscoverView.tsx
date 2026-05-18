@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { DISCOVER_PAGE_SHELL_CLASS } from "@/lib/layout/appShellClasses";
 import { filterPlayerProfiles } from "@/lib/discover/filterPlayerProfiles";
 import {
   fetchAllPlayerProfilesForDiscover,
@@ -141,7 +142,7 @@ export function DiscoverView() {
 
   if (discoverLockedForUnverifiedScout) {
     return (
-      <div className="mx-auto w-full max-w-lg space-y-4 px-4 pb-12 pt-6 sm:px-6">
+      <div className={`${DISCOVER_PAGE_SHELL_CLASS} space-y-4 pt-2`}>
         <h1 className="text-2xl font-semibold tracking-tight text-gn-text-primary">
           {tSv("discoverLockedTitle")}
         </h1>
@@ -159,7 +160,7 @@ export function DiscoverView() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 pb-12 pt-4 sm:px-6 lg:max-w-5xl lg:pb-8 lg:pt-6">
+    <div className={DISCOVER_PAGE_SHELL_CLASS}>
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight text-gn-text-primary">
           {t("title")}
@@ -168,7 +169,7 @@ export function DiscoverView() {
       </header>
 
       <section
-        className="mb-6 space-y-3 rounded-xl border border-gn-border-subtle bg-gn-surface p-4"
+        className="mb-6 box-border w-full min-w-0 max-w-full space-y-3 overflow-x-clip rounded-xl border border-gn-border-subtle bg-gn-surface p-4"
         aria-label={t("filtersAria")}
       >
         <div className="grid gap-3 sm:grid-cols-2">

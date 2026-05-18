@@ -155,7 +155,9 @@ export function ScoutOwnProfileView({
         {!isPremiumPlan ? (
           <ul className="list-disc space-y-1.5 ps-5 text-sm text-gn-text-secondary">
             {FREE_SCOUT_FEATURE_KEYS.map((key) => (
-              <li key={key}>{tPremium(`scoutPlans.free.${key}`)}</li>
+              <li key={key} className="break-words">
+                {tPremium(`scoutPlans.free.${key}`)}
+              </li>
             ))}
           </ul>
         ) : null}

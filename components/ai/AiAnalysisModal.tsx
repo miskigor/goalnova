@@ -253,21 +253,23 @@ function ConfidenceMicro({
   const pct = Math.round(Math.min(100, Math.max(0, value * 100)));
   const low = value < 0.45;
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between gap-2 text-xs">
+    <div className="min-w-0 space-y-1.5">
+      <div className="flex min-w-0 items-center justify-between gap-2 text-xs">
         <span
           className={
-            low ? "font-medium text-amber-300/95" : "text-gn-text-tertiary"
+            low
+              ? "min-w-0 flex-1 break-words font-medium text-amber-300/95"
+              : "min-w-0 flex-1 break-words text-gn-text-tertiary"
           }
         >
           {label}
           {low ? (
-            <span className="ml-1.5 rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200/95">
+            <span className="ml-1.5 inline-block max-w-full break-words rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200/95">
               {lowLabel}
             </span>
           ) : null}
         </span>
-        <span className="tabular-nums text-gn-text-secondary">{pct}%</span>
+        <span className="shrink-0 tabular-nums text-gn-text-secondary">{pct}%</span>
       </div>
       <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06] ring-1 ring-white/[0.06]">
         <div
@@ -352,7 +354,7 @@ export function AiAnalysisResultPanel({
   };
   if (scores.valid_for_football_analysis === false) {
     return (
-      <div className="space-y-5">
+      <div className="box-border w-full min-w-0 max-w-full space-y-5 overflow-x-clip">
         <p className="text-center text-xs text-gn-text-tertiary">{t("fromSavedHint")}</p>
 
         <div className="rounded-2xl border border-amber-500/35 bg-gradient-to-br from-amber-950/40 to-transparent p-5 text-center ring-1 ring-amber-500/25">
@@ -426,7 +428,7 @@ export function AiAnalysisResultPanel({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="box-border w-full min-w-0 max-w-full space-y-5 overflow-x-clip">
       <p className="text-center text-xs text-gn-text-tertiary">{t("fromSavedHint")}</p>
 
       <div className="rounded-2xl border border-gn-accent/35 bg-gradient-to-br from-gn-accent/15 to-transparent p-5 text-center ring-1 ring-gn-accent/20">
@@ -454,17 +456,17 @@ export function AiAnalysisResultPanel({
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gn-text-tertiary">
               {t("clipUnderstanding")}
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-gn-text">
+            <p className="mt-2 break-words text-sm leading-relaxed text-gn-text">
               {localizedClipSummary}
             </p>
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              <span className="rounded-md bg-white/[0.06] px-2 py-1 text-[11px] font-medium text-gn-text-secondary">
+            <div className="mt-3 flex min-w-0 max-w-full flex-wrap gap-1.5">
+              <span className="max-w-full break-words rounded-md bg-white/[0.06] px-2 py-1 text-[11px] font-medium text-gn-text-secondary">
                 {va.clip_type.replace(/_/g, " ")}
               </span>
               {va.visible_actions.map((a) => (
                 <span
                   key={a}
-                  className="rounded-md border border-white/[0.08] px-2 py-1 text-[11px] text-gn-text-tertiary"
+                  className="max-w-full break-words rounded-md border border-white/[0.08] px-2 py-1 text-[11px] text-gn-text-tertiary"
                 >
                   {formatActionChip(a)}
                 </span>
@@ -496,9 +498,9 @@ export function AiAnalysisResultPanel({
                   if (!m || m.status !== "assessable") return null;
                   const v = Math.min(100, Math.max(0, m.score));
                   return (
-                    <div key={key} className="space-y-2">
-                      <div className="flex items-baseline justify-between gap-3">
-                        <span className="text-sm font-medium text-gn-text">
+                    <div key={key} className="min-w-0 space-y-2">
+                      <div className="flex min-w-0 items-baseline justify-between gap-3">
+                        <span className="min-w-0 flex-1 break-words text-sm font-medium text-gn-text">
                           {metricLabel(key)}
                         </span>
                         <span className="tabular-nums text-sm font-semibold text-gn-accent">
@@ -517,7 +519,7 @@ export function AiAnalysisResultPanel({
                           style={{ width: `${v}%` }}
                         />
                       </div>
-                      <p className="text-xs leading-relaxed text-gn-text-secondary">
+                      <p className="break-words text-xs leading-relaxed text-gn-text-secondary">
                         <span className="font-medium text-gn-text-tertiary">
                           {t("evidenceLabel")}{" "}
                         </span>
@@ -673,13 +675,13 @@ export function AiAnalysisModal({
       onClick={onClose}
     >
       <div
-        className="box-border max-h-[min(92dvh,720px)] w-full min-w-0 max-w-md overflow-y-auto overflow-x-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#14161c] to-gn-bg shadow-2xl shadow-black/50 sm:max-w-lg"
+        className="box-border max-h-[min(92dvh,720px)] w-full min-w-0 max-w-[min(32rem,calc(100vw-1.5rem))] overflow-y-auto overflow-x-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#14161c] to-gn-bg shadow-2xl shadow-black/50 sm:max-w-lg"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 z-[1] flex items-center justify-between gap-3 border-b border-white/[0.06] bg-[#14161c]/95 px-4 py-3.5 backdrop-blur-sm sm:px-5">
+        <div className="sticky top-0 z-[1] flex min-w-0 items-center justify-between gap-3 border-b border-white/[0.06] bg-[#14161c]/95 px-4 py-3.5 backdrop-blur-sm sm:px-5">
           <h2
             id="ai-analysis-title"
-            className="text-lg font-semibold tracking-tight text-gn-text"
+            className="min-w-0 flex-1 truncate text-lg font-semibold tracking-tight text-gn-text"
           >
             {titleOverride ?? t("modalTitle")}
           </h2>

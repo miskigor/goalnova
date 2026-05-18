@@ -52,11 +52,14 @@ export function ScoutAiInsightBlock({
 
   if (gate.isUnverifiedScout) {
     return (
-      <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3 text-sm text-gn-text-secondary">
-        <p>{t("verificationRequired")}</p>
+      <div
+        data-scout-ai-insight
+        className="box-border w-full min-w-0 max-w-full overflow-x-clip rounded-xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3 text-sm text-gn-text-secondary"
+      >
+        <p className="break-words">{t("verificationRequired")}</p>
         <Link
           href="/scout-apply"
-          className="mt-2 inline-flex font-medium text-gn-accent hover:underline"
+          className="mt-2 inline-flex max-w-full font-medium text-gn-accent hover:underline"
         >
           {t("completeVerification")}
         </Link>
@@ -149,8 +152,11 @@ export function ScoutAiInsightBlock({
   };
 
   return (
-    <div className="box-border w-full min-w-0 max-w-full space-y-3 overflow-x-clip rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4">
-      <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-gn-accent">
+    <div
+      data-scout-ai-insight
+      className="box-border w-full min-w-0 max-w-full space-y-3 overflow-x-clip rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4"
+    >
+      <h3 className="break-words text-xs font-bold uppercase tracking-[0.12em] text-gn-accent">
         {t("title")}
       </h3>
 
@@ -163,24 +169,27 @@ export function ScoutAiInsightBlock({
       ) : null}
 
       {limitReached ? (
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-gn-text">{t("upgradeTitle")}</p>
-          <p className="text-sm text-gn-text-secondary">{t("upgradeBody")}</p>
-          <Link href="/premium" className={`${GN_PRIMARY_BUTTON_CLASS} inline-flex w-full justify-center`}>
+        <div className="min-w-0 space-y-2">
+          <p className="break-words text-sm font-medium text-gn-text">{t("upgradeTitle")}</p>
+          <p className="break-words text-sm text-gn-text-secondary">{t("upgradeBody")}</p>
+          <Link
+            href="/premium"
+            className={`${GN_PRIMARY_BUTTON_CLASS} flex w-full max-w-full min-w-0 justify-center text-center`}
+          >
             {t("upgradeCta")}
           </Link>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="min-w-0 space-y-2">
           {!isPro && !existingAnalysis ? (
-            <p className="text-xs text-gn-text-tertiary">
+            <p className="break-words text-xs text-gn-text-tertiary">
               {t("previewsLeft", { count: previewsLeft, limit: previewsLimit })}
             </p>
           ) : null}
           <button
             type="button"
             onClick={() => void (existingAnalysis ? openView() : openRun())}
-            className={`${GN_PRIMARY_BUTTON_CLASS} w-full`}
+            className={`${GN_PRIMARY_BUTTON_CLASS} flex w-full max-w-full min-w-0 justify-center text-center [overflow-wrap:anywhere]`}
           >
             {existingAnalysis ? t("view") : t("run")}
           </button>
@@ -188,7 +197,7 @@ export function ScoutAiInsightBlock({
       )}
 
       {actionError ? (
-        <p className="text-xs text-gn-accent" role="alert">
+        <p className="break-words text-xs text-gn-accent" role="alert">
           {actionError}
         </p>
       ) : null}
