@@ -19,10 +19,10 @@ export function UnreadNotificationBadge({
 
   const layout =
     variant === "navCompact"
-      ? "absolute end-0 top-0 h-3.5 min-w-3.5 translate-x-1/4 -translate-y-1/4 px-[3px] text-[8px]"
+      ? "absolute end-0 top-0 h-3.5 min-w-3.5 -translate-y-1/4 px-[3px] text-[8px]"
       : variant === "navSidebar"
-        ? "absolute end-0 top-0 translate-x-1/3 -translate-y-1/3 h-[1.125rem] min-w-[1.125rem] px-1 text-[10px]"
-        : "absolute end-0 top-0 translate-x-1/3 -translate-y-1/4 h-[1.125rem] min-w-[1.125rem] px-1 text-[10px]";
+        ? "absolute end-0 top-0 -translate-y-1/3 h-[1.125rem] min-w-[1.125rem] px-1 text-[10px]"
+        : "absolute end-0 top-0 -translate-y-1/4 h-[1.125rem] min-w-[1.125rem] px-1 text-[10px]";
 
   return (
     <span

@@ -19,7 +19,7 @@ function bottomItemClass(pathname: string, href: string) {
     "group flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 text-[clamp(7.5px,2.35vw,10px)] font-semibold leading-[1.05] tracking-tight transition-[color,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors sm:text-[10px]",
     active
       ? "text-gn-accent"
-      : "text-gn-text-tertiary hover:text-gn-text-secondary motion-safe:hover:scale-105",
+      : "text-gn-text-tertiary hover:text-gn-text-secondary",
   ].join(" ");
 }
 

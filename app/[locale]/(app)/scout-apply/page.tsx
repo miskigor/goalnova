@@ -17,7 +17,10 @@ export default async function ScoutApplyPage({ params }: Props) {
   const t = await getTranslations("scoutVerification");
 
   return (
-    <div className={`${SCOUT_APPLY_PAGE_SHELL_CLASS} space-y-4 pb-8 sm:space-y-6 sm:pb-10`}>
+    <div
+      data-scout-apply-page
+      className={`${SCOUT_APPLY_PAGE_SHELL_CLASS} space-y-4 pb-8 sm:space-y-6 sm:pb-10`}
+    >
       <header className="min-w-0 max-w-full">
         <h1 className="break-words text-lg font-semibold leading-snug tracking-tight text-gn-text sm:text-2xl sm:leading-tight">
           {t("pageTitle")}

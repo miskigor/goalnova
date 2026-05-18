@@ -42,6 +42,12 @@ const logoImageFilterClass =
   "drop-shadow-[0_0_1px_rgba(255,255,255,0.14),0_0_14px_rgba(249,115,22,0.14)] " +
   "group-hover:drop-shadow-[0_0_1px_rgba(255,255,255,0.22),0_0_32px_rgba(249,115,22,0.55)]";
 
+/** Tighter glow in app header — large filters paint outside the box on iOS Safari. */
+const logoImageFilterHeaderClass =
+  "transition-[filter] duration-300 ease-out motion-reduce:transition-none " +
+  "drop-shadow-[0_0_1px_rgba(255,255,255,0.12),0_0_6px_rgba(249,115,22,0.12)] " +
+  "group-hover:drop-shadow-[0_0_1px_rgba(255,255,255,0.18),0_0_12px_rgba(249,115,22,0.35)]";
+
 const wordmarkTextClass: Record<LogoVariant, string> = {
   header: "text-base font-extrabold tracking-tight sm:text-lg",
   landing: "text-2xl font-extrabold tracking-tight sm:text-3xl md:text-4xl",
@@ -72,7 +78,9 @@ export function Logo({
 }: LogoProps) {
   const resolvedHref = href === undefined ? "/" : href;
   const imgClass =
-    `block object-contain object-left ${variantClass[variant]} ${logoImageFilterClass}`.trim();
+    `block max-w-full object-contain object-left ${variantClass[variant]} ${
+      variant === "header" ? logoImageFilterHeaderClass : logoImageFilterClass
+    }`.trim();
 
   const rasterQuality =
     BRAND_LOGO_SRC.endsWith(".svg")
@@ -103,14 +111,18 @@ export function Logo({
 
   const mark = (
     <>
-      {image}
+      {variant === "header" ? (
+        <span className="inline-flex shrink-0 overflow-hidden rounded-sm">{image}</span>
+      ) : (
+        image
+      )}
       {showWordmark ? <LogoWordmark variant={variant} /> : null}
     </>
   );
 
   const gapClass = showWordmark ? "gap-2 sm:gap-2.5" : "gap-0";
 
-  const linkShrinkClass = variant === "header" ? "min-w-0 shrink" : "shrink-0";
+  const linkShrinkClass = variant === "header" ? "min-w-0 max-w-full shrink" : "shrink-0";
   const linkLayoutClass = variant === "header" ? "flex" : "inline-flex";
 
   if (resolvedHref) {

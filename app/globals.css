@@ -43,8 +43,7 @@ html {
   scroll-behavior: smooth;
   width: 100%;
   max-width: 100%;
-  /* Hard lock horizontal movement on all screens. */
-  overflow-x: hidden;
+  overflow-x: clip;
   overscroll-behavior-x: none;
   touch-action: pan-y;
 }
@@ -59,7 +58,14 @@ html {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+[data-app-column],
+[data-app-main],
+[data-app-main-inner] {
+  max-width: 100%;
+  min-width: 0;
 }
 
 body {
@@ -68,7 +74,7 @@ body {
   min-width: 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   overscroll-behavior-x: none;
   touch-action: pan-y;
   background-color: var(--gn-bg);
@@ -84,6 +90,13 @@ body {
     transparent 58%
   );
   background-attachment: fixed;
+}
+
+/* iOS Safari: fixed body gradients often cause horizontal rubber-banding. */
+@media (max-width: 1023px) {
+  body {
+    background-attachment: scroll;
+  }
 }
 
 html[dir="rtl"] body {
@@ -154,24 +167,39 @@ select:focus {
   }
 }
 
-/** Indeterminate storage upload bar (ScoutApplyForm proof document) */
-@keyframes gn-upload-indeterminate {
+/** Indeterminate storage upload bar (ScoutApplyForm) — slide via inset, not transform (WebKit overflow-safe). */
+.gn-upload-indeterminate-track {
+  position: relative;
+  overflow: clip;
+  contain: paint;
+}
+
+@keyframes gn-upload-indeterminate-slide {
   from {
-    transform: translateX(0);
+    inset-inline-start: 0;
   }
   to {
-    transform: translateX(200%);
+    inset-inline-start: 65%;
   }
 }
 
 .gn-upload-indeterminate-bar {
-  animation: gn-upload-indeterminate 1.25s ease-in-out infinite;
+  position: absolute;
+  inset-block: 0;
+  width: 35%;
+  max-width: 100%;
+  inset-inline-start: 0;
+  transform: none;
+  animation: gn-upload-indeterminate-slide 1.25s ease-in-out infinite alternate;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .gn-upload-indeterminate-bar {
-    animation: none;
+    position: static;
+    inset: auto;
     width: 100% !important;
+    animation: none;
+    opacity: 0.85;
   }
 }
 

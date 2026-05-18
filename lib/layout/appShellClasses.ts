@@ -1,10 +1,10 @@
 /** Shared mobile app shell layout — single horizontal padding, no side safe-area (WhatsApp WebView-safe). */
 
 export const APP_SHELL_ROOT_CLASS =
-  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-hidden bg-gn-bg text-gn-text";
+  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text";
 
 export const APP_SHELL_COLUMN_CLASS =
-  "mx-auto flex min-h-dvh min-w-0 w-full max-w-full flex-1 flex-col overflow-x-hidden ps-0 lg:ps-[15.5rem]";
+  "mx-auto flex min-h-dvh min-w-0 w-full max-w-full flex-1 flex-col overflow-x-clip ps-0 lg:ps-[15.5rem]";
 
 export const APP_SHELL_MAIN_CLASS = [
   "mx-auto box-border flex w-full min-w-0 max-w-full flex-1 flex-col items-stretch overflow-x-clip px-4",
@@ -14,7 +14,7 @@ export const APP_SHELL_MAIN_CLASS = [
 ].join(" ");
 
 export const APP_SHELL_MAIN_INNER_CLASS =
-  "mx-auto box-border w-full min-w-0 max-w-full overflow-x-hidden";
+  "mx-auto box-border w-full min-w-0 max-w-full overflow-x-clip";
 
 export const APP_MOBILE_HEADER_CLASS = [
   "fixed top-0 left-0 right-0 z-[55] box-border w-full max-w-full shrink-0 overflow-x-clip",
@@ -25,7 +25,7 @@ export const APP_MOBILE_HEADER_CLASS = [
 ].join(" ");
 
 export const APP_MOBILE_HEADER_INNER_CLASS =
-  "mx-auto flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 box-border px-4";
+  "mx-auto flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-clip box-border px-4";
 
 export const APP_MOBILE_BOTTOM_NAV_CLASS = [
   "fixed bottom-0 left-0 right-0 z-[60] box-border flex w-full max-w-full min-w-0 overflow-x-clip",
@@ -57,7 +57,7 @@ export const PUBLIC_PLAYER_PROFILE_SECTION_CLASS =
 
 /** `/scout-apply` — centered column; main shell already applies horizontal padding. */
 export const SCOUT_APPLY_PAGE_SHELL_CLASS =
-  "mx-auto box-border w-full min-w-0 max-w-lg overflow-x-clip";
+  "mx-auto box-border w-full min-w-0 max-w-lg overflow-x-clip [contain:inline-size]";
 
 /** Scout verification form and status cards. */
 export const SCOUT_APPLY_SECTION_CLASS =

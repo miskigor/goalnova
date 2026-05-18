@@ -31,14 +31,14 @@ export function AppMobileHeader() {
   return (
     <header data-app-mobile-header className={APP_MOBILE_HEADER_CLASS}>
       <div className={APP_MOBILE_HEADER_INNER_CLASS}>
-        <Logo href="/home" variant="header" className="shrink-0" />
+        <Logo href="/home" variant="header" className="min-w-0 max-w-[min(100%,12rem)]" />
 
-        <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
+        <div className="flex min-w-0 shrink items-center gap-0.5 overflow-x-clip sm:gap-1">
           {authed && user && adminLoaded && isAdmin ? (
             <Link
               href="/admin"
               className={
-                "relative flex size-9 shrink-0 items-center justify-center rounded-lg border text-gn-accent transition active:scale-[0.98] hover:bg-gn-accent/15 " +
+                "relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-lg border text-gn-accent transition active:scale-[0.98] hover:bg-gn-accent/15 " +
                 (adminActive
                   ? "border-gn-accent/60 bg-gn-accent/15"
                   : "border-gn-accent/40 bg-gn-accent/10")

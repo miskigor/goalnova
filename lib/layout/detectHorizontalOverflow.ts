@@ -47,28 +47,24 @@ export function logHorizontalOverflowOffenders(
   return hits;
 }
 
-export type ProfilePageOverflowHit = {
+export type PageOverflowHit = {
   tag: string;
+  id: string | null;
   className: string;
   textPreview: string;
   rectLeft: number;
   rectRight: number;
   scrollWidth: number;
   clientWidth: number;
+  parentClassName: string;
   reasons: string[];
 };
 
-/**
- * Development-only: detailed overflow log for public player profile (`/player/[slug]`).
- * Not used in production builds (`isDev` is false).
- */
-export function logProfilePageOverflowOffenders(
+function collectPageOverflowHits(
   root: HTMLElement,
-  viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0,
-): ProfilePageOverflowHit[] {
-  if (!isDev || typeof document === "undefined" || viewportWidth <= 0) return [];
-
-  const hits: ProfilePageOverflowHit[] = [];
+  viewportWidth: number,
+): PageOverflowHit[] {
+  const hits: PageOverflowHit[] = [];
 
   const walk = (el: HTMLElement) => {
     const rect = el.getBoundingClientRect();
@@ -84,14 +80,17 @@ export function logProfilePageOverflowOffenders(
     }
     if (reasons.length > 0) {
       const text = (el.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 80);
+      const parent = el.parentElement;
       hits.push({
         tag: el.tagName.toLowerCase(),
+        id: el.id || null,
         className: String(el.className).slice(0, 160),
         textPreview: text,
         rectLeft: Math.round(rect.left * 10) / 10,
         rectRight: Math.round(rect.right * 10) / 10,
         scrollWidth: el.scrollWidth,
         clientWidth: el.clientWidth,
+        parentClassName: parent ? String(parent.className).slice(0, 120) : "",
         reasons,
       });
     }
@@ -101,8 +100,22 @@ export function logProfilePageOverflowOffenders(
   };
 
   walk(root);
-
   hits.sort((a, b) => b.rectRight - a.rectRight);
+  return hits;
+}
+
+export type ProfilePageOverflowHit = PageOverflowHit;
+
+/**
+ * Development-only: detailed overflow log for public player profile (`/player/[slug]`).
+ */
+export function logProfilePageOverflowOffenders(
+  root: HTMLElement,
+  viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0,
+): ProfilePageOverflowHit[] {
+  if (!isDev || typeof document === "undefined" || viewportWidth <= 0) return [];
+
+  const hits = collectPageOverflowHits(root, viewportWidth);
 
   if (hits.length > 0) {
     console.warn(
@@ -116,4 +129,77 @@ export function logProfilePageOverflowOffenders(
   }
 
   return hits;
+}
+
+const SCOUT_APPLY_PROBE_SELECTORS = [
+  "html",
+  "body",
+  "[data-app-root]",
+  "[data-app-column]",
+  "[data-app-main]",
+  "[data-app-main-inner]",
+  "[data-app-mobile-header]",
+  "[data-app-bottom-nav]",
+  "[data-scout-apply-page]",
+  "[data-scout-apply-form]",
+  ".gn-upload-indeterminate-track",
+  ".gn-upload-indeterminate-bar",
+] as const;
+
+/**
+ * Development-only: detailed overflow log for `/scout-apply` (full tree + shell probes).
+ */
+export function logScoutApplyPageOverflowOffenders(
+  viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0,
+): PageOverflowHit[] {
+  if (!isDev || typeof document === "undefined" || viewportWidth <= 0) return [];
+
+  const docEl = document.documentElement;
+  const allHits = collectPageOverflowHits(docEl, viewportWidth);
+
+  const probeHits: PageOverflowHit[] = [];
+  for (const selector of SCOUT_APPLY_PROBE_SELECTORS) {
+    const el = document.querySelector(selector);
+    if (!(el instanceof HTMLElement)) continue;
+    const rect = el.getBoundingClientRect();
+    const reasons: string[] = [];
+    if (el.scrollWidth > el.clientWidth + 1) {
+      reasons.push("scrollWidth>clientWidth");
+    }
+    if (rect.left < -1) reasons.push("rect.left<0");
+    if (rect.right > viewportWidth + 1) reasons.push("rect.right>viewport");
+    if (reasons.length === 0) continue;
+    probeHits.push({
+      tag: el.tagName.toLowerCase(),
+      id: el.id || null,
+      className: String(el.className).slice(0, 160),
+      textPreview: `[probe ${selector}]`,
+      rectLeft: Math.round(rect.left * 10) / 10,
+      rectRight: Math.round(rect.right * 10) / 10,
+      scrollWidth: el.scrollWidth,
+      clientWidth: el.clientWidth,
+      parentClassName: el.parentElement
+        ? String(el.parentElement.className).slice(0, 120)
+        : "",
+      reasons: [...reasons, `selector:${selector}`],
+    });
+  }
+
+  const merged = [...probeHits, ...allHits];
+  const docScroll = docEl.scrollWidth;
+  const canScrollX = docScroll > viewportWidth + 1;
+
+  if (merged.length > 0 || canScrollX) {
+    console.warn(
+      `[scout-apply-overflow] ${merged.length} suspect(s) @ viewport ${viewportWidth}px` +
+        (canScrollX ? ` — document.scrollWidth=${docScroll}` : ""),
+      merged.slice(0, 30),
+    );
+  } else {
+    console.info(
+      `[scout-apply-overflow] no overflow suspects @ viewport ${viewportWidth}px`,
+    );
+  }
+
+  return merged;
 }

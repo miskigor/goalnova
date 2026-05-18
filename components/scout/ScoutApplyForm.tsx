@@ -15,6 +15,7 @@ import {
 } from "@/lib/supabase/scoutVerificationUpload";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { SCOUT_APPLY_SECTION_CLASS } from "@/lib/layout/appShellClasses";
+import { ScoutApplyOverflowDebug } from "@/components/scout/ScoutApplyOverflowDebug";
 import { isApprovedScoutUser } from "@/lib/scoutVerification";
 import {
   handleProfileFieldPaste,
@@ -32,9 +33,20 @@ const inputClass =
 const fieldWrapClass = "min-w-0 max-w-full";
 const cardClass = `${SCOUT_APPLY_SECTION_CLASS} rounded-2xl border border-gn-border-subtle bg-gn-surface/40`;
 
+const scoutSubmitButtonClass = `${GN_PRIMARY_BUTTON_CLASS} box-border w-full min-w-0 max-w-full truncate py-3.5 shadow-none sm:shadow-[0_8px_28px_-6px_rgba(249,115,22,0.45)]`;
+
 type SubmitPhase = "idle" | "uploading" | "saving";
 
 export function ScoutApplyForm() {
+  return (
+    <>
+      <ScoutApplyOverflowDebug />
+      <ScoutApplyFormInner />
+    </>
+  );
+}
+
+function ScoutApplyFormInner() {
   const t = useTranslations("scoutVerification");
   const tCommon = useTranslations("authCommon");
   const router = useRouter();
@@ -348,7 +360,7 @@ export function ScoutApplyForm() {
         type="submit"
         disabled={submitting}
         aria-busy={submitting}
-        className={`${GN_PRIMARY_BUTTON_CLASS} box-border w-full min-w-0 max-w-full truncate py-3.5`}
+        className={scoutSubmitButtonClass}
       >
         {submitting ? t("applying") : t("submitApplication")}
       </button>
@@ -382,6 +394,7 @@ export function ScoutApplyForm() {
           <p className="mt-1 break-words text-sm text-gn-text-secondary">{t("reapplySubtitle")}</p>
         </div>
         <form
+          data-scout-apply-form
           onSubmit={(e) => void onSubmit(e)}
           className={`${SCOUT_APPLY_SECTION_CLASS} space-y-4`}
         >
@@ -394,6 +407,7 @@ export function ScoutApplyForm() {
   /* none */
   return (
     <form
+      data-scout-apply-form
       onSubmit={(e) => void onSubmit(e)}
       className={`${SCOUT_APPLY_SECTION_CLASS} space-y-4`}
     >
@@ -401,6 +415,7 @@ export function ScoutApplyForm() {
     </form>
   );
 }
+
 
 function ScoutApplyFields({
   fullName,
@@ -670,12 +685,12 @@ function ScoutApplyFields({
               </span>
             </div>
             <div
-              className="relative isolate h-1.5 w-full min-w-0 max-w-full overflow-hidden rounded-full bg-gn-bg/80"
+              className="gn-upload-indeterminate-track relative isolate h-1.5 w-full min-w-0 max-w-full rounded-full bg-gn-bg/80"
               role="progressbar"
               aria-busy="true"
               aria-valuetext={t("proof.uploading")}
             >
-              <div className="gn-upload-indeterminate-bar absolute inset-y-0 start-0 w-[35%] max-w-full rounded-full bg-gradient-to-r from-gn-accent/70 to-gn-accent" />
+              <div className="gn-upload-indeterminate-bar rounded-full bg-gradient-to-r from-gn-accent/70 to-gn-accent" />
             </div>
           </div>
         ) : null}
