@@ -54,3 +54,11 @@ export const PUBLIC_PLAYER_PROFILE_PAGE_SHELL =
 /** Direct children inside {@link PUBLIC_PLAYER_PROFILE_PAGE_SHELL}. */
 export const PUBLIC_PLAYER_PROFILE_SECTION_CLASS =
   "box-border w-full min-w-0 max-w-full overflow-x-clip";
+
+/** `/scout-apply` — centered column; main shell already applies horizontal padding. */
+export const SCOUT_APPLY_PAGE_SHELL_CLASS =
+  "mx-auto box-border w-full min-w-0 max-w-lg overflow-x-clip";
+
+/** Scout verification form and status cards. */
+export const SCOUT_APPLY_SECTION_CLASS =
+  "box-border w-full min-w-0 max-w-full overflow-x-clip";

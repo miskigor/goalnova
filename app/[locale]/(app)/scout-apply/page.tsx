@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ScoutApplyForm } from "@/components/scout/ScoutApplyForm";
+import { SCOUT_APPLY_PAGE_SHELL_CLASS } from "@/lib/layout/appShellClasses";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -16,15 +17,15 @@ export default async function ScoutApplyPage({ params }: Props) {
   const t = await getTranslations("scoutVerification");
 
   return (
-    <div className="mx-auto w-full min-w-0 max-w-full space-y-4 overflow-x-clip pb-8 sm:space-y-6 sm:pb-10">
-      <div className="min-w-0">
-        <h1 className="text-lg font-semibold leading-snug tracking-tight text-gn-text break-words sm:text-2xl sm:leading-tight">
+    <div className={`${SCOUT_APPLY_PAGE_SHELL_CLASS} space-y-4 pb-8 sm:space-y-6 sm:pb-10`}>
+      <header className="min-w-0 max-w-full">
+        <h1 className="break-words text-lg font-semibold leading-snug tracking-tight text-gn-text sm:text-2xl sm:leading-tight">
           {t("pageTitle")}
         </h1>
-        <p className="mt-1.5 text-xs leading-relaxed text-gn-text-secondary break-words sm:text-sm">
+        <p className="mt-1.5 break-words text-xs leading-relaxed text-gn-text-secondary sm:text-sm">
           {t("pageSubtitle")}
         </p>
-      </div>
+      </header>
       <ScoutApplyForm />
     </div>
   );

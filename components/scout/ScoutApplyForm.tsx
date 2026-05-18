@@ -14,6 +14,7 @@ import {
   validateScoutProofFile,
 } from "@/lib/supabase/scoutVerificationUpload";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { SCOUT_APPLY_SECTION_CLASS } from "@/lib/layout/appShellClasses";
 import { isApprovedScoutUser } from "@/lib/scoutVerification";
 import {
   handleProfileFieldPaste,
@@ -26,7 +27,10 @@ import {
 } from "@/lib/profileFieldSanitize";
 
 const inputClass =
-  "mt-1.5 w-full rounded-xl border border-gn-border bg-gn-surface px-3.5 py-3 text-sm text-gn-text placeholder:text-gn-text-tertiary outline-none transition-[border-color,box-shadow] focus:border-gn-accent/60 focus:ring-2 focus:ring-gn-accent/25";
+  "mt-1.5 box-border min-w-0 max-w-full w-full rounded-xl border border-gn-border bg-gn-surface px-3.5 py-3 text-sm text-gn-text placeholder:text-gn-text-tertiary outline-none transition-[border-color,box-shadow] focus:border-gn-accent/60 focus:ring-2 focus:ring-gn-accent/25";
+
+const fieldWrapClass = "min-w-0 max-w-full";
+const cardClass = `${SCOUT_APPLY_SECTION_CLASS} rounded-2xl border border-gn-border-subtle bg-gn-surface/40`;
 
 type SubmitPhase = "idle" | "uploading" | "saving";
 
@@ -243,7 +247,7 @@ export function ScoutApplyForm() {
   if (booting) {
     return (
       <div
-        className="flex min-h-[200px] flex-col items-center justify-center gap-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-8"
+        className={`${cardClass} flex min-h-[200px] flex-col items-center justify-center gap-3 p-8`}
         role="status"
       >
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-gn-accent border-t-transparent" />
@@ -254,11 +258,11 @@ export function ScoutApplyForm() {
 
   if (!userId) {
     return (
-      <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-6">
-        <p className="text-sm text-gn-text-secondary">{t("signInRequired")}</p>
+      <div className={`${cardClass} p-6`}>
+        <p className="break-words text-sm text-gn-text-secondary">{t("signInRequired")}</p>
         <Link
           href="/login"
-          className={`${GN_PRIMARY_BUTTON_CLASS} mt-4 inline-flex h-11 items-center justify-center px-6 text-sm`}
+          className={`${GN_PRIMARY_BUTTON_CLASS} mt-4 flex h-11 w-full min-w-0 max-w-full items-center justify-center truncate px-6 text-sm`}
         >
           {t("goToLogin")}
         </Link>
@@ -268,11 +272,11 @@ export function ScoutApplyForm() {
 
   if (role !== "scout") {
     return (
-      <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-6">
-        <p className="text-sm text-gn-text-secondary">{t("notScoutRole")}</p>
+      <div className={`${cardClass} p-6`}>
+        <p className="break-words text-sm text-gn-text-secondary">{t("notScoutRole")}</p>
         <Link
           href="/profile"
-          className="mt-4 inline-block text-sm font-medium text-gn-accent hover:underline"
+          className="mt-4 inline-block break-words text-sm font-medium text-gn-accent hover:underline"
         >
           {t("goToProfile")}
         </Link>
@@ -282,7 +286,7 @@ export function ScoutApplyForm() {
 
   if (status === "approved") {
     return (
-      <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-6 text-sm text-gn-text-secondary">
+      <div className={`${cardClass} break-words p-6 text-sm text-gn-text-secondary`}>
         {t("redirecting")}
       </div>
     );
@@ -291,7 +295,7 @@ export function ScoutApplyForm() {
   if (status === "pending") {
     return (
       <div
-        className="min-w-0 max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-3 py-5 text-center sm:px-6 sm:py-7"
+        className={`${cardClass} px-3 py-5 text-center sm:px-6 sm:py-7`}
         role="status"
       >
         <h2 className="text-base font-semibold leading-snug tracking-tight text-gn-text break-words sm:text-lg">
@@ -339,18 +343,18 @@ export function ScoutApplyForm() {
   );
 
   const submitBlock = (
-    <div className="mt-6">
+    <div className="mt-6 min-w-0 max-w-full">
       <button
         type="submit"
         disabled={submitting}
         aria-busy={submitting}
-        className={`${GN_PRIMARY_BUTTON_CLASS} w-full py-3.5`}
+        className={`${GN_PRIMARY_BUTTON_CLASS} box-border w-full min-w-0 max-w-full truncate py-3.5`}
       >
         {submitting ? t("applying") : t("submitApplication")}
       </button>
       {error ? (
         <div
-          className="mt-2 whitespace-pre-line text-sm text-red-400"
+          className="mt-2 break-words whitespace-pre-line text-sm text-red-400"
           role="alert"
         >
           {error}
@@ -368,19 +372,19 @@ export function ScoutApplyForm() {
 
   if (status === "rejected") {
     return (
-      <div className="space-y-6">
-        <div
-          role="status"
-          className="rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-6"
+      <div className={`${SCOUT_APPLY_SECTION_CLASS} space-y-6`}>
+        <div role="status" className={`${cardClass} p-6`}>
+          <p className="break-words text-sm font-medium text-gn-text">{t("rejectedTitle")}</p>
+          <p className="mt-2 break-words text-sm text-gn-text-secondary">{t("rejectedBody")}</p>
+        </div>
+        <div className="min-w-0 max-w-full">
+          <h2 className="break-words text-lg font-semibold text-gn-text">{t("reapplyTitle")}</h2>
+          <p className="mt-1 break-words text-sm text-gn-text-secondary">{t("reapplySubtitle")}</p>
+        </div>
+        <form
+          onSubmit={(e) => void onSubmit(e)}
+          className={`${SCOUT_APPLY_SECTION_CLASS} space-y-4`}
         >
-          <p className="text-sm font-medium text-gn-text">{t("rejectedTitle")}</p>
-          <p className="mt-2 text-sm text-gn-text-secondary">{t("rejectedBody")}</p>
-        </div>
-        <div>
-          <h2 className="text-lg font-semibold text-gn-text">{t("reapplyTitle")}</h2>
-          <p className="mt-1 text-sm text-gn-text-secondary">{t("reapplySubtitle")}</p>
-        </div>
-        <form onSubmit={(e) => void onSubmit(e)} className="space-y-4">
           {formShared}
         </form>
       </div>
@@ -389,7 +393,10 @@ export function ScoutApplyForm() {
 
   /* none */
   return (
-    <form onSubmit={(e) => void onSubmit(e)} className="space-y-4">
+    <form
+      onSubmit={(e) => void onSubmit(e)}
+      className={`${SCOUT_APPLY_SECTION_CLASS} space-y-4`}
+    >
       {formShared}
     </form>
   );
@@ -452,13 +459,13 @@ function ScoutApplyFields({
       {pasteHint ? (
         <div
           role="status"
-          className="rounded-xl border border-amber-500/30 bg-amber-950/20 px-4 py-3 text-sm text-amber-100/90"
+          className={`${SCOUT_APPLY_SECTION_CLASS} break-words rounded-xl border border-amber-500/30 bg-amber-950/20 px-4 py-3 text-sm text-amber-100/90`}
         >
           {pasteHint}
         </div>
       ) : null}
-      <div>
-        <label className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
+      <div className={fieldWrapClass}>
+        <label className="break-words text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
           {t("fullName")}
         </label>
         <input
@@ -480,8 +487,8 @@ function ScoutApplyFields({
           autoComplete="name"
         />
       </div>
-      <div>
-        <label className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
+      <div className={fieldWrapClass}>
+        <label className="break-words text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
           {t("organization")}
         </label>
         <input
@@ -504,8 +511,8 @@ function ScoutApplyFields({
           required
         />
       </div>
-      <div>
-        <label className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
+      <div className={fieldWrapClass}>
+        <label className="break-words text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
           {t("businessEmail")}
         </label>
         <input
@@ -530,8 +537,8 @@ function ScoutApplyFields({
           autoComplete="email"
         />
       </div>
-      <div>
-        <label className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
+      <div className={fieldWrapClass}>
+        <label className="break-words text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
           {t("country")}
         </label>
         <input
@@ -555,8 +562,8 @@ function ScoutApplyFields({
           autoComplete="country-name"
         />
       </div>
-      <div>
-        <label className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
+      <div className={fieldWrapClass}>
+        <label className="break-words text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
           {t("description")}
         </label>
         <textarea
@@ -580,14 +587,16 @@ function ScoutApplyFields({
         />
       </div>
 
-      <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/50 p-4 ring-1 ring-white/[0.04]">
-        <h3 className="text-sm font-semibold tracking-tight text-gn-text">
+      <div
+        className={`${cardClass} bg-gn-surface/50 p-4 ring-1 ring-white/[0.04]`}
+      >
+        <h3 className="break-words text-sm font-semibold tracking-tight text-gn-text">
           {t("proof.title")}
         </h3>
-        <p className="mt-1.5 text-sm leading-relaxed text-gn-text-secondary">
+        <p className="mt-1.5 break-words text-sm leading-relaxed text-gn-text-secondary">
           {t("proof.helper")}
         </p>
-        <p className="mt-2 text-xs leading-relaxed text-gn-text-tertiary">
+        <p className="mt-2 break-words text-xs leading-relaxed text-gn-text-tertiary">
           {t("proof.privacyNote")}
         </p>
 
@@ -604,12 +613,12 @@ function ScoutApplyFields({
           }}
         />
 
-        <div className="mt-4 flex flex-wrap items-center gap-3">
+        <div className="mt-4 flex w-full min-w-0 max-w-full flex-col gap-3 sm:flex-row sm:flex-wrap">
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={submitPhase !== "idle"}
-            className="rounded-xl border border-gn-border bg-gn-bg/40 px-4 py-2.5 text-sm font-medium text-gn-text transition hover:border-gn-accent/40 hover:bg-white/[0.04] disabled:opacity-50"
+            className="box-border w-full min-w-0 max-w-full truncate rounded-xl border border-gn-border bg-gn-bg/40 px-4 py-2.5 text-sm font-medium text-gn-text transition hover:border-gn-accent/40 hover:bg-white/[0.04] disabled:opacity-50 sm:w-auto"
           >
             {proofFile ? t("proof.changeFile") : t("proof.browseFiles")}
           </button>
@@ -617,15 +626,23 @@ function ScoutApplyFields({
 
         {proofFile ? (
           <div
-            className={`mt-2 text-sm ${
+            className={`mt-2 min-w-0 max-w-full text-sm ${
               submitPhase === "idle" ? "text-green-400" : "text-gn-text-secondary"
             }`}
           >
-            <span aria-hidden>✔ </span>
-            <span className="min-w-0 break-all font-medium text-gn-text">{proofFile.name}</span>
-            <span className="ms-2 tabular-nums text-gn-text-tertiary">
-              ({(proofFile.size / (1024 * 1024)).toFixed(2)} MB)
-            </span>
+            <div className="flex min-w-0 max-w-full flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-2">
+              <div className="flex min-w-0 max-w-full items-baseline gap-2">
+                <span aria-hidden className="shrink-0">
+                  ✔
+                </span>
+                <span className="min-w-0 flex-1 truncate font-medium text-gn-text">
+                  {proofFile.name}
+                </span>
+              </div>
+              <span className="shrink-0 tabular-nums text-gn-text-tertiary">
+                ({(proofFile.size / (1024 * 1024)).toFixed(2)} MB)
+              </span>
+            </div>
           </div>
         ) : null}
 
@@ -643,8 +660,8 @@ function ScoutApplyFields({
         ) : null}
 
         {submitPhase === "uploading" ? (
-          <div className="mt-4 space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gn-text-tertiary">
+          <div className="mt-4 min-w-0 max-w-full space-y-2 overflow-x-clip">
+            <div className="flex min-w-0 max-w-full flex-wrap items-center justify-between gap-2 text-xs text-gn-text-tertiary">
               <span className="font-medium text-gn-text-secondary">
                 {t("proof.uploading")}
               </span>
@@ -653,12 +670,12 @@ function ScoutApplyFields({
               </span>
             </div>
             <div
-              className="relative h-1.5 w-full overflow-hidden rounded-full bg-gn-bg/80"
+              className="relative isolate h-1.5 w-full min-w-0 max-w-full overflow-hidden rounded-full bg-gn-bg/80"
               role="progressbar"
               aria-busy="true"
               aria-valuetext={t("proof.uploading")}
             >
-              <div className="gn-upload-indeterminate-bar absolute inset-y-0 w-[35%] rounded-full bg-gradient-to-r from-gn-accent/70 to-gn-accent" />
+              <div className="gn-upload-indeterminate-bar absolute inset-y-0 start-0 w-[35%] max-w-full rounded-full bg-gradient-to-r from-gn-accent/70 to-gn-accent" />
             </div>
           </div>
         ) : null}
@@ -674,14 +691,14 @@ function ScoutApplyFields({
           </p>
         ) : null}
 
-        <div className="mt-4 rounded-xl border border-amber-500/20 bg-amber-500/[0.06] px-3 py-3 text-xs leading-relaxed text-gn-text-secondary ring-1 ring-amber-500/10">
-          <p className="font-medium text-amber-100/95">{t("proof.trustLine1")}</p>
-          <p className="mt-1.5 text-gn-text-secondary">{t("proof.trustLine2")}</p>
+        <div className="mt-4 min-w-0 max-w-full overflow-x-clip rounded-xl border border-amber-500/20 bg-amber-500/[0.06] px-3 py-3 text-xs leading-relaxed text-gn-text-secondary ring-1 ring-amber-500/10">
+          <p className="break-words font-medium text-amber-100/95">{t("proof.trustLine1")}</p>
+          <p className="mt-1.5 break-words text-gn-text-secondary">{t("proof.trustLine2")}</p>
         </div>
       </div>
 
-      <div>
-        <label className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
+      <div className={fieldWrapClass}>
+        <label className="break-words text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
           {t("webUrl")}
         </label>
         <input
