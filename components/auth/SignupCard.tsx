@@ -12,6 +12,7 @@ import {
   getSignupAuthErrorKind,
   SIGNUP_ERROR_I18N_KEY,
 } from "@/lib/supabase/signupAuthErrors";
+import { setFreshLogin } from "@/lib/auth/freshLogin";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { rememberReferralCodeFromQuery, peekPendingReferralCode } from "@/lib/supabase/referrals";
 import { devError, isDev } from "@/lib/devLog";
@@ -112,8 +113,7 @@ export function SignupCard() {
         return;
       }
 
-      // Redirect immediately when signup also created a session.
-      // Avoid an extra getSession() roundtrip that can race with AuthGate guest redirect.
+      setFreshLogin();
       const pending = peekPendingReferralCode();
       const roleHref = pending ? `/role?ref=${encodeURIComponent(pending)}` : "/role";
       router.replace(roleHref);

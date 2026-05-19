@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "@/i18n/navigation";
+import { clearFreshLogin } from "@/lib/auth/freshLogin";
 import { supabase } from "@/lib/supabase/client";
 
 const ARM_AFTER_MS = 4000;
@@ -30,6 +31,7 @@ export function RequireReauthOnReturn() {
     const forceReauth = async () => {
       if (signingOutRef.current) return;
       signingOutRef.current = true;
+      clearFreshLogin();
       await supabase.auth.signOut({ scope: "local" });
       router.replace("/login");
     };

@@ -4,16 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
+import {
+  clearFreshLogin,
+  hasFreshLogin,
+} from "@/lib/auth/freshLogin";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
-import {
-  resolvePostOnboardingHomePath,
-  roleOnboardingHref,
-} from "@/lib/onboarding/roleOnboardingPaths";
 import { devError } from "@/lib/devLog";
-import {
-  needsRoleOnboardingPage,
-  syncPendingReferralCodeToUserMetadata,
-} from "@/lib/supabase/referrals";
 import { supabase } from "@/lib/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 
@@ -73,6 +69,14 @@ function InlineSpinner() {
 }
 
 const CONFIRM_EMAIL_PATH = "/confirm-email";
+
+/** Guest routes that always render their form — no auto-redirect from a persisted Supabase session. */
+const GUEST_MANUAL_AUTH_PATHS = new Set([
+  "/login",
+  "/signup",
+  "/forgot-password",
+  CONFIRM_EMAIL_PATH,
+]);
 
 export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const tCommon = useTranslations("authCommon");
@@ -139,6 +143,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
         if (isInvalidRefreshTokenError(err)) {
           // Common on mobile Safari/dev LAN after stale auth cache.
           // Clear local Supabase session so user can log in normally.
+          clearFreshLogin();
           await supabase.auth.signOut({ scope: "local" });
           if (!mounted) return;
           setSession(null);
@@ -198,9 +203,26 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
         router.replace(redirectTo);
         return;
       }
+
+      if (
+        isLoggedIn &&
+        !hasFreshLogin() &&
+        !oauthReturnLikely() &&
+        !didRedirectRef.current
+      ) {
+        didRedirectRef.current = true;
+        void (async () => {
+          clearFreshLogin();
+          await supabase.auth.signOut({ scope: "local" });
+          router.replace(redirectTo);
+        })();
+        return;
+      }
+
       if (isLoggedIn && emailConfirmed === false && !didRedirectRef.current) {
         didRedirectRef.current = true;
         void (async () => {
+          clearFreshLogin();
           const { data: userData } = await supabase.auth.getUser();
           const user = userData.user ?? session?.user;
           rememberPendingConfirmEmail(user?.email ?? session?.user.email);
@@ -211,38 +233,20 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
       return;
     }
 
-    if (isLoggedIn && !didRedirectRef.current) {
+    if (
+      isLoggedIn &&
+      emailConfirmed === false &&
+      !GUEST_MANUAL_AUTH_PATHS.has(pathname) &&
+      !didRedirectRef.current
+    ) {
       didRedirectRef.current = true;
       void (async () => {
+        clearFreshLogin();
         const { data: userData } = await supabase.auth.getUser();
         const user = userData.user ?? session?.user;
-        const confirmed = isEmailConfirmed(user);
-
-        if (!confirmed) {
-          rememberPendingConfirmEmail(user?.email ?? session?.user.email);
-          await supabase.auth.signOut({ scope: "local" });
-          if (pathname !== CONFIRM_EMAIL_PATH) {
-            router.replace(CONFIRM_EMAIL_PATH);
-          }
-          return;
-        }
-
-        if (pathname === CONFIRM_EMAIL_PATH) {
-          router.replace(redirectTo);
-          return;
-        }
-
-        try {
-          await syncPendingReferralCodeToUserMetadata();
-          const needsRole = await needsRoleOnboardingPage();
-          if (needsRole) {
-            router.replace(await roleOnboardingHref());
-            return;
-          }
-        } catch (err) {
-          devError("AuthGate: guest logged-in redirect failed", err);
-        }
-        router.replace(await resolvePostOnboardingHomePath());
+        rememberPendingConfirmEmail(user?.email ?? session?.user.email);
+        await supabase.auth.signOut({ scope: "local" });
+        router.replace(CONFIRM_EMAIL_PATH);
       })();
     }
   }, [checking, isAuthenticated, emailConfirmed, mode, pathname, redirectTo, router, session]);
@@ -272,7 +276,17 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const blockedUnconfirmed =
     mode === "protected" && isLoggedIn && emailConfirmed === false;
 
-  if ((mode === "protected" && !isLoggedIn) || blockedUnconfirmed) {
+  const staleSessionWithoutFreshLogin =
+    mode === "protected" &&
+    isLoggedIn &&
+    !hasFreshLogin() &&
+    !oauthReturnLikely();
+
+  if (
+    (mode === "protected" && !isLoggedIn) ||
+    blockedUnconfirmed ||
+    staleSessionWithoutFreshLogin
+  ) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <div className="flex items-center gap-2 text-sm text-gn-text-secondary">
@@ -282,12 +296,8 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
       </div>
     );
   }
-  const onConfirmEmailPage = pathname === CONFIRM_EMAIL_PATH;
-  const guestAwaitingRedirect =
-    mode === "guest" &&
-    (guestAuthSnapshotPending || (isLoggedIn && !onConfirmEmailPage));
 
-  if (guestAwaitingRedirect) {
+  if (mode === "guest" && guestAuthSnapshotPending) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <div className="flex items-center gap-2 text-sm text-gn-text-secondary">

@@ -1,5 +1,6 @@
-import { supabase, assertSupabaseConfigured, type Database } from "./client";
+import { clearFreshLogin, setFreshLogin } from "@/lib/auth/freshLogin";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
+import { supabase, assertSupabaseConfigured, type Database } from "./client";
 import {
   classifySupabaseSignupError,
   SignupAuthError,
@@ -356,6 +357,8 @@ export async function signUpWithEmailPassword({
     throw new SignupAuthError("generic");
   }
 
+  setFreshLogin();
+
   return {
     userId,
     userEmail,
@@ -414,6 +417,8 @@ export async function signInWithEmailPassword({
       console.error("Supabase: ensureUserRow after signIn error", err);
     });
 
+  setFreshLogin();
+
   return data;
 }
 
@@ -462,6 +467,8 @@ export async function resendSignupConfirmationEmail(
 
 export async function signOut() {
   assertSupabaseConfigured();
+
+  clearFreshLogin();
 
   const { error } = await supabase.auth.signOut();
 

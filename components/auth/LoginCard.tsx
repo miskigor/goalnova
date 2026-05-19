@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import type { User } from "@supabase/supabase-js";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { devError } from "@/lib/devLog";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
+import { hasFreshLogin, setFreshLogin } from "@/lib/auth/freshLogin";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { signInWithEmailPassword } from "@/lib/supabase/auth";
 import { supabase } from "@/lib/supabase/client";
@@ -209,9 +209,6 @@ type Props = { labels: LoginFormLabels };
 export function LoginCard({ labels }: Props) {
   const router = useRouter();
 
-  /** `null` until first auth snapshot (show email/password form immediately like before — no blocking spinner). */
-  const [sessionUser, setSessionUser] = useState<User | null>(null);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -228,64 +225,23 @@ export function LoginCard({ labels }: Props) {
     rememberReferralCodeFromQuery(ref);
   }, []);
 
+  /** Drop persisted Supabase session on /login unless this tab already completed password login. */
   useEffect(() => {
     let cancelled = false;
-
-    function applySession(next: User | null) {
-      if (!cancelled) setSessionUser(next);
-    }
-
-    void supabase.auth
-      .getSession()
-      .then(({ data }) => {
-        applySession(data.session?.user ?? null);
-      })
-      .catch((err) => {
-        devError("LoginCard: getSession failed", err);
-        applySession(null);
-      });
-
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      applySession(session?.user ?? null);
-    });
-
+    void (async () => {
+      if (hasFreshLogin()) return;
+      const { data } = await supabase.auth.getSession();
+      if (cancelled || !data.session) return;
+      await supabase.auth.signOut({ scope: "local" });
+    })();
     return () => {
       cancelled = true;
-      sub.subscription.unsubscribe();
     };
   }, []);
-
-  useLayoutEffect(() => {
-    if (!sessionUser || signInFlowRef.current) return;
-    void (async () => {
-      if (!isEmailConfirmed(sessionUser)) {
-        rememberPendingConfirmEmail(sessionUser.email);
-        await supabase.auth.signOut({ scope: "local" });
-        router.replace("/confirm-email");
-        return;
-      }
-      await syncPendingReferralCodeToUserMetadata();
-      const needsRole = await needsRoleOnboardingPage();
-      if (needsRole) {
-        router.replace(await roleOnboardingHref());
-        return;
-      }
-      router.replace(await resolvePostOnboardingHomePath());
-    })();
-  }, [router, sessionUser]);
 
   const canSubmit = useMemo(() => {
     return email.trim().length > 0 && password.length > 0 && !loading && !redirecting;
   }, [email, password, loading, redirecting]);
-
-  if (sessionUser) {
-    return (
-      <div className="mx-auto flex min-h-[240px] w-full flex-col items-center justify-center gap-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-8 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:min-h-[280px]">
-        <Spinner className="text-gn-accent" />
-        <p className="text-sm text-gn-text-secondary">{labels.signingIn}</p>
-      </div>
-    );
-  }
 
   async function onSubmit() {
     setError(null);
@@ -319,6 +275,7 @@ export function LoginCard({ labels }: Props) {
         router.replace("/confirm-email");
         return;
       }
+      setFreshLogin();
       setRedirecting(true);
       await syncPendingReferralCodeToUserMetadata();
       const needsRole = await needsRoleOnboardingPage();
