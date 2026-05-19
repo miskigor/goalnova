@@ -363,32 +363,96 @@ export async function tryConsumePendingReferral(): Promise<void> {
   await tryConsumePendingReferralWithRetry();
 }
 
+export type ReferralDashboardFailureReason =
+  | "not_authenticated"
+  | "not_player_role"
+  | "ensure_code_failed"
+  | "missing_referral_code"
+  | "dashboard_unavailable";
+
+async function logReferralDashboardDevContext(): Promise<void> {
+  if (!isDev) return;
+  const { data: auth } = await supabase.auth.getUser();
+  const uid = auth.user?.id;
+  if (!uid) {
+    devLog("[referral] dashboard context: no authenticated user");
+    return;
+  }
+  const [{ data: userRow }, { data: profileRow }] = await Promise.all([
+    supabase.from("users").select("role, is_admin, admin_role").eq("id", uid).maybeSingle(),
+    supabase
+      .from("player_profiles")
+      .select("id, referral_code")
+      .eq("id", uid)
+      .maybeSingle(),
+  ]);
+  devLog("[referral] dashboard context", {
+    userId: uid,
+    role: userRow?.role ?? null,
+    isStaff: Boolean(
+      userRow?.is_admin ||
+        (typeof userRow?.admin_role === "string" && userRow.admin_role.trim().length > 0),
+    ),
+    hasPlayerProfile: Boolean(profileRow?.id),
+    referralCode: profileRow?.referral_code ?? null,
+  });
+}
+
 export async function fetchReferralDashboard(): Promise<{
   data: ReferralDashboard | null;
   errorMessage: string | null;
+  failureReason: ReferralDashboardFailureReason | null;
 }> {
+  await logReferralDashboardDevContext();
+
   const { data, error } = await supabase.rpc("goalnova_player_referral_dashboard");
   if (error) {
     logFullSupabaseError("[referrals] goalnova_player_referral_dashboard", error);
-    return { data: null, errorMessage: error.message };
+    return {
+      data: null,
+      errorMessage: error.message,
+      failureReason: "dashboard_unavailable",
+    };
   }
+
   const row = parseRpcRow(data);
   if (!row || !rpcOk(row)) {
-    return { data: null, errorMessage: null };
+    const reasonRaw = typeof row?.reason === "string" ? row.reason.trim() : "";
+    const failureReason: ReferralDashboardFailureReason =
+      reasonRaw === "not_authenticated" ||
+      reasonRaw === "not_player_role" ||
+      reasonRaw === "ensure_code_failed"
+        ? reasonRaw
+        : "dashboard_unavailable";
+    devLog("[referral] dashboard RPC not ok", { failureReason, row });
+    return { data: null, errorMessage: reasonRaw || failureReason, failureReason };
   }
+
+  const referralCodeRaw =
+    typeof row.referral_code === "string" ? row.referral_code.trim() : "";
+  if (!referralCodeRaw) {
+    devLog("[referral] dashboard ok but referral_code missing", row);
+    return {
+      data: null,
+      errorMessage: "missing_referral_code",
+      failureReason: "missing_referral_code",
+    };
+  }
+
   const granted = row.granted_keys;
   const keys = Array.isArray(granted) ? granted.map((k) => String(k)) : [];
   const inviteCount =
     typeof row.invite_count === "number" ? row.invite_count : Number(row.invite_count ?? 0);
-  devLog("[referral] dashboard invite_count", inviteCount);
+  devLog("[referral] dashboard ok", { inviteCount, referralCode: referralCodeRaw });
   return {
     data: {
-      referralCode: typeof row.referral_code === "string" ? row.referral_code : null,
+      referralCode: referralCodeRaw,
       inviteCount,
       featuredPlayerUntil:
         typeof row.featured_player_until === "string" ? row.featured_player_until : null,
       grantedKeys: keys,
     },
     errorMessage: null,
+    failureReason: null,
   };
 }

@@ -5,37 +5,79 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { hrefWithLocale } from "@/i18n/routing";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
+import {
+  resolveBenefitsAudience,
+  type BenefitsAudienceSnapshot,
+} from "@/lib/benefits/benefitsAudience";
 import { devError } from "@/lib/devLog";
-import { isStaffUser } from "@/lib/supabase/adminScoutVerification";
-import { supabase } from "@/lib/supabase/client";
 import { PITCHRUSCH_PREMIUM_UPDATED_EVENT } from "@/lib/supabase/premium";
 import {
   fetchReferralDashboard,
   tryConsumePendingReferralWhenPlayerReady,
   tryConsumePendingReferralWithRetry,
   type ReferralDashboard,
+  type ReferralDashboardFailureReason,
 } from "@/lib/supabase/referrals";
 
-type BenefitsAudience = "loading" | "player" | "scout";
-
-async function resolveBenefitsAudience(): Promise<BenefitsAudience> {
-  const { data: auth } = await supabase.auth.getUser();
-  const uid = auth.user?.id;
-  if (!uid) return "scout";
-
-  const [{ data: userRow }, { data: playerProfile }] = await Promise.all([
-    supabase.from("users").select("role, is_admin, admin_role").eq("id", uid).maybeSingle(),
-    supabase.from("player_profiles").select("id").eq("id", uid).maybeSingle(),
-  ]);
-
-  const role = userRow?.role;
-  const hasPlayerProfile = Boolean(playerProfile?.id);
-  const staff = isStaffUser(userRow);
-
-  if (role === "player" || (staff && hasPlayerProfile)) {
-    return "player";
+function referralLoadErrorKey(
+  reason: ReferralDashboardFailureReason | string | null,
+): string | null {
+  switch (reason) {
+    case "not_player_role":
+      return "referralErrorNotPlayer";
+    case "ensure_code_failed":
+    case "missing_referral_code":
+      return "referralErrorEnsureCode";
+    case "not_authenticated":
+      return "referralErrorNotSignedIn";
+    case "dashboard_unavailable":
+      return "referralErrorTransport";
+    default:
+      return reason ? "referralLinkErrorGeneric" : null;
   }
-  return "scout";
+}
+
+function BenefitsInfoCard({
+  title,
+  body,
+  ctaHref,
+  ctaLabel,
+}: {
+  title: string;
+  body: string;
+  ctaHref: string;
+  ctaLabel: string;
+}) {
+  return (
+    <BenefitsPageShell title={title}>
+      <section className={cardClass}>
+        <p className="text-sm leading-relaxed text-gn-text-secondary">{body}</p>
+        <Link
+          href={ctaHref}
+          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-4 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg sm:w-auto sm:min-w-[12rem]"
+        >
+          {ctaLabel}
+        </Link>
+      </section>
+    </BenefitsPageShell>
+  );
+}
+
+function BenefitsPageShell({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mx-auto min-w-0 w-full max-w-full space-y-6 pb-4">
+      <header>
+        <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">{title}</h1>
+      </header>
+      {children}
+    </div>
+  );
 }
 
 const cardClass =
@@ -73,20 +115,21 @@ function BenefitsScoutInfo() {
 
 export function BenefitsReferralPage() {
   const tCommon = useTranslations("common");
-  const [audience, setAudience] = useState<BenefitsAudience>("loading");
+  const t = useTranslations("benefits");
+  const [snapshot, setSnapshot] = useState<BenefitsAudienceSnapshot | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       const next = await resolveBenefitsAudience();
-      if (!cancelled) setAudience(next);
+      if (!cancelled) setSnapshot(next);
     })();
     return () => {
       cancelled = true;
     };
   }, []);
 
-  if (audience === "loading") {
+  if (!snapshot) {
     return (
       <div className="min-w-0 max-w-full py-6">
         <p className="text-sm text-gn-text-secondary">{tCommon("loadingEllipsis")}</p>
@@ -94,7 +137,40 @@ export function BenefitsReferralPage() {
     );
   }
 
-  if (audience === "scout") {
+  if (snapshot.audience === "admin") {
+    return (
+      <BenefitsInfoCard
+        title={t("adminBenefitsTitle")}
+        body={t("adminBenefitsBody")}
+        ctaHref="/admin"
+        ctaLabel={t("adminBenefitsCta")}
+      />
+    );
+  }
+
+  if (snapshot.audience === "needs_role") {
+    return (
+      <BenefitsInfoCard
+        title={t("needsRoleBenefitsTitle")}
+        body={t("needsRoleBenefitsBody")}
+        ctaHref="/role"
+        ctaLabel={t("needsRoleBenefitsCta")}
+      />
+    );
+  }
+
+  if (snapshot.audience === "player_setup_incomplete") {
+    return (
+      <BenefitsInfoCard
+        title={t("playerSetupBenefitsTitle")}
+        body={t("playerSetupBenefitsBody")}
+        ctaHref="/role"
+        ctaLabel={t("playerSetupBenefitsCta")}
+      />
+    );
+  }
+
+  if (snapshot.audience === "scout") {
     return <BenefitsScoutInfo />;
   }
 
@@ -107,20 +183,21 @@ function BenefitsPlayerReferralContent() {
   const locale = useLocale();
   const [loading, setLoading] = useState(true);
   const [dash, setDash] = useState<ReferralDashboard | null>(null);
+  const [loadError, setLoadError] = useState<ReferralDashboardFailureReason | string | null>(
+    null,
+  );
   const [copied, setCopied] = useState(false);
 
   const load = useCallback(async () => {
-    const { data, errorMessage } = await fetchReferralDashboard();
+    const { data, errorMessage, failureReason } = await fetchReferralDashboard();
     setDash(data);
+    setLoadError(failureReason ?? errorMessage);
     if (process.env.NODE_ENV === "development") {
-      if (errorMessage) {
-        devError("[benefits] fetchReferralDashboard error:", errorMessage);
-      }
-      if (!data?.referralCode && errorMessage === null && data) {
-        devError("[benefits] referral dashboard returned no referral_code", data);
-      }
-      if (!data && errorMessage === null) {
-        devError("[benefits] fetchReferralDashboard returned no data");
+      if (failureReason || errorMessage) {
+        devError("[benefits] fetchReferralDashboard failed", {
+          failureReason,
+          errorMessage,
+        });
       }
     }
     setLoading(false);
@@ -165,6 +242,12 @@ function BenefitsPlayerReferralContent() {
   }, [dash?.referralCode, locale]);
 
   const hasLink = Boolean(inviteUrl);
+  const errorKey = referralLoadErrorKey(loadError);
+  const linkErrorMessage = errorKey
+    ? errorKey === "referralLinkErrorGeneric"
+      ? t("referralLinkErrorGeneric", { reason: loadError ?? "" })
+      : t(errorKey)
+    : null;
   const n = dash?.inviteCount ?? 0;
   const has3 = (dash?.grantedKeys ?? []).includes("invite_3_player_premium");
   const has10 = (dash?.grantedKeys ?? []).includes("invite_10_featured_player");
@@ -257,8 +340,26 @@ function BenefitsPlayerReferralContent() {
             {t("yourInviteLink")}
           </p>
           <div className={linkBoxClass}>
-            {hasLink ? inviteUrl : <span className="font-sans text-sm text-gn-text-secondary">{t("referralLinkUnavailable")}</span>}
+            {hasLink ? (
+              inviteUrl
+            ) : (
+              <span className="font-sans text-sm text-gn-text-secondary">
+                {linkErrorMessage ?? t("referralLinkUnavailable")}
+              </span>
+            )}
           </div>
+          {!hasLink && loadError ? (
+            <button
+              type="button"
+              onClick={() => {
+                setLoading(true);
+                void load();
+              }}
+              className="text-sm font-medium text-orange-300 underline-offset-2 hover:underline"
+            >
+              {t("referralRetry")}
+            </button>
+          ) : null}
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <button
               type="button"

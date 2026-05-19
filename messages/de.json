@@ -2045,6 +2045,21 @@
     "inviteRulesStep3": "Die Einladung zählt, wenn er die Spieler-Rolle wählt.",
     "scoutBenefitsTitle": "Scout-Vorteile kommen bald",
     "scoutBenefitsBody": "Spieler-Empfehlungsprämien sind derzeit nur für Spieler verfügbar. Scout-Tools und Pro-Vorteile verwaltest du über Premium.",
-    "scoutBenefitsCta": "Premium ansehen"
+    "scoutBenefitsCta": "Premium ansehen",
+    "referralRetry": "Try again",
+    "referralLinkErrorGeneric": "Could not load invite link ({reason}). Please try again.",
+    "referralErrorNotPlayer": "Referral rewards are only available for player accounts.",
+    "referralErrorEnsureCode": "We could not create your invite code. Finish your player profile or try again.",
+    "referralErrorNotSignedIn": "Sign in again to load your invite link.",
+    "referralErrorTransport": "Could not reach the server. Check your connection and try again.",
+    "adminBenefitsTitle": "Staff account",
+    "adminBenefitsBody": "Player referral links are for player accounts. Open the admin panel to manage the platform.",
+    "adminBenefitsCta": "Open admin",
+    "needsRoleBenefitsTitle": "Choose your role first",
+    "needsRoleBenefitsBody": "Pick Player or Scout to unlock referral rewards and your invite link.",
+    "needsRoleBenefitsCta": "Choose role",
+    "playerSetupBenefitsTitle": "Finish player setup",
+    "playerSetupBenefitsBody": "Complete role onboarding to generate your personal invite link.",
+    "playerSetupBenefitsCta": "Complete setup"
   }
 }
