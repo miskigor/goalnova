@@ -55,11 +55,11 @@ const FEED_SCROLLPORT =
   "max-lg:flex-1 max-lg:h-full max-lg:min-h-[min(100dvh,100svh)] " +
   "lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
-/** Card fills its snap `li`; desktop keeps a subtle framed tile. */
+/** Card fills its snap `li`; desktop keeps a subtle framed tile. Comment sheets use a portal — no overflow-visible bleed. */
 const FEED_SLIDE =
-  "h-full min-h-0 min-w-0 w-full max-w-full overflow-visible rounded-none border-0 bg-black " +
+  "box-border h-full min-h-0 min-w-0 w-full max-w-full overflow-hidden rounded-none border-0 bg-black " +
   "max-lg:min-h-[100dvh] max-lg:h-[100dvh] " +
-  "lg:h-[100cqh] lg:max-h-[100cqh] lg:overflow-hidden lg:rounded-2xl lg:border lg:border-white/[0.06]";
+  "lg:h-[100cqh] lg:max-h-[100cqh] lg:rounded-2xl lg:border lg:border-white/[0.06]";
 
 type MyVideosStatus =
   | { state: "loading" }
@@ -426,6 +426,22 @@ export function HomeFeed() {
     !uploadFirstDismissed &&
     !liveImmersiveMobile;
 
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const root = document.documentElement;
+    if (liveImmersiveMobile) {
+      root.classList.add("gn-home-immersive");
+      root.style.overflowX = "clip";
+    } else {
+      root.classList.remove("gn-home-immersive");
+      root.style.overflowX = "";
+    }
+    return () => {
+      root.classList.remove("gn-home-immersive");
+      root.style.overflowX = "";
+    };
+  }, [liveImmersiveMobile]);
+
   function renderFeedBody() {
     if (!scoutLoaded || loading) {
       return (
@@ -512,10 +528,11 @@ export function HomeFeed() {
 
   return (
     <div
+      data-pitchrusch-home-immersive={liveImmersiveMobile ? "" : undefined}
       className={[
-        "mx-auto flex w-full min-w-0 max-w-lg min-h-0 flex-col gap-3 pb-3 lg:max-w-2xl",
+        "mx-auto box-border flex w-full min-w-0 max-w-lg min-h-0 flex-col gap-3 pb-3 lg:max-w-2xl",
         liveImmersiveMobile
-          ? "max-lg:fixed max-lg:inset-0 max-lg:z-[20] max-lg:m-0 max-lg:h-[min(100dvh,100svh)] max-lg:max-h-[min(100dvh,100svh)] max-lg:min-h-0 max-lg:min-w-0 max-lg:w-full max-lg:max-w-full max-lg:flex max-lg:flex-col max-lg:gap-0 max-lg:overflow-x-clip max-lg:overflow-y-hidden max-lg:bg-black max-lg:px-0 max-lg:pb-0"
+          ? "max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:bottom-0 max-lg:z-[20] max-lg:m-0 max-lg:h-[min(100dvh,100svh)] max-lg:max-h-[min(100dvh,100svh)] max-lg:min-h-0 max-lg:min-w-0 max-lg:w-full max-lg:max-w-full max-lg:flex max-lg:flex-col max-lg:gap-0 max-lg:overflow-x-clip max-lg:overflow-y-hidden max-lg:bg-black max-lg:px-0 max-lg:pb-0"
           : "",
       ].join(" ")}
     >

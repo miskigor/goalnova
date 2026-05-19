@@ -411,7 +411,7 @@ export function FeedVideoSurface({
   }, [executePlay, notifyFeedUserActivation, requestPlaybackRetry]);
 
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0 max-w-full overflow-hidden">
       {/* Backdrop so inactive / buffering slides are never flat pure black */}
       <div
         className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-neutral-950 via-black to-neutral-950"

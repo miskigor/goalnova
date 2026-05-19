@@ -241,3 +241,24 @@ select:focus {
   }
 
 }
+
+/* Immersive home feed: drop main horizontal padding on mobile so feed/video cannot widen the page. */
+@media (max-width: 1023px) {
+  html.gn-home-immersive,
+  html.gn-home-immersive body {
+    overflow-x: clip;
+    max-width: 100%;
+  }
+
+  html.gn-home-immersive [data-app-main],
+  html.gn-home-immersive [data-app-main-inner],
+  html.gn-home-immersive [data-app-column] {
+    overflow-x: clip;
+    max-width: 100%;
+  }
+
+  html.gn-home-immersive [data-app-main] {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

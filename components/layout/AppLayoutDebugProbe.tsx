@@ -19,6 +19,10 @@ const PROBE_SELECTORS = [
   "[data-account-menu-backdrop]",
   "[data-scout-ai-insight]",
   "[data-public-video-detail]",
+  "[data-pitchrusch-home-immersive]",
+  "[data-pitchrusch-feed-scroll-root]",
+  "[data-pitchrusch-feed-card]",
+  "[data-pitchrusch-feed-rail]",
 ].join(",");
 
 const OUTLINE_CSS = `
@@ -34,7 +38,11 @@ const OUTLINE_CSS = `
   [data-account-menu],
   [data-account-menu-backdrop],
   [data-scout-ai-insight],
-  [data-public-video-detail] {
+  [data-public-video-detail],
+  [data-pitchrusch-home-immersive],
+  [data-pitchrusch-feed-scroll-root],
+  [data-pitchrusch-feed-card],
+  [data-pitchrusch-feed-rail] {
     outline: 1px dashed rgba(249, 115, 22, 0.35);
     outline-offset: -1px;
   }

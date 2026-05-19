@@ -27,7 +27,7 @@ import {
 } from "@/lib/video/videoPlaybackUrl";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 
-/** Home feed slides use overflow-visible so fixed modals/sheets aren’t clipped by the card. */
+/** Dashboard embed: framed tile; home immersive slides use {@link FEED_SLIDE} overflow-hidden. */
 const DASHBOARD_SLIDE =
   "min-h-[26rem] w-full overflow-hidden rounded-2xl border border-white/[0.06] bg-black sm:min-h-[28rem] lg:min-h-[30rem]";
 
@@ -141,15 +141,16 @@ export function FeedItemCard({
       />
     ) : null;
 
-  const clipSlide = slideClassName.includes("rounded-2xl");
-
   return (
     <article
       {...feedCardProps}
-      className={`relative isolate flex h-full min-h-0 min-w-0 w-full max-w-full flex-col bg-black ${clipSlide ? "overflow-hidden" : "overflow-x-clip overflow-y-visible"} ${slideClassName}`}
+      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden bg-black ${slideClassName}`}
     >
       {/* Fullscreen video — non-interactive so rail controls receive taps */}
-      <div {...feedVideoProps} className="pointer-events-none absolute inset-0 z-0 bg-black">
+      <div
+        {...feedVideoProps}
+        className="pointer-events-none absolute inset-0 z-0 max-w-full overflow-hidden bg-black"
+      >
         {challenge ? (
           <div className="pointer-events-none absolute start-2 top-2 z-10 max-w-[min(100%-1rem,240px)] max-lg:top-[calc(env(safe-area-inset-top,0px)+3.75rem)]">
             <div className="pointer-events-auto scale-95 origin-top-left">
@@ -172,7 +173,7 @@ export function FeedItemCard({
             debugMeta={feedVideoDebugMeta}
             onLoadOk={() => setLoadFailed(false)}
             onLoadError={() => setLoadFailed(true)}
-            className="h-full w-full object-cover [color-scheme:dark]"
+            className="h-full w-full max-w-full object-cover [color-scheme:dark]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-neutral-950 px-4 text-center text-xs text-white/45">
@@ -190,8 +191,12 @@ export function FeedItemCard({
         />
       </div>
 
-      {/* Floating action rail — clear bottom nav; higher bottom inset = like/comment/share/sound sit higher on mobile */}
-      <div className="pointer-events-auto absolute z-[42] flex w-11 shrink-0 flex-col items-center justify-end end-[max(0.5rem,env(safe-area-inset-right,0px))] sm:end-[max(0.625rem,env(safe-area-inset-right,0px))] sm:w-12 max-lg:top-[calc(env(safe-area-inset-top,0px)+2.25rem)] max-lg:bottom-[calc(10.75rem+env(safe-area-inset-bottom,0px))] lg:top-12 lg:bottom-44">
+      {/* Floating action rail — clipped to card width so controls stay on-screen (in-app browsers). */}
+      <div className="pointer-events-none absolute inset-0 z-[42] overflow-hidden">
+        <div
+          data-pitchrusch-feed-rail
+          className="pointer-events-auto absolute end-3 top-[calc(env(safe-area-inset-top,0px)+2.25rem)] bottom-[calc(10.75rem+env(safe-area-inset-bottom,0px))] flex w-11 shrink-0 flex-col items-center justify-end sm:end-4 sm:w-12 lg:top-12 lg:bottom-44"
+        >
         <FeedVideoEngagement
           videoId={video.id}
           initialLikeCount={scoutMetrics?.likesCount ?? null}
@@ -202,12 +207,13 @@ export function FeedItemCard({
             hasUrl ? <FeedSoundRailButton feedVideoKey={feedVideoKey} /> : null
           }
         />
+        </div>
       </div>
 
       {/* Bottom-left: avatar + identity + caption (over video) */}
       <div
         {...feedMetaProps}
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 max-w-[calc(100%-3.5rem)] px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-6 sm:px-3.5 max-lg:pb-[calc(5.25rem+env(safe-area-inset-bottom,0px))]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 box-border max-w-[calc(100%-3.75rem)] min-w-0 pe-1 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-6 sm:max-w-[calc(100%-4rem)] sm:px-3.5 max-lg:pb-[calc(5.25rem+env(safe-area-inset-bottom,0px))]"
       >
         {loadFailed && hasUrl ? (
           <p
