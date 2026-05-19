@@ -1,6 +1,20 @@
+import { isStaffUser } from "@/lib/supabase/adminScoutVerification";
 import { supabase } from "@/lib/supabase/client";
 
 export type AppRole = "player" | "scout";
+
+type UsersOnboardingRow = {
+  role: string | null;
+  is_admin?: boolean | null;
+  admin_role?: string | null;
+};
+
+/** Legacy app role or staff flags — never sent through Player/Scout /role onboarding. */
+export function isRoleOnboardingExempt(row: UsersOnboardingRow | null | undefined): boolean {
+  if (!row) return false;
+  if (row.role === "admin") return true;
+  return isStaffUser(row);
+}
 
 export function isAppRole(value: string | null | undefined): value is AppRole {
   return value === "player" || value === "scout";
@@ -36,9 +50,13 @@ export async function needsRoleOnboardingPage(): Promise<boolean> {
 
   const { data: userRow } = await supabase
     .from("users")
-    .select("role")
+    .select("role, is_admin, admin_role")
     .eq("id", userId)
     .maybeSingle();
+
+  if (isRoleOnboardingExempt(userRow)) {
+    return false;
+  }
 
   const role = userRow?.role ?? null;
   if (!isAppRole(role)) {

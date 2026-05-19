@@ -1,16 +1,17 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useLocale } from "next-intl";
 import type { User } from "@supabase/supabase-js";
 import { Link, useRouter } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
 import { devError } from "@/lib/devLog";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { signInWithEmailPassword } from "@/lib/supabase/auth";
 import { supabase } from "@/lib/supabase/client";
-import { roleOnboardingHref } from "@/lib/onboarding/roleOnboardingPaths";
+import {
+  resolvePostOnboardingHomePath,
+  roleOnboardingHref,
+} from "@/lib/onboarding/roleOnboardingPaths";
 import {
   needsRoleOnboardingPage,
   rememberReferralCodeFromQuery,
@@ -18,12 +19,6 @@ import {
   tryConsumePendingReferralWhenPlayerReady,
 } from "@/lib/supabase/referrals";
 import { Logo } from "@/components/brand/Logo";
-
-function homeUrlForLocale(locale: string): string {
-  const path = locale === routing.defaultLocale ? "/home" : `/${locale}/home`;
-  if (typeof window === "undefined") return path;
-  return `${window.location.origin}${path}`;
-}
 
 type FieldError = string | null;
 
@@ -212,7 +207,6 @@ function detailForLoginFailure(
 type Props = { labels: LoginFormLabels };
 
 export function LoginCard({ labels }: Props) {
-  const locale = useLocale();
   const router = useRouter();
 
   /** `null` until first auth snapshot (show email/password form immediately like before — no blocking spinner). */
@@ -276,7 +270,7 @@ export function LoginCard({ labels }: Props) {
         router.replace(await roleOnboardingHref());
         return;
       }
-      router.replace("/home");
+      router.replace(await resolvePostOnboardingHomePath());
     })();
   }, [router, sessionUser]);
 
@@ -332,7 +326,7 @@ export function LoginCard({ labels }: Props) {
         router.replace(await roleOnboardingHref());
       } else {
         void tryConsumePendingReferralWhenPlayerReady();
-        window.location.assign(homeUrlForLocale(locale));
+        router.replace(await resolvePostOnboardingHomePath());
       }
       setRedirecting(false);
       setLoading(false);

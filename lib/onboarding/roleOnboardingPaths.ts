@@ -1,3 +1,4 @@
+import { isRoleOnboardingExempt } from "@/lib/onboarding/roleOnboarding";
 import { supabase } from "@/lib/supabase/client";
 import { resolvePendingReferralCode } from "@/lib/supabase/referrals";
 
@@ -15,10 +16,11 @@ export async function resolvePostOnboardingHomePath(): Promise<string> {
 
   const { data: userRow } = await supabase
     .from("users")
-    .select("role")
+    .select("role, is_admin, admin_role")
     .eq("id", userId)
     .maybeSingle();
 
+  if (isRoleOnboardingExempt(userRow)) return "/admin";
   if (userRow?.role === "scout") return "/scout-dashboard";
   if (userRow?.role === "player") return "/profile";
   return "/home";

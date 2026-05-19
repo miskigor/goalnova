@@ -5,7 +5,10 @@ import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
-import { roleOnboardingHref } from "@/lib/onboarding/roleOnboardingPaths";
+import {
+  resolvePostOnboardingHomePath,
+  roleOnboardingHref,
+} from "@/lib/onboarding/roleOnboardingPaths";
 import { devError } from "@/lib/devLog";
 import {
   needsRoleOnboardingPage,
@@ -239,7 +242,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
         } catch (err) {
           devError("AuthGate: guest logged-in redirect failed", err);
         }
-        router.replace(redirectTo);
+        router.replace(await resolvePostOnboardingHomePath());
       })();
     }
   }, [checking, isAuthenticated, emailConfirmed, mode, pathname, redirectTo, router, session]);
