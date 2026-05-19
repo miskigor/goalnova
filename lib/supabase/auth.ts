@@ -5,8 +5,6 @@ import {
   SignupAuthError,
 } from "./signupAuthErrors";
 
-type Role = "player";
-
 export type SignupResult = {
   userId: string | null;
   userEmail: string | null;
@@ -130,11 +128,13 @@ function logSupabaseError(label: string, err: unknown) {
   }
 }
 
+/**
+ * Ensures a minimal `public.users` row (id, email, language) without assigning app role.
+ * Role + profile are created only after the user chooses Player/Scout on /role.
+ */
 async function ensureUserRow({
-  role,
   providedAuthUser,
 }: {
-  role: Role;
   // Optional: if signup returns a user but there's no session yet (e.g. email confirmation),
   // we can still create the row. We still "first get" from Supabase Auth inside this function.
   providedAuthUser?: { id: string; email: string | null };
@@ -171,7 +171,6 @@ async function ensureUserRow({
   const createPayload = {
     id: authUser.id,
     email: authUser.email,
-    role,
     language_preference: "en",
   };
 
@@ -285,13 +284,11 @@ export async function signUpWithEmailPassword({
   email,
   password,
   fullName,
-  role = "player",
   pendingReferralCode,
 }: {
   email: string;
   password: string;
   fullName?: string;
-  role?: Role;
   /** Survives email confirmation when browser storage is cleared (auth user_metadata). */
   pendingReferralCode?: string | null;
 }): Promise<SignupResult> {
@@ -351,7 +348,6 @@ export async function signUpWithEmailPassword({
 
   // Requirement: always create a matching row when signup also established a session.
   const ensureResult = await ensureUserRow({
-    role,
     providedAuthUser: { id: userId, email: userEmail ?? null },
   });
 
@@ -408,7 +404,7 @@ export async function signInWithEmailPassword({
   }
 
   // Do not block navigation on profile sync (multiple DB round-trips + getUser); runs in background.
-  void withTimeout(ensureUserRow({ role: "player" }), 20000, "Post-login profile sync")
+  void withTimeout(ensureUserRow({}), 20000, "Post-login user row sync")
     .then((ensureResult) => {
       if (!ensureResult.success) {
         console.error("Supabase: ensureUserRow after signIn failed", ensureResult.error);

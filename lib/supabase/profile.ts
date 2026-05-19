@@ -4,10 +4,10 @@ import {
   type PlayerProfileSanitizedPatch,
   type ScoutProfileSanitizedPatch,
 } from "@/lib/profileFieldSanitize";
+import { isAppRole } from "@/lib/onboarding/roleOnboarding";
 import { isDev } from "@/lib/devLog";
 import { supabase, type Database } from "./client";
 
-type Role = "player" | "scout";
 type UserRow = Database["public"]["Tables"]["users"]["Row"];
 type PlayerProfileRow = Database["public"]["Tables"]["player_profiles"]["Row"];
 type ScoutProfileRow = Database["public"]["Tables"]["scout_profiles"]["Row"];
@@ -130,18 +130,21 @@ export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
     };
   }
 
-  const role = (userRow.role as Role) === "scout" ? "scout" : "player";
+  const role = userRow.role;
+  if (!isAppRole(role)) {
+    return {
+      success: false,
+      data: null,
+      error: {
+        message: "Choose Player or Scout to finish setting up your account.",
+        code: null,
+        details: null,
+        hint: null,
+      },
+    };
+  }
 
   if (role === "player") {
-    const { error: upsertError } = await supabase
-      .from("player_profiles")
-      .upsert({ id: userId }, { onConflict: "id" });
-
-    if (upsertError) {
-      logSupabaseError("Supabase: player_profiles upsert error", upsertError);
-      return { success: false, data: null, error: toSupabaseErrorInfo(upsertError) };
-    }
-
     const { data: profile, error: selectError } = await supabase
       .from("player_profiles")
       .select("*")
@@ -158,7 +161,7 @@ export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
         success: false,
         data: null,
         error: {
-          message: "Could not load your player profile.",
+          message: "Choose Player on the role screen to create your profile.",
           code: null,
           details: null,
           hint: null,
@@ -167,15 +170,6 @@ export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
     }
 
     return { success: true, data: { role: "player", user: userRow as UserRow, profile } };
-  }
-
-  const { error: upsertError } = await supabase
-    .from("scout_profiles")
-    .upsert({ id: userId }, { onConflict: "id" });
-
-  if (upsertError) {
-    logSupabaseError("Supabase: scout_profiles upsert error", upsertError);
-    return { success: false, data: null, error: toSupabaseErrorInfo(upsertError) };
   }
 
   const { data: profile, error: selectError } = await supabase
@@ -194,7 +188,7 @@ export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
       success: false,
       data: null,
       error: {
-        message: "Could not load your scout profile.",
+        message: "Choose Scout on the role screen to create your profile.",
         code: null,
         details: null,
         hint: null,

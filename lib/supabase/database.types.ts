@@ -38,7 +38,7 @@ export type Database = {
         Row: {
           id: string;
           email: string | null;
-          role: string;
+          role: string | null;
           language_preference: string;
           is_premium: boolean;
           scout_verification_status: string;
@@ -64,7 +64,7 @@ export type Database = {
         Insert: {
           id: string;
           email: string | null;
-          role: string;
+          role?: string | null;
           language_preference: string;
           is_premium?: boolean;
           is_admin?: boolean;

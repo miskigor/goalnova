@@ -16,7 +16,7 @@ export function parseScoutVerificationStatus(
 }
 
 export function isApprovedScoutUser(row: {
-  role: string;
+  role: string | null;
   scout_verification_status?: string | null;
 }): boolean {
   return (
@@ -31,7 +31,7 @@ export function isApprovedScoutUser(row: {
  * `scout_verification_status`, not role alone.
  */
 export function isUnverifiedScoutUser(row: {
-  role: string;
+  role: string | null;
   scout_verification_status?: string | null;
 }): boolean {
   if (row.role !== "scout") return false;
@@ -42,7 +42,7 @@ export function isUnverifiedScoutUser(row: {
  * Players may message freely; scouts only after verification approval.
  */
 export function userMayMessagePlayers(row: {
-  role: string;
+  role: string | null;
   scout_verification_status?: string | null;
 }): boolean {
   if (row.role !== "scout") return true;

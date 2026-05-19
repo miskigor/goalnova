@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { hrefWithLocale } from "@/i18n/routing";
+import { needsRoleOnboardingPage } from "@/lib/onboarding/roleOnboarding";
 import { fetchReferralDashboard, type ReferralDashboard } from "@/lib/supabase/referrals";
 
 function clampPct(n: number, max: number): number {
@@ -19,6 +20,11 @@ export function InviteFriendsSection({ className = "" }: { className?: string })
   const [copyHint, setCopyHint] = useState(false);
 
   const load = useCallback(async () => {
+    if (await needsRoleOnboardingPage()) {
+      setDash(null);
+      setLoading(false);
+      return;
+    }
     const { data } = await fetchReferralDashboard();
     setDash(data);
     setLoading(false);

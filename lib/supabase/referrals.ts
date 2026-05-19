@@ -3,6 +3,8 @@ import { devLog, isDev } from "@/lib/devLog";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { PITCHRUSCH_PREMIUM_UPDATED_EVENT } from "@/lib/supabase/premium";
 
+export { needsRoleOnboardingPage } from "@/lib/onboarding/roleOnboarding";
+
 export const PITCHRUSCH_PENDING_REFERRAL_KEY = "pitchrusch_pending_referral_code";
 /** Last `goalnova_player_complete_referral` outcome JSON for mobile debugging (localStorage). */
 export const PITCHRUSCH_LAST_REFERRAL_RESULT_KEY = "pitchrusch_last_referral_result";
@@ -317,38 +319,6 @@ async function tryConsumePendingReferralOnce(): Promise<OnceOutcome> {
 }
 
 const RETRY_DELAYS_MS = [0, 1000, 2000, 4000, 8000, 15000];
-
-/**
- * True when the signed-in user still needs to finish /role (no player/scout profile row yet).
- */
-export async function needsRoleOnboardingPage(): Promise<boolean> {
-  const { data: auth } = await supabase.auth.getUser();
-  const userId = auth.user?.id;
-  if (!userId) return false;
-
-  const { data: userRow } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", userId)
-    .maybeSingle();
-
-  if (userRow?.role === "scout") {
-    const { data: scoutProfile } = await supabase
-      .from("scout_profiles")
-      .select("id")
-      .eq("id", userId)
-      .maybeSingle();
-    return !scoutProfile?.id;
-  }
-
-  const { data: playerProfile } = await supabase
-    .from("player_profiles")
-    .select("id")
-    .eq("id", userId)
-    .maybeSingle();
-
-  return !playerProfile?.id;
-}
 
 /**
  * Waits until player profile exists, then runs the full consume retry schedule.
