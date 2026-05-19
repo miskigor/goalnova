@@ -675,7 +675,7 @@ export function AiAnalysisModal({
       onClick={onClose}
     >
       <div
-        className="box-border max-h-[min(92dvh,720px)] w-full min-w-0 max-w-[min(32rem,calc(100vw-1.5rem))] overflow-y-auto overflow-x-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#14161c] to-gn-bg shadow-2xl shadow-black/50 sm:max-w-lg"
+        className="box-border max-h-[min(92dvh,720px)] w-full min-w-0 max-w-[min(32rem,calc(100dvw-1.5rem))] overflow-y-auto overflow-x-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#14161c] to-gn-bg shadow-2xl shadow-black/50 sm:max-w-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 z-[1] flex min-w-0 items-center justify-between gap-3 border-b border-white/[0.06] bg-[#14161c]/95 px-4 py-3.5 backdrop-blur-sm sm:px-5">

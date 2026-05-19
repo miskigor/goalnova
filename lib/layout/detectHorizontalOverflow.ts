@@ -285,6 +285,41 @@ export function logScoutDashboardPageOverflowOffenders(
   return merged;
 }
 
+export type DocumentViewportMetrics = {
+  pathname: string;
+  innerWidth: number;
+  documentClientWidth: number;
+  documentScrollWidth: number;
+  bodyScrollWidth: number;
+  canScrollX: boolean;
+};
+
+/** Development-only: baseline document vs viewport widths for horizontal overflow. */
+export function logDocumentViewportMetrics(
+  pathname: string,
+  viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0,
+): DocumentViewportMetrics | null {
+  if (!isDev || typeof document === "undefined" || viewportWidth <= 0) return null;
+
+  const docEl = document.documentElement;
+  const metrics: DocumentViewportMetrics = {
+    pathname,
+    innerWidth: viewportWidth,
+    documentClientWidth: docEl.clientWidth,
+    documentScrollWidth: docEl.scrollWidth,
+    bodyScrollWidth: document.body.scrollWidth,
+    canScrollX: docEl.scrollWidth > viewportWidth + 1,
+  };
+
+  const level = metrics.canScrollX ? "warn" : "info";
+  console[level](
+    `[app-shell-overflow] ${pathname} — viewport metrics @ ${viewportWidth}px`,
+    metrics,
+  );
+
+  return metrics;
+}
+
 const APP_SHELL_PROBE_SELECTORS = [
   "html",
   "body",
@@ -315,6 +350,8 @@ export function logAppShellPageOverflowOffenders(
   viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0,
 ): PageOverflowHit[] {
   if (!isDev || typeof document === "undefined" || viewportWidth <= 0) return [];
+
+  logDocumentViewportMetrics(pathname, viewportWidth);
 
   const docEl = document.documentElement;
   const allHits = collectPageOverflowHits(docEl, viewportWidth);

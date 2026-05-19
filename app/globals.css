@@ -48,7 +48,7 @@ html {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
   overscroll-behavior-x: none;
   touch-action: pan-y;
 }
@@ -60,25 +60,39 @@ html {
 }
 
 [data-app-root] {
+  box-sizing: border-box;
   width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  overflow-x: hidden;
-}
-
-[data-app-column],
-[data-app-main],
-[data-app-main-inner] {
   max-width: 100%;
   min-width: 0;
   overflow-x: clip;
 }
 
+[data-app-column],
+[data-app-main],
+[data-app-main-inner] {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+[data-app-mobile-header],
 [data-app-bottom-nav] {
+  box-sizing: border-box;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   inset-inline: 0;
+  overflow-x: clip;
+}
+
+/* Flex column body: children default to min-width:auto and can force page-wide scroll. */
+body > * {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 body {
@@ -87,7 +101,7 @@ body {
   min-width: 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   overscroll-behavior-x: none;
   touch-action: pan-y;
   background-color: var(--gn-bg);

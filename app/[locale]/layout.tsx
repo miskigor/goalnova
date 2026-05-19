@@ -142,7 +142,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     >
       <body
         style={{ backgroundColor: "#000" }}
-        className="flex min-h-dvh min-w-0 max-w-full flex-col overflow-x-hidden bg-gn-bg text-gn-text"
+        className="flex min-h-dvh min-w-0 max-w-full flex-col overflow-x-clip bg-gn-bg text-gn-text"
       >
         <Suspense fallback={<LocaleRouteFallback />}>
           <LocaleIntlProvider locale={locale as AppLocale}>{children}</LocaleIntlProvider>
