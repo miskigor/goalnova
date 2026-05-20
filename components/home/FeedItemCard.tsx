@@ -211,7 +211,7 @@ export function FeedItemCard({
       {/* Bottom-left: avatar + identity + caption (over video) */}
       <div
         {...feedMetaProps}
-        className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border min-w-0 max-w-[calc(100%-5.5rem)] pb-0 pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[max(2.5rem,calc(var(--gn-app-bottom-nav-offset)-1.75rem))] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+        className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border min-w-0 max-w-[calc(100%-5.5rem)] pb-0 pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[max(1.25rem,calc(var(--gn-app-bottom-nav-offset)-2.5rem))] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
         {loadFailed && hasUrl ? (
           <p
@@ -227,20 +227,22 @@ export function FeedItemCard({
             {profilePath ? (
               <Link
                 href={profilePath}
-                className="shrink-0 rounded-full ring-1 ring-white/25 shadow-sm transition hover:ring-gn-accent/45"
+                className="shrink-0 rounded-full ring-2 ring-white/40 shadow-[0_2px_12px_rgba(0,0,0,0.55)] transition hover:ring-gn-accent/55 max-lg:ring-2 max-lg:ring-white/45"
                 aria-label={t("viewPlayerProfileAria", { name: displayName })}
               >
                 <ProfileAvatar
                   name={displayName}
                   imageUrl={userAvatarUrl?.trim() || undefined}
-                  sizeClassName="h-9 w-9 max-lg:h-8 max-lg:w-8 text-xs font-semibold max-lg:text-xs"
+                  sizeClassName="h-9 w-9 max-lg:h-10 max-lg:w-10 text-xs font-semibold max-lg:text-xs"
+                  className="max-lg:ring-2 max-lg:ring-white/45"
                 />
               </Link>
             ) : (
               <ProfileAvatar
                 name={displayName}
                 imageUrl={userAvatarUrl?.trim() || undefined}
-                sizeClassName="h-9 w-9 max-lg:h-8 max-lg:w-8 text-xs font-semibold max-lg:text-xs"
+                sizeClassName="h-9 w-9 max-lg:h-10 max-lg:w-10 text-xs font-semibold max-lg:text-xs"
+                className="max-lg:ring-2 max-lg:ring-white/45 max-lg:shadow-[0_2px_12px_rgba(0,0,0,0.55)]"
               />
             )}
 
