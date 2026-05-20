@@ -37,6 +37,10 @@ import {
 } from "@/lib/feed/feedScrollContract";
 import { HomeFeedLayoutDebugOverlay } from "@/components/home/HomeFeedLayoutDebugOverlay";
 import { runHomeFeedMountedScrollReset } from "@/components/home/homeFeedMobileScrollReset";
+import {
+  clearHomeFeedVisualViewportVars,
+  syncHomeFeedVisualViewportVars,
+} from "@/components/home/homeFeedVisualViewportSync";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
@@ -418,29 +422,33 @@ export function HomeFeed() {
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [refreshMyVideosCount]);
 
-  /** Mobile-only horizontal scroll reset while HomeFeed is mounted (iOS Safari). */
+  /** Mobile-only viewport sync + horizontal scroll reset while HomeFeed is mounted. */
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const reset = () => runHomeFeedMountedScrollReset();
+    const sync = () => {
+      syncHomeFeedVisualViewportVars();
+      runHomeFeedMountedScrollReset();
+    };
 
-    reset();
-    const t50 = window.setTimeout(reset, 50);
-    const t250 = window.setTimeout(reset, 250);
+    sync();
+    const t50 = window.setTimeout(sync, 50);
+    const t250 = window.setTimeout(sync, 250);
 
     const vv = window.visualViewport;
-    vv?.addEventListener("resize", reset);
-    vv?.addEventListener("scroll", reset);
-    window.addEventListener("resize", reset, { passive: true });
-    window.addEventListener("orientationchange", reset, { passive: true });
+    vv?.addEventListener("resize", sync);
+    vv?.addEventListener("scroll", sync);
+    window.addEventListener("resize", sync, { passive: true });
+    window.addEventListener("orientationchange", sync, { passive: true });
 
     return () => {
       window.clearTimeout(t50);
       window.clearTimeout(t250);
-      vv?.removeEventListener("resize", reset);
-      vv?.removeEventListener("scroll", reset);
-      window.removeEventListener("resize", reset);
-      window.removeEventListener("orientationchange", reset);
+      vv?.removeEventListener("resize", sync);
+      vv?.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+      window.removeEventListener("orientationchange", sync);
+      clearHomeFeedVisualViewportVars();
     };
   }, []);
 

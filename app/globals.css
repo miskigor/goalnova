@@ -124,9 +124,7 @@ html {
     max-width: 100%;
   }
 
-  /* Home feed: parent-relative width (no 100dvw — avoids Safari overflow). */
-  [data-app-root]:has([data-pitchrusch-home-feed]),
-  [data-app-column]:has([data-pitchrusch-home-feed]),
+  /* Home feed: visual viewport width + offset (vars set in HomeFeed while mounted). */
   [data-app-main]:has([data-pitchrusch-home-feed]),
   [data-app-main-inner]:has([data-pitchrusch-home-feed]),
   [data-pitchrusch-home-feed],
@@ -135,10 +133,11 @@ html {
   [data-pitchrusch-feed-item],
   [data-pitchrusch-feed-card] {
     box-sizing: border-box;
-    width: 100%;
+    width: var(--gn-home-feed-vv-width, 100%);
+    max-width: var(--gn-home-feed-vv-width, 100%);
     min-width: 0;
-    max-width: 100%;
-    margin-inline: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     overflow-x: clip;
   }
 
@@ -153,6 +152,7 @@ html {
   [data-app-main-inner]:has([data-pitchrusch-home-feed]) {
     padding-left: 0 !important;
     padding-right: 0 !important;
+    transform: translateX(var(--gn-home-feed-vv-left, 0px));
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root],
@@ -163,9 +163,8 @@ html {
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-card] {
     left: 0 !important;
-    right: 0 !important;
+    right: auto !important;
     transform: none !important;
-    translate: none;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-meta] {
@@ -173,10 +172,8 @@ html {
     right: auto !important;
     inset-inline-start: 0 !important;
     inset-inline-end: auto !important;
-    transform: none !important;
-    translate: none;
     bottom: var(--gn-app-bottom-nav-offset);
-    max-width: calc(100% - 3.25rem);
+    max-width: calc(var(--gn-home-feed-vv-width, 100%) - 3.25rem);
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px));
     padding-bottom: 0.25rem;
   }
@@ -187,8 +184,6 @@ html {
     left: auto !important;
     inset-inline-end: max(0.5rem, env(safe-area-inset-right, 0px)) !important;
     inset-inline-start: auto !important;
-    transform: none !important;
-    translate: none;
     max-width: 1.75rem;
   }
 

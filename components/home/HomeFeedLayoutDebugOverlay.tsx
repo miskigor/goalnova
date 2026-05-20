@@ -24,9 +24,26 @@ function buildLayoutDebugLines(): string[] {
   }
 
   const vv = window.visualViewport;
+  const homeFeed = document.querySelector("[data-pitchrusch-home-feed]");
+  const vvLeft =
+    homeFeed instanceof HTMLElement
+      ? homeFeed.style.getPropertyValue("--gn-home-feed-vv-left") ||
+        getComputedStyle(homeFeed).getPropertyValue("--gn-home-feed-vv-left")
+      : "";
+  const vvWidth =
+    homeFeed instanceof HTMLElement
+      ? homeFeed.style.getPropertyValue("--gn-home-feed-vv-width") ||
+        getComputedStyle(homeFeed).getPropertyValue("--gn-home-feed-vv-width")
+      : "";
+
   const lines: string[] = [
     `innerWidth: ${window.innerWidth}`,
     `visualViewport.width: ${vv?.width ?? "n/a"}`,
+    `visualViewport.offsetLeft: ${vv?.offsetLeft ?? "n/a"}`,
+    `visualViewport.pageLeft: ${vv?.pageLeft ?? "n/a"}`,
+    `visualViewport.scale: ${vv?.scale ?? "n/a"}`,
+    `--gn-home-feed-vv-left: ${vvLeft || "n/a"}`,
+    `--gn-home-feed-vv-width: ${vvWidth || "n/a"}`,
     `scrollX: ${window.scrollX}`,
     `doc.scrollLeft: ${document.documentElement.scrollLeft}`,
     `doc.scrollWidth: ${document.documentElement.scrollWidth}`,
