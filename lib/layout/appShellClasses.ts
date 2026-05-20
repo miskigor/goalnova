@@ -1,20 +1,21 @@
 /** Shared mobile app shell layout — single horizontal padding, no side safe-area (WhatsApp WebView-safe). */
 
 export const APP_SHELL_ROOT_CLASS =
-  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-hidden bg-gn-bg text-gn-text max-lg:flex-col lg:flex-row";
+  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-hidden bg-gn-bg text-gn-text max-lg:h-full max-lg:max-h-full max-lg:min-h-0 max-lg:flex-col max-lg:overflow-y-hidden lg:flex-row";
 
 export const APP_SHELL_COLUMN_CLASS =
-  "relative mx-auto flex min-h-dvh min-h-0 min-w-0 w-full max-w-full flex-1 flex-col overflow-x-hidden ps-0 lg:ps-[15.5rem]";
+  "relative mx-auto flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col ps-0 max-lg:min-h-0 lg:min-h-dvh lg:overflow-x-hidden lg:ps-[15.5rem]";
 
 export const APP_SHELL_MAIN_CLASS = [
   "mx-auto box-border flex w-full min-w-0 max-w-full flex-1 flex-col items-stretch overflow-x-hidden px-4",
+  "min-h-0 max-lg:min-h-0",
   "pt-[var(--gn-app-header-offset)]",
   "pb-[var(--gn-app-bottom-nav-offset)]",
   "lg:max-w-4xl lg:px-6 lg:pt-8 lg:pb-12",
 ].join(" ");
 
 export const APP_SHELL_MAIN_INNER_CLASS =
-  "mx-auto box-border w-full min-w-0 max-w-full overflow-x-hidden";
+  "mx-auto box-border flex w-full min-w-0 max-w-full min-h-0 flex-1 flex-col overflow-x-hidden max-lg:min-h-0";
 
 export const APP_MOBILE_HEADER_CLASS = [
   "fixed top-0 left-0 right-0 z-[55] box-border w-full max-w-full shrink-0",

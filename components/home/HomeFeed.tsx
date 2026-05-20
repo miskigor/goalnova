@@ -52,7 +52,7 @@ const FEED_BLEED = "w-full min-w-0 max-w-full";
 const FEED_SCROLLPORT =
   "touch-pan-y snap-y snap-mandatory overflow-y-auto overflow-x-hidden scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
   "[container-type:size] min-h-0 min-w-0 " +
-  "max-lg:flex-1 max-lg:h-full max-lg:min-h-0 max-lg:max-h-[calc(100dvh-var(--gn-app-header-offset)-var(--gn-app-bottom-nav-offset))] " +
+  "max-lg:flex-1 max-lg:h-full max-lg:min-h-0 max-lg:max-h-full " +
   "lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
 /** Card fills its snap `li`; desktop keeps a subtle framed tile. */
@@ -511,7 +511,7 @@ export function HomeFeed() {
   }
 
   return (
-    <div className="mx-auto flex w-full min-w-0 max-w-lg min-h-0 flex-1 flex-col gap-3 pb-3 lg:max-w-2xl lg:flex-none">
+    <div className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:h-full lg:max-w-2xl lg:flex-none">
       <ReferralConsumeOnMount />
       <header
         className={[

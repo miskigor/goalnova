@@ -74,6 +74,29 @@ html {
   overflow-x: hidden;
 }
 
+/* Mobile app shell: lock document height so feed flex chain can fill viewport minus chrome. */
+@media (max-width: 1023px) {
+  html:has([data-app-root]),
+  body:has([data-app-root]) {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    overflow-x: hidden;
+  }
+
+  [data-app-root] {
+    height: 100%;
+    min-height: 100%;
+    max-height: 100%;
+  }
+
+  [data-app-mobile-header],
+  [data-app-bottom-nav] {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
 [data-app-bottom-nav] {
   width: 100%;
   max-width: 100%;
