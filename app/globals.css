@@ -148,11 +148,16 @@ html {
     overflow: clip;
   }
 
-  [data-app-main]:has([data-pitchrusch-home-feed]),
-  [data-app-main-inner]:has([data-pitchrusch-home-feed]) {
+  [data-app-main]:has([data-pitchrusch-home-feed]) {
     padding-left: 0 !important;
     padding-right: 0 !important;
     transform: translateX(var(--gn-home-feed-vv-left, 0px));
+  }
+
+  [data-app-main-inner]:has([data-pitchrusch-home-feed]) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    transform: none !important;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root],
