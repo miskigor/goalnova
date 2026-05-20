@@ -18,7 +18,7 @@ export const APP_SHELL_MAIN_INNER_CLASS =
   "mx-auto box-border flex w-full min-w-0 max-w-full min-h-0 flex-1 flex-col overflow-x-hidden max-lg:min-h-0";
 
 export const APP_MOBILE_HEADER_CLASS = [
-  "fixed top-0 left-0 right-0 z-[70] box-border w-full max-w-full shrink-0",
+  "fixed top-0 left-0 right-0 z-[100] box-border w-full max-w-full shrink-0",
   "border-b border-gn-border-subtle bg-gn-bg/95",
   "pt-[env(safe-area-inset-top,0px)]",
   "shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90",

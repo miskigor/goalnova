@@ -78,18 +78,22 @@ html {
 @media (max-width: 1023px) {
   html:has([data-app-root]),
   body:has([data-app-root]) {
-    position: fixed;
-    inset: 0;
     width: 100%;
     max-width: 100%;
     height: 100%;
+    margin: 0;
     overflow: hidden;
     overflow-x: clip;
     overscroll-behavior: none;
   }
 
   [data-app-mobile-header] {
-    z-index: 70;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    width: 100%;
     max-width: 100%;
     min-width: 0;
   }
@@ -139,7 +143,15 @@ html {
 
   [data-pitchrusch-feed-rail] {
     z-index: 50;
-    max-width: 3rem;
+    max-width: 2.5rem;
+  }
+
+  [data-pitchrusch-feed-meta] {
+    left: 0;
+    right: auto;
+    max-width: calc(100% - 3rem);
+    padding-inline-start: max(0.75rem, env(safe-area-inset-left, 0px));
+    padding-inline-end: 0.5rem;
   }
 }
 
