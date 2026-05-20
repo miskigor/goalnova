@@ -15,7 +15,7 @@ export const APP_SHELL_MAIN_CLASS = [
 ].join(" ");
 
 export const APP_SHELL_MAIN_INNER_CLASS =
-  "mx-auto box-border flex w-full min-w-0 max-w-full min-h-0 flex-1 flex-col overflow-x-hidden max-lg:min-h-0";
+  "mx-auto box-border flex w-full min-w-0 max-w-full min-h-0 flex-1 flex-col overflow-x-clip max-lg:min-h-0 max-lg:overflow-x-clip";
 
 export const APP_MOBILE_HEADER_CLASS = [
   "fixed top-0 left-0 right-0 z-[100] box-border w-full max-w-full shrink-0",

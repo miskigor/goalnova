@@ -144,7 +144,7 @@ export function FeedItemCard({
   return (
     <article
       {...feedCardProps}
-      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden bg-black ${slideClassName}`}
+      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden bg-black max-lg:left-0 max-lg:right-0 max-lg:mx-0 ${slideClassName}`}
     >
       {/* Fullscreen video — non-interactive so rail controls receive taps */}
       <div
@@ -194,7 +194,7 @@ export function FeedItemCard({
       {/* Floating action rail — above bottom nav inset */}
       <div
         data-pitchrusch-feed-rail
-        className="pointer-events-auto absolute end-2 top-1/2 z-50 flex w-7 max-w-7 -translate-y-1/2 flex-col items-center justify-center gap-1 max-lg:max-h-[9.5rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:translate-y-0 lg:justify-end"
+        className="pointer-events-auto absolute end-[max(0.5rem,env(safe-area-inset-right,0px))] top-1/2 z-50 flex w-7 max-w-7 -translate-y-1/2 flex-col items-center justify-center gap-1 max-lg:max-h-[9.5rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:translate-y-0 lg:justify-end"
       >
         <FeedVideoEngagement
           videoId={video.id}
@@ -211,7 +211,7 @@ export function FeedItemCard({
       {/* Bottom-left: avatar + identity + caption (over video) */}
       <div
         {...feedMetaProps}
-        className="pointer-events-none absolute start-0 z-20 box-border min-w-0 max-w-[calc(100%-2rem)] pb-1 pe-1 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[var(--gn-app-bottom-nav-offset)] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+        className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border min-w-0 max-w-[calc(100%-3.25rem)] pb-1 pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[var(--gn-app-bottom-nav-offset)] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
         {loadFailed && hasUrl ? (
           <p

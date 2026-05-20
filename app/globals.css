@@ -125,15 +125,22 @@ html {
   }
 
   /* Home feed: edge-to-edge video; shell keeps header/nav padding only vertically. */
-  [data-app-main]:has([data-pitchrusch-home-feed]) {
-    padding-left: 0;
-    padding-right: 0;
+  [data-app-main]:has([data-pitchrusch-home-feed]),
+  [data-app-main-inner]:has([data-pitchrusch-home-feed]) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-inline: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
   }
 
   [data-pitchrusch-home-feed] {
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    margin-inline: 0;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-panel] {
@@ -150,21 +157,27 @@ html {
   [data-pitchrusch-feed-card] {
     position: relative;
     z-index: 0;
+    width: 100%;
     max-width: 100%;
+    min-width: 0;
+    margin-inline: 0;
+    box-sizing: border-box;
   }
 
   [data-pitchrusch-feed-rail] {
     z-index: 90;
+    inset-inline-start: auto;
+    inset-inline-end: max(0.5rem, env(safe-area-inset-right, 0px));
     max-width: 1.75rem;
   }
 
   [data-pitchrusch-feed-meta] {
-    left: 0;
-    right: auto;
+    inset-inline-start: 0;
+    inset-inline-end: auto;
     bottom: var(--gn-app-bottom-nav-offset);
-    max-width: calc(100% - 2rem);
+    max-width: calc(100% - 3.25rem);
     padding-inline-start: max(0.625rem, env(safe-area-inset-left, 0px));
-    padding-inline-end: 0.125rem;
+    padding-inline-end: 0.25rem;
     padding-bottom: 0.25rem;
   }
 

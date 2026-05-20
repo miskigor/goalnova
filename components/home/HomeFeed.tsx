@@ -428,6 +428,27 @@ export function HomeFeed() {
     !feedLoadFailed &&
     items.length > 0;
 
+  /** Keep feed aligned to viewport after iOS zoom / URL bar / snap scroll. */
+  useEffect(() => {
+    if (!hideFeedPageHeader) return;
+    const reset = () => resetHomeFeedHorizontalScroll();
+    reset();
+    const raf = requestAnimationFrame(reset);
+    const delayed = window.setTimeout(reset, 120);
+    window.addEventListener("resize", reset, { passive: true });
+    window.visualViewport?.addEventListener("resize", reset);
+    window.visualViewport?.addEventListener("scroll", reset);
+    document.addEventListener("scroll", reset, { passive: true, capture: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(delayed);
+      window.removeEventListener("resize", reset);
+      window.visualViewport?.removeEventListener("resize", reset);
+      window.visualViewport?.removeEventListener("scroll", reset);
+      document.removeEventListener("scroll", reset, { capture: true });
+    };
+  }, [hideFeedPageHeader, items.length]);
+
   const showUploadFirstBanner =
     uploadEligibility === "player" &&
     myVideos.state === "ready" &&
@@ -522,7 +543,7 @@ export function HomeFeed() {
   return (
     <div
       data-pitchrusch-home-feed
-      className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
+      className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:mx-0 max-lg:max-w-none max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
     >
       <ReferralConsumeOnMount />
       <header
