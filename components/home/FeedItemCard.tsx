@@ -137,7 +137,7 @@ export function FeedItemCard({
         caption={video.caption}
         iconOnly
         stopPropagation
-        className="[&_button]:flex [&_button]:!h-6 [&_button]:!w-6 [&_button]:items-center [&_button]:justify-center [&_button]:rounded-full [&_button]:border-0 [&_button]:bg-white/10 [&_button]:p-0 [&_button]:text-white [&_button]:shadow-[0_2px_10px_rgba(0,0,0,0.35)] [&_button]:backdrop-blur-md [&_button]:hover:bg-white/16 [&_svg]:h-3 [&_svg]:w-3"
+        className="[&_button]:flex [&_button]:!h-6 [&_button]:!w-6 max-lg:[&_button]:!h-9 max-lg:[&_button]:!w-9 [&_button]:items-center [&_button]:justify-center [&_button]:rounded-full [&_button]:border-0 [&_button]:bg-white/10 [&_button]:p-0 [&_button]:text-white [&_button]:shadow-[0_2px_10px_rgba(0,0,0,0.35)] [&_button]:backdrop-blur-md [&_button]:hover:bg-white/16 [&_svg]:h-3 [&_svg]:w-3 max-lg:[&_svg]:!h-[18px] max-lg:[&_svg]:!w-[18px]"
       />
     ) : null;
 
@@ -194,7 +194,7 @@ export function FeedItemCard({
       {/* Floating action rail — above bottom nav inset */}
       <div
         data-pitchrusch-feed-rail
-        className="pointer-events-auto absolute end-[max(0.5rem,env(safe-area-inset-right,0px))] top-1/2 z-50 flex w-7 max-w-7 -translate-y-1/2 flex-col items-center justify-center gap-1 max-lg:max-h-[9.5rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:translate-y-0 lg:justify-end"
+        className="pointer-events-auto absolute end-[max(0.5rem,env(safe-area-inset-right,0px))] top-1/2 z-50 flex w-10 max-w-10 -translate-y-1/2 flex-col items-center justify-center gap-1 max-lg:max-h-[11rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:translate-y-0 lg:justify-end"
       >
         <FeedVideoEngagement
           videoId={video.id}
@@ -211,7 +211,7 @@ export function FeedItemCard({
       {/* Bottom-left: avatar + identity + caption (over video) */}
       <div
         {...feedMetaProps}
-        className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border min-w-0 max-w-[calc(100%-3.25rem)] pb-1 pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[var(--gn-app-bottom-nav-offset)] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+        className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border min-w-0 max-w-[calc(100%-4.75rem)] pb-1 pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[max(3.25rem,calc(var(--gn-app-bottom-nav-offset)-0.5rem))] max-lg:pb-1 lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
         {loadFailed && hasUrl ? (
           <p
@@ -222,8 +222,8 @@ export function FeedItemCard({
           </p>
         ) : null}
 
-        <div className="pointer-events-auto space-y-1 max-lg:space-y-0.5">
-          <div className="flex min-w-0 items-center gap-2 max-lg:gap-1.5">
+        <div className="pointer-events-auto space-y-1 max-lg:space-y-1">
+          <div className="flex min-w-0 items-center gap-2 max-lg:gap-2">
             {profilePath ? (
               <Link
                 href={profilePath}
@@ -233,14 +233,14 @@ export function FeedItemCard({
                 <ProfileAvatar
                   name={displayName}
                   imageUrl={userAvatarUrl?.trim() || undefined}
-                  sizeClassName="h-9 w-9 max-lg:h-7 max-lg:w-7 text-xs font-semibold max-lg:text-[10px]"
+                  sizeClassName="h-9 w-9 max-lg:h-8 max-lg:w-8 text-xs font-semibold max-lg:text-xs"
                 />
               </Link>
             ) : (
               <ProfileAvatar
                 name={displayName}
                 imageUrl={userAvatarUrl?.trim() || undefined}
-                sizeClassName="h-9 w-9 max-lg:h-7 max-lg:w-7 text-xs font-semibold max-lg:text-[10px]"
+                sizeClassName="h-9 w-9 max-lg:h-8 max-lg:w-8 text-xs font-semibold max-lg:text-xs"
               />
             )}
 
@@ -251,19 +251,19 @@ export function FeedItemCard({
                   className="block min-w-0"
                   aria-label={t("viewPlayerProfileAria", { name: displayName })}
                 >
-                  <p className="truncate text-[13px] font-semibold leading-tight text-white max-lg:text-[12px] [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
+                  <p className="truncate text-[13px] font-semibold leading-tight text-white max-lg:text-[15px] max-lg:font-bold [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
                     {displayName}
                   </p>
-                  <p className="truncate text-[11px] font-medium leading-tight text-white/75 max-lg:text-[10px] [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
+                  <p className="truncate text-[11px] font-medium leading-tight text-white/75 max-lg:text-[13px] [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
                     @{displayUsername}
                   </p>
                 </Link>
               ) : (
                 <>
-                  <p className="truncate text-[13px] font-semibold text-white max-lg:text-[12px] [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
+                  <p className="truncate text-[13px] font-semibold text-white max-lg:text-[15px] max-lg:font-bold [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
                     {displayName}
                   </p>
-                  <p className="truncate text-[11px] font-medium text-white/75 max-lg:text-[10px] [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
+                  <p className="truncate text-[11px] font-medium text-white/75 max-lg:text-[13px] [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
                     @{displayUsername}
                   </p>
                 </>
@@ -272,7 +272,7 @@ export function FeedItemCard({
           </div>
 
           {captionText ? (
-            <p className="line-clamp-2 min-w-0 break-words text-[12px] leading-snug text-white/88 [text-shadow:0_1px_6px_rgba(0,0,0,0.88)]">
+            <p className="line-clamp-2 min-w-0 break-words text-[12px] leading-snug text-white/88 max-lg:text-[13px] [text-shadow:0_1px_6px_rgba(0,0,0,0.88)]">
               {captionText}
             </p>
           ) : null}
@@ -281,7 +281,7 @@ export function FeedItemCard({
             <VideoMusicCredit
               track={item.musicTrack}
               compact
-              className="!text-[10px] !leading-tight text-white/55"
+              className="!text-[10px] max-lg:!text-[13px] !leading-tight text-white/55"
             />
           ) : null}
         </div>

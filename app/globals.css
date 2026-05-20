@@ -178,7 +178,7 @@ html {
     inset-inline-start: 0 !important;
     inset-inline-end: auto !important;
     bottom: var(--gn-app-bottom-nav-offset);
-    max-width: calc(var(--gn-home-feed-vv-width, 100%) - 3.25rem);
+    max-width: calc(var(--gn-home-feed-vv-width, 100%) - 4.75rem);
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px));
     padding-bottom: 0.25rem;
   }
@@ -189,7 +189,7 @@ html {
     left: auto !important;
     inset-inline-end: max(0.5rem, env(safe-area-inset-right, 0px)) !important;
     inset-inline-start: auto !important;
-    max-width: 1.75rem;
+    max-width: 3rem;
   }
 
   [data-app-main]:has([data-pitchrusch-home-feed]) {
