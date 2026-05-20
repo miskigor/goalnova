@@ -7,17 +7,17 @@ export const APP_SHELL_COLUMN_CLASS =
   "relative mx-auto flex min-h-dvh min-h-0 min-w-0 w-full max-w-full flex-1 flex-col overflow-x-hidden ps-0 lg:ps-[15.5rem]";
 
 export const APP_SHELL_MAIN_CLASS = [
-  "mx-auto box-border flex w-full min-w-0 max-w-full flex-1 flex-col items-stretch overflow-x-clip px-4",
+  "mx-auto box-border flex w-full min-w-0 max-w-full flex-1 flex-col items-stretch overflow-x-hidden px-4",
   "pt-[var(--gn-app-header-offset)]",
   "pb-[var(--gn-app-bottom-nav-offset)]",
   "lg:max-w-4xl lg:px-6 lg:pt-8 lg:pb-12",
 ].join(" ");
 
 export const APP_SHELL_MAIN_INNER_CLASS =
-  "mx-auto box-border w-full min-w-0 max-w-full overflow-x-clip";
+  "mx-auto box-border w-full min-w-0 max-w-full overflow-x-hidden";
 
 export const APP_MOBILE_HEADER_CLASS = [
-  "fixed top-0 left-0 right-0 z-[55] box-border w-full max-w-full shrink-0 overflow-x-hidden",
+  "fixed top-0 left-0 right-0 z-[55] box-border w-full max-w-full shrink-0",
   "border-b border-gn-border-subtle bg-gn-bg/95",
   "pt-[env(safe-area-inset-top,0px)]",
   "shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90",
@@ -25,7 +25,7 @@ export const APP_MOBILE_HEADER_CLASS = [
 ].join(" ");
 
 export const APP_MOBILE_HEADER_INNER_CLASS =
-  "mx-auto flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-clip box-border px-4";
+  "mx-auto flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-hidden box-border px-4";
 
 export const APP_MOBILE_BOTTOM_NAV_CLASS = [
   "pointer-events-none fixed bottom-0 left-0 right-0 z-[60] box-border w-full max-w-full min-w-0 overflow-x-hidden",

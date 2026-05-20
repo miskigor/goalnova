@@ -52,12 +52,12 @@ const FEED_BLEED = "w-full min-w-0 max-w-full";
 const FEED_SCROLLPORT =
   "touch-pan-y snap-y snap-mandatory overflow-y-auto overflow-x-hidden scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
   "[container-type:size] min-h-0 min-w-0 " +
-  "max-lg:flex-1 max-lg:h-full max-lg:min-h-0 " +
+  "max-lg:flex-1 max-lg:h-full max-lg:min-h-0 max-lg:max-h-[calc(100dvh-var(--gn-app-header-offset)-var(--gn-app-bottom-nav-offset))] " +
   "lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
-/** Card fills its snap `li`; desktop keeps a subtle framed tile. Comment sheets use a portal — no overflow-visible bleed. */
+/** Card fills its snap `li`; desktop keeps a subtle framed tile. */
 const FEED_SLIDE =
-  "box-border h-full min-h-0 min-w-0 w-full max-w-full overflow-hidden rounded-none border-0 bg-black " +
+  "h-full min-h-0 min-w-0 w-full max-w-full overflow-hidden rounded-none border-0 bg-black " +
   "max-lg:h-full max-lg:min-h-0 " +
   "lg:h-[100cqh] lg:max-h-[100cqh] lg:rounded-2xl lg:border lg:border-white/[0.06]";
 
@@ -412,8 +412,8 @@ export function HomeFeed() {
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [refreshMyVideosCount]);
 
-  /** Full-viewport feed on small screens (video edge-to-edge; shell chrome overlays). */
-  const liveImmersiveMobile =
+  /** Hide in-page feed title on mobile when clips are showing (shell header/nav stay visible). */
+  const hideFeedPageHeader =
     scoutLoaded &&
     !loading &&
     !feedLoadFailed &&
@@ -424,23 +424,7 @@ export function HomeFeed() {
     myVideos.state === "ready" &&
     myVideos.count === 0 &&
     !uploadFirstDismissed &&
-    !liveImmersiveMobile;
-
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const root = document.documentElement;
-    if (liveImmersiveMobile) {
-      root.classList.add("gn-home-immersive");
-      root.style.overflowX = "hidden";
-    } else {
-      root.classList.remove("gn-home-immersive");
-      root.style.overflowX = "";
-    }
-    return () => {
-      root.classList.remove("gn-home-immersive");
-      root.style.overflowX = "";
-    };
-  }, [liveImmersiveMobile]);
+    !hideFeedPageHeader;
 
   function renderFeedBody() {
     if (!scoutLoaded || loading) {
@@ -527,20 +511,12 @@ export function HomeFeed() {
   }
 
   return (
-    <div
-      data-pitchrusch-home-immersive={liveImmersiveMobile ? "" : undefined}
-      className={[
-        "mx-auto box-border flex w-full min-w-0 max-w-lg min-h-0 flex-col gap-3 pb-3 lg:max-w-2xl",
-        liveImmersiveMobile
-          ? "max-lg:fixed max-lg:inset-x-0 max-lg:top-[var(--gn-app-header-offset)] max-lg:bottom-[var(--gn-app-bottom-nav-offset)] max-lg:z-[10] max-lg:m-0 max-lg:flex max-lg:h-auto max-lg:min-h-0 max-lg:min-w-0 max-lg:w-full max-lg:max-w-full max-lg:flex-col max-lg:gap-0 max-lg:overflow-x-hidden max-lg:overflow-y-hidden max-lg:bg-black max-lg:px-0 max-lg:pb-0"
-          : "",
-      ].join(" ")}
-    >
+    <div className="mx-auto flex w-full min-w-0 max-w-lg min-h-0 flex-1 flex-col gap-3 pb-3 lg:max-w-2xl lg:flex-none">
       <ReferralConsumeOnMount />
       <header
         className={[
           "space-y-0.5",
-          liveImmersiveMobile ? "max-lg:hidden" : "",
+          hideFeedPageHeader ? "max-lg:hidden" : "",
         ].join(" ")}
       >
         <h1 className="text-xl font-semibold tracking-tight text-gn-text">
@@ -564,9 +540,9 @@ export function HomeFeed() {
 
       <section
         className={[
-          "overflow-hidden rounded-none border-0 bg-transparent shadow-none",
-          liveImmersiveMobile
-            ? "relative z-0 max-lg:flex max-lg:min-h-0 max-lg:min-w-0 max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-hidden max-lg:pt-0"
+          "min-h-0 overflow-hidden rounded-none border-0 bg-transparent shadow-none",
+          hideFeedPageHeader
+            ? "max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col"
             : "",
         ].join(" ")}
         aria-busy={loading || !scoutLoaded}

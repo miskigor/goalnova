@@ -44,7 +44,7 @@ export function LandingFoundingPlayer({ signupHref, title, body, bullets, cta }:
           </div>
           <a
             href={signupHref}
-            className={`${GN_PRIMARY_BUTTON_CLASS} min-h-12 w-full shrink-0 rounded-full px-6 text-center text-base sm:min-w-[14rem] lg:w-auto`}
+            className={`${GN_PRIMARY_BUTTON_CLASS} relative z-10 min-h-12 w-full shrink-0 rounded-full px-6 text-center text-base sm:min-w-[14rem] lg:w-auto`}
           >
             {cta}
           </a>

@@ -33,7 +33,7 @@ export function LandingNav({ homeHref, loginHref, signupHref, loginLabel, joinLa
           </a>
           <a
             href={signupHref}
-            className={`${GN_PRIMARY_BUTTON_CLASS} !rounded-full !px-3 !py-1.5 !text-xs sm:!px-4 sm:!py-2 sm:!text-sm`}
+            className={`${GN_PRIMARY_BUTTON_CLASS} relative z-10 !rounded-full !px-3 !py-1.5 !text-xs sm:!px-4 sm:!py-2 sm:!text-sm`}
           >
             {joinLabel}
           </a>

@@ -241,22 +241,3 @@ select:focus {
 
 }
 
-/* Immersive home feed: edge-to-edge video between fixed header and bottom nav. */
-@media (max-width: 1023px) {
-  html.gn-home-immersive,
-  html.gn-home-immersive body {
-    overflow-x: hidden;
-    max-width: 100%;
-  }
-
-  html.gn-home-immersive [data-app-main],
-  html.gn-home-immersive [data-app-main-inner],
-  html.gn-home-immersive [data-app-column] {
-    overflow-x: hidden;
-    max-width: 100%;
-  }
-
-  html.gn-home-immersive [data-app-main] {
-    padding: 0;
-  }
-}

@@ -152,7 +152,7 @@ export function FeedItemCard({
         className="pointer-events-none absolute inset-0 z-0 max-w-full overflow-hidden bg-black"
       >
         {challenge ? (
-          <div className="pointer-events-none absolute start-2 top-2 z-10 max-w-[min(100%-1rem,240px)] max-lg:top-[calc(env(safe-area-inset-top,0px)+3.75rem)]">
+          <div className="pointer-events-none absolute start-2 top-2 z-10 max-w-[min(100%-1rem,240px)]">
             <div className="pointer-events-auto scale-95 origin-top-left">
               <ChallengeTagPill
                 routeSegment={challengeLinkSegment(challenge)}
@@ -191,12 +191,11 @@ export function FeedItemCard({
         />
       </div>
 
-      {/* Floating action rail — clipped to card width so controls stay on-screen (in-app browsers). */}
-      <div className="pointer-events-none absolute inset-0 z-[42] overflow-hidden">
-        <div
-          data-pitchrusch-feed-rail
-          className="pointer-events-auto absolute end-3 top-3 bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] flex w-11 shrink-0 flex-col items-center justify-end sm:end-4 sm:w-12 lg:top-12 lg:bottom-44"
-        >
+      {/* Floating action rail — above bottom nav inset */}
+      <div
+        data-pitchrusch-feed-rail
+        className="pointer-events-auto absolute end-[max(0.5rem,env(safe-area-inset-right,0px))] z-[42] flex w-11 shrink-0 flex-col items-center justify-end max-lg:top-3 max-lg:bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] sm:end-[max(0.625rem,env(safe-area-inset-right,0px))] sm:w-12 lg:top-12 lg:bottom-44"
+      >
         <FeedVideoEngagement
           videoId={video.id}
           initialLikeCount={scoutMetrics?.likesCount ?? null}
@@ -207,7 +206,6 @@ export function FeedItemCard({
             hasUrl ? <FeedSoundRailButton feedVideoKey={feedVideoKey} /> : null
           }
         />
-        </div>
       </div>
 
       {/* Bottom-left: avatar + identity + caption (over video) */}

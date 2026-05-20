@@ -39,7 +39,7 @@ export function LandingHero({
           <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:justify-center lg:justify-start">
             <a
               href={signupHref}
-              className={`${GN_PRIMARY_BUTTON_CLASS} min-h-12 w-full rounded-full px-8 text-base sm:w-auto`}
+              className={`${GN_PRIMARY_BUTTON_CLASS} relative z-10 min-h-12 w-full rounded-full px-8 text-base sm:w-auto`}
             >
               {ctaPrimary}
             </a>
