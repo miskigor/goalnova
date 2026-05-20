@@ -138,6 +138,23 @@ html {
     max-width: 100%;
   }
 
+  /* Non-home app pages: scroll inside the column; header/bottom nav stay fixed siblings. */
+  [data-app-column]:not(:has([data-pitchrusch-home-feed])) {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-x: clip;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  [data-app-column]:has([data-pitchrusch-home-feed]) {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-x: clip;
+    overflow-y: hidden;
+  }
+
   /* Home feed: visual viewport width + offset (vars set in HomeFeed while mounted). */
   [data-app-main]:has([data-pitchrusch-home-feed]),
   [data-app-main-inner]:has([data-pitchrusch-home-feed]),
