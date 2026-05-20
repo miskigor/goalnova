@@ -26,7 +26,7 @@ export const APP_MOBILE_HEADER_CLASS = [
 ].join(" ");
 
 export const APP_MOBILE_HEADER_INNER_CLASS =
-  "mx-auto flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-hidden box-border px-4";
+  "mx-auto flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-hidden box-border px-4 max-lg:h-12";
 
 export const APP_MOBILE_BOTTOM_NAV_CLASS = [
   "pointer-events-auto fixed bottom-0 left-0 right-0 z-[110] box-border w-full max-w-full min-w-0 overflow-x-hidden",
@@ -38,7 +38,7 @@ export const APP_MOBILE_BOTTOM_NAV_CLASS = [
 
 /** Inner grid for five bottom-nav items — never wider than the viewport. */
 export const APP_MOBILE_BOTTOM_NAV_INNER_CLASS =
-  "pointer-events-auto mx-auto grid h-14 w-full min-w-0 max-w-full grid-cols-[repeat(5,minmax(0,1fr))] items-stretch gap-0 overflow-x-clip px-0.5 box-border";
+  "pointer-events-auto mx-auto grid h-14 w-full min-w-0 max-w-full grid-cols-[repeat(5,minmax(0,1fr))] items-stretch gap-0 overflow-x-clip px-0.5 box-border max-lg:h-12";
 
 export const APP_MOBILE_BOTTOM_NAV_ITEM_CLASS =
   "flex min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-hidden px-0 py-1 text-[9px] font-semibold leading-[1.05] tracking-tight min-[390px]:px-0.5 min-[390px]:text-[10px]";

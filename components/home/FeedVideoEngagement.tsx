@@ -46,6 +46,10 @@ function formatCount(value: number | null): string {
   return value === null ? "—" : String(value);
 }
 
+/** Mobile home feed rail — compact tap targets (24px), not desktop sizes. */
+const RAIL_MOBILE_BTN =
+  "flex h-6 w-6 shrink-0 flex-col items-center justify-center gap-0 rounded-full border p-0 font-semibold shadow-[0_2px_10px_rgba(0,0,0,0.4)] ring-1 ring-white/10 backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50 lg:h-10 lg:w-10 lg:gap-0.5 lg:shadow-[0_4px_20px_rgba(0,0,0,0.4)]";
+
 function CommentGlyph({ className }: { className?: string }) {
   return (
     <svg
@@ -387,7 +391,7 @@ export function FeedVideoEngagement({
   return (
     <div
       className={[
-        rail ? "relative flex flex-col items-center gap-1.5" : "space-y-3",
+        rail ? "relative flex flex-col items-center gap-1 max-lg:gap-1 lg:gap-1.5" : "space-y-3",
         className,
       ]
         .filter(Boolean)
@@ -428,7 +432,7 @@ export function FeedVideoEngagement({
       <div
         className={
             rail
-            ? "flex w-full touch-manipulation flex-col items-center gap-1.5"
+            ? "flex w-full touch-manipulation flex-col items-center gap-1 max-lg:gap-1 lg:gap-1.5"
             : compactUi
               ? "flex flex-nowrap items-center gap-1"
               : "flex flex-wrap items-center gap-2"
@@ -446,25 +450,23 @@ export function FeedVideoEngagement({
             compactUi ? `${t("like")} ${formatCount(likeCount)}` : undefined
           }
           className={[
+            rail ? RAIL_MOBILE_BTN : "inline-flex shrink-0 items-center rounded-full border font-semibold transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50",
             rail
-              ? "flex h-7 w-7 shrink-0 flex-col items-center justify-center gap-0 rounded-full border font-semibold shadow-[0_3px_14px_rgba(0,0,0,0.45)] backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-              : "inline-flex shrink-0 items-center rounded-full border font-semibold transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50",
-            rail
-              ? "border-white/25 bg-black/55 p-0 text-xs ring-1 ring-white/10"
+              ? "border-white/25 bg-black/55 text-[10px] leading-none"
               : compactUi
                 ? "h-7 gap-0.5 px-1.5 py-0 text-[11px] leading-none"
                 : "min-h-[2.75rem] gap-2 px-4 py-2 text-sm",
             liked
-              ? "border-gn-accent/60 bg-gn-accent/20 text-gn-accent shadow-[0_0_20px_-4px_rgba(249,115,22,0.45)]"
+              ? "border-gn-accent/60 bg-gn-accent/20 text-gn-accent shadow-[0_0_16px_-4px_rgba(249,115,22,0.45)]"
               : "border-white/[0.12] bg-white/[0.06] text-white/85 hover:border-gn-accent/40 hover:bg-gn-accent/10 hover:text-gn-accent",
           ].join(" ")}
           aria-pressed={liked}
         >
-          <span aria-hidden className={rail ? "text-lg leading-none" : compactUi ? "text-[13px] leading-none" : "text-base leading-none"}>
+          <span aria-hidden className={rail ? "max-lg:text-[10px] max-lg:leading-none lg:text-lg lg:leading-none" : compactUi ? "text-[13px] leading-none" : "text-base leading-none"}>
             {liked ? "♥" : "♡"}
           </span>
           {rail ? (
-            <span className="text-[8px] font-bold tabular-nums leading-none text-white/90">
+            <span className="max-lg:text-[7px] lg:text-[8px] font-bold tabular-nums leading-none text-white/90">
               {formatCount(likeCount)}
             </span>
           ) : compactUi ? null : (
@@ -494,7 +496,7 @@ export function FeedVideoEngagement({
           }
           className={[
             rail
-              ? "flex h-7 w-7 shrink-0 flex-col items-center justify-center gap-0 rounded-full border border-white/25 bg-black/55 p-0 font-semibold text-white/90 shadow-[0_3px_14px_rgba(0,0,0,0.45)] ring-1 ring-white/10 backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out hover:border-white/35 hover:bg-white/[0.12] hover:text-white"
+              ? `${RAIL_MOBILE_BTN} border-white/25 bg-black/55 text-white/90 hover:border-white/35 hover:bg-white/[0.12] hover:text-white`
               : "inline-flex shrink-0 items-center rounded-full border border-white/[0.12] bg-white/[0.06] font-semibold text-white/85 transition-[color,background-color,border-color,transform] duration-200 ease-out hover:border-gn-accent/35 hover:bg-white/[0.09] hover:text-white",
             !rail && compactUi
               ? "h-7 gap-0.5 px-1.5 py-0 text-[11px] leading-none"
@@ -506,14 +508,14 @@ export function FeedVideoEngagement({
           {compactUi || rail ? (
             <CommentGlyph
               className={
-                rail ? "size-4 shrink-0 text-current opacity-95" : "size-3.5 shrink-0 text-current opacity-90"
+                rail ? "size-3 max-lg:size-3 lg:size-4 shrink-0 text-current opacity-95" : "size-3.5 shrink-0 text-current opacity-90"
               }
             />
           ) : (
             t("comment")
           )}
           {rail ? (
-            <span className="text-[8px] font-bold tabular-nums leading-none text-white/90">
+            <span className="max-lg:text-[7px] lg:text-[8px] font-bold tabular-nums leading-none text-white/90">
               {formatCount(commentCount)}
             </span>
           ) : (
@@ -533,7 +535,7 @@ export function FeedVideoEngagement({
           <div
             className={
               rail
-                ? "flex flex-col items-center [&_button]:h-7 [&_button]:w-7 [&_button]:min-h-0 [&_button]:shrink-0 [&_button]:rounded-full [&_button]:border [&_button]:border-white/25 [&_button]:bg-black/55 [&_button]:text-white/90 [&_button]:shadow-[0_3px_14px_rgba(0,0,0,0.45)] [&_button]:ring-1 [&_button]:ring-white/10 [&_button]:backdrop-blur-md [&_button:hover]:border-white/35 [&_button:hover]:bg-white/[0.12]"
+                ? "flex flex-col items-center [&_button]:h-6 [&_button]:w-6 [&_button]:min-h-0 [&_button]:shrink-0 [&_button]:rounded-full [&_button]:border [&_button]:border-white/25 [&_button]:bg-black/55 [&_button]:p-0 [&_button]:text-white/90 [&_button]:shadow-[0_2px_10px_rgba(0,0,0,0.4)] [&_button]:ring-1 [&_button]:ring-white/10 [&_button]:backdrop-blur-md lg:[&_button]:h-10 lg:[&_button]:w-10 [&_button:hover]:border-white/35 [&_button:hover]:bg-white/[0.12]"
                 : "flex shrink-0 items-center"
             }
           >

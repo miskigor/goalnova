@@ -137,7 +137,7 @@ export function FeedItemCard({
         caption={video.caption}
         iconOnly
         stopPropagation
-        className="[&_button]:flex [&_button]:!h-7 [&_button]:!w-7 [&_button]:items-center [&_button]:justify-center [&_button]:rounded-full [&_button]:border-0 [&_button]:bg-white/10 [&_button]:p-0 [&_button]:text-white [&_button]:shadow-[0_4px_16px_rgba(0,0,0,0.35)] [&_button]:backdrop-blur-md [&_button]:hover:bg-white/16 [&_svg]:h-3.5 [&_svg]:w-3.5"
+        className="[&_button]:flex [&_button]:!h-6 [&_button]:!w-6 [&_button]:items-center [&_button]:justify-center [&_button]:rounded-full [&_button]:border-0 [&_button]:bg-white/10 [&_button]:p-0 [&_button]:text-white [&_button]:shadow-[0_2px_10px_rgba(0,0,0,0.35)] [&_button]:backdrop-blur-md [&_button]:hover:bg-white/16 [&_svg]:h-3 [&_svg]:w-3"
       />
     ) : null;
 
@@ -194,7 +194,7 @@ export function FeedItemCard({
       {/* Floating action rail — above bottom nav inset */}
       <div
         data-pitchrusch-feed-rail
-        className="pointer-events-auto absolute end-1.5 top-1/2 z-50 flex w-8 max-w-8 -translate-y-1/2 flex-col items-center justify-center gap-1.5 max-lg:max-h-[min(100%,14rem)] lg:end-3 lg:w-9 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:translate-y-0 lg:justify-end"
+        className="pointer-events-auto absolute end-2 top-1/2 z-50 flex w-7 max-w-7 -translate-y-1/2 flex-col items-center justify-center gap-1 max-lg:max-h-[9.5rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:translate-y-0 lg:justify-end"
       >
         <FeedVideoEngagement
           videoId={video.id}
@@ -211,7 +211,7 @@ export function FeedItemCard({
       {/* Bottom-left: avatar + identity + caption (over video) */}
       <div
         {...feedMetaProps}
-        className="pointer-events-none absolute start-0 z-20 box-border min-w-0 max-w-[calc(100%-2.5rem)] pb-2 pe-1 ps-[max(0.75rem,env(safe-area-inset-left,0px))] pt-6 max-lg:bottom-[var(--gn-app-bottom-nav-offset)] sm:max-w-[calc(100%-2.75rem)] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+        className="pointer-events-none absolute start-0 z-20 box-border min-w-0 max-w-[calc(100%-2rem)] pb-1 pe-1 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[var(--gn-app-bottom-nav-offset)] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
         {loadFailed && hasUrl ? (
           <p
@@ -222,8 +222,8 @@ export function FeedItemCard({
           </p>
         ) : null}
 
-        <div className="pointer-events-auto space-y-1.5">
-          <div className="flex min-w-0 items-center gap-2.5">
+        <div className="pointer-events-auto space-y-1 max-lg:space-y-0.5">
+          <div className="flex min-w-0 items-center gap-2 max-lg:gap-1.5">
             {profilePath ? (
               <Link
                 href={profilePath}
@@ -233,14 +233,14 @@ export function FeedItemCard({
                 <ProfileAvatar
                   name={displayName}
                   imageUrl={userAvatarUrl?.trim() || undefined}
-                  sizeClassName="h-9 w-9 text-xs font-semibold"
+                  sizeClassName="h-9 w-9 max-lg:h-7 max-lg:w-7 text-xs font-semibold max-lg:text-[10px]"
                 />
               </Link>
             ) : (
               <ProfileAvatar
                 name={displayName}
                 imageUrl={userAvatarUrl?.trim() || undefined}
-                sizeClassName="h-9 w-9 text-xs font-semibold"
+                sizeClassName="h-9 w-9 max-lg:h-7 max-lg:w-7 text-xs font-semibold max-lg:text-[10px]"
               />
             )}
 
@@ -251,19 +251,19 @@ export function FeedItemCard({
                   className="block min-w-0"
                   aria-label={t("viewPlayerProfileAria", { name: displayName })}
                 >
-                  <p className="truncate text-[13px] font-semibold leading-tight text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
+                  <p className="truncate text-[13px] font-semibold leading-tight text-white max-lg:text-[12px] [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
                     {displayName}
                   </p>
-                  <p className="truncate text-[11px] font-medium leading-tight text-white/75 [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
+                  <p className="truncate text-[11px] font-medium leading-tight text-white/75 max-lg:text-[10px] [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
                     @{displayUsername}
                   </p>
                 </Link>
               ) : (
                 <>
-                  <p className="truncate text-[13px] font-semibold text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
+                  <p className="truncate text-[13px] font-semibold text-white max-lg:text-[12px] [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
                     {displayName}
                   </p>
-                  <p className="truncate text-[11px] font-medium text-white/75 [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
+                  <p className="truncate text-[11px] font-medium text-white/75 max-lg:text-[10px] [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
                     @{displayUsername}
                   </p>
                 </>
