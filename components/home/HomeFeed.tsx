@@ -44,11 +44,12 @@ import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 import { currentUserHasAnyVideo } from "@/lib/supabase/currentUserVideos";
 
 /** Scrollport width: stay within the main column (negative margins removed — they fought min-w-0 and could widen scrollWidth). */
-const FEED_BLEED = "w-full min-w-0 max-w-full overflow-x-clip";
+const FEED_BLEED =
+  "w-full min-w-0 max-w-full overflow-x-clip max-lg:w-[100dvw] max-lg:max-w-[100dvw]";
 
 /** Mobile TikTok stage: bounded between shell header and bottom nav (not full document dvh). */
 const HOME_FEED_MOBILE_STAGE =
-  "max-lg:relative max-lg:box-border max-lg:flex max-lg:min-h-0 max-lg:w-full max-lg:max-w-full max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden";
+  "max-lg:relative max-lg:box-border max-lg:flex max-lg:min-h-0 max-lg:w-[100dvw] max-lg:max-w-[100dvw] max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden";
 
 /**
  * Scrollport: one slide per visual page. Each `li` uses `flex-[0_0_100%]` (`grow-0 shrink-0 basis-full`)
@@ -127,7 +128,7 @@ function HomeFeedSnapList({
               item.video.id ??
               `${item.video.user_id}-${item.video.created_at ?? ""}-${index}`
             }
-            className="min-h-0 min-w-0 w-full shrink-0 grow-0 basis-full snap-start snap-always overflow-x-clip"
+            className="min-h-0 min-w-0 w-full max-lg:w-[100dvw] max-lg:max-w-[100dvw] shrink-0 grow-0 basis-full snap-start snap-always overflow-x-clip"
           >
             <FeedItemCard
               item={item}
@@ -543,7 +544,7 @@ export function HomeFeed() {
   return (
     <div
       data-pitchrusch-home-feed
-      className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:mx-0 max-lg:max-w-none max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
+      className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:mx-0 max-lg:w-[100dvw] max-lg:max-w-[100dvw] max-lg:overflow-x-clip max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
     >
       <ReferralConsumeOnMount />
       <header
