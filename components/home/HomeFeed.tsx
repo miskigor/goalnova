@@ -20,7 +20,6 @@ import {
 } from "@/lib/supabase/homeFeed";
 import { FeedItemCard } from "@/components/home/FeedItemCard";
 import { FeedVideoHeadPreloads } from "@/components/home/FeedVideoHeadPreloads";
-import { HomeFeedMediaGestureUnlock } from "@/components/home/HomeFeedMediaGestureUnlock";
 import {
   HomeFeedSoundProvider,
   useHomeFeedSound,
@@ -543,7 +542,6 @@ export function HomeFeed() {
               feedSlideClassName={FEED_SLIDE}
             />
           </FeedScrollWithUserAudioActivation>
-          <HomeFeedMediaGestureUnlock />
         </>
       </HomeFeedSoundProvider>
     );
