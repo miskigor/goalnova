@@ -35,7 +35,6 @@ import {
   feedItemProps,
   feedScrollRootProps,
 } from "@/lib/feed/feedScrollContract";
-import { HomeFeedLayoutDebugOverlay } from "@/components/home/HomeFeedLayoutDebugOverlay";
 import { runHomeFeedMountedScrollReset } from "@/components/home/homeFeedMobileScrollReset";
 import {
   clearHomeFeedVisualViewportVars,
@@ -551,12 +550,10 @@ export function HomeFeed() {
   }
 
   return (
-    <>
-      <HomeFeedLayoutDebugOverlay />
-      <div
-        data-pitchrusch-home-feed
-        className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:mx-0 max-lg:w-full max-lg:max-w-full max-lg:overflow-x-clip max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
-      >
+    <div
+      data-pitchrusch-home-feed
+      className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:mx-0 max-lg:w-full max-lg:max-w-full max-lg:overflow-x-clip max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
+    >
       <ReferralConsumeOnMount />
       <header
         className={[
@@ -593,7 +590,6 @@ export function HomeFeed() {
       >
         {renderFeedBody()}
       </section>
-      </div>
-    </>
+    </div>
   );
 }
