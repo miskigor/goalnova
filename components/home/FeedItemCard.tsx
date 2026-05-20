@@ -144,7 +144,7 @@ export function FeedItemCard({
   return (
     <article
       {...feedCardProps}
-      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden bg-black max-lg:left-0 max-lg:right-auto max-lg:mx-0 max-lg:w-[100dvw] max-lg:max-w-[100dvw] max-lg:translate-x-0 ${slideClassName}`}
+      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden bg-black max-lg:left-0 max-lg:right-0 max-lg:mx-0 max-lg:translate-x-0 ${slideClassName}`}
     >
       {/* Fullscreen video — non-interactive so rail controls receive taps */}
       <div

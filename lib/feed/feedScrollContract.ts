@@ -42,30 +42,42 @@ const HOME_FEED_SCROLL_RESET_SELECTORS = [
   "[data-pitchrusch-feed-card]",
 ] as const;
 
-/** Zero horizontal scroll on shell + feed nodes (iOS Safari / input zoom). */
+const APP_SHELL_SCROLL_RESET_SELECTORS = [
+  "[data-app-root]",
+  "[data-app-column]",
+  "[data-app-main]",
+  "[data-app-main-inner]",
+] as const;
+
+/** Zero horizontal scroll on window, shell, and feed scrollport (iOS Safari / input zoom). */
 export function resetHomeFeedHorizontalScroll(): void {
   if (typeof document === "undefined") return;
+
+  if (typeof window !== "undefined") {
+    window.scrollTo({
+      left: 0,
+      top: window.scrollY,
+      behavior: "auto",
+    });
+  }
+
   document.documentElement.scrollLeft = 0;
   document.body.scrollLeft = 0;
-  for (const selector of HOME_FEED_SCROLL_RESET_SELECTORS) {
+
+  const scrollRoot = document.querySelector("[data-pitchrusch-feed-scroll-root]");
+  if (scrollRoot instanceof HTMLElement) {
+    scrollRoot.scrollLeft = 0;
+  }
+
+  for (const selector of APP_SHELL_SCROLL_RESET_SELECTORS) {
     document.querySelectorAll(selector).forEach((node) => {
       if (node instanceof HTMLElement) node.scrollLeft = 0;
     });
   }
-  if (typeof window === "undefined") return;
-  if (window.scrollX) {
-    window.scrollTo({
-      left: 0,
-      top: window.scrollY,
-      behavior: "auto",
-    });
-  }
-  const vv = window.visualViewport;
-  if (vv && (vv.offsetLeft !== 0 || vv.pageLeft !== 0)) {
-    window.scrollTo({
-      left: 0,
-      top: window.scrollY,
-      behavior: "auto",
+
+  for (const selector of HOME_FEED_SCROLL_RESET_SELECTORS) {
+    document.querySelectorAll(selector).forEach((node) => {
+      if (node instanceof HTMLElement) node.scrollLeft = 0;
     });
   }
 }

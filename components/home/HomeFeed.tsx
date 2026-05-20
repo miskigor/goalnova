@@ -42,14 +42,93 @@ import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideo
 import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 import { currentUserHasAnyVideo } from "@/lib/supabase/currentUserVideos";
+import { devLog, isDev } from "@/lib/devLog";
+
+const HOME_FEED_LAYOUT_DEBUG_SELECTORS = [
+  "[data-app-main]",
+  "[data-app-main-inner]",
+  "[data-pitchrusch-home-feed]",
+  "[data-pitchrusch-feed-scroll-root]",
+  "[data-pitchrusch-feed-card]",
+  "[data-pitchrusch-feed-meta]",
+  "[data-pitchrusch-feed-rail]",
+] as const;
+
+/** Development-only: log viewport vs feed node geometry after horizontal scroll reset. */
+function logHomeFeedLayoutDebug(reason: string): void {
+  if (!isDev || typeof window === "undefined" || typeof document === "undefined") {
+    return;
+  }
+
+  const innerWidth = window.innerWidth;
+  const docScrollWidth = document.documentElement.scrollWidth;
+  const bodyScrollWidth = document.body.scrollWidth;
+
+  devLog(`[home-feed-layout-debug] ${reason}`, {
+    innerWidth,
+    documentElementScrollWidth: docScrollWidth,
+    bodyScrollWidth,
+    windowScrollX: window.scrollX,
+    documentScrollLeft: document.documentElement.scrollLeft,
+    bodyScrollLeft: document.body.scrollLeft,
+  });
+
+  const suspects: Array<{
+    selector: string;
+    rectLeft: number;
+    rectRight: number;
+    width: number;
+    scrollWidth: number;
+    clientWidth: number;
+    reasons: string[];
+  }> = [];
+
+  for (const selector of HOME_FEED_LAYOUT_DEBUG_SELECTORS) {
+    const el = document.querySelector(selector);
+    if (!(el instanceof HTMLElement)) continue;
+    const rect = el.getBoundingClientRect();
+    const reasons: string[] = [];
+    if (rect.left < -1) reasons.push("rect.left<0");
+    if (rect.right > innerWidth + 1) reasons.push("rect.right>innerWidth");
+    if (rect.width > innerWidth + 1) reasons.push("width>innerWidth");
+    if (el.scrollWidth > el.clientWidth + 1) {
+      reasons.push("scrollWidth>clientWidth");
+    }
+
+    const row = {
+      selector,
+      rectLeft: Math.round(rect.left * 10) / 10,
+      rectRight: Math.round(rect.right * 10) / 10,
+      width: Math.round(rect.width * 10) / 10,
+      scrollWidth: el.scrollWidth,
+      clientWidth: el.clientWidth,
+      reasons,
+    };
+
+    devLog("[home-feed-layout-debug] node", row);
+    if (reasons.length > 0) suspects.push(row);
+  }
+
+  if (docScrollWidth > innerWidth + 1) {
+    devLog("[home-feed-layout-debug] document wider than viewport", {
+      docScrollWidth,
+      innerWidth,
+    });
+  }
+
+  if (suspects.length > 0) {
+    console.warn("[home-feed-layout-debug] overflow suspects", suspects);
+  } else {
+    devLog("[home-feed-layout-debug] no overflow suspects in probed nodes");
+  }
+}
 
 /** Scrollport width: stay within the main column (negative margins removed — they fought min-w-0 and could widen scrollWidth). */
-const FEED_BLEED =
-  "w-full min-w-0 max-w-full overflow-x-clip max-lg:w-[100dvw] max-lg:max-w-[100dvw]";
+const FEED_BLEED = "w-full min-w-0 max-w-full overflow-x-clip";
 
 /** Mobile TikTok stage: bounded between shell header and bottom nav (not full document dvh). */
 const HOME_FEED_MOBILE_STAGE =
-  "max-lg:relative max-lg:box-border max-lg:flex max-lg:min-h-0 max-lg:w-[100dvw] max-lg:max-w-[100dvw] max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden";
+  "max-lg:relative max-lg:box-border max-lg:flex max-lg:min-h-0 max-lg:w-full max-lg:max-w-full max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden";
 
 /**
  * Scrollport: one slide per visual page. Each `li` uses `flex-[0_0_100%]` (`grow-0 shrink-0 basis-full`)
@@ -128,7 +207,7 @@ function HomeFeedSnapList({
               item.video.id ??
               `${item.video.user_id}-${item.video.created_at ?? ""}-${index}`
             }
-            className="min-h-0 min-w-0 w-full max-lg:w-[100dvw] max-lg:max-w-[100dvw] shrink-0 grow-0 basis-full snap-start snap-always overflow-x-clip"
+            className="min-h-0 min-w-0 w-full shrink-0 grow-0 basis-full snap-start snap-always overflow-x-clip"
           >
             <FeedItemCard
               item={item}
@@ -420,6 +499,9 @@ export function HomeFeed() {
 
   useEffect(() => {
     resetHomeFeedHorizontalScroll();
+    if (isDev) {
+      requestAnimationFrame(() => logHomeFeedLayoutDebug("mount"));
+    }
   }, []);
 
   /** Hide in-page feed title on mobile when clips are showing (shell header/nav stay visible). */
@@ -432,7 +514,12 @@ export function HomeFeed() {
   /** Keep feed aligned to viewport after iOS zoom / URL bar / snap scroll. */
   useEffect(() => {
     if (!hideFeedPageHeader) return;
-    const reset = () => resetHomeFeedHorizontalScroll();
+    const reset = () => {
+      resetHomeFeedHorizontalScroll();
+      if (isDev) {
+        logHomeFeedLayoutDebug("immersive-feed-active");
+      }
+    };
     reset();
     const raf = requestAnimationFrame(reset);
     const delayed = window.setTimeout(reset, 120);
@@ -544,7 +631,7 @@ export function HomeFeed() {
   return (
     <div
       data-pitchrusch-home-feed
-      className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:mx-0 max-lg:w-[100dvw] max-lg:max-w-[100dvw] max-lg:overflow-x-clip max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
+      className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:mx-0 max-lg:w-full max-lg:max-w-full max-lg:overflow-x-clip max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
     >
       <ReferralConsumeOnMount />
       <header

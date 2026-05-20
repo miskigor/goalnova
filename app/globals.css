@@ -124,7 +124,7 @@ html {
     max-width: 100%;
   }
 
-  /* Home feed: lock to visual viewport width (iOS Safari horizontal overflow). */
+  /* Home feed: parent-relative width (no 100dvw — avoids Safari overflow). */
   [data-app-root]:has([data-pitchrusch-home-feed]),
   [data-app-column]:has([data-pitchrusch-home-feed]),
   [data-app-main]:has([data-pitchrusch-home-feed]),
@@ -135,11 +135,10 @@ html {
   [data-pitchrusch-feed-item],
   [data-pitchrusch-feed-card] {
     box-sizing: border-box;
-    width: 100dvw;
+    width: 100%;
     min-width: 0;
-    max-width: 100dvw;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    max-width: 100%;
+    margin-inline: 0 !important;
     overflow-x: clip;
   }
 
@@ -154,7 +153,6 @@ html {
   [data-app-main-inner]:has([data-pitchrusch-home-feed]) {
     padding-left: 0 !important;
     padding-right: 0 !important;
-    transform: none !important;
   }
 
   [data-pitchrusch-feed-scroll-root],
@@ -165,7 +163,7 @@ html {
 
   [data-pitchrusch-feed-card] {
     left: 0 !important;
-    right: auto !important;
+    right: 0 !important;
     transform: none !important;
   }
 
@@ -173,12 +171,9 @@ html {
     left: 0 !important;
     right: auto !important;
     inset-inline-start: 0 !important;
-    inset-inline-end: auto !important;
     bottom: var(--gn-app-bottom-nav-offset);
-    width: calc(100dvw - 3.25rem);
-    max-width: calc(100dvw - 3.25rem);
+    max-width: calc(100% - 3.25rem);
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px));
-    padding-right: 0.5rem;
     padding-bottom: 0.25rem;
   }
 
