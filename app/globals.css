@@ -90,10 +90,32 @@ html {
     max-height: 100%;
   }
 
-  [data-app-mobile-header],
-  [data-app-bottom-nav] {
+  [data-app-mobile-header] {
+    z-index: 70;
     max-width: 100%;
     min-width: 0;
+  }
+
+  [data-app-bottom-nav] {
+    z-index: 80;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  [data-app-column],
+  [data-app-main] {
+    position: relative;
+    z-index: 0;
+  }
+
+  [data-pitchrusch-feed-scroll-root],
+  [data-pitchrusch-feed-card] {
+    position: relative;
+    z-index: 0;
+  }
+
+  [data-pitchrusch-feed-rail] {
+    z-index: 50;
   }
 }
 

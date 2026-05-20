@@ -511,7 +511,10 @@ export function HomeFeed() {
   }
 
   return (
-    <div className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:h-full lg:max-w-2xl lg:flex-none">
+    <div
+      data-pitchrusch-home-feed
+      className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
+    >
       <ReferralConsumeOnMount />
       <header
         className={[

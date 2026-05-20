@@ -549,12 +549,12 @@ export function FeedVideoEngagement({
             <>
               <button
                 type="button"
-                className="fixed inset-0 z-[65] cursor-default border-0 bg-black/55 p-0 backdrop-blur-[1px] min-w-0 overflow-x-clip lg:left-[15.5rem]"
+                className="fixed inset-0 z-[85] cursor-default border-0 bg-black/55 p-0 backdrop-blur-[1px] min-w-0 overflow-x-clip lg:left-[15.5rem]"
                 aria-label={t("closeComments")}
                 onClick={closeCommentsPanel}
               />
               <div
-                className="fixed inset-x-0 bottom-0 z-[70] box-border flex w-full min-h-0 min-w-0 max-h-[min(36rem,min(78svh,82dvh))] max-w-full flex-col overflow-hidden rounded-t-2xl border border-white/10 bg-neutral-950/98 shadow-[0_-16px_48px_rgba(0,0,0,0.55)] backdrop-blur-lg lg:left-[15.5rem]"
+                className="fixed inset-x-0 bottom-0 z-[90] box-border flex w-full min-h-0 min-w-0 max-h-[min(36rem,min(78svh,82dvh))] max-w-full flex-col overflow-hidden rounded-t-2xl border border-white/10 bg-neutral-950/98 shadow-[0_-16px_48px_rgba(0,0,0,0.55)] backdrop-blur-lg lg:left-[15.5rem]"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="pitchrusch-feed-comments-title"

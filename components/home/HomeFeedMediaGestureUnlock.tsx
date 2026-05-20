@@ -51,7 +51,7 @@ export function HomeFeedMediaGestureUnlock() {
   if (!visible) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[55] flex items-center justify-center p-6">
+    <div className="pointer-events-none fixed inset-0 z-[45] flex items-center justify-center p-6 max-lg:bottom-[var(--gn-app-bottom-nav-offset)]">
       <button
         type="button"
         aria-label={tFeed("tapToPlay")}
