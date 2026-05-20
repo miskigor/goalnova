@@ -34,6 +34,7 @@ import {
   feedItemsListProps,
   feedItemProps,
   feedScrollRootProps,
+  resetHomeFeedHorizontalScroll,
 } from "@/lib/feed/feedScrollContract";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
@@ -43,7 +44,11 @@ import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 import { currentUserHasAnyVideo } from "@/lib/supabase/currentUserVideos";
 
 /** Scrollport width: stay within the main column (negative margins removed — they fought min-w-0 and could widen scrollWidth). */
-const FEED_BLEED = "w-full min-w-0 max-w-full";
+const FEED_BLEED = "w-full min-w-0 max-w-full overflow-x-clip";
+
+/** Mobile TikTok stage: bounded between shell header and bottom nav (not full document dvh). */
+const HOME_FEED_MOBILE_STAGE =
+  "max-lg:relative max-lg:box-border max-lg:flex max-lg:min-h-0 max-lg:w-full max-lg:max-w-full max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden";
 
 /**
  * Scrollport: one slide per visual page. Each `li` uses `flex-[0_0_100%]` (`grow-0 shrink-0 basis-full`)
@@ -412,6 +417,10 @@ export function HomeFeed() {
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [refreshMyVideosCount]);
 
+  useEffect(() => {
+    resetHomeFeedHorizontalScroll();
+  }, []);
+
   /** Hide in-page feed title on mobile when clips are showing (shell header/nav stay visible). */
   const hideFeedPageHeader =
     scoutLoaded &&
@@ -544,9 +553,7 @@ export function HomeFeed() {
       <section
         className={[
           "min-h-0 overflow-hidden rounded-none border-0 bg-transparent shadow-none",
-          hideFeedPageHeader
-            ? "max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col"
-            : "",
+          hideFeedPageHeader ? HOME_FEED_MOBILE_STAGE : "",
         ].join(" ")}
         aria-busy={loading || !scoutLoaded}
         data-pitchrusch-feed-panel

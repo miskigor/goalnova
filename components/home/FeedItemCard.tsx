@@ -194,7 +194,7 @@ export function FeedItemCard({
       {/* Floating action rail — above bottom nav inset */}
       <div
         data-pitchrusch-feed-rail
-        className="pointer-events-auto absolute end-[max(0.5rem,env(safe-area-inset-right,0px))] z-50 flex w-11 shrink-0 flex-col items-center justify-end max-lg:top-[var(--gn-app-header-offset)] max-lg:bottom-[var(--gn-app-bottom-nav-offset)] sm:end-[max(0.625rem,env(safe-area-inset-right,0px))] sm:w-12 lg:top-12 lg:bottom-44"
+        className="pointer-events-auto absolute end-2 z-50 flex w-11 max-w-[2.75rem] shrink-0 flex-col items-center justify-end max-lg:top-2 max-lg:bottom-2 sm:end-2.5 sm:w-12 lg:top-12 lg:bottom-44"
       >
         <FeedVideoEngagement
           videoId={video.id}
@@ -211,7 +211,7 @@ export function FeedItemCard({
       {/* Bottom-left: avatar + identity + caption (over video) */}
       <div
         {...feedMetaProps}
-        className="pointer-events-none absolute inset-x-0 z-20 box-border max-w-[calc(100%-3.75rem)] min-w-0 pe-1 px-3 pt-6 sm:max-w-[calc(100%-4rem)] sm:px-3.5 max-lg:bottom-[var(--gn-app-bottom-nav-offset)] max-lg:pb-2 lg:bottom-0 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 box-border max-w-[calc(100%-3.5rem)] min-w-0 px-3 pb-3 pe-1 pt-6 sm:max-w-[calc(100%-4rem)] sm:px-3.5 sm:pb-3.5 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
         {loadFailed && hasUrl ? (
           <p

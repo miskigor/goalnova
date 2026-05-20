@@ -1,7 +1,7 @@
 /** Shared mobile app shell layout — single horizontal padding, no side safe-area (WhatsApp WebView-safe). */
 
 export const APP_SHELL_ROOT_CLASS =
-  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-hidden bg-gn-bg text-gn-text max-lg:h-full max-lg:max-h-full max-lg:min-h-0 max-lg:flex-col max-lg:overflow-y-hidden lg:flex-row";
+  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text max-lg:fixed max-lg:inset-0 max-lg:z-0 max-lg:h-auto max-lg:max-h-none max-lg:min-h-0 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden lg:flex-row";
 
 export const APP_SHELL_COLUMN_CLASS =
   "relative mx-auto flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col ps-0 max-lg:min-h-0 lg:min-h-dvh lg:overflow-x-hidden lg:ps-[15.5rem]";
@@ -38,10 +38,10 @@ export const APP_MOBILE_BOTTOM_NAV_CLASS = [
 
 /** Inner grid for five bottom-nav items — never wider than the viewport. */
 export const APP_MOBILE_BOTTOM_NAV_INNER_CLASS =
-  "pointer-events-auto mx-auto grid h-14 w-full min-w-0 max-w-md grid-cols-5 items-stretch gap-0 overflow-x-hidden px-1 box-border";
+  "pointer-events-auto mx-auto grid h-14 w-full min-w-0 max-w-full grid-cols-[repeat(5,minmax(0,1fr))] items-stretch gap-0 overflow-x-clip px-0.5 box-border";
 
 export const APP_MOBILE_BOTTOM_NAV_ITEM_CLASS =
-  "flex min-w-0 flex-col items-center justify-center gap-0.5 px-0.5 py-1 text-[10px] font-semibold leading-[1.05] tracking-tight";
+  "flex min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-hidden px-0 py-1 text-[9px] font-semibold leading-[1.05] tracking-tight min-[390px]:px-0.5 min-[390px]:text-[10px]";
 
 /** `/notifications` inbox — bounded column inside main shell padding. */
 export const APP_MESSAGES_INBOX_PAGE_CLASS =
