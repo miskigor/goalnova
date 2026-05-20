@@ -8,7 +8,8 @@ type Props = {
 };
 
 /** Matches `FeedVideoEngagement` rail icon size (comment glyph). */
-const ICON = "size-[18px] shrink-0 text-current opacity-95";
+const ICON =
+  "size-[18px] max-lg:size-3.5 shrink-0 text-current opacity-95";
 
 function SoundOnGlyph({ className }: { className?: string }) {
   return (
@@ -86,7 +87,7 @@ export function FeedSoundRailButton({ feedVideoKey }: Props) {
       aria-pressed={audible}
       aria-label={audible ? t("videoMuteAria") : t("videoUnmuteAria")}
       className={[
-        "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border font-semibold shadow-[0_4px_20px_rgba(0,0,0,0.4)] backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors",
+        "flex h-10 w-10 max-lg:h-7 max-lg:w-7 shrink-0 items-center justify-center rounded-full border font-semibold shadow-[0_4px_20px_rgba(0,0,0,0.4)] max-lg:shadow-[0_3px_14px_rgba(0,0,0,0.45)] backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors",
         audible
           ? "border-gn-accent/50 bg-gn-accent/15 text-gn-accent shadow-[0_0_18px_-4px_rgba(249,115,22,0.35)]"
           : "border-white/12 bg-black/30 text-white/85 hover:border-white/20 hover:bg-white/[0.08]",

@@ -387,7 +387,7 @@ export function FeedVideoEngagement({
   return (
     <div
       className={[
-        rail ? "relative flex flex-col items-center gap-2" : "space-y-3",
+        rail ? "relative flex flex-col items-center gap-1.5" : "space-y-3",
         className,
       ]
         .filter(Boolean)
@@ -427,8 +427,8 @@ export function FeedVideoEngagement({
 
       <div
         className={
-          rail
-            ? "flex w-full touch-manipulation flex-col items-center gap-2"
+            rail
+            ? "flex w-full touch-manipulation flex-col items-center gap-1.5"
             : compactUi
               ? "flex flex-nowrap items-center gap-1"
               : "flex flex-wrap items-center gap-2"
@@ -447,10 +447,10 @@ export function FeedVideoEngagement({
           }
           className={[
             rail
-              ? "flex h-8 w-8 shrink-0 flex-col items-center justify-center gap-0.5 rounded-full border font-semibold shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              ? "flex h-7 w-7 shrink-0 flex-col items-center justify-center gap-0 rounded-full border font-semibold shadow-[0_3px_14px_rgba(0,0,0,0.45)] backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               : "inline-flex shrink-0 items-center rounded-full border font-semibold transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50",
             rail
-              ? "border-white/25 bg-black/55 p-0 text-sm ring-1 ring-white/10"
+              ? "border-white/25 bg-black/55 p-0 text-xs ring-1 ring-white/10"
               : compactUi
                 ? "h-7 gap-0.5 px-1.5 py-0 text-[11px] leading-none"
                 : "min-h-[2.75rem] gap-2 px-4 py-2 text-sm",
@@ -464,7 +464,7 @@ export function FeedVideoEngagement({
             {liked ? "♥" : "♡"}
           </span>
           {rail ? (
-            <span className="text-[9px] font-bold tabular-nums leading-none text-white/90">
+            <span className="text-[8px] font-bold tabular-nums leading-none text-white/90">
               {formatCount(likeCount)}
             </span>
           ) : compactUi ? null : (
@@ -494,7 +494,7 @@ export function FeedVideoEngagement({
           }
           className={[
             rail
-              ? "flex h-8 w-8 shrink-0 flex-col items-center justify-center gap-0.5 rounded-full border border-white/25 bg-black/55 p-0 font-semibold text-white/90 shadow-[0_4px_20px_rgba(0,0,0,0.5)] ring-1 ring-white/10 backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out hover:border-white/35 hover:bg-white/[0.12] hover:text-white"
+              ? "flex h-7 w-7 shrink-0 flex-col items-center justify-center gap-0 rounded-full border border-white/25 bg-black/55 p-0 font-semibold text-white/90 shadow-[0_3px_14px_rgba(0,0,0,0.45)] ring-1 ring-white/10 backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out hover:border-white/35 hover:bg-white/[0.12] hover:text-white"
               : "inline-flex shrink-0 items-center rounded-full border border-white/[0.12] bg-white/[0.06] font-semibold text-white/85 transition-[color,background-color,border-color,transform] duration-200 ease-out hover:border-gn-accent/35 hover:bg-white/[0.09] hover:text-white",
             !rail && compactUi
               ? "h-7 gap-0.5 px-1.5 py-0 text-[11px] leading-none"
@@ -513,7 +513,7 @@ export function FeedVideoEngagement({
             t("comment")
           )}
           {rail ? (
-            <span className="text-[9px] font-bold tabular-nums leading-none text-white/90">
+            <span className="text-[8px] font-bold tabular-nums leading-none text-white/90">
               {formatCount(commentCount)}
             </span>
           ) : (
@@ -533,7 +533,7 @@ export function FeedVideoEngagement({
           <div
             className={
               rail
-                ? "flex flex-col items-center [&_button]:h-8 [&_button]:w-8 [&_button]:min-h-0 [&_button]:shrink-0 [&_button]:rounded-full [&_button]:border [&_button]:border-white/25 [&_button]:bg-black/55 [&_button]:text-white/90 [&_button]:shadow-[0_4px_20px_rgba(0,0,0,0.5)] [&_button]:ring-1 [&_button]:ring-white/10 [&_button]:backdrop-blur-md [&_button:hover]:border-white/35 [&_button:hover]:bg-white/[0.12]"
+                ? "flex flex-col items-center [&_button]:h-7 [&_button]:w-7 [&_button]:min-h-0 [&_button]:shrink-0 [&_button]:rounded-full [&_button]:border [&_button]:border-white/25 [&_button]:bg-black/55 [&_button]:text-white/90 [&_button]:shadow-[0_3px_14px_rgba(0,0,0,0.45)] [&_button]:ring-1 [&_button]:ring-white/10 [&_button]:backdrop-blur-md [&_button:hover]:border-white/35 [&_button:hover]:bg-white/[0.12]"
                 : "flex shrink-0 items-center"
             }
           >

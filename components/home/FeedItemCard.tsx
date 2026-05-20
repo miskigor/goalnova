@@ -137,7 +137,7 @@ export function FeedItemCard({
         caption={video.caption}
         iconOnly
         stopPropagation
-        className="[&_button]:flex [&_button]:!h-8 [&_button]:!w-8 [&_button]:items-center [&_button]:justify-center [&_button]:rounded-full [&_button]:border-0 [&_button]:bg-white/10 [&_button]:p-0 [&_button]:text-white [&_button]:shadow-[0_4px_20px_rgba(0,0,0,0.35)] [&_button]:backdrop-blur-md [&_button]:hover:bg-white/16 [&_svg]:h-4 [&_svg]:w-4"
+        className="[&_button]:flex [&_button]:!h-7 [&_button]:!w-7 [&_button]:items-center [&_button]:justify-center [&_button]:rounded-full [&_button]:border-0 [&_button]:bg-white/10 [&_button]:p-0 [&_button]:text-white [&_button]:shadow-[0_4px_16px_rgba(0,0,0,0.35)] [&_button]:backdrop-blur-md [&_button]:hover:bg-white/16 [&_svg]:h-3.5 [&_svg]:w-3.5"
       />
     ) : null;
 
@@ -194,7 +194,7 @@ export function FeedItemCard({
       {/* Floating action rail — above bottom nav inset */}
       <div
         data-pitchrusch-feed-rail
-        className="pointer-events-auto absolute end-[max(0.5rem,env(safe-area-inset-right,0px))] top-1/2 z-50 flex w-9 max-w-9 -translate-y-1/2 flex-col items-center justify-center gap-2 sm:w-9 lg:end-3 lg:top-12 lg:bottom-44 lg:translate-y-0 lg:justify-end"
+        className="pointer-events-auto absolute end-1.5 top-1/2 z-50 flex w-8 max-w-8 -translate-y-1/2 flex-col items-center justify-center gap-1.5 max-lg:max-h-[min(100%,14rem)] lg:end-3 lg:w-9 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:translate-y-0 lg:justify-end"
       >
         <FeedVideoEngagement
           videoId={video.id}
@@ -211,7 +211,7 @@ export function FeedItemCard({
       {/* Bottom-left: avatar + identity + caption (over video) */}
       <div
         {...feedMetaProps}
-        className="pointer-events-none absolute bottom-0 start-0 z-20 box-border min-w-0 max-w-[calc(100%-3rem)] pb-3 pe-2 ps-[max(0.75rem,env(safe-area-inset-left,0px))] pt-6 sm:max-w-[calc(100%-3.25rem)] sm:pb-3.5 lg:inset-x-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+        className="pointer-events-none absolute start-0 z-20 box-border min-w-0 max-w-[calc(100%-2.5rem)] pb-2 pe-1 ps-[max(0.75rem,env(safe-area-inset-left,0px))] pt-6 max-lg:bottom-[var(--gn-app-bottom-nav-offset)] sm:max-w-[calc(100%-2.75rem)] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
         {loadFailed && hasUrl ? (
           <p

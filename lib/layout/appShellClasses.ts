@@ -1,7 +1,7 @@
 /** Shared mobile app shell layout — single horizontal padding, no side safe-area (WhatsApp WebView-safe). */
 
 export const APP_SHELL_ROOT_CLASS =
-  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text max-lg:fixed max-lg:inset-0 max-lg:z-0 max-lg:h-auto max-lg:max-h-none max-lg:min-h-0 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden lg:flex-row";
+  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-0 max-lg:h-svh max-lg:max-h-svh max-lg:min-h-0 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden lg:flex-row";
 
 export const APP_SHELL_COLUMN_CLASS =
   "relative mx-auto flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col ps-0 max-lg:min-h-0 lg:min-h-dvh lg:overflow-x-hidden lg:ps-[15.5rem]";
@@ -29,7 +29,7 @@ export const APP_MOBILE_HEADER_INNER_CLASS =
   "mx-auto flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-hidden box-border px-4";
 
 export const APP_MOBILE_BOTTOM_NAV_CLASS = [
-  "pointer-events-auto fixed bottom-0 left-0 right-0 z-[80] box-border w-full max-w-full min-w-0 overflow-x-hidden",
+  "pointer-events-auto fixed bottom-0 left-0 right-0 z-[110] box-border w-full max-w-full min-w-0 overflow-x-hidden",
   "border-t border-gn-border-subtle bg-gn-bg",
   "pb-[max(0.5rem,env(safe-area-inset-bottom,0px))] pt-1",
   "shadow-[0_-8px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/95",

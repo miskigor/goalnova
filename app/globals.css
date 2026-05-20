@@ -99,10 +99,15 @@ html {
   }
 
   [data-app-bottom-nav] {
-    z-index: 80;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 110;
+    width: 100%;
     max-width: 100%;
     min-width: 0;
-    width: 100%;
+    box-sizing: border-box;
   }
 
   [data-app-column],
@@ -142,16 +147,22 @@ html {
   }
 
   [data-pitchrusch-feed-rail] {
-    z-index: 50;
-    max-width: 2.5rem;
+    z-index: 90;
+    max-width: 2.25rem;
   }
 
   [data-pitchrusch-feed-meta] {
     left: 0;
     right: auto;
-    max-width: calc(100% - 3rem);
+    bottom: var(--gn-app-bottom-nav-offset);
+    max-width: calc(100% - 2.75rem);
     padding-inline-start: max(0.75rem, env(safe-area-inset-left, 0px));
-    padding-inline-end: 0.5rem;
+    padding-inline-end: 0.25rem;
+    padding-bottom: 0.5rem;
+  }
+
+  [data-app-main]:has([data-pitchrusch-home-feed]) {
+    overflow: hidden;
   }
 }
 
