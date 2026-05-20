@@ -177,14 +177,14 @@ html {
     right: auto !important;
     inset-inline-start: 0 !important;
     inset-inline-end: auto !important;
-    bottom: var(--gn-app-bottom-nav-offset);
-    max-width: calc(var(--gn-home-feed-vv-width, 100%) - 4.75rem);
+    bottom: max(2.5rem, calc(var(--gn-app-bottom-nav-offset) - 1.75rem));
+    max-width: calc(var(--gn-home-feed-vv-width, 100%) - 5.5rem);
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px));
-    padding-bottom: 0.25rem;
+    padding-bottom: 0.125rem;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-rail] {
-    z-index: 90;
+    z-index: 50;
     right: max(0.5rem, env(safe-area-inset-right, 0px)) !important;
     left: auto !important;
     inset-inline-end: max(0.5rem, env(safe-area-inset-right, 0px)) !important;

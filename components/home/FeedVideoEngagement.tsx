@@ -46,9 +46,9 @@ function formatCount(value: number | null): string {
   return value === null ? "—" : String(value);
 }
 
-/** Mobile home feed rail — 36px tap targets; desktop stays h-10 w-10. */
+/** Mobile home feed rail — 44px tap targets; desktop stays h-10 w-10. */
 const RAIL_MOBILE_BTN =
-  "flex h-9 w-9 shrink-0 flex-col items-center justify-center gap-0 rounded-full border p-0 font-semibold shadow-[0_2px_10px_rgba(0,0,0,0.4)] ring-1 ring-white/10 backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50 lg:h-10 lg:w-10 lg:gap-0.5 lg:shadow-[0_4px_20px_rgba(0,0,0,0.4)]";
+  "flex h-11 w-11 shrink-0 flex-col items-center justify-center gap-0 rounded-full border p-0 font-semibold shadow-[0_2px_10px_rgba(0,0,0,0.4)] ring-1 ring-white/10 backdrop-blur-md transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50 lg:h-10 lg:w-10 lg:gap-0.5 lg:shadow-[0_4px_20px_rgba(0,0,0,0.4)]";
 
 function CommentGlyph({ className }: { className?: string }) {
   return (
@@ -391,7 +391,7 @@ export function FeedVideoEngagement({
   return (
     <div
       className={[
-        rail ? "relative flex flex-col items-center gap-1 max-lg:gap-2 lg:gap-1.5" : "space-y-3",
+        rail ? "relative flex flex-col items-center gap-1 max-lg:gap-2.5 lg:gap-1.5" : "space-y-3",
         className,
       ]
         .filter(Boolean)
@@ -432,7 +432,7 @@ export function FeedVideoEngagement({
       <div
         className={
             rail
-            ? "flex w-full touch-manipulation flex-col items-center gap-1 max-lg:gap-2 lg:gap-1.5"
+            ? "flex w-full touch-manipulation flex-col items-center gap-1 max-lg:gap-2.5 lg:gap-1.5"
             : compactUi
               ? "flex flex-nowrap items-center gap-1"
               : "flex flex-wrap items-center gap-2"
@@ -462,11 +462,11 @@ export function FeedVideoEngagement({
           ].join(" ")}
           aria-pressed={liked}
         >
-          <span aria-hidden className={rail ? "max-lg:text-[18px] max-lg:leading-none lg:text-lg lg:leading-none" : compactUi ? "text-[13px] leading-none" : "text-base leading-none"}>
+          <span aria-hidden className={rail ? "max-lg:text-[22px] max-lg:leading-none lg:text-lg lg:leading-none" : compactUi ? "text-[13px] leading-none" : "text-base leading-none"}>
             {liked ? "♥" : "♡"}
           </span>
           {rail ? (
-            <span className="max-lg:text-[11px] lg:text-[8px] font-bold tabular-nums leading-none text-white/90">
+            <span className="max-lg:text-[13px] lg:text-[8px] font-bold tabular-nums leading-none text-white/90">
               {formatCount(likeCount)}
             </span>
           ) : compactUi ? null : (
@@ -508,14 +508,14 @@ export function FeedVideoEngagement({
           {compactUi || rail ? (
             <CommentGlyph
               className={
-                rail ? "size-3 max-lg:size-[18px] lg:size-4 shrink-0 text-current opacity-95" : "size-3.5 shrink-0 text-current opacity-90"
+                rail ? "size-3 max-lg:size-[22px] lg:size-4 shrink-0 text-current opacity-95" : "size-3.5 shrink-0 text-current opacity-90"
               }
             />
           ) : (
             t("comment")
           )}
           {rail ? (
-            <span className="max-lg:text-[11px] lg:text-[8px] font-bold tabular-nums leading-none text-white/90">
+            <span className="max-lg:text-[13px] lg:text-[8px] font-bold tabular-nums leading-none text-white/90">
               {formatCount(commentCount)}
             </span>
           ) : (
@@ -535,7 +535,7 @@ export function FeedVideoEngagement({
           <div
             className={
               rail
-                ? "flex flex-col items-center [&_button]:h-9 [&_button]:w-9 [&_button]:min-h-0 [&_button]:shrink-0 [&_button]:rounded-full [&_button]:border [&_button]:border-white/25 [&_button]:bg-black/55 [&_button]:p-0 [&_button]:text-white/90 [&_button]:shadow-[0_2px_10px_rgba(0,0,0,0.4)] [&_button]:ring-1 [&_button]:ring-white/10 [&_button]:backdrop-blur-md max-lg:[&_button]:h-9 max-lg:[&_button]:w-9 max-lg:[&_svg]:!h-[18px] max-lg:[&_svg]:!w-[18px] lg:[&_button]:h-10 lg:[&_button]:w-10 [&_button:hover]:border-white/35 [&_button:hover]:bg-white/[0.12]"
+                ? "flex flex-col items-center [&_button]:h-11 [&_button]:w-11 [&_button]:min-h-0 [&_button]:shrink-0 [&_button]:rounded-full [&_button]:border [&_button]:border-white/25 [&_button]:bg-black/55 [&_button]:p-0 [&_button]:text-white/90 [&_button]:shadow-[0_2px_10px_rgba(0,0,0,0.4)] [&_button]:ring-1 [&_button]:ring-white/10 [&_button]:backdrop-blur-md max-lg:[&_button]:h-11 max-lg:[&_button]:w-11 max-lg:[&_svg]:!h-[22px] max-lg:[&_svg]:!w-[22px] lg:[&_button]:h-10 lg:[&_button]:w-10 [&_button:hover]:border-white/35 [&_button:hover]:bg-white/[0.12]"
                 : "flex shrink-0 items-center"
             }
           >
