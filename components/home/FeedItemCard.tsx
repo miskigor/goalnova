@@ -195,7 +195,7 @@ export function FeedItemCard({
       <div className="pointer-events-none absolute inset-0 z-[42] overflow-hidden">
         <div
           data-pitchrusch-feed-rail
-          className="pointer-events-auto absolute end-3 top-[calc(env(safe-area-inset-top,0px)+2.25rem)] bottom-[calc(10.75rem+env(safe-area-inset-bottom,0px))] flex w-11 shrink-0 flex-col items-center justify-end sm:end-4 sm:w-12 lg:top-12 lg:bottom-44"
+          className="pointer-events-auto absolute end-3 top-3 bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] flex w-11 shrink-0 flex-col items-center justify-end sm:end-4 sm:w-12 lg:top-12 lg:bottom-44"
         >
         <FeedVideoEngagement
           videoId={video.id}

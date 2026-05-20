@@ -58,7 +58,7 @@ const ACCOUNT_MENU_PANEL_BASE_CLASS =
 /** Mobile header account menu: fixed inside viewport (portal), never wider than screen. */
 const ACCOUNT_MENU_PANEL_MOBILE_CLASS = [
   ACCOUNT_MENU_PANEL_BASE_CLASS,
-  "fixed z-[120] w-[min(20rem,calc(100dvw-2rem))] max-w-[calc(100dvw-2rem)]",
+  "fixed z-[120] w-[min(20rem,calc(100%-2rem))] max-w-[calc(100%-2rem)]",
   "end-4 start-auto",
   "top-[calc(var(--gn-app-header-offset,3.5rem)+0.5rem)]",
   "max-h-[min(calc(100dvh-var(--gn-app-header-offset,3.5rem)-var(--gn-app-bottom-nav-offset,4.25rem)-1rem),32rem)]",
@@ -245,7 +245,7 @@ export function NavUserMenu({
 
   const desktopMenuClass = [
     ACCOUNT_MENU_PANEL_BASE_CLASS,
-    "absolute end-0 z-[120] min-w-[13.5rem] w-[min(20rem,calc(100dvw-2rem))] max-w-[calc(100dvw-2rem)]",
+    "absolute end-0 z-[120] min-w-[13.5rem] w-[min(20rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)]",
     menuPlacement === "above"
       ? "bottom-[calc(100%+0.5rem)]"
       : "top-[calc(100%+0.5rem)]",
@@ -423,7 +423,7 @@ export function NavUserMenu({
   );
 
   return (
-    <div className="relative shrink-0 overflow-x-clip" ref={wrapRef}>
+    <div className="relative shrink-0 overflow-visible" ref={wrapRef}>
       <button
         type="button"
         aria-expanded={open}

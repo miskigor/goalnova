@@ -48,7 +48,7 @@ html {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: clip;
+  overflow-x: hidden;
   overscroll-behavior-x: none;
   touch-action: pan-y;
 }
@@ -60,36 +60,21 @@ html {
 }
 
 [data-app-root] {
-  box-sizing: border-box;
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 [data-app-column],
 [data-app-main],
 [data-app-main-inner] {
-  box-sizing: border-box;
-  width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
-[data-app-mobile-header],
 [data-app-bottom-nav] {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  inset-inline: 0;
-  overflow-x: clip;
-}
-
-/* Flex column body: children default to min-width:auto and can force page-wide scroll. */
-body > * {
-  box-sizing: border-box;
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -101,7 +86,7 @@ body {
   min-width: 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: hidden;
   overscroll-behavior-x: none;
   touch-action: pan-y;
   background-color: var(--gn-bg);
@@ -256,23 +241,22 @@ select:focus {
 
 }
 
-/* Immersive home feed: drop main horizontal padding on mobile so feed/video cannot widen the page. */
+/* Immersive home feed: edge-to-edge video between fixed header and bottom nav. */
 @media (max-width: 1023px) {
   html.gn-home-immersive,
   html.gn-home-immersive body {
-    overflow-x: clip;
+    overflow-x: hidden;
     max-width: 100%;
   }
 
   html.gn-home-immersive [data-app-main],
   html.gn-home-immersive [data-app-main-inner],
   html.gn-home-immersive [data-app-column] {
-    overflow-x: clip;
+    overflow-x: hidden;
     max-width: 100%;
   }
 
   html.gn-home-immersive [data-app-main] {
-    padding-left: 0;
-    padding-right: 0;
+    padding: 0;
   }
 }

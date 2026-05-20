@@ -50,15 +50,15 @@ const FEED_BLEED = "w-full min-w-0 max-w-full";
  * so slide height matches the scrollport (avoids `100cqh` resolving to 0 in some WebKit layouts).
  */
 const FEED_SCROLLPORT =
-  "touch-pan-y snap-y snap-mandatory overflow-y-auto overflow-x-clip scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
+  "touch-pan-y snap-y snap-mandatory overflow-y-auto overflow-x-hidden scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
   "[container-type:size] min-h-0 min-w-0 " +
-  "max-lg:flex-1 max-lg:h-full max-lg:min-h-[min(100dvh,100svh)] " +
+  "max-lg:flex-1 max-lg:h-full max-lg:min-h-0 " +
   "lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
 /** Card fills its snap `li`; desktop keeps a subtle framed tile. Comment sheets use a portal — no overflow-visible bleed. */
 const FEED_SLIDE =
   "box-border h-full min-h-0 min-w-0 w-full max-w-full overflow-hidden rounded-none border-0 bg-black " +
-  "max-lg:min-h-[100dvh] max-lg:h-[100dvh] " +
+  "max-lg:h-full max-lg:min-h-0 " +
   "lg:h-[100cqh] lg:max-h-[100cqh] lg:rounded-2xl lg:border lg:border-white/[0.06]";
 
 type MyVideosStatus =
@@ -431,7 +431,7 @@ export function HomeFeed() {
     const root = document.documentElement;
     if (liveImmersiveMobile) {
       root.classList.add("gn-home-immersive");
-      root.style.overflowX = "clip";
+      root.style.overflowX = "hidden";
     } else {
       root.classList.remove("gn-home-immersive");
       root.style.overflowX = "";
@@ -532,7 +532,7 @@ export function HomeFeed() {
       className={[
         "mx-auto box-border flex w-full min-w-0 max-w-lg min-h-0 flex-col gap-3 pb-3 lg:max-w-2xl",
         liveImmersiveMobile
-          ? "max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:bottom-0 max-lg:z-[20] max-lg:m-0 max-lg:h-[min(100dvh,100svh)] max-lg:max-h-[min(100dvh,100svh)] max-lg:min-h-0 max-lg:min-w-0 max-lg:w-full max-lg:max-w-full max-lg:flex max-lg:flex-col max-lg:gap-0 max-lg:overflow-x-clip max-lg:overflow-y-hidden max-lg:bg-black max-lg:px-0 max-lg:pb-0"
+          ? "max-lg:fixed max-lg:inset-x-0 max-lg:top-[var(--gn-app-header-offset)] max-lg:bottom-[var(--gn-app-bottom-nav-offset)] max-lg:z-[10] max-lg:m-0 max-lg:flex max-lg:h-auto max-lg:min-h-0 max-lg:min-w-0 max-lg:w-full max-lg:max-w-full max-lg:flex-col max-lg:gap-0 max-lg:overflow-x-hidden max-lg:overflow-y-hidden max-lg:bg-black max-lg:px-0 max-lg:pb-0"
           : "",
       ].join(" ")}
     >
@@ -566,7 +566,7 @@ export function HomeFeed() {
         className={[
           "overflow-hidden rounded-none border-0 bg-transparent shadow-none",
           liveImmersiveMobile
-            ? "relative z-0 max-lg:flex max-lg:min-h-0 max-lg:min-w-0 max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-clip max-lg:pt-0"
+            ? "relative z-0 max-lg:flex max-lg:min-h-0 max-lg:min-w-0 max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-hidden max-lg:pt-0"
             : "",
         ].join(" ")}
         aria-busy={loading || !scoutLoaded}

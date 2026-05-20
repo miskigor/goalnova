@@ -320,6 +320,65 @@ export function logDocumentViewportMetrics(
   return metrics;
 }
 
+export type MobileShellLayoutRect = {
+  selector: string;
+  rect: { left: number; right: number; top: number; bottom: number; width: number; height: number };
+  scrollWidth: number;
+  clientWidth: number;
+};
+
+const MOBILE_SHELL_RECT_SELECTORS = [
+  "[data-app-mobile-header]",
+  "[data-app-bottom-nav]",
+  "[data-app-main]",
+  "[data-pitchrusch-feed-card]",
+  "[data-pitchrusch-feed-rail]",
+] as const;
+
+/** Development-only: log chrome + feed geometry on mobile widths. */
+export function logMobileShellLayoutRects(
+  pathname: string,
+  viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0,
+): void {
+  if (!isDev || typeof document === "undefined" || viewportWidth <= 0) return;
+  if (viewportWidth > 1023) return;
+
+  const vv = window.visualViewport;
+  const docEl = document.documentElement;
+
+  const rects: MobileShellLayoutRect[] = [];
+  for (const selector of MOBILE_SHELL_RECT_SELECTORS) {
+    const el = document.querySelector(selector);
+    if (!(el instanceof HTMLElement)) continue;
+    const r = el.getBoundingClientRect();
+    rects.push({
+      selector,
+      rect: {
+        left: Math.round(r.left * 10) / 10,
+        right: Math.round(r.right * 10) / 10,
+        top: Math.round(r.top * 10) / 10,
+        bottom: Math.round(r.bottom * 10) / 10,
+        width: Math.round(r.width * 10) / 10,
+        height: Math.round(r.height * 10) / 10,
+      },
+      scrollWidth: el.scrollWidth,
+      clientWidth: el.clientWidth,
+    });
+  }
+
+  console.info(`[mobile-shell-layout] ${pathname}`, {
+    innerWidth: viewportWidth,
+    innerHeight: window.innerHeight,
+    visualViewport: vv
+      ? { width: vv.width, height: vv.height, offsetLeft: vv.offsetLeft, offsetTop: vv.offsetTop }
+      : null,
+    documentScrollWidth: docEl.scrollWidth,
+    documentScrollHeight: docEl.scrollHeight,
+    documentClientWidth: docEl.clientWidth,
+    rects,
+  });
+}
+
 const APP_SHELL_PROBE_SELECTORS = [
   "html",
   "body",
@@ -352,6 +411,7 @@ export function logAppShellPageOverflowOffenders(
   if (!isDev || typeof document === "undefined" || viewportWidth <= 0) return [];
 
   logDocumentViewportMetrics(pathname, viewportWidth);
+  logMobileShellLayoutRects(pathname, viewportWidth);
 
   const docEl = document.documentElement;
   const allHits = collectPageOverflowHits(docEl, viewportWidth);
