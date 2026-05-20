@@ -155,34 +155,40 @@ html {
     padding-right: 0 !important;
   }
 
-  [data-pitchrusch-feed-scroll-root],
-  [data-pitchrusch-feed-card] {
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root],
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-card] {
     position: relative;
     z-index: 0;
   }
 
-  [data-pitchrusch-feed-card] {
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-card] {
     left: 0 !important;
     right: 0 !important;
     transform: none !important;
+    translate: none;
   }
 
-  [data-pitchrusch-feed-meta] {
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-meta] {
     left: 0 !important;
     right: auto !important;
     inset-inline-start: 0 !important;
+    inset-inline-end: auto !important;
+    transform: none !important;
+    translate: none;
     bottom: var(--gn-app-bottom-nav-offset);
     max-width: calc(100% - 3.25rem);
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px));
     padding-bottom: 0.25rem;
   }
 
-  [data-pitchrusch-feed-rail] {
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-rail] {
     z-index: 90;
     right: max(0.5rem, env(safe-area-inset-right, 0px)) !important;
     left: auto !important;
     inset-inline-end: max(0.5rem, env(safe-area-inset-right, 0px)) !important;
     inset-inline-start: auto !important;
+    transform: none !important;
+    translate: none;
     max-width: 1.75rem;
   }
 

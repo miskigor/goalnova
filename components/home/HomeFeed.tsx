@@ -34,94 +34,15 @@ import {
   feedItemsListProps,
   feedItemProps,
   feedScrollRootProps,
-  resetHomeFeedHorizontalScroll,
 } from "@/lib/feed/feedScrollContract";
+import { HomeFeedLayoutDebugOverlay } from "@/components/home/HomeFeedLayoutDebugOverlay";
+import { runHomeFeedMountedScrollReset } from "@/components/home/homeFeedMobileScrollReset";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
 import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 import { currentUserHasAnyVideo } from "@/lib/supabase/currentUserVideos";
-import { devLog, isDev } from "@/lib/devLog";
-
-const HOME_FEED_LAYOUT_DEBUG_SELECTORS = [
-  "[data-app-main]",
-  "[data-app-main-inner]",
-  "[data-pitchrusch-home-feed]",
-  "[data-pitchrusch-feed-scroll-root]",
-  "[data-pitchrusch-feed-card]",
-  "[data-pitchrusch-feed-meta]",
-  "[data-pitchrusch-feed-rail]",
-] as const;
-
-/** Development-only: log viewport vs feed node geometry after horizontal scroll reset. */
-function logHomeFeedLayoutDebug(reason: string): void {
-  if (!isDev || typeof window === "undefined" || typeof document === "undefined") {
-    return;
-  }
-
-  const innerWidth = window.innerWidth;
-  const docScrollWidth = document.documentElement.scrollWidth;
-  const bodyScrollWidth = document.body.scrollWidth;
-
-  devLog(`[home-feed-layout-debug] ${reason}`, {
-    innerWidth,
-    documentElementScrollWidth: docScrollWidth,
-    bodyScrollWidth,
-    windowScrollX: window.scrollX,
-    documentScrollLeft: document.documentElement.scrollLeft,
-    bodyScrollLeft: document.body.scrollLeft,
-  });
-
-  const suspects: Array<{
-    selector: string;
-    rectLeft: number;
-    rectRight: number;
-    width: number;
-    scrollWidth: number;
-    clientWidth: number;
-    reasons: string[];
-  }> = [];
-
-  for (const selector of HOME_FEED_LAYOUT_DEBUG_SELECTORS) {
-    const el = document.querySelector(selector);
-    if (!(el instanceof HTMLElement)) continue;
-    const rect = el.getBoundingClientRect();
-    const reasons: string[] = [];
-    if (rect.left < -1) reasons.push("rect.left<0");
-    if (rect.right > innerWidth + 1) reasons.push("rect.right>innerWidth");
-    if (rect.width > innerWidth + 1) reasons.push("width>innerWidth");
-    if (el.scrollWidth > el.clientWidth + 1) {
-      reasons.push("scrollWidth>clientWidth");
-    }
-
-    const row = {
-      selector,
-      rectLeft: Math.round(rect.left * 10) / 10,
-      rectRight: Math.round(rect.right * 10) / 10,
-      width: Math.round(rect.width * 10) / 10,
-      scrollWidth: el.scrollWidth,
-      clientWidth: el.clientWidth,
-      reasons,
-    };
-
-    devLog("[home-feed-layout-debug] node", row);
-    if (reasons.length > 0) suspects.push(row);
-  }
-
-  if (docScrollWidth > innerWidth + 1) {
-    devLog("[home-feed-layout-debug] document wider than viewport", {
-      docScrollWidth,
-      innerWidth,
-    });
-  }
-
-  if (suspects.length > 0) {
-    console.warn("[home-feed-layout-debug] overflow suspects", suspects);
-  } else {
-    devLog("[home-feed-layout-debug] no overflow suspects in probed nodes");
-  }
-}
 
 /** Scrollport width: stay within the main column (negative margins removed — they fought min-w-0 and could widen scrollWidth). */
 const FEED_BLEED = "w-full min-w-0 max-w-full overflow-x-clip";
@@ -497,11 +418,30 @@ export function HomeFeed() {
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [refreshMyVideosCount]);
 
+  /** Mobile-only horizontal scroll reset while HomeFeed is mounted (iOS Safari). */
   useEffect(() => {
-    resetHomeFeedHorizontalScroll();
-    if (isDev) {
-      requestAnimationFrame(() => logHomeFeedLayoutDebug("mount"));
-    }
+    if (typeof window === "undefined") return;
+
+    const reset = () => runHomeFeedMountedScrollReset();
+
+    reset();
+    const t50 = window.setTimeout(reset, 50);
+    const t250 = window.setTimeout(reset, 250);
+
+    const vv = window.visualViewport;
+    vv?.addEventListener("resize", reset);
+    vv?.addEventListener("scroll", reset);
+    window.addEventListener("resize", reset, { passive: true });
+    window.addEventListener("orientationchange", reset, { passive: true });
+
+    return () => {
+      window.clearTimeout(t50);
+      window.clearTimeout(t250);
+      vv?.removeEventListener("resize", reset);
+      vv?.removeEventListener("scroll", reset);
+      window.removeEventListener("resize", reset);
+      window.removeEventListener("orientationchange", reset);
+    };
   }, []);
 
   /** Hide in-page feed title on mobile when clips are showing (shell header/nav stay visible). */
@@ -510,32 +450,6 @@ export function HomeFeed() {
     !loading &&
     !feedLoadFailed &&
     items.length > 0;
-
-  /** Keep feed aligned to viewport after iOS zoom / URL bar / snap scroll. */
-  useEffect(() => {
-    if (!hideFeedPageHeader) return;
-    const reset = () => {
-      resetHomeFeedHorizontalScroll();
-      if (isDev) {
-        logHomeFeedLayoutDebug("immersive-feed-active");
-      }
-    };
-    reset();
-    const raf = requestAnimationFrame(reset);
-    const delayed = window.setTimeout(reset, 120);
-    window.addEventListener("resize", reset, { passive: true });
-    window.visualViewport?.addEventListener("resize", reset);
-    window.visualViewport?.addEventListener("scroll", reset);
-    document.addEventListener("scroll", reset, { passive: true, capture: true });
-    return () => {
-      cancelAnimationFrame(raf);
-      window.clearTimeout(delayed);
-      window.removeEventListener("resize", reset);
-      window.visualViewport?.removeEventListener("resize", reset);
-      window.visualViewport?.removeEventListener("scroll", reset);
-      document.removeEventListener("scroll", reset, { capture: true });
-    };
-  }, [hideFeedPageHeader, items.length]);
 
   const showUploadFirstBanner =
     uploadEligibility === "player" &&
@@ -629,10 +543,12 @@ export function HomeFeed() {
   }
 
   return (
-    <div
-      data-pitchrusch-home-feed
-      className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:mx-0 max-lg:w-full max-lg:max-w-full max-lg:overflow-x-clip max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
-    >
+    <>
+      <HomeFeedLayoutDebugOverlay />
+      <div
+        data-pitchrusch-home-feed
+        className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:mx-0 max-lg:w-full max-lg:max-w-full max-lg:overflow-x-clip max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
+      >
       <ReferralConsumeOnMount />
       <header
         className={[
@@ -669,6 +585,7 @@ export function HomeFeed() {
       >
         {renderFeedBody()}
       </section>
-    </div>
+      </div>
+    </>
   );
 }
