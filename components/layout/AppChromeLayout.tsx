@@ -22,7 +22,15 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
     <FeedbackProvider>
       <AdminSupportUnreadProvider>
         <AppLayoutDebugProbe />
-        <AppMobileHeader />
+        <div data-app-mobile-chrome className="pointer-events-none fixed inset-0 z-[600] flex max-lg:flex-col max-lg:overflow-hidden lg:hidden">
+          <div className="pointer-events-auto shrink-0">
+            <AppMobileHeader />
+          </div>
+          <div className="min-h-0 flex-1" aria-hidden />
+          <div className="pointer-events-auto shrink-0">
+            <AppMobileBottomNav />
+          </div>
+        </div>
         <div data-app-root className={APP_SHELL_ROOT_CLASS}>
           <AppSidebar />
           <div data-app-column className={APP_SHELL_COLUMN_CLASS}>
@@ -34,7 +42,6 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
             </main>
           </div>
         </div>
-        <AppMobileBottomNav />
       </AdminSupportUnreadProvider>
     </FeedbackProvider>
   );

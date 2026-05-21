@@ -122,7 +122,10 @@ export function Logo({
 
   const gapClass = showWordmark ? "gap-2 sm:gap-2.5" : "gap-0";
 
-  const linkShrinkClass = variant === "header" ? "min-w-0 max-w-full shrink" : "shrink-0";
+  const linkShrinkClass =
+    variant === "header" && showWordmark
+      ? "min-w-0 max-w-full shrink"
+      : "shrink-0";
   const linkLayoutClass = variant === "header" ? "flex" : "inline-flex";
 
   if (resolvedHref) {

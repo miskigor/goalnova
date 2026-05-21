@@ -31,7 +31,13 @@ export function AppMobileHeader() {
   return (
     <header data-app-mobile-header className={APP_MOBILE_HEADER_CLASS}>
       <div className={APP_MOBILE_HEADER_INNER_CLASS}>
-        <Logo href="/home" variant="header" showWordmark={false} className="shrink-0" />
+        <Logo
+          href="/home"
+          variant="header"
+          showWordmark={false}
+          priority
+          className="!shrink-0"
+        />
 
         <div className="ms-auto me-1 flex shrink-0 items-center gap-1.5">
           {authed && user && adminLoaded && isAdmin ? (

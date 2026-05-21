@@ -18,10 +18,10 @@ export const APP_SHELL_MAIN_INNER_CLASS =
   "mx-auto box-border flex w-full min-w-0 max-w-full min-h-0 flex-1 flex-col overflow-x-clip max-lg:min-h-0 max-lg:overflow-x-clip";
 
 export const APP_MOBILE_HEADER_CLASS = [
-  "fixed top-0 left-0 right-0 z-[160] box-border w-full max-w-full shrink-0",
-  "border-b border-gn-border-subtle bg-gn-bg/95",
+  "relative z-[1] box-border w-full max-w-full shrink-0",
+  "border-b border-gn-border-subtle bg-gn-bg",
   "pt-[env(safe-area-inset-top,0px)]",
-  "shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90",
+  "shadow-[0_8px_32px_rgba(0,0,0,0.2)]",
   "lg:hidden",
 ].join(" ");
 
@@ -29,10 +29,10 @@ export const APP_MOBILE_HEADER_INNER_CLASS =
   "mx-auto flex h-14 w-full max-w-full min-w-0 items-center gap-2 overflow-visible box-border px-3";
 
 export const APP_MOBILE_BOTTOM_NAV_CLASS = [
-  "pointer-events-auto fixed inset-x-0 bottom-0 z-[500] box-border w-full max-w-full min-w-0 overflow-visible",
-  "border-t border-gn-border-subtle bg-gn-bg",
+  "relative z-[1] box-border w-full max-w-full min-w-0 shrink-0 overflow-visible bg-gn-bg",
+  "border-t border-gn-border-subtle",
   "pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] pt-1.5",
-  "shadow-[0_-12px_40px_rgba(0,0,0,0.55)] supports-[backdrop-filter]:bg-gn-bg",
+  "shadow-[0_-12px_40px_rgba(0,0,0,0.55)]",
   "lg:hidden",
 ].join(" ");
 

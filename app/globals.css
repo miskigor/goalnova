@@ -97,40 +97,53 @@ html {
     touch-action: manipulation;
   }
 
-  [data-app-mobile-header] {
+  [data-app-mobile-chrome] {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
+    inset: 0;
+    z-index: 600;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    pointer-events: none;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  [data-app-mobile-header] {
+    position: relative;
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    flex-shrink: 0;
+    background-color: var(--gn-bg);
+  }
+
+  [data-app-mobile-header] a[aria-label] {
+    flex-shrink: 0;
+  }
+
+  [data-app-mobile-header] img {
+    display: block;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
   }
 
   :has([data-pitchrusch-home-feed]) [data-app-mobile-header] {
     display: block;
     visibility: visible;
     opacity: 1;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 160;
     background-color: rgba(0, 0, 0, 0.96);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
 
   [data-app-bottom-nav] {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 500;
+    position: relative;
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    flex-shrink: 0;
     box-sizing: border-box;
     background-color: var(--gn-bg);
   }
@@ -225,35 +238,11 @@ html {
     touch-action: pan-y;
   }
 
-  body:has([data-app-root]):not(:has([data-pitchrusch-home-feed]))
-    [data-app-mobile-header] {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: 100%;
-    z-index: 160;
-    overflow: visible;
+  [data-app-mobile-chrome] [data-app-mobile-header],
+  [data-app-mobile-chrome] [data-app-bottom-nav] {
     visibility: visible;
     opacity: 1;
     pointer-events: auto;
-  }
-
-  body:has([data-app-root]):not(:has([data-pitchrusch-home-feed]))
-    [data-app-bottom-nav] {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: 100%;
-    z-index: 500;
-    overflow: visible;
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto;
-    background-color: var(--gn-bg);
   }
 
   [data-app-bottom-nav] a {
