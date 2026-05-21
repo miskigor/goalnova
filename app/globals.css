@@ -77,9 +77,9 @@ html {
 /* Mobile: fixed inset shell (Safari URL bar — avoid 100dvh pushing chrome off-screen). */
 @media (max-width: 1023px) {
   :root {
-    --gn-app-header-offset: calc(3rem + env(safe-area-inset-top, 0px));
+    --gn-app-header-offset: calc(3.5rem + env(safe-area-inset-top, 0px));
     --gn-app-bottom-nav-offset: calc(
-      3rem + max(0.5rem, env(safe-area-inset-bottom, 0px))
+      4.625rem + env(safe-area-inset-bottom, 0px)
     );
   }
 
@@ -127,11 +127,12 @@ html {
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 110;
+    z-index: 500;
     width: 100%;
     max-width: 100%;
     min-width: 0;
     box-sizing: border-box;
+    background-color: var(--gn-bg);
   }
 
   [data-app-column],
@@ -247,11 +248,12 @@ html {
     right: 0;
     width: 100%;
     max-width: 100%;
-    z-index: 110;
+    z-index: 500;
     overflow: visible;
     visibility: visible;
     opacity: 1;
     pointer-events: auto;
+    background-color: var(--gn-bg);
   }
 
   [data-app-bottom-nav] a {
