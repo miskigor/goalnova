@@ -1220,7 +1220,7 @@ export function UploadForm() {
     : t("uploadSubtitle");
 
   return (
-    <div className="mx-auto box-border w-full min-w-0 max-w-[min(100%,22rem)] space-y-5 sm:max-w-lg sm:space-y-6">
+    <div className="box-border w-full min-w-0 max-w-full overflow-x-clip space-y-5 sm:mx-auto sm:max-w-lg sm:space-y-6">
       <div className="min-w-0">
         <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">
           {pageTitle}

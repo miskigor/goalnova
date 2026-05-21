@@ -34,7 +34,7 @@ export default async function PremiumPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="mx-auto box-border w-full max-w-[min(100%,22rem)] min-w-0 pb-10 sm:max-w-6xl sm:px-5">
+    <div className="box-border w-full min-w-0 max-w-full overflow-x-clip pb-10 sm:mx-auto sm:max-w-6xl sm:px-5">
       <PricingView />
     </div>
   );

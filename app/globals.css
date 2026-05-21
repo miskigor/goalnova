@@ -220,6 +220,8 @@ html {
   body:has([data-app-root]):not(:has([data-pitchrusch-home-feed])) {
     display: flex;
     flex-direction: column;
+    overflow-x: clip !important;
+    touch-action: pan-y;
   }
 
   body:has([data-app-root]):not(:has([data-pitchrusch-home-feed]))
@@ -259,24 +261,28 @@ html {
     right: 0 !important;
     inset: auto !important;
     flex: 1 1 0;
-    width: 100%;
-    max-width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
     min-width: 0;
     min-height: 0;
     height: auto;
     max-height: none;
     margin: 0 !important;
     overflow: hidden;
+    overflow-x: clip;
     overscroll-behavior: none;
+    overscroll-behavior-x: none;
     transform: none !important;
   }
 
   [data-app-column]:not(:has([data-pitchrusch-home-feed])) {
     flex: 1 1 0;
     min-height: 0;
-    width: 100%;
-    max-width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
     overflow: hidden;
+    overflow-x: clip;
     box-sizing: border-box;
     padding-top: var(--gn-app-header-offset);
     padding-bottom: var(--gn-app-bottom-nav-offset);
@@ -285,29 +291,38 @@ html {
   [data-app-main]:not(:has([data-pitchrusch-home-feed])) {
     flex: 1 1 0;
     min-height: 0;
-    width: 100%;
-    max-width: 100%;
-    margin-left: 0;
-    margin-right: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     padding-left: max(0.75rem, env(safe-area-inset-left, 0px)) !important;
     padding-right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: clip;
     overscroll-behavior-x: none;
     overscroll-behavior-y: contain;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
+    align-items: center;
   }
 
   [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) {
     flex: none;
+    box-sizing: border-box;
     width: 100%;
-    max-width: min(100%, 22rem);
+    max-width: 22rem;
     margin-inline: auto;
+    min-width: 0;
     min-height: 0;
-    overflow-x: hidden;
+    overflow-x: clip;
+  }
+
+  [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) > * {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 }
 
