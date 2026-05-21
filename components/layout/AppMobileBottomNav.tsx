@@ -54,11 +54,8 @@ export function AppMobileBottomNav() {
             className={bottomItemClass(pathname, item.href)}
             aria-current={navItemActive(pathname, item.href) ? "page" : undefined}
           >
-            <NavIcon
-              name={item.icon}
-              className="size-5 shrink-0 min-[390px]:size-[21px] min-[430px]:size-[22px]"
-            />
-            <span className="w-full min-w-0 truncate px-0.5 text-center">
+            <NavIcon name={item.icon} className="size-4 shrink-0" />
+            <span className="w-full min-w-0 truncate px-0 text-center">
               {tNav(item.labelKey)}
             </span>
           </Link>

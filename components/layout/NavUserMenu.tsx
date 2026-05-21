@@ -433,13 +433,17 @@ export function NavUserMenu({
         onClick={() => setOpen((v) => !v)}
         className={
           "flex items-center rounded-full transition-all duration-200 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg " +
-          (compactTrigger ? "gap-0 p-0" : "gap-2 p-0.5")
+          (compactTrigger
+            ? "h-8 w-8 min-w-8 max-w-8 shrink-0 gap-0 overflow-hidden rounded-full p-0"
+            : "gap-2 p-0.5")
         }
       >
         <ProfileAvatar
           name={displayNameFromUser(user)}
           imageUrl={avatarUrl}
-          sizeClassName="size-9 text-xs font-semibold"
+          sizeClassName={
+            compactTrigger ? "size-8 text-[10px] font-semibold" : "size-9 text-xs font-semibold"
+          }
           className="ring-2 ring-gn-border-subtle"
         />
         {compactTrigger ? null : (
