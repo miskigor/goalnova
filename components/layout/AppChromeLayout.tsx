@@ -22,9 +22,9 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
     <FeedbackProvider>
       <AdminSupportUnreadProvider>
         <AppLayoutDebugProbe />
+        <AppMobileHeader />
         <div data-app-root className={APP_SHELL_ROOT_CLASS}>
           <AppSidebar />
-          <AppMobileHeader />
           <div data-app-column className={APP_SHELL_COLUMN_CLASS}>
             <main data-app-main className={APP_SHELL_MAIN_CLASS}>
               <div data-app-main-inner className={APP_SHELL_MAIN_INNER_CLASS}>
@@ -33,8 +33,8 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
               </div>
             </main>
           </div>
-          <AppMobileBottomNav />
         </div>
+        <AppMobileBottomNav />
       </AdminSupportUnreadProvider>
     </FeedbackProvider>
   );

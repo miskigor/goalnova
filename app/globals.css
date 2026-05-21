@@ -108,7 +108,7 @@ html {
     min-width: 0;
   }
 
-  [data-app-root]:has([data-pitchrusch-home-feed]) [data-app-mobile-header] {
+  :has([data-pitchrusch-home-feed]) [data-app-mobile-header] {
     display: block;
     visibility: visible;
     opacity: 1;
@@ -214,26 +214,16 @@ html {
   }
 
   /*
-   * Non-home tab pages: document must not scroll; chrome padding lives on the column
-   * (not on main) so header/bottom nav offsets do not move while content scrolls.
+   * Non-home tab pages: header/nav sit outside [data-app-root] so position:fixed
+   * anchors to the viewport (not a fixed root). Root scrolls only inside main.
    */
-  [data-app-root]:not(:has([data-pitchrusch-home-feed])) {
-    position: fixed;
-    inset: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    height: 100svh;
-    max-height: 100svh;
-    margin: 0;
-    overflow: hidden;
-    overscroll-behavior: none;
-    transform: none;
+  body:has([data-app-root]):not(:has([data-pitchrusch-home-feed])) {
+    display: flex;
+    flex-direction: column;
   }
 
-  [data-app-root]:not(:has([data-pitchrusch-home-feed])) [data-app-mobile-header] {
+  body:has([data-app-root]):not(:has([data-pitchrusch-home-feed]))
+    [data-app-mobile-header] {
     position: fixed;
     top: 0;
     left: 0;
@@ -241,15 +231,14 @@ html {
     width: 100%;
     max-width: 100%;
     z-index: 160;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
     overflow-x: clip;
     visibility: visible;
     opacity: 1;
     pointer-events: auto;
   }
 
-  [data-app-root]:not(:has([data-pitchrusch-home-feed])) [data-app-bottom-nav] {
+  body:has([data-app-root]):not(:has([data-pitchrusch-home-feed]))
+    [data-app-bottom-nav] {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -257,12 +246,29 @@ html {
     width: 100%;
     max-width: 100%;
     z-index: 110;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
     overflow-x: clip;
     visibility: visible;
     opacity: 1;
     pointer-events: auto;
+  }
+
+  [data-app-root]:not(:has([data-pitchrusch-home-feed])) {
+    position: relative !important;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    inset: auto !important;
+    flex: 1 1 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    margin: 0 !important;
+    overflow: hidden;
+    overscroll-behavior: none;
+    transform: none !important;
   }
 
   [data-app-column]:not(:has([data-pitchrusch-home-feed])) {
