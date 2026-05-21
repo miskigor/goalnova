@@ -8,6 +8,10 @@ import {
   clearFreshLogin,
   hasFreshLogin,
 } from "@/lib/auth/freshLogin";
+import {
+  consumeAuthRedirectFromUrl,
+  urlHasPendingAuthRedirect,
+} from "@/lib/auth/consumeAuthRedirectFromUrl";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
@@ -105,6 +109,10 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     let mounted = true;
 
     async function init() {
+      if (urlHasPendingAuthRedirect()) {
+        await consumeAuthRedirectFromUrl();
+      }
+
       // Slow mobile/WLAN auth init must not fall through to getUser() too early (felt “broken”).
       const sessionTimeoutMs = oauthReturnLikely() ? 20_000 : 10_000;
       try {

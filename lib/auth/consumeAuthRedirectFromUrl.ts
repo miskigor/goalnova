@@ -1,3 +1,4 @@
+import { setFreshLogin } from "@/lib/auth/freshLogin";
 import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
 import type { EmailOtpType } from "@supabase/supabase-js";
@@ -19,6 +20,7 @@ export async function consumeAuthRedirectFromUrl(): Promise<boolean> {
   if (typeof window === "undefined") return false;
 
   let established = false;
+  let oauthSessionEstablished = false;
   const url = new URL(window.location.href);
 
   const tokenHash = url.searchParams.get("token_hash");
@@ -37,8 +39,17 @@ export async function consumeAuthRedirectFromUrl(): Promise<boolean> {
   const code = url.searchParams.get("code");
   if (code) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) devError("[auth] exchangeCodeForSession", error);
-    else if (data.session) established = true;
+    if (error) {
+      devError("[auth] exchangeCodeForSession", error);
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (sessionData.session) {
+        established = true;
+        oauthSessionEstablished = true;
+      }
+    } else if (data.session) {
+      established = true;
+      oauthSessionEstablished = true;
+    }
     url.searchParams.delete("code");
   }
 
@@ -53,7 +64,10 @@ export async function consumeAuthRedirectFromUrl(): Promise<boolean> {
         refresh_token: refreshToken,
       });
       if (error) devError("[auth] setSession from hash", error);
-      else if (data.session) established = true;
+      else if (data.session) {
+        established = true;
+        oauthSessionEstablished = true;
+      }
     }
   }
 
@@ -67,6 +81,10 @@ export async function consumeAuthRedirectFromUrl(): Promise<boolean> {
   if (!established) {
     const { data } = await supabase.auth.getSession();
     if (data.session) established = true;
+  }
+
+  if (oauthSessionEstablished) {
+    setFreshLogin();
   }
 
   return established;

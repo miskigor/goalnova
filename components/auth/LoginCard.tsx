@@ -229,10 +229,21 @@ export function LoginCard({ labels }: Props) {
     rememberReferralCodeFromQuery(ref);
   }, []);
 
-  /** Complete email-confirm redirects; do not wipe that session before tokens are consumed. */
+  /** Complete OAuth/email redirects; do not wipe that session before tokens are consumed. */
   useEffect(() => {
     let cancelled = false;
     void (async () => {
+      const oauthReturn =
+        typeof window !== "undefined" &&
+        (() => {
+          const url = new URL(window.location.href);
+          if (url.searchParams.has("code")) return true;
+          const hash = url.hash.replace(/^#/, "");
+          if (!hash) return false;
+          const params = new URLSearchParams(hash);
+          return Boolean(params.get("access_token") && params.get("refresh_token"));
+        })();
+
       if (urlHasPendingAuthRedirect()) {
         await consumeAuthRedirectFromUrl();
       }
@@ -242,6 +253,13 @@ export function LoginCard({ labels }: Props) {
       if (sessionData.session) {
         const { data: userData } = await supabase.auth.getUser();
         if (isEmailConfirmed(userData.user)) {
+          if (oauthReturn) {
+            setFreshLogin();
+            setRedirecting(true);
+            router.replace("/home");
+            setRedirecting(false);
+            return;
+          }
           setFreshLogin();
           setRedirecting(true);
           const needsRole = await needsRoleOnboardingPage();
