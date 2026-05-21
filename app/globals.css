@@ -83,10 +83,17 @@ html {
     );
   }
 
-  html:has([data-app-root]),
+  html:has([data-app-root]) {
+    width: 100%;
+    max-width: 100%;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    overscroll-behavior: none;
+  }
+
   body:has([data-app-root]) {
-    position: fixed;
-    inset: 0;
     width: 100%;
     max-width: 100%;
     min-height: 0 !important;
@@ -97,6 +104,28 @@ html {
     overflow-x: clip;
     overscroll-behavior: none;
     touch-action: manipulation;
+  }
+
+  /* Home feed only — tab pages use relative body so portaled chrome stays on-screen while main scrolls. */
+  body:has([data-app-root]):has([data-pitchrusch-home-feed]) {
+    position: fixed;
+    inset: 0;
+  }
+
+  [data-app-mobile-chrome-fixed="top"] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 600;
+  }
+
+  [data-app-mobile-chrome-fixed="bottom"] {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 600;
   }
 
   [data-app-mobile-header] {
@@ -232,7 +261,9 @@ html {
   }
 
   [data-app-mobile-chrome] [data-app-mobile-header],
-  [data-app-mobile-chrome] [data-app-bottom-nav] {
+  [data-app-mobile-chrome] [data-app-bottom-nav],
+  [data-app-mobile-chrome-fixed="top"] [data-app-mobile-header],
+  [data-app-mobile-chrome-fixed="bottom"] [data-app-bottom-nav] {
     visibility: visible;
     opacity: 1;
     pointer-events: auto;
