@@ -8,10 +8,7 @@ import { loadAndEnsureProfile } from "@/lib/supabase/profile";
 import { tryConsumePendingReferralWithRetry } from "@/lib/supabase/referrals";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { DeleteAccountSection } from "@/components/profile/DeleteAccountSection";
-import {
-  APP_PROFILE_LOADING_INNER_CLASS,
-  APP_PROFILE_SHELL_CLASS,
-} from "@/lib/layout/appShellClasses";
+import { APP_PROFILE_LOADING_INNER_CLASS } from "@/lib/layout/appShellClasses";
 import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
 import { ScoutOwnProfileView } from "@/components/profile/ScoutOwnProfileView";
 import type { Database } from "@/lib/supabase/client";
@@ -40,7 +37,10 @@ function Spinner({ className = "h-5 w-5" }: { className?: string }) {
 
 function ProfilePageShell({ children }: { children: React.ReactNode }) {
   return (
-    <div data-profile-shell className={APP_PROFILE_SHELL_CLASS}>
+    <div
+      data-profile-shell
+      className="mx-auto box-border w-full min-w-0 max-w-[min(100%,22rem)] space-y-6 overflow-x-clip pb-8 sm:max-w-2xl"
+    >
       {children}
     </div>
   );

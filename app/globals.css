@@ -209,6 +209,31 @@ html {
   [data-app-main]:has([data-pitchrusch-home-feed]) {
     overflow: hidden;
   }
+
+  /* Non-home tab pages: scroll inside main; header + bottom nav stay fixed. */
+  [data-app-column]:not(:has([data-pitchrusch-home-feed])) {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  [data-app-main]:not(:has([data-pitchrusch-home-feed])) {
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) {
+    overflow-x: hidden;
+  }
+
+  [data-app-root]:not(:has([data-pitchrusch-home-feed])) [data-app-mobile-header],
+  [data-app-root]:not(:has([data-pitchrusch-home-feed])) [data-app-bottom-nav] {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 [data-app-bottom-nav] {
