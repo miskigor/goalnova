@@ -426,6 +426,7 @@ export function NavUserMenu({
     <div className="relative shrink-0 overflow-visible" ref={wrapRef}>
       <button
         type="button"
+        data-app-mobile-profile-trigger={compactTrigger ? true : undefined}
         aria-expanded={open}
         aria-haspopup="true"
         aria-controls={menuId}
@@ -433,7 +434,9 @@ export function NavUserMenu({
         onClick={() => setOpen((v) => !v)}
         className={
           "flex items-center rounded-full transition-all duration-200 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg " +
-          (compactTrigger ? "gap-0 p-0" : "gap-2 p-0.5")
+          (compactTrigger
+            ? "flex-none h-10 w-10 min-w-10 max-w-10 gap-0 overflow-hidden rounded-full p-0"
+            : "gap-2 p-0.5")
         }
       >
         <ProfileAvatar
