@@ -14,7 +14,7 @@ import { APP_MOBILE_HEADER_CLASS } from "@/lib/layout/appShellClasses";
 
 /** Mobile-only header row layout (padding + alignment tuned here, not in shared shell constants). */
 const MOBILE_HEADER_INNER_CLASS =
-  "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-visible ps-6 pe-6 max-lg:ps-[max(1.5rem,env(safe-area-inset-left,0px))] max-lg:pe-[max(1.5rem,env(safe-area-inset-right,0px))]";
+  "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-visible ps-[max(2.75rem,env(safe-area-inset-left,0px))] pe-[max(2.75rem,env(safe-area-inset-right,0px))]";
 
 /**
  * Fixed top bar on small screens: brand + compact actions (admin, benefits, account menu).
