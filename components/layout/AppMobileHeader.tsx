@@ -10,10 +10,11 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { navItemActive } from "@/lib/navigation/navItemActive";
 import { NavIcon } from "@/components/icons/NavIcons";
-import {
-  APP_MOBILE_HEADER_CLASS,
-  APP_MOBILE_HEADER_INNER_CLASS,
-} from "@/lib/layout/appShellClasses";
+import { APP_MOBILE_HEADER_CLASS } from "@/lib/layout/appShellClasses";
+
+/** Mobile-only header row layout (padding + alignment tuned here, not in shared shell constants). */
+const MOBILE_HEADER_INNER_CLASS =
+  "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-visible ps-6 pe-6 max-lg:ps-[max(1.5rem,env(safe-area-inset-left,0px))] max-lg:pe-[max(1.5rem,env(safe-area-inset-right,0px))]";
 
 /**
  * Fixed top bar on small screens: brand + compact actions (admin, benefits, account menu).
@@ -29,21 +30,20 @@ export function AppMobileHeader() {
   const adminActive = navItemActive(pathname, "/admin");
 
   return (
-    <header data-app-mobile-header className={APP_MOBILE_HEADER_CLASS}>
-      <div
-        className={`${APP_MOBILE_HEADER_INNER_CLASS} !px-0 ps-[max(1.25rem,env(safe-area-inset-left,0px))] pe-4`}
-      >
-        <div className="flex shrink-0 items-center overflow-visible">
-          <Logo
-            href="/home"
-            variant="header"
-            showWordmark={false}
-            priority
-            className="!shrink-0 [&_img]:!size-11"
-          />
-        </div>
+    <header
+      data-app-mobile-header
+      className={`${APP_MOBILE_HEADER_CLASS} overflow-visible`}
+    >
+      <div className={MOBILE_HEADER_INNER_CLASS}>
+        <Logo
+          href="/home"
+          variant="header"
+          showWordmark={false}
+          priority
+          className="!shrink-0 [&_span]:overflow-visible [&_img]:!size-11 [&_img]:!max-h-11 [&_img]:!max-w-11 [&_img]:!object-contain"
+        />
 
-        <div className="ms-auto flex shrink-0 items-center gap-1 pe-2">
+        <div className="flex shrink-0 items-center gap-1">
           {authed && user && adminLoaded && isAdmin ? (
             <Link
               href="/admin"

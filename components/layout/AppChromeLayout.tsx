@@ -22,7 +22,7 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
     <FeedbackProvider>
       <AdminSupportUnreadProvider>
         <AppLayoutDebugProbe />
-        <div data-app-mobile-chrome className="pointer-events-none fixed inset-0 z-[600] flex max-lg:flex-col max-lg:overflow-hidden lg:hidden">
+        <div data-app-mobile-chrome className="pointer-events-none fixed inset-0 z-[600] flex max-lg:flex-col max-lg:overflow-x-visible max-lg:overflow-y-hidden lg:hidden">
           <div className="pointer-events-auto shrink-0">
             <AppMobileHeader />
           </div>
