@@ -434,7 +434,7 @@ export function NavUserMenu({
         className={
           "flex items-center rounded-full transition-all duration-200 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg " +
           (compactTrigger
-            ? "h-7 w-7 min-w-7 max-w-7 shrink-0 gap-0 overflow-hidden rounded-full p-0"
+            ? "h-8 w-8 min-w-8 max-w-8 shrink-0 gap-0 overflow-hidden rounded-full p-0"
             : "gap-2 p-0.5")
         }
       >
@@ -442,7 +442,7 @@ export function NavUserMenu({
           name={displayNameFromUser(user)}
           imageUrl={avatarUrl}
           sizeClassName={
-            compactTrigger ? "size-7 text-[9px] font-semibold" : "size-9 text-xs font-semibold"
+            compactTrigger ? "size-8 text-[10px] font-semibold" : "size-9 text-xs font-semibold"
           }
           className="ring-2 ring-gn-border-subtle"
         />

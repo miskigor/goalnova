@@ -24,8 +24,8 @@ function bottomItemClass(pathname: string, href: string) {
     APP_MOBILE_BOTTOM_NAV_ITEM_CLASS,
     "transition-[color,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors",
     active
-      ? "text-gn-accent"
-      : "text-gn-text-tertiary hover:text-gn-text-secondary",
+      ? "border-gn-accent/35 bg-gn-accent/10 text-gn-accent"
+      : "text-gn-text-tertiary hover:border-gn-border-subtle hover:bg-gn-surface/40 hover:text-gn-text-secondary",
   ].join(" ");
 }
 
@@ -55,8 +55,8 @@ export function AppMobileBottomNav() {
             className={bottomItemClass(pathname, item.href)}
             aria-current={navItemActive(pathname, item.href) ? "page" : undefined}
           >
-            <NavIcon name={item.icon} className="size-[15px] shrink-0" />
-            <span className="w-full min-w-0 px-px text-center" title={tNav(item.labelKey)}>
+            <NavIcon name={item.icon} className="size-5 shrink-0" />
+            <span className="w-full min-w-0 px-0.5 text-center" title={tNav(item.labelKey)}>
               {mobileBottomNavDisplayLabel(tNav(item.labelKey))}
             </span>
           </Link>

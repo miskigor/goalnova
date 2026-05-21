@@ -31,20 +31,18 @@ export function AppMobileHeader() {
   return (
     <header data-app-mobile-header className={APP_MOBILE_HEADER_CLASS}>
       <div className={APP_MOBILE_HEADER_INNER_CLASS}>
-        <div className="flex min-w-0 max-w-[4.5rem] flex-1 items-center overflow-hidden">
-          <Logo
-            href="/home"
-            variant="header"
-            className="min-w-0 shrink gap-1 [&_img]:size-7 [&_span]:hidden"
-          />
-        </div>
+        <Logo
+          href="/home"
+          variant="header"
+          className="shrink-0 gap-1.5 [&_img]:size-9 [&_span]:hidden"
+        />
 
-        <div className="flex shrink-0 items-center gap-0.5">
+        <div className="ms-auto flex shrink-0 items-center gap-1 pe-0.5">
           {authed && user && adminLoaded && isAdmin ? (
             <Link
               href="/admin"
               className={
-                "relative flex size-7 shrink-0 items-center justify-center overflow-visible rounded-lg border text-gn-accent transition active:scale-[0.98] hover:bg-gn-accent/15 " +
+                "relative flex size-8 shrink-0 items-center justify-center overflow-visible rounded-lg border text-gn-accent transition active:scale-[0.98] hover:bg-gn-accent/15 " +
                 (adminActive
                   ? "border-gn-accent/60 bg-gn-accent/15"
                   : "border-gn-accent/40 bg-gn-accent/10")
@@ -58,7 +56,7 @@ export function AppMobileHeader() {
             >
               <UnreadNotificationBadge count={adminSupportUnread} variant="navCompact" />
               <svg
-                className="size-4 shrink-0"
+                className="size-[18px] shrink-0"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -75,7 +73,7 @@ export function AppMobileHeader() {
             <Link
               href="/benefits"
               className={
-                "flex size-7 shrink-0 items-center justify-center rounded-lg border text-gn-text-secondary transition active:scale-[0.98] hover:bg-gn-surface-elevated hover:text-gn-text " +
+                "flex size-8 shrink-0 items-center justify-center rounded-lg border text-gn-text-secondary transition active:scale-[0.98] hover:bg-gn-surface-elevated hover:text-gn-text " +
                 (benefitsActive
                   ? "border-gn-accent/45 bg-gn-accent/10 text-gn-accent"
                   : "border-gn-border-subtle bg-gn-surface/30")
@@ -83,7 +81,7 @@ export function AppMobileHeader() {
               aria-label={tNav("myBenefits")}
               title={tNav("myBenefits")}
             >
-              <NavIcon name="benefits" className="size-4 shrink-0" />
+              <NavIcon name="benefits" className="size-[18px] shrink-0" />
             </Link>
           ) : null}
           {authed && user ? (
@@ -94,7 +92,7 @@ export function AppMobileHeader() {
               compactTrigger
             />
           ) : authed === null ? (
-            <div className="size-7 shrink-0 animate-pulse rounded-full bg-gn-surface/50" />
+            <div className="size-8 shrink-0 animate-pulse rounded-full bg-gn-surface/50" />
           ) : null}
         </div>
       </div>
