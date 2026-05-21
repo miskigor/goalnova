@@ -1,6 +1,5 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
@@ -27,12 +26,12 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
   const tNav = useTranslations("nav");
   const tExplore = useTranslations("explore");
 
-  let shell: ReactNode;
-
   if (authed) {
-    shell = <AppChromeLayout>{children}</AppChromeLayout>;
-  } else if (authed === null) {
-    shell = (
+    return <AppChromeLayout>{children}</AppChromeLayout>;
+  }
+
+  if (authed === null) {
+    return (
       <div className="flex min-h-dvh min-w-0 w-full flex-col overflow-x-clip bg-gn-bg text-gn-text">
         <header className="sticky top-0 z-50 border-b border-gn-border-subtle bg-gn-bg/80 backdrop-blur-xl backdrop-saturate-150 transition-[background-color,box-shadow,border-color] duration-300 ease-gn-smooth">
           <div className="mx-auto flex h-[3.75rem] min-w-0 max-w-6xl items-center pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-6 sm:pr-6">
@@ -45,8 +44,9 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
         </div>
       </div>
     );
-  } else {
-    shell = (
+  }
+
+  return (
     <div className="flex min-h-dvh min-w-0 w-full overflow-x-clip bg-gn-bg text-gn-text">
       <aside className="fixed inset-y-0 start-0 z-40 hidden w-[15.5rem] flex-col border-e border-gn-border-subtle bg-gn-bg/95 shadow-[4px_0_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:flex">
         <div className="flex h-16 shrink-0 items-center border-b border-gn-border-subtle px-4">
@@ -115,8 +115,5 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
         </div>
       </div>
     </div>
-    );
-  }
-
-  return <>{shell}</>;
+  );
 }

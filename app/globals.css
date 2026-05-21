@@ -209,30 +209,6 @@ html {
   [data-app-main]:has([data-pitchrusch-home-feed]) {
     overflow: hidden;
   }
-
-  /* Non-home app shell: visual viewport width + offset (vars from AppShellVisualViewportSync). */
-  [data-app-root]:not(:has([data-pitchrusch-home-feed])) {
-    width: var(--gn-app-shell-vv-width, 100%);
-    max-width: var(--gn-app-shell-vv-width, 100%);
-    transform: translateX(var(--gn-app-shell-vv-left, 0px));
-    overflow-x: clip;
-  }
-
-  [data-app-mobile-header],
-  [data-app-bottom-nav] {
-    width: var(--gn-app-shell-vv-width, 100%);
-    max-width: var(--gn-app-shell-vv-width, 100%);
-    overflow-x: clip;
-  }
-
-  [data-app-column]:not(:has([data-pitchrusch-home-feed])),
-  [data-app-main]:not(:has([data-pitchrusch-home-feed])),
-  [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    overflow-x: clip;
-  }
 }
 
 [data-app-bottom-nav] {

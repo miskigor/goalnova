@@ -235,7 +235,7 @@ export function ChallengesHub() {
             </h2>
             <p className="text-sm text-gn-text-tertiary">{t("trendingDesc")}</p>
           </div>
-          <div className="flex min-w-0 w-full max-w-full snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-2">
+          <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
             {trending.map((c, idx) => {
               const n = counts.get(c.id) ?? 0;
               const prev = topPreviews.get(c.id) ?? [];
