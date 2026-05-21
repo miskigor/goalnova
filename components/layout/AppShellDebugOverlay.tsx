@@ -244,7 +244,7 @@ function buildReport(pathname: string): string {
   return sections.join("\n");
 }
 
-const OVERLAY_STYLE: CSSProperties = {
+const OVERLAY_CONTAINER_STYLE: CSSProperties = {
   position: "fixed",
   top: 8,
   left: 8,
@@ -253,16 +253,32 @@ const OVERLAY_STYLE: CSSProperties = {
   overflow: "auto",
   zIndex: 2147483647,
   pointerEvents: "none",
-  background: "rgba(0, 0, 0, 0.82)",
+  background: "rgba(0, 0, 0, 0.88)",
   color: "#b7ff4a",
+  margin: 0,
+  padding: 10,
+  boxSizing: "border-box",
+  fontFamily:
+    'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+};
+
+const OVERLAY_BANNER_STYLE: CSSProperties = {
+  display: "block",
+  fontSize: 18,
+  fontWeight: 800,
+  lineHeight: 1.15,
+  letterSpacing: "0.04em",
+  color: "#e8ff7a",
+  margin: "0 0 8px 0",
+  padding: 0,
+};
+
+const OVERLAY_BODY_STYLE: CSSProperties = {
   fontSize: 10,
   lineHeight: 1.2,
   whiteSpace: "pre-wrap",
   margin: 0,
-  padding: 8,
-  boxSizing: "border-box",
-  fontFamily:
-    'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+  padding: 0,
 };
 
 /**
@@ -344,10 +360,15 @@ export function AppShellDebugOverlay() {
 
   if (!portalReady || !visible || !text) return null;
 
+  const bodyText = text.startsWith("SHELL DEBUG ACTIVE\n")
+    ? text.slice("SHELL DEBUG ACTIVE\n".length)
+    : text;
+
   return createPortal(
-    <pre style={OVERLAY_STYLE} aria-hidden>
-      {text}
-    </pre>,
+    <div data-shell-debug-overlay style={OVERLAY_CONTAINER_STYLE} aria-hidden>
+      <div style={OVERLAY_BANNER_STYLE}>SHELL DEBUG ACTIVE</div>
+      <pre style={OVERLAY_BODY_STYLE}>{bodyText}</pre>
+    </div>,
     document.body,
   );
 }
