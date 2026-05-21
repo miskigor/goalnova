@@ -286,12 +286,15 @@ export async function signUpWithEmailPassword({
   password,
   fullName,
   pendingReferralCode,
+  emailRedirectTo,
 }: {
   email: string;
   password: string;
   fullName?: string;
   /** Survives email confirmation when browser storage is cleared (auth user_metadata). */
   pendingReferralCode?: string | null;
+  /** Must be allow-listed in Supabase Auth (e.g. `/auth/confirm`). */
+  emailRedirectTo?: string;
 }): Promise<SignupResult> {
   assertSupabaseConfigured();
   const trimmedFullName = fullName?.trim() || "";
@@ -300,10 +303,18 @@ export async function signUpWithEmailPassword({
   if (trimmedFullName) signUpMeta.full_name = trimmedFullName;
   if (refMeta.length >= 4) signUpMeta.pending_referral_code = refMeta;
 
+  const signUpOptions: {
+    data?: Record<string, string>;
+    emailRedirectTo?: string;
+  } = {};
+  if (Object.keys(signUpMeta).length > 0) signUpOptions.data = signUpMeta;
+  const redirectTo = emailRedirectTo?.trim();
+  if (redirectTo) signUpOptions.emailRedirectTo = redirectTo;
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: Object.keys(signUpMeta).length > 0 ? { data: signUpMeta } : undefined,
+    options: Object.keys(signUpOptions).length > 0 ? signUpOptions : undefined,
   });
 
   if (error) {
@@ -397,7 +408,13 @@ export async function signInWithEmailPassword({
     throw error;
   }
 
-  const signedInUser = data.user ?? data.session?.user;
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  if (userError) {
+    logSupabaseError("Supabase: getUser after signIn", userError);
+    throw userError;
+  }
+
+  const signedInUser = userData.user ?? data.user ?? data.session?.user;
   if (!isEmailConfirmed(signedInUser)) {
     await supabase.auth.signOut({ scope: "local" });
     const notConfirmed = Object.assign(new Error("Email not confirmed"), {
@@ -429,6 +446,7 @@ export type ResendConfirmationResult =
 
 export async function resendSignupConfirmationEmail(
   email: string,
+  emailRedirectTo?: string,
 ): Promise<ResendConfirmationResult> {
   assertSupabaseConfigured();
   const trimmed = email.trim();
@@ -436,8 +454,13 @@ export async function resendSignupConfirmationEmail(
     return { status: "failed" };
   }
 
+  const redirectTo = emailRedirectTo?.trim();
   const { error } = await withTimeout(
-    supabase.auth.resend({ type: "signup", email: trimmed }),
+    supabase.auth.resend({
+      type: "signup",
+      email: trimmed,
+      options: redirectTo ? { emailRedirectTo: redirectTo } : undefined,
+    }),
     20000,
     "Confirmation email resend",
   );

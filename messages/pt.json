@@ -959,7 +959,10 @@
     "confirmEmailResending": "A enviar…",
     "confirmEmailResent": "Email de confirmação enviado. Verifique a sua caixa de entrada.",
     "confirmEmailResendError": "Não foi possível reenviar o email. Tente novamente dentro de instantes.",
-    "confirmEmailResendRateLimited": "Demasiados pedidos. Aguarde um minuto e tente novamente."
+    "confirmEmailResendRateLimited": "Demasiados pedidos. Aguarde um minuto e tente novamente.",
+    "emailConfirmLinkWorking": "Confirming your email…",
+    "emailConfirmLinkSuccess": "Email confirmed. Redirecting you now.",
+    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email."
   },
   "authResetPassword": {
     "title": "Set a new password",

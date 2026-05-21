@@ -959,7 +959,10 @@
     "confirmEmailResending": "Slanje…",
     "confirmEmailResent": "Email za potvrdu je poslat. Proveri ulaznu poštu.",
     "confirmEmailResendError": "Email nije poslat. Pokušaj ponovo za trenutak.",
-    "confirmEmailResendRateLimited": "Previše zahteva. Sačekaj minut i pokušaj ponovo."
+    "confirmEmailResendRateLimited": "Previše zahteva. Sačekaj minut i pokušaj ponovo.",
+    "emailConfirmLinkWorking": "Potvrđujemo email…",
+    "emailConfirmLinkSuccess": "Email je potvrđen. Preusmeravamo te…",
+    "emailConfirmLinkFailed": "Nismo mogli potvrditi email sa ovog linka. Pokušaj prijavu ili ponovo pošalji email za potvrdu."
   },
   "authResetPassword": {
     "title": "Set a new password",

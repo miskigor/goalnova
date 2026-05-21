@@ -959,7 +959,10 @@
     "confirmEmailResending": "Verzenden…",
     "confirmEmailResent": "Bevestigingsmail verzonden. Controleer je inbox.",
     "confirmEmailResendError": "Kon de e-mail niet opnieuw versturen. Probeer het zo opnieuw.",
-    "confirmEmailResendRateLimited": "Te veel verzoeken. Wacht een minuut en probeer het opnieuw."
+    "confirmEmailResendRateLimited": "Te veel verzoeken. Wacht een minuut en probeer het opnieuw.",
+    "emailConfirmLinkWorking": "Confirming your email…",
+    "emailConfirmLinkSuccess": "Email confirmed. Redirecting you now.",
+    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email."
   },
   "authResetPassword": {
     "title": "Set a new password",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Logo } from "@/components/brand/Logo";
 import {
@@ -16,6 +16,7 @@ import { setFreshLogin } from "@/lib/auth/freshLogin";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { rememberReferralCodeFromQuery, peekPendingReferralCode } from "@/lib/supabase/referrals";
 import { devError, isDev } from "@/lib/devLog";
+import { buildSignupEmailConfirmRedirectUrl } from "@/lib/site/signupEmailRedirect";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
 function Spinner() {
@@ -47,6 +48,7 @@ function Spinner() {
 export function SignupCard() {
   const tSignup = useTranslations("authSignup");
   const tCommon = useTranslations("authCommon");
+  const locale = useLocale();
   const router = useRouter();
 
   const [fullName, setFullName] = useState("");
@@ -105,6 +107,7 @@ export function SignupCard() {
         password,
         fullName,
         pendingReferralCode: pendingCode,
+        emailRedirectTo: buildSignupEmailConfirmRedirectUrl(locale),
       });
 
       if (signupResult.requiresEmailConfirmation) {

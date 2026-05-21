@@ -3,6 +3,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { devError } from "@/lib/devLog";
+import {
+  consumeAuthRedirectFromUrl,
+  urlHasPendingAuthRedirect,
+} from "@/lib/auth/consumeAuthRedirectFromUrl";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import { hasFreshLogin, setFreshLogin } from "@/lib/auth/freshLogin";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
@@ -225,19 +229,42 @@ export function LoginCard({ labels }: Props) {
     rememberReferralCodeFromQuery(ref);
   }, []);
 
-  /** Drop persisted Supabase session on /login unless this tab already completed password login. */
+  /** Complete email-confirm redirects; do not wipe that session before tokens are consumed. */
   useEffect(() => {
     let cancelled = false;
     void (async () => {
+      if (urlHasPendingAuthRedirect()) {
+        await consumeAuthRedirectFromUrl();
+      }
+      if (cancelled) return;
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (sessionData.session) {
+        const { data: userData } = await supabase.auth.getUser();
+        if (isEmailConfirmed(userData.user)) {
+          setFreshLogin();
+          setRedirecting(true);
+          const needsRole = await needsRoleOnboardingPage();
+          if (needsRole) {
+            router.replace(await roleOnboardingHref());
+          } else {
+            void tryConsumePendingReferralWhenPlayerReady();
+            router.replace(await resolvePostOnboardingHomePath());
+          }
+          setRedirecting(false);
+          return;
+        }
+      }
+
       if (hasFreshLogin()) return;
-      const { data } = await supabase.auth.getSession();
-      if (cancelled || !data.session) return;
-      await supabase.auth.signOut({ scope: "local" });
+      if (sessionData.session) {
+        await supabase.auth.signOut({ scope: "local" });
+      }
     })();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [router]);
 
   const canSubmit = useMemo(() => {
     return email.trim().length > 0 && password.length > 0 && !loading && !redirecting;

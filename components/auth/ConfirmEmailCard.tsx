@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/brand/Logo";
 import { peekPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { resendSignupConfirmationEmail } from "@/lib/supabase/auth";
+import { buildSignupEmailConfirmRedirectUrl } from "@/lib/site/signupEmailRedirect";
 import {
   GN_PRIMARY_BUTTON_CLASS,
   GN_SECONDARY_BUTTON_CLASS,
@@ -14,6 +15,7 @@ import {
 export function ConfirmEmailCard() {
   const tSignup = useTranslations("authSignup");
   const tCommon = useTranslations("authCommon");
+  const locale = useLocale();
 
   const [email, setEmail] = useState<string | null>(null);
   const [resending, setResending] = useState(false);
@@ -34,7 +36,10 @@ export function ConfirmEmailCard() {
     setResending(true);
     setResendStatus("idle");
     try {
-      const result = await resendSignupConfirmationEmail(target);
+      const result = await resendSignupConfirmationEmail(
+        target,
+        buildSignupEmailConfirmRedirectUrl(locale),
+      );
       if (result.status === "sent") setResendStatus("sent");
       else if (result.status === "rate_limited") setResendStatus("rate_limited");
       else setResendStatus("error");

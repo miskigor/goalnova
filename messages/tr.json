@@ -959,7 +959,10 @@
     "confirmEmailResending": "Gönderiliyor…",
     "confirmEmailResent": "Onay e-postası gönderildi. Gelen kutunu kontrol et.",
     "confirmEmailResendError": "E-posta yeniden gönderilemedi. Biraz sonra tekrar dene.",
-    "confirmEmailResendRateLimited": "Çok fazla istek. Bir dakika bekle ve tekrar dene."
+    "confirmEmailResendRateLimited": "Çok fazla istek. Bir dakika bekle ve tekrar dene.",
+    "emailConfirmLinkWorking": "Confirming your email…",
+    "emailConfirmLinkSuccess": "Email confirmed. Redirecting you now.",
+    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email."
   },
   "authResetPassword": {
     "title": "Set a new password",
