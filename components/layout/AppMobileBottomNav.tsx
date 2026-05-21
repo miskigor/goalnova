@@ -18,6 +18,16 @@ import {
 } from "@/lib/layout/appShellClasses";
 import { mobileBottomNavDisplayLabel } from "@/lib/layout/mobileBottomNavLabel";
 
+/** Scout app routes: show scout tab bar before async role verification finishes. */
+function isScoutAppPath(pathname: string): boolean {
+  return (
+    pathname === "/scout-dashboard" ||
+    pathname.startsWith("/scout-dashboard/") ||
+    pathname === "/scout-apply" ||
+    pathname.startsWith("/scout-apply/")
+  );
+}
+
 function bottomItemClass(pathname: string, href: string) {
   const active = navItemActive(pathname, href);
   return [
@@ -36,10 +46,18 @@ export function AppMobileBottomNav() {
 
   const items = useMemo(() => {
     const isScout = loaded && row?.role === "scout";
-    if (!isScout) return APP_SHELL_MOBILE_BOTTOM_NAV;
-    if (isApprovedScout) return APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV;
-    return APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED;
-  }, [loaded, row?.role, isApprovedScout]);
+    if (isScout) {
+      if (isApprovedScout) return APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV;
+      return APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED;
+    }
+    if (isScoutAppPath(pathname)) {
+      if (pathname === "/scout-apply" || pathname.startsWith("/scout-apply/")) {
+        return APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED;
+      }
+      return APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV;
+    }
+    return APP_SHELL_MOBILE_BOTTOM_NAV;
+  }, [loaded, row?.role, isApprovedScout, pathname]);
 
   return (
     <nav

@@ -3,7 +3,38 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
+import type { Session, User } from "@supabase/supabase-js";
+
+const GATE_SESSION_TIMEOUT_MS = 10_000;
+
+/** Avoid unbounded `getSession()` waits that block AppShell on slow mobile auth init. */
+async function readGateSessionSnapshot(gateLabel: string): Promise<{
+  session: Session | null;
+  user: User | null;
+}> {
+  const result = await Promise.race([
+    supabase.auth.getSession(),
+    new Promise<"timeout">((resolve) => {
+      window.setTimeout(() => resolve("timeout"), GATE_SESSION_TIMEOUT_MS);
+    }),
+  ]);
+
+  if (result !== "timeout") {
+    const session = result.data.session ?? null;
+    return { session, user: session?.user ?? null };
+  }
+
+  devError(
+    `${gateLabel}: getSession did not resolve within ${GATE_SESSION_TIMEOUT_MS}ms; falling back to getUser`,
+  );
+  const { data: userData, error: userErr } = await supabase.auth.getUser();
+  if (userErr) {
+    devError(`${gateLabel}: getUser fallback failed`, userErr);
+  }
+  return { session: null, user: userData.user ?? null };
+}
 import {
   resolvePostOnboardingHomePath,
   roleOnboardingHref,
@@ -66,8 +97,10 @@ export function RoleOnboardingGate({ mode, children }: Props) {
     let cancelled = false;
 
     async function evaluate() {
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session) {
+      const { session, user: sessionUser } = await readGateSessionSnapshot(
+        "RoleOnboardingGate",
+      );
+      if (!session && !sessionUser?.id) {
         if (!cancelled) setAllowed(true);
         return;
       }
