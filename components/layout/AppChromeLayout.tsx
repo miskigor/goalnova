@@ -22,12 +22,18 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
     <FeedbackProvider>
       <AdminSupportUnreadProvider>
         <AppLayoutDebugProbe />
-        <div data-app-mobile-chrome className="pointer-events-none fixed inset-0 z-[600] flex max-lg:flex-col max-lg:overflow-x-visible max-lg:overflow-y-hidden lg:hidden">
-          <div className="pointer-events-auto shrink-0">
+        {/*
+          Header + bottom nav pinned to viewport edges (not flex-end of inset-0), so iOS Safari
+          does not place the tab bar below the visible area when the URL bar is shown.
+        */}
+        <div
+          data-app-mobile-chrome
+          className="pointer-events-none fixed inset-x-0 top-0 z-[600] h-svh max-h-svh w-full max-w-full overflow-visible lg:hidden"
+        >
+          <div className="pointer-events-auto fixed inset-x-0 top-0 z-[1]">
             <AppMobileHeader />
           </div>
-          <div className="min-h-0 flex-1" aria-hidden />
-          <div className="pointer-events-auto shrink-0">
+          <div className="pointer-events-auto fixed inset-x-0 bottom-0 z-[1]">
             <AppMobileBottomNav />
           </div>
         </div>

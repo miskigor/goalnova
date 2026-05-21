@@ -13,9 +13,12 @@ import { navItemActive } from "@/lib/navigation/navItemActive";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import {
   APP_MOBILE_BOTTOM_NAV_CLASS,
-  APP_MOBILE_BOTTOM_NAV_INNER_CLASS,
   APP_MOBILE_BOTTOM_NAV_ITEM_CLASS,
 } from "@/lib/layout/appShellClasses";
+
+/** Mobile-only bottom bar insets — match header safe-area padding. */
+const MOBILE_BOTTOM_NAV_INNER_CLASS =
+  "pointer-events-auto mx-auto grid h-14 w-full min-w-0 max-w-full grid-cols-[repeat(5,minmax(0,1fr))] items-stretch gap-1 overflow-visible box-border ps-[max(2.75rem,env(safe-area-inset-left,0px))] pe-[max(2.75rem,env(safe-area-inset-right,0px))]";
 import { mobileBottomNavDisplayLabel } from "@/lib/layout/mobileBottomNavLabel";
 
 function bottomItemClass(pathname: string, href: string) {
@@ -47,7 +50,7 @@ export function AppMobileBottomNav() {
       className={APP_MOBILE_BOTTOM_NAV_CLASS}
       aria-label={tNav("primary")}
     >
-      <div className={APP_MOBILE_BOTTOM_NAV_INNER_CLASS}>
+      <div className={MOBILE_BOTTOM_NAV_INNER_CLASS}>
         {items.map((item) => (
           <Link
             key={`${item.href}-${item.labelKey}`}
