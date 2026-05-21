@@ -112,20 +112,24 @@ html {
     inset: 0;
   }
 
-  [data-app-mobile-chrome-fixed="top"] {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+  [data-app-mobile-chrome-fixed="top"],
+  [data-app-mobile-chrome-fixed="bottom"] {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
     z-index: 600;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  [data-app-mobile-chrome-fixed="top"] {
+    top: 0;
   }
 
   [data-app-mobile-chrome-fixed="bottom"] {
-    position: fixed;
     bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 600;
   }
 
   [data-app-mobile-header] {
@@ -248,12 +252,12 @@ html {
   }
 
   /*
-   * Non-home tab pages: header/nav sit outside [data-app-root] so position:fixed
-   * anchors to the viewport (not a fixed root). Root scrolls only inside main.
+   * Tab pages: chrome is portaled + fixed; content lives in a fixed band between header
+   * and bottom nav. Only [data-app-main] scrolls — never html/body/root.
    */
   body:has([data-app-root]):not(:has([data-pitchrusch-home-feed])) {
-    display: flex;
-    flex-direction: column;
+    display: block;
+    position: relative;
     overflow: hidden !important;
     overflow-x: clip !important;
     overscroll-behavior: none;
@@ -284,43 +288,47 @@ html {
   }
 
   [data-app-root]:not(:has([data-pitchrusch-home-feed])) {
-    position: relative !important;
-    top: auto !important;
+    position: fixed !important;
+    top: var(--gn-app-header-offset) !important;
+    bottom: var(--gn-app-bottom-nav-offset) !important;
     left: 0 !important;
     right: 0 !important;
-    inset: auto !important;
-    flex: 1 1 0;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0;
-    min-height: 0;
-    height: 100% !important;
-    max-height: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
     margin: 0 !important;
-    overflow: hidden;
+    overflow: hidden !important;
     overflow-x: clip;
     overscroll-behavior: none;
     overscroll-behavior-x: none;
     transform: none !important;
+    z-index: 0;
   }
 
   [data-app-column]:not(:has([data-pitchrusch-home-feed])) {
-    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
     min-height: 0;
     height: 100%;
     width: 100% !important;
     max-width: 100% !important;
     margin-inline: 0 !important;
-    overflow: hidden;
+    overflow: hidden !important;
     overflow-x: clip;
     box-sizing: border-box;
-    padding-top: var(--gn-app-header-offset);
-    padding-bottom: var(--gn-app-bottom-nav-offset);
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
 
   [data-app-main]:not(:has([data-pitchrusch-home-feed])) {
-    flex: 1 1 0;
+    flex: 1 1 auto;
     min-height: 0;
+    height: 100% !important;
+    max-height: 100% !important;
     width: 100% !important;
     max-width: 100% !important;
     margin-inline: 0 !important;
@@ -328,9 +336,10 @@ html {
     padding-bottom: 0 !important;
     padding-left: max(0.75rem, env(safe-area-inset-left, 0px)) !important;
     padding-right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
-    overflow-y: auto;
+    overflow-y: auto !important;
     overflow-x: clip;
     overscroll-behavior: none;
+    overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
     align-items: center;
