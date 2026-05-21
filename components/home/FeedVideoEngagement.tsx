@@ -551,12 +551,12 @@ export function FeedVideoEngagement({
             <>
               <button
                 type="button"
-                className="fixed inset-0 z-[85] cursor-default border-0 bg-black/55 p-0 backdrop-blur-[1px] min-w-0 overflow-x-clip lg:left-[15.5rem]"
+                className="fixed inset-0 z-[680] cursor-default border-0 bg-black/55 p-0 backdrop-blur-[1px] min-w-0 overflow-x-clip lg:left-[15.5rem]"
                 aria-label={t("closeComments")}
                 onClick={closeCommentsPanel}
               />
               <div
-                className="fixed inset-x-0 bottom-0 z-[90] box-border flex w-full min-h-0 min-w-0 max-h-[min(36rem,min(78svh,82dvh))] max-w-full flex-col overflow-hidden rounded-t-2xl border border-white/10 bg-neutral-950/98 shadow-[0_-16px_48px_rgba(0,0,0,0.55)] backdrop-blur-lg lg:left-[15.5rem]"
+                className="fixed inset-x-0 bottom-[var(--gn-app-bottom-nav-offset,3rem)] z-[690] box-border flex w-full min-h-0 min-w-0 max-h-[min(36rem,calc(100dvh-var(--gn-app-header-offset,3.5rem)-var(--gn-app-bottom-nav-offset,3rem)-1rem))] max-w-full flex-col overflow-hidden rounded-t-2xl border border-white/10 bg-neutral-950/98 shadow-[0_-16px_48px_rgba(0,0,0,0.55)] backdrop-blur-lg lg:left-[15.5rem]"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="pitchrusch-feed-comments-title"
@@ -617,11 +617,11 @@ export function FeedVideoEngagement({
                   ) : null}
                 </div>
 
-                <div className="shrink-0 border-t border-white/10 bg-neutral-950 px-3 pt-3 shadow-[0_-8px_24px_rgba(0,0,0,0.45)] pb-[max(1rem,calc(env(safe-area-inset-bottom,0px)+0.75rem))]">
+                <div className="relative z-[1] shrink-0 border-t border-white/10 bg-neutral-950 px-3 pt-3 shadow-[0_-8px_24px_rgba(0,0,0,0.45)] pb-3">
                   {userId ? (
                     <form
                       onSubmit={(e) => void onPostComment(e)}
-                      className="space-y-2"
+                      className="flex flex-col gap-2"
                     >
                       <textarea
                         suppressHydrationWarning
@@ -642,7 +642,7 @@ export function FeedVideoEngagement({
                         type="submit"
                         disabled={postBusy || !commentDraft.trim()}
                         aria-busy={postBusy}
-                        className="w-full rounded-lg bg-gn-accent px-4 py-2.5 text-sm font-semibold text-black disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                        className="pointer-events-auto min-h-11 w-full shrink-0 rounded-lg bg-gn-accent px-4 py-3 text-sm font-semibold text-black shadow-[0_4px_20px_rgba(249,115,22,0.35)] disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         {postBusy ? t("postingComment") : t("postComment")}
                       </button>
