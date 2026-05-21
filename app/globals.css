@@ -89,25 +89,14 @@ html {
     inset: 0;
     width: 100%;
     max-width: 100%;
-    height: 100%;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
     margin: 0;
-    overflow: hidden;
+    overflow: hidden !important;
     overflow-x: clip;
     overscroll-behavior: none;
     touch-action: manipulation;
-  }
-
-  [data-app-mobile-chrome] {
-    position: fixed;
-    inset-inline: 0;
-    top: 0;
-    z-index: 600;
-    height: 100svh;
-    max-height: 100svh;
-    overflow: visible;
-    pointer-events: none;
-    width: 100%;
-    max-width: 100%;
   }
 
   [data-app-mobile-header] {
@@ -236,8 +225,10 @@ html {
   body:has([data-app-root]):not(:has([data-pitchrusch-home-feed])) {
     display: flex;
     flex-direction: column;
+    overflow: hidden !important;
     overflow-x: clip !important;
-    touch-action: pan-y;
+    overscroll-behavior: none;
+    touch-action: manipulation;
   }
 
   [data-app-mobile-chrome] [data-app-mobile-header],
@@ -272,8 +263,8 @@ html {
     max-width: 100% !important;
     min-width: 0;
     min-height: 0;
-    height: auto;
-    max-height: none;
+    height: 100% !important;
+    max-height: 100% !important;
     margin: 0 !important;
     overflow: hidden;
     overflow-x: clip;
@@ -285,6 +276,7 @@ html {
   [data-app-column]:not(:has([data-pitchrusch-home-feed])) {
     flex: 1 1 0;
     min-height: 0;
+    height: 100%;
     width: 100% !important;
     max-width: 100% !important;
     margin-inline: 0 !important;
@@ -307,8 +299,7 @@ html {
     padding-right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
     overflow-y: auto;
     overflow-x: clip;
-    overscroll-behavior-x: none;
-    overscroll-behavior-y: contain;
+    overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
     align-items: center;
