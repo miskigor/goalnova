@@ -16,6 +16,7 @@ import {
   APP_MOBILE_BOTTOM_NAV_INNER_CLASS,
   APP_MOBILE_BOTTOM_NAV_ITEM_CLASS,
 } from "@/lib/layout/appShellClasses";
+import { mobileBottomNavDisplayLabel } from "@/lib/layout/mobileBottomNavLabel";
 
 function bottomItemClass(pathname: string, href: string) {
   const active = navItemActive(pathname, href);
@@ -54,9 +55,9 @@ export function AppMobileBottomNav() {
             className={bottomItemClass(pathname, item.href)}
             aria-current={navItemActive(pathname, item.href) ? "page" : undefined}
           >
-            <NavIcon name={item.icon} className="size-4 shrink-0" />
-            <span className="w-full min-w-0 truncate px-0 text-center">
-              {tNav(item.labelKey)}
+            <NavIcon name={item.icon} className="size-[15px] shrink-0" />
+            <span className="w-full min-w-0 px-px text-center" title={tNav(item.labelKey)}>
+              {mobileBottomNavDisplayLabel(tNav(item.labelKey))}
             </span>
           </Link>
         ))}
