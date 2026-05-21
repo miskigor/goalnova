@@ -223,10 +223,10 @@ export function ChallengesHub() {
   }
 
   return (
-    <div className="min-w-0 max-w-full space-y-8 sm:space-y-10">
+    <div className="box-border min-w-0 w-full max-w-full space-y-8 overflow-hidden sm:space-y-10">
       {trending.length > 0 ? (
         <section
-          className="min-w-0 space-y-4 overflow-x-clip"
+          className="box-border min-w-0 w-full max-w-full space-y-4 overflow-hidden"
           aria-label={t("trending")}
         >
           <div className="space-y-1">
@@ -235,7 +235,7 @@ export function ChallengesHub() {
             </h2>
             <p className="text-sm text-gn-text-tertiary">{t("trendingDesc")}</p>
           </div>
-          <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
+          <div className="flex w-full min-w-0 max-w-full snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [-webkit-overflow-scrolling:touch]">
             {trending.map((c, idx) => {
               const n = counts.get(c.id) ?? 0;
               const prev = topPreviews.get(c.id) ?? [];
@@ -246,7 +246,7 @@ export function ChallengesHub() {
                 <Link
                   key={c.id}
                   href={href}
-                  className="group relative w-[min(14rem,78vw)] shrink-0 snap-start overflow-hidden rounded-2xl border border-gn-border-subtle bg-gradient-to-b from-gn-surface-elevated/90 to-gn-surface/40 shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-[border-color,transform] hover:border-gn-accent/40 hover:-translate-y-0.5"
+                  className="group relative w-[min(14rem,calc(100%-0.75rem))] shrink-0 snap-start overflow-hidden rounded-2xl border border-gn-border-subtle bg-gradient-to-b from-gn-surface-elevated/90 to-gn-surface/40 shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-[border-color,transform] hover:border-gn-accent/40 hover:-translate-y-0.5"
                 >
                   <div className="absolute start-2 top-2 z-10 flex items-center gap-1.5">
                     <span className="rounded-full bg-gn-accent px-2 py-0.5 text-[10px] font-bold text-black">
@@ -288,11 +288,14 @@ export function ChallengesHub() {
         </section>
       ) : null}
 
-      <section className="space-y-5" aria-label={t("activeChallengesHeading")}>
+      <section
+        className="box-border min-w-0 w-full max-w-full space-y-5 overflow-hidden"
+        aria-label={t("activeChallengesHeading")}
+      >
         <h2 className="text-xs font-semibold uppercase tracking-[0.22em] text-gn-text-tertiary">
           {t("activeChallengesHeading")}
         </h2>
-        <ul className="flex flex-col gap-5">
+        <ul className="box-border flex min-w-0 w-full max-w-full flex-col gap-5 overflow-hidden">
           {sortedByPopularity.map((c) => {
             const displayChallenge = withLocalizedChallengeContent(c, t, locale);
             const n = counts.get(c.id) ?? 0;
@@ -301,8 +304,8 @@ export function ChallengesHub() {
             const rewardLine = challengeRewardHeadline(displayChallenge);
             const tr = timeRemainingUntil(displayChallenge.expires_at);
             return (
-              <li key={c.id}>
-                <article className="rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4 transition-colors hover:border-gn-accent/25 sm:p-5">
+              <li key={c.id} className="box-border min-w-0 w-full max-w-full">
+                <article className="box-border min-w-0 w-full max-w-full overflow-hidden rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4 transition-colors hover:border-gn-accent/25 sm:p-5">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0 space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
@@ -374,7 +377,10 @@ export function ChallengesHub() {
       </section>
 
       {pastSorted.length > 0 ? (
-        <section className="space-y-5" aria-label={t("pastChallengesHeading")}>
+        <section
+          className="box-border min-w-0 w-full max-w-full space-y-5 overflow-hidden"
+          aria-label={t("pastChallengesHeading")}
+        >
           <h2 className="text-xs font-semibold uppercase tracking-[0.22em] text-gn-text-tertiary">
             {t("pastChallengesHeading")}
           </h2>
