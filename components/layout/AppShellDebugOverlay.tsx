@@ -2,6 +2,10 @@
 
 import { useCallback, useEffect, useLayoutEffect, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
+import {
+  GN_APP_SHELL_VV_LEFT_VAR,
+  GN_APP_SHELL_VV_WIDTH_VAR,
+} from "@/components/layout/appShellVisualViewportSync";
 
 const WATCHED_SELECTORS: { label: string; query: string }[] = [
   { label: "html", query: "html" },
@@ -175,11 +179,15 @@ function buildReport(): string {
   const root = elements.find((e) => e.label === "[data-app-root]");
   const header = elements.find((e) => e.label === "[data-app-mobile-header]");
   const bottomNav = elements.find((e) => e.label === "[data-app-bottom-nav]");
+  const docStyle = getComputedStyle(doc);
 
   return [
     `pathname=${window.location.pathname}`,
     `href=${window.location.href}`,
     `innerWidth=${window.innerWidth}`,
+    "",
+    `${GN_APP_SHELL_VV_LEFT_VAR}=${docStyle.getPropertyValue(GN_APP_SHELL_VV_LEFT_VAR).trim() || "(unset)"}`,
+    `${GN_APP_SHELL_VV_WIDTH_VAR}=${docStyle.getPropertyValue(GN_APP_SHELL_VV_WIDTH_VAR).trim() || "(unset)"}`,
     "",
     root?.found ? "" : "note: [data-app-root] not in DOM",
     "",

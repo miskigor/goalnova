@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
 import { AdminSupportUnreadProvider } from "@/components/layout/AdminSupportUnreadContext";
 import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
+import { bindAppShellVisualViewportSync } from "@/components/layout/appShellVisualViewportSync";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppMobileHeader } from "@/components/layout/AppMobileHeader";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
@@ -18,6 +20,8 @@ import {
  * Logged-in shell: fixed left sidebar (desktop), main column, bottom nav (mobile).
  */
 export function AppChromeLayout({ children }: { children: React.ReactNode }) {
+  useEffect(() => bindAppShellVisualViewportSync(), []);
+
   return (
     <FeedbackProvider>
       <AdminSupportUnreadProvider>
