@@ -55,7 +55,7 @@ export function AppMobileBottomNav() {
             className={bottomItemClass(pathname, item.href)}
             aria-current={navItemActive(pathname, item.href) ? "page" : undefined}
           >
-            <NavIcon name={item.icon} variant="tabBar" className="size-6 shrink-0" />
+            <NavIcon name={item.icon} variant="tabBar" className="size-5 shrink-0 min-[360px]:size-[22px]" />
             <span
               className="w-full min-w-0 max-w-full truncate px-0.5 text-center"
               title={tNav(item.labelKey)}

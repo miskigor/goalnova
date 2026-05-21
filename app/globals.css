@@ -3,7 +3,7 @@
 :root {
   --gn-app-header-offset: calc(3.5rem + env(safe-area-inset-top, 0px));
   --gn-app-bottom-nav-offset: calc(
-    3.5rem + max(0.375rem, env(safe-area-inset-bottom, 0px))
+    3rem + max(0.25rem, env(safe-area-inset-bottom, 0px))
   );
   --gn-bg: #000000;
   --gn-surface: #0a0b0c;
@@ -79,7 +79,7 @@ html {
   :root {
     --gn-app-header-offset: calc(3.5rem + env(safe-area-inset-top, 0px));
     --gn-app-bottom-nav-offset: calc(
-      3.5rem + env(safe-area-inset-bottom, 0px)
+      3rem + env(safe-area-inset-bottom, 0px)
     );
   }
 
@@ -106,10 +106,13 @@ html {
     touch-action: manipulation;
   }
 
-  /* Home feed only — tab pages use relative body so portaled chrome stays on-screen while main scrolls. */
   body:has([data-app-root]):has([data-pitchrusch-home-feed]) {
-    position: fixed;
-    inset: 0;
+    display: block;
+    position: relative;
+    overflow: hidden !important;
+    overflow-x: clip !important;
+    overscroll-behavior: none;
+    touch-action: manipulation;
   }
 
   [data-app-mobile-chrome-fixed="top"],
@@ -117,7 +120,7 @@ html {
     position: fixed !important;
     left: 0 !important;
     right: 0 !important;
-    z-index: 600;
+    z-index: 610;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
@@ -152,10 +155,10 @@ html {
     flex-shrink: 0;
   }
 
-  :has([data-pitchrusch-home-feed]) [data-app-mobile-header] {
-    display: block;
-    visibility: visible;
-    opacity: 1;
+  [data-app-mobile-chrome-fixed="top"] [data-app-mobile-header] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
     background-color: rgba(0, 0, 0, 0.96);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -203,16 +206,78 @@ html {
     overflow: clip;
   }
 
+  [data-app-root]:has([data-pitchrusch-home-feed]) {
+    position: fixed !important;
+    top: var(--gn-app-header-offset) !important;
+    bottom: var(--gn-app-bottom-nav-offset) !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    overflow-x: clip;
+    overscroll-behavior: none;
+    transform: none !important;
+    z-index: 0;
+  }
+
+  [data-app-column]:has([data-pitchrusch-home-feed]) {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+    overflow-x: clip;
+    box-sizing: border-box;
+  }
+
   [data-app-main]:has([data-pitchrusch-home-feed]) {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100% !important;
+    max-height: 100% !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
+    margin-inline: 0 !important;
+    overflow: hidden !important;
+    overflow-x: clip;
+    overscroll-behavior: none;
     transform: translateX(var(--gn-home-feed-vv-left, 0px));
   }
 
   [data-app-main-inner]:has([data-pitchrusch-home-feed]) {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
     padding-left: 0 !important;
     padding-right: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
     transform: none !important;
+    overflow: hidden;
+    overflow-x: clip;
+  }
+
+  [data-pitchrusch-home-feed] {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    overflow-x: clip;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root],
@@ -232,7 +297,7 @@ html {
     right: auto !important;
     inset-inline-start: 0 !important;
     inset-inline-end: auto !important;
-    bottom: max(0.75rem, calc(var(--gn-app-bottom-nav-offset) - 3rem)) !important;
+    bottom: max(0.5rem, calc(var(--gn-app-bottom-nav-offset) - 2.5rem)) !important;
     max-width: calc(var(--gn-home-feed-vv-width, 100%) - 5.5rem);
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px));
     padding-bottom: 0.125rem;
