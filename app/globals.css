@@ -85,6 +85,8 @@ html {
 
   html:has([data-app-root]),
   body:has([data-app-root]) {
+    position: fixed;
+    inset: 0;
     width: 100%;
     max-width: 100%;
     height: 100%;
@@ -92,6 +94,7 @@ html {
     overflow: hidden;
     overflow-x: clip;
     overscroll-behavior: none;
+    touch-action: manipulation;
   }
 
   [data-app-mobile-header] {
@@ -210,29 +213,95 @@ html {
     overflow: hidden;
   }
 
-  /* Non-home tab pages: scroll inside main; header + bottom nav stay fixed. */
-  [data-app-column]:not(:has([data-pitchrusch-home-feed])) {
-    flex: 1 1 auto;
-    min-height: 0;
+  /*
+   * Non-home tab pages: document must not scroll; chrome padding lives on the column
+   * (not on main) so header/bottom nav offsets do not move while content scrolls.
+   */
+  [data-app-root]:not(:has([data-pitchrusch-home-feed])) {
+    position: fixed;
+    inset: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: 100svh;
+    max-height: 100svh;
+    margin: 0;
     overflow: hidden;
+    overscroll-behavior: none;
+    transform: none;
   }
 
-  [data-app-main]:not(:has([data-pitchrusch-home-feed])) {
-    overflow-y: auto;
-    overflow-x: hidden;
-    overscroll-behavior-y: contain;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) {
-    overflow-x: hidden;
-  }
-
-  [data-app-root]:not(:has([data-pitchrusch-home-feed])) [data-app-mobile-header],
-  [data-app-root]:not(:has([data-pitchrusch-home-feed])) [data-app-bottom-nav] {
+  [data-app-root]:not(:has([data-pitchrusch-home-feed])) [data-app-mobile-header] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    z-index: 160;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    overflow-x: clip;
     visibility: visible;
     opacity: 1;
     pointer-events: auto;
+  }
+
+  [data-app-root]:not(:has([data-pitchrusch-home-feed])) [data-app-bottom-nav] {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    z-index: 110;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    overflow-x: clip;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  [data-app-column]:not(:has([data-pitchrusch-home-feed])) {
+    flex: 1 1 0;
+    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding-top: var(--gn-app-header-offset);
+    padding-bottom: var(--gn-app-bottom-nav-offset);
+  }
+
+  [data-app-main]:not(:has([data-pitchrusch-home-feed])) {
+    flex: 1 1 0;
+    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: max(0.75rem, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+
+  [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) {
+    flex: none;
+    width: 100%;
+    max-width: min(100%, 22rem);
+    margin-inline: auto;
+    min-height: 0;
+    overflow-x: hidden;
   }
 }
 
