@@ -3,6 +3,7 @@ import { PremiumProvider } from "@/components/premium/PremiumProvider";
 import { NotificationsInboxProvider } from "@/components/notifications/NotificationsInboxContext";
 import { OnboardingNotificationsBootstrap } from "@/components/notifications/OnboardingNotificationsBootstrap";
 import { AppChromeLayout } from "@/components/layout/AppChromeLayout";
+import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { ReferralBootstrap } from "@/components/referrals/ReferralBootstrap";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -14,6 +15,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </Suspense>
         <OnboardingNotificationsBootstrap />
         <AppChromeLayout>{children}</AppChromeLayout>
+        <AppShellDebugOverlay />
       </NotificationsInboxProvider>
     </PremiumProvider>
   );

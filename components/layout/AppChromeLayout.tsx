@@ -3,7 +3,6 @@
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
 import { AdminSupportUnreadProvider } from "@/components/layout/AdminSupportUnreadContext";
 import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
-import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppMobileHeader } from "@/components/layout/AppMobileHeader";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
@@ -36,7 +35,6 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
           </div>
           <AppMobileBottomNav />
         </div>
-        <AppShellDebugOverlay />
       </AdminSupportUnreadProvider>
     </FeedbackProvider>
   );
