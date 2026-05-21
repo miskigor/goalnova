@@ -3,7 +3,7 @@
 :root {
   --gn-app-header-offset: calc(3.5rem + env(safe-area-inset-top, 0px));
   --gn-app-bottom-nav-offset: calc(
-    4.25rem + max(0.5rem, env(safe-area-inset-bottom, 0px))
+    3.5rem + max(0.375rem, env(safe-area-inset-bottom, 0px))
   );
   --gn-bg: #000000;
   --gn-surface: #0a0b0c;
@@ -79,7 +79,7 @@ html {
   :root {
     --gn-app-header-offset: calc(3.5rem + env(safe-area-inset-top, 0px));
     --gn-app-bottom-nav-offset: calc(
-      4.625rem + env(safe-area-inset-bottom, 0px)
+      3.5rem + env(safe-area-inset-bottom, 0px)
     );
   }
 
@@ -275,16 +275,20 @@ html {
 
   [data-app-bottom-nav] a {
     min-width: 0;
+    max-width: 100%;
     overflow: visible;
+    justify-self: stretch;
   }
 
   [data-app-bottom-nav] a span {
     display: block;
     width: 100%;
     min-width: 0;
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-align: center;
   }
 
   [data-app-root]:not(:has([data-pitchrusch-home-feed])) {

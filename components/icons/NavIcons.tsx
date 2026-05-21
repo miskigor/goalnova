@@ -5,16 +5,20 @@ const stroke = "currentColor";
 export function NavIcon({
   name,
   className,
+  variant = "default",
 }: {
   name: NavIconName;
   className?: string;
+  /** Compact stroke + clearer shapes for the mobile bottom tab bar. */
+  variant?: "default" | "tabBar";
 }) {
+  const tabBar = variant === "tabBar";
   const common = {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: stroke,
-    strokeWidth: 1.75,
+    strokeWidth: tabBar ? 2 : 1.75,
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const,
     className,
@@ -23,7 +27,12 @@ export function NavIcon({
 
   switch (name) {
     case "home":
-      return (
+      return tabBar ? (
+        <svg {...common}>
+          <path d="m4 11 8-7 8 7" />
+          <path d="M6 11v9h12v-9" />
+        </svg>
+      ) : (
         <svg {...common}>
           <path d="M4 10.5 12 3.5 8 10.5V20a1 1 0 0 0 1 1h3.5v-6h3v6H19a1 1 0 0 0 1-1v-9.5" />
         </svg>
@@ -38,7 +47,13 @@ export function NavIcon({
         </svg>
       );
     case "rankings":
-      return (
+      return tabBar ? (
+        <svg {...common}>
+          <path d="M7 21V11" />
+          <path d="M12 21V7" />
+          <path d="M17 21v-6" />
+        </svg>
+      ) : (
         <svg {...common}>
           <path d="M8 21V10l4-2v13" />
           <path d="M16 21V6l4 2v13" />
@@ -46,7 +61,12 @@ export function NavIcon({
         </svg>
       );
     case "discover":
-      return (
+      return tabBar ? (
+        <svg {...common}>
+          <circle cx="11" cy="11" r="6.5" />
+          <path d="m16.5 16.5 4.5 4.5" />
+        </svg>
+      ) : (
         <svg {...common}>
           <circle cx="11" cy="11" r="7.25" />
           <path d="M16.65 16.65 21 21" />
@@ -66,7 +86,12 @@ export function NavIcon({
         </svg>
       );
     case "profile":
-      return (
+      return tabBar ? (
+        <svg {...common}>
+          <circle cx="12" cy="8" r="3.5" />
+          <path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" />
+        </svg>
+      ) : (
         <svg {...common}>
           <circle cx="12" cy="8.5" r="3.25" />
           <path d="M5.5 20.2v-.6c0-2.6 2.1-4.7 4.7-4.7h3.6c2.6 0 4.7 2.1 4.7 4.7v.6" />
@@ -80,7 +105,13 @@ export function NavIcon({
         </svg>
       );
     case "upload":
-      return (
+      return tabBar ? (
+        <svg {...common}>
+          <path d="M12 16V8" />
+          <path d="m8 12 4-4 4 4" />
+          <path d="M5 20h14" />
+        </svg>
+      ) : (
         <svg {...common}>
           <path d="M12 16V4" />
           <path d="M8 8l4-4 4 4" />
@@ -88,14 +119,24 @@ export function NavIcon({
         </svg>
       );
     case "challenges":
-      return (
+      return tabBar ? (
+        <svg {...common}>
+          <path d="M8 21h8" />
+          <path d="M12 17v4" />
+          <path d="M7 4h10v5a5 5 0 0 1-10 0V4z" />
+        </svg>
+      ) : (
         <svg {...common}>
           <path d="M8 21h8M12 17v4M7 4h10l-1 7H8L7 4Z" />
           <path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" />
         </svg>
       );
     case "premium":
-      return (
+      return tabBar ? (
+        <svg {...common}>
+          <path d="M12 3.5 2.8 9h5.4L12 20.5 5.8 9H2.2L12 3.5z" />
+        </svg>
+      ) : (
         <svg {...common}>
           <path d="M12 2l2.4 7.4h7.6l-6 4.6 2.3 7-6.3-4.6-6.3 4.6 2.3-7-6-4.6h7.6L12 2z" />
         </svg>
@@ -111,7 +152,14 @@ export function NavIcon({
         </svg>
       );
     case "scoutDashboard":
-      return (
+      return tabBar ? (
+        <svg {...common}>
+          <path d="M4 19h16" />
+          <path d="M7 5v10" />
+          <path d="M12 9v6" />
+          <path d="M17 13v2" />
+        </svg>
+      ) : (
         <svg {...common}>
           <path d="M4 19h16v2H4v-2z" />
           <path d="M6 3v14h4V3H6zM14 8v9h4V8h-4z" />

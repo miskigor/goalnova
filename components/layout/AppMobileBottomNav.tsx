@@ -13,12 +13,9 @@ import { navItemActive } from "@/lib/navigation/navItemActive";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import {
   APP_MOBILE_BOTTOM_NAV_CLASS,
+  APP_MOBILE_BOTTOM_NAV_INNER_CLASS,
   APP_MOBILE_BOTTOM_NAV_ITEM_CLASS,
 } from "@/lib/layout/appShellClasses";
-
-/** Mobile-only bottom bar insets — match header safe-area padding. */
-const MOBILE_BOTTOM_NAV_INNER_CLASS =
-  "pointer-events-auto mx-auto grid h-14 w-full min-w-0 max-w-full grid-cols-[repeat(5,minmax(0,1fr))] items-stretch gap-1 overflow-visible box-border ps-[max(2.75rem,env(safe-area-inset-left,0px))] pe-[max(2.75rem,env(safe-area-inset-right,0px))]";
 import { mobileBottomNavDisplayLabel } from "@/lib/layout/mobileBottomNavLabel";
 
 function bottomItemClass(pathname: string, href: string) {
@@ -28,7 +25,7 @@ function bottomItemClass(pathname: string, href: string) {
     "transition-[color,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors",
     active
       ? "border-gn-accent/35 bg-gn-accent/10 text-gn-accent"
-      : "text-gn-text-tertiary hover:border-gn-border-subtle hover:bg-gn-surface/40 hover:text-gn-text-secondary",
+      : "text-gn-text-secondary hover:border-gn-border-subtle hover:bg-gn-surface/40 hover:text-gn-text",
   ].join(" ");
 }
 
@@ -50,7 +47,7 @@ export function AppMobileBottomNav() {
       className={APP_MOBILE_BOTTOM_NAV_CLASS}
       aria-label={tNav("primary")}
     >
-      <div className={MOBILE_BOTTOM_NAV_INNER_CLASS}>
+      <div className={APP_MOBILE_BOTTOM_NAV_INNER_CLASS}>
         {items.map((item) => (
           <Link
             key={`${item.href}-${item.labelKey}`}
@@ -58,8 +55,11 @@ export function AppMobileBottomNav() {
             className={bottomItemClass(pathname, item.href)}
             aria-current={navItemActive(pathname, item.href) ? "page" : undefined}
           >
-            <NavIcon name={item.icon} className="size-[22px] shrink-0" />
-            <span className="w-full min-w-0 px-0.5 text-center" title={tNav(item.labelKey)}>
+            <NavIcon name={item.icon} variant="tabBar" className="size-6 shrink-0" />
+            <span
+              className="w-full min-w-0 max-w-full truncate px-0.5 text-center"
+              title={tNav(item.labelKey)}
+            >
               {mobileBottomNavDisplayLabel(tNav(item.labelKey))}
             </span>
           </Link>

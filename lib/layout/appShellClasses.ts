@@ -31,17 +31,17 @@ export const APP_MOBILE_HEADER_INNER_CLASS =
 export const APP_MOBILE_BOTTOM_NAV_CLASS = [
   "relative z-[1] box-border w-full max-w-full min-w-0 shrink-0 overflow-visible bg-gn-bg",
   "border-t border-gn-border-subtle",
-  "pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] pt-1.5",
-  "shadow-[0_-12px_40px_rgba(0,0,0,0.55)]",
+  "pb-[max(0.375rem,env(safe-area-inset-bottom,0px))] pt-1",
+  "shadow-[0_-8px_28px_rgba(0,0,0,0.45)]",
   "lg:hidden",
 ].join(" ");
 
 /** Inner grid for five bottom-nav items — never wider than the viewport. */
 export const APP_MOBILE_BOTTOM_NAV_INNER_CLASS =
-  "pointer-events-auto mx-auto grid h-14 w-full min-w-0 max-w-full grid-cols-[repeat(5,minmax(0,1fr))] items-stretch gap-1 overflow-visible box-border ps-[max(0.25rem,env(safe-area-inset-left,0px))] pe-[max(0.25rem,env(safe-area-inset-right,0px))]";
+  "pointer-events-auto box-border grid h-11 w-full min-w-0 max-w-full grid-cols-5 items-center justify-items-center gap-0 overflow-visible ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
 export const APP_MOBILE_BOTTOM_NAV_ITEM_CLASS =
-  "flex min-h-[3rem] min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-visible rounded-lg border border-transparent px-0.5 py-1 text-[9px] font-semibold leading-none tracking-tight min-[360px]:text-[10px]";
+  "flex h-11 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-visible rounded-lg border border-transparent px-0 py-0.5 text-[10px] font-medium leading-none tracking-tight";
 
 /** `/notifications` inbox — bounded column inside main shell padding. */
 export const APP_MESSAGES_INBOX_PAGE_CLASS =
