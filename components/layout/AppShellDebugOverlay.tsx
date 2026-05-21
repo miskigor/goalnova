@@ -1,9 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
-
-const MOBILE_MAX = 1023;
 
 const WATCHED_SELECTORS: { label: string; query: string }[] = [
   { label: "html", query: "html" },
@@ -48,49 +46,19 @@ type ElementSnap = {
   opacity: string;
 };
 
-type VisibilityGate = {
-  show: boolean;
-  reason: string | null;
-};
-
 function hasShellDebugInUrl(): boolean {
   if (typeof window === "undefined") return false;
-  const { search, href } = window.location;
-  return search.includes("shellDebug=1") || href.includes("shellDebug=1");
+  return window.location.href.includes("shellDebug=1");
 }
 
-function resolvePathname(): string {
-  if (typeof window === "undefined") return "";
-  return window.location.pathname;
-}
-
-function isHomePage(pathname: string): boolean {
-  const normalized = pathname.replace(/\/$/, "") || "/";
+function isHomePathname(): boolean {
+  if (typeof window === "undefined") return false;
+  const normalized = window.location.pathname.replace(/\/$/, "") || "/";
   return normalized.endsWith("/home");
 }
 
-function isMobileViewport(): boolean {
-  if (typeof window === "undefined") return false;
-  if (window.innerWidth <= MOBILE_MAX) return true;
-  return window.matchMedia(`(max-width: ${MOBILE_MAX}px)`).matches;
-}
-
-function evaluateVisibility(): VisibilityGate {
-  if (!hasShellDebugInUrl()) {
-    return { show: false, reason: "no shellDebug" };
-  }
-  const pathname = resolvePathname();
-  if (isHomePage(pathname)) {
-    return { show: false, reason: "home path" };
-  }
-  if (!isMobileViewport()) {
-    return { show: false, reason: "not mobile" };
-  }
-  return { show: true, reason: null };
-}
-
-function hasAppRoot(): boolean {
-  return document.querySelector("[data-app-root]") instanceof HTMLElement;
+function shouldShowOverlay(): boolean {
+  return hasShellDebugInUrl() && !isHomePathname();
 }
 
 function snapWatchedElement(label: string, el: HTMLElement | null): ElementSnap {
@@ -199,7 +167,7 @@ function buildSuspects(elements: ElementSnap[], innerWidth: number): string[] {
   return lines.length > 0 ? lines : ["(none among watched selectors)"];
 }
 
-function buildReport(pathname: string): string {
+function buildReport(): string {
   const vv = window.visualViewport;
   const doc = document.documentElement;
   const body = document.body;
@@ -208,13 +176,12 @@ function buildReport(pathname: string): string {
   const header = elements.find((e) => e.label === "[data-app-mobile-header]");
   const bottomNav = elements.find((e) => e.label === "[data-app-bottom-nav]");
 
-  const sections = [
-    "SHELL DEBUG ACTIVE",
-    `pathname=${pathname}`,
+  return [
+    `pathname=${window.location.pathname}`,
     `href=${window.location.href}`,
     `innerWidth=${window.innerWidth}`,
     "",
-    root?.found ? "" : "note: [data-app-root] not in DOM yet",
+    root?.found ? "" : "note: [data-app-root] not in DOM",
     "",
     "— viewport —",
     `innerHeight: ${window.innerHeight}`,
@@ -239,24 +206,22 @@ function buildReport(pathname: string): string {
     "",
     "— suspects —",
     ...buildSuspects(elements, window.innerWidth),
-  ].filter(Boolean);
-
-  return sections.join("\n");
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
-const OVERLAY_CONTAINER_STYLE: CSSProperties = {
+const OVERLAY_PANEL_STYLE: CSSProperties = {
   position: "fixed",
-  top: 8,
-  left: 8,
-  maxWidth: "calc(100vw - 16px)",
-  maxHeight: "60vh",
+  top: 0,
+  left: 0,
+  width: "100vw",
+  maxHeight: "70vh",
   overflow: "auto",
   zIndex: 2147483647,
   pointerEvents: "none",
-  background: "rgba(0, 0, 0, 0.88)",
-  color: "#b7ff4a",
   margin: 0,
-  padding: 10,
+  padding: 0,
   boxSizing: "border-box",
   fontFamily:
     'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
@@ -264,13 +229,14 @@ const OVERLAY_CONTAINER_STYLE: CSSProperties = {
 
 const OVERLAY_BANNER_STYLE: CSSProperties = {
   display: "block",
-  fontSize: 18,
+  fontSize: 22,
   fontWeight: 800,
-  lineHeight: 1.15,
-  letterSpacing: "0.04em",
-  color: "#e8ff7a",
-  margin: "0 0 8px 0",
-  padding: 0,
+  lineHeight: 1.2,
+  background: "lime",
+  color: "black",
+  margin: 0,
+  padding: "10px 12px",
+  boxSizing: "border-box",
 };
 
 const OVERLAY_BODY_STYLE: CSSProperties = {
@@ -278,53 +244,38 @@ const OVERLAY_BODY_STYLE: CSSProperties = {
   lineHeight: 1.2,
   whiteSpace: "pre-wrap",
   margin: 0,
-  padding: 0,
+  padding: "8px 12px",
+  background: "rgba(0, 0, 0, 0.88)",
+  color: "#b7ff4a",
 };
 
 /**
- * Temporary non-home mobile shell debug (?shellDebug=1). Portaled to document.body; no layout impact.
+ * Temporary shell debug (?shellDebug=1). Portaled to document.body; no layout impact.
  */
 export function AppShellDebugOverlay() {
   const [portalReady, setPortalReady] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [text, setText] = useState("");
-  const lastWarnRef = useRef<string | null>(null);
-  const lastRootWarnRef = useRef(false);
+  const [show, setShow] = useState(false);
+  const [bodyText, setBodyText] = useState("");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    console.warn("[shell-debug] mounted", {
+      href: window.location.href,
+      pathname: window.location.pathname,
+      search: window.location.search,
+      innerWidth: window.innerWidth,
+    });
     setPortalReady(true);
   }, []);
 
-  const warnHidden = useCallback((reason: string) => {
-    if (lastWarnRef.current === reason) return;
-    lastWarnRef.current = reason;
-    console.warn(`[shell-debug] overlay hidden: ${reason}`);
-  }, []);
-
   const refresh = useCallback(() => {
-    const gate = evaluateVisibility();
-    if (!gate.show) {
-      if (gate.reason) warnHidden(gate.reason);
-      lastRootWarnRef.current = false;
-      setVisible(false);
-      setText("");
-      return;
+    const visible = shouldShowOverlay();
+    setShow(visible);
+    if (visible) {
+      setBodyText(buildReport());
+    } else {
+      setBodyText("");
     }
-
-    lastWarnRef.current = null;
-
-    if (!hasAppRoot() && !lastRootWarnRef.current) {
-      lastRootWarnRef.current = true;
-      console.warn("[shell-debug] no app root");
-    }
-    if (hasAppRoot()) {
-      lastRootWarnRef.current = false;
-    }
-
-    const pathname = resolvePathname();
-    setVisible(true);
-    setText(buildReport(pathname));
-  }, [warnHidden]);
+  }, []);
 
   useEffect(() => {
     refresh();
@@ -358,16 +309,12 @@ export function AppShellDebugOverlay() {
     };
   }, [refresh]);
 
-  if (!portalReady || !visible || !text) return null;
-
-  const bodyText = text.startsWith("SHELL DEBUG ACTIVE\n")
-    ? text.slice("SHELL DEBUG ACTIVE\n".length)
-    : text;
+  if (!portalReady || !show) return null;
 
   return createPortal(
-    <div data-shell-debug-overlay style={OVERLAY_CONTAINER_STYLE} aria-hidden>
+    <div data-shell-debug-overlay style={OVERLAY_PANEL_STYLE} aria-hidden>
       <div style={OVERLAY_BANNER_STYLE}>SHELL DEBUG ACTIVE</div>
-      <pre style={OVERLAY_BODY_STYLE}>{bodyText}</pre>
+      <pre style={OVERLAY_BODY_STYLE}>{bodyText || "(collecting…)"}</pre>
     </div>,
     document.body,
   );
