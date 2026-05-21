@@ -8,7 +8,6 @@ import { Logo } from "@/components/brand/Logo";
 import { NavIcon } from "@/components/icons/NavIcons";
 import { PublicTopNav } from "@/components/layout/PublicTopNav";
 import { AppChromeLayout } from "@/components/layout/AppChromeLayout";
-import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { useNavSession } from "@/components/layout/useNavSession";
 import { navItemActive } from "@/lib/navigation/navItemActive";
 
@@ -119,10 +118,5 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
     );
   }
 
-  return (
-    <>
-      {shell}
-      <AppShellDebugOverlay />
-    </>
-  );
+  return <>{shell}</>;
 }
