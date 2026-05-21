@@ -171,6 +171,29 @@ function buildSuspects(elements: ElementSnap[], innerWidth: number): string[] {
   return lines.length > 0 ? lines : ["(none among watched selectors)"];
 }
 
+function resolveShellTypeLine(): string {
+  const hasAppRoot = document.querySelector("[data-app-root]") instanceof HTMLElement;
+  return hasAppRoot
+    ? "shell type: APP SHELL"
+    : "shell type: PUBLIC SHELL / NO APP ROOT";
+}
+
+function formatRootComputed(): string {
+  const el = document.querySelector("[data-app-root]");
+  if (!(el instanceof HTMLElement)) return "";
+  const cs = getComputedStyle(el);
+  return [
+    "— [data-app-root] computed —",
+    `transform=${cs.transform}`,
+    `width=${cs.width}`,
+    `max-width=${cs.maxWidth}`,
+    `left=${cs.left}`,
+    `right=${cs.right}`,
+    `position=${cs.position}`,
+    `overflow-x=${cs.overflowX}`,
+  ].join("\n");
+}
+
 function buildReport(): string {
   const vv = window.visualViewport;
   const doc = document.documentElement;
@@ -181,7 +204,11 @@ function buildReport(): string {
   const bottomNav = elements.find((e) => e.label === "[data-app-bottom-nav]");
   const docStyle = getComputedStyle(doc);
 
+  const rootComputed = root?.found ? formatRootComputed() : "";
+
   return [
+    resolveShellTypeLine(),
+    "",
     `pathname=${window.location.pathname}`,
     `href=${window.location.href}`,
     `innerWidth=${window.innerWidth}`,
@@ -189,7 +216,7 @@ function buildReport(): string {
     `${GN_APP_SHELL_VV_LEFT_VAR}=${docStyle.getPropertyValue(GN_APP_SHELL_VV_LEFT_VAR).trim() || "(unset)"}`,
     `${GN_APP_SHELL_VV_WIDTH_VAR}=${docStyle.getPropertyValue(GN_APP_SHELL_VV_WIDTH_VAR).trim() || "(unset)"}`,
     "",
-    root?.found ? "" : "note: [data-app-root] not in DOM",
+    rootComputed,
     "",
     "— viewport —",
     `innerHeight: ${window.innerHeight}`,

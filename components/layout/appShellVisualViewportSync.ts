@@ -48,6 +48,14 @@ export function syncAppShellVisualViewportVars(): void {
   const { left, width } = appShellVisualViewportMetrics();
   root.style.setProperty(GN_APP_SHELL_VV_LEFT_VAR, left);
   root.style.setProperty(GN_APP_SHELL_VV_WIDTH_VAR, width);
+
+  console.warn("[app-shell-vv-sync] apply", {
+    left,
+    width,
+    pathname: window.location.pathname,
+    hasAppRoot: Boolean(document.querySelector("[data-app-root]")),
+    hasHomeFeed: Boolean(document.querySelector("[data-pitchrusch-home-feed]")),
+  });
 }
 
 export function clearAppShellVisualViewportVars(): void {
@@ -60,6 +68,11 @@ export function clearAppShellVisualViewportVars(): void {
 /** Bind listeners; call returned cleanup on unmount. */
 export function bindAppShellVisualViewportSync(): () => void {
   if (typeof window === "undefined") return () => {};
+
+  console.warn("[app-shell-vv-sync] mounted", {
+    href: window.location.href,
+    pathname: window.location.pathname,
+  });
 
   const run = () => syncAppShellVisualViewportVars();
 
