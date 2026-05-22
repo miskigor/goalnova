@@ -380,9 +380,9 @@
     "colPosition": "Position",
     "colCountry": "Country",
     "colClub": "Club",
-    "sprint20mTopTitle": "Top Sprint 20m performers",
-    "sprint20mTopBody": "View the Sprint 20m leaderboard with top times, scores, and current Speedster badge holders.",
-    "sprint20mTopCta": "Open Sprint 20m leaderboard"
+    "sprint20mTopTitle": "En iyi 20 m sprint performansları",
+    "sprint20mTopBody": "En iyi süreler, puanlar ve güncel Hız Canavarı rozet sahipleriyle 20 m sprint sıralamasını görüntüle.",
+    "sprint20mTopCta": "20 m sprint sıralamasını aç"
   },
   "scoutVerification": {
     "pageTitle": "Become a Verified Scout",
@@ -758,11 +758,11 @@
     "statusEnded": "Ended",
     "statusLive": "Live",
     "sprint20m": {
-      "title": "Sprint 20m Challenge",
-      "description": "Show your speed, explosiveness, and sprint technique by running 20 meters as fast as possible.",
-      "rules": "Instructions:\n- Mark a 20-meter distance with a start and finish line.\n- Start behind the line and sprint to the finish as fast as possible.\n- Record the full attempt from start to finish.\n\nEquipment:\n- 2 cones\n- Phone camera\n- Stopwatch\n- 20 meter space\n\nRules:\n- The player must start behind the start line.\n- The sprint distance must be exactly 20 meters.\n- The full attempt must be visible in the video.\n- Time is measured from the first movement to crossing the finish line.\n- Flying start is not allowed.\n- Edited or cut videos are not allowed.\n- Maximum video length is 15 seconds.\n\nScoring:\n- Sprint time: 60\n- Start explosiveness: 20\n- Running technique: 10\n- Execution validity: 10\n\nAttempts:\n- Free player: 1 attempt\n- Premium player: multiple attempts + choose best attempt + better visibility to scouts",
-      "badgeTitle": "Speedster",
-      "badgeDetail": "Badge for top Sprint 20m performers"
+      "title": "20 m Sprint Mücadelesi",
+      "description": "20 metreyi mümkün olduğunca hızlı koşarak hızını, patlayıcılığını ve sprint tekniğini göster.",
+      "rules": "Talimatlar:\n- Başlangıç ve bitiş çizgisiyle 20 metrelik bir mesafe işaretle.\n- Çizginin arkasından başla ve bitişe mümkün olduğunca hızlı sprint at.\n- Denemeyi baştan sona kaydet.\n\nEkipman:\n- 2 konik\n- Telefon kamerası\n- Kronometre\n- 20 metrelik alan\n\nKurallar:\n- Oyuncu başlangıç çizgisinin arkasından başlamalıdır.\n- Sprint mesafesi tam olarak 20 metre olmalıdır.\n- Tüm deneme videoda görünür olmalıdır.\n- Süre ilk hareketten bitiş çizgisini geçmeye kadar ölçülür.\n- Uçuşlu starta izin verilmez.\n- Düzenlenmiş veya kesilmiş videolara izin verilmez.\n- Maksimum video süresi 15 saniyedir.\n\nPuanlama:\n- Sprint süresi: 60\n- Start patlayıcılığı: 20\n- Koşu tekniği: 10\n- Uygulama geçerliliği: 10\n\nDenemeler:\n- Ücretsiz oyuncu: 1 deneme\n- Premium oyuncu: birden fazla deneme + en iyi denemeyi seçme + scoutlara daha iyi görünürlük",
+      "badgeTitle": "Hız Canavarı",
+      "badgeDetail": "En iyi 20 m sprint performansları için rozet"
     }
   },
   "rankings": {

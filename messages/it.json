@@ -380,9 +380,9 @@
     "colPosition": "Posizione",
     "colCountry": "Paese",
     "colClub": "Club",
-    "sprint20mTopTitle": "Top Sprint 20m performers",
-    "sprint20mTopBody": "View the Sprint 20m leaderboard with top times, scores, and current Speedster badge holders.",
-    "sprint20mTopCta": "Open Sprint 20m leaderboard"
+    "sprint20mTopTitle": "Migliori nello sprint 20 m",
+    "sprint20mTopBody": "Guarda la classifica dello sprint 20 m con i migliori tempi, punteggi e i detentori attuali del badge Velocista.",
+    "sprint20mTopCta": "Apri classifica sprint 20 m"
   },
   "scoutVerification": {
     "pageTitle": "Diventa scout verificato",
@@ -761,8 +761,8 @@
       "title": "Sfida Sprint 20m",
       "description": "Mostra la tua velocità, esplosività e tecnica di sprint correndo 20 metri il più velocemente possibile.",
       "rules": "Istruzioni:\n- Segna una distanza di 20 metri con linea di partenza e arrivo.\n- Parti dietro la linea e sprinta fino al traguardo il più velocemente possibile.\n- Registra l’intero tentativo dall’inizio alla fine.\n\nAttrezzatura:\n- 2 coni\n- Fotocamera del telefono\n- Cronometro\n- Spazio di 20 metri\n\nRegole:\n- Il giocatore deve partire dietro la linea di partenza.\n- La distanza dello sprint deve essere esattamente 20 metri.\n- L’intero tentativo deve essere visibile nel video.\n- Il tempo si misura dal primo movimento fino al passaggio del traguardo.\n- La partenza lanciata non è consentita.\n- I video modificati o tagliati non sono consentiti.\n- Durata massima video: 15 secondi.\n\nPunteggio:\n- Tempo sprint: 60\n- Esplosività partenza: 20\n- Tecnica di corsa: 10\n- Validità esecuzione: 10\n\nTentativi:\n- Giocatore free: 1 tentativo\n- Giocatore premium: tentativi multipli + scelta del migliore + migliore visibilità per gli scout",
-      "badgeTitle": "Speedster",
-      "badgeDetail": "Badge per i migliori performer Sprint 20m"
+      "badgeTitle": "Velocista",
+      "badgeDetail": "Badge per i migliori nello sprint di 20 metri"
     }
   },
   "rankings": {

@@ -380,9 +380,9 @@
     "colPosition": "Position",
     "colCountry": "Country",
     "colClub": "Club",
-    "sprint20mTopTitle": "Top Sprint 20m performers",
-    "sprint20mTopBody": "View the Sprint 20m leaderboard with top times, scores, and current Speedster badge holders.",
-    "sprint20mTopCta": "Open Sprint 20m leaderboard"
+    "sprint20mTopTitle": "Top Sprint 20m-deelnemers",
+    "sprint20mTopBody": "Bekijk het Sprint 20m-klassement met de beste tijden, scores en huidige Snelheidsduivel-badges.",
+    "sprint20mTopCta": "Open Sprint 20m-klassement"
   },
   "scoutVerification": {
     "pageTitle": "Become a Verified Scout",
@@ -758,11 +758,11 @@
     "statusEnded": "Ended",
     "statusLive": "Live",
     "sprint20m": {
-      "title": "Sprint 20m Challenge",
-      "description": "Show your speed, explosiveness, and sprint technique by running 20 meters as fast as possible.",
-      "rules": "Instructions:\n- Mark a 20-meter distance with a start and finish line.\n- Start behind the line and sprint to the finish as fast as possible.\n- Record the full attempt from start to finish.\n\nEquipment:\n- 2 cones\n- Phone camera\n- Stopwatch\n- 20 meter space\n\nRules:\n- The player must start behind the start line.\n- The sprint distance must be exactly 20 meters.\n- The full attempt must be visible in the video.\n- Time is measured from the first movement to crossing the finish line.\n- Flying start is not allowed.\n- Edited or cut videos are not allowed.\n- Maximum video length is 15 seconds.\n\nScoring:\n- Sprint time: 60\n- Start explosiveness: 20\n- Running technique: 10\n- Execution validity: 10\n\nAttempts:\n- Free player: 1 attempt\n- Premium player: multiple attempts + choose best attempt + better visibility to scouts",
-      "badgeTitle": "Speedster",
-      "badgeDetail": "Badge for top Sprint 20m performers"
+      "title": "Sprint 20m-uitdaging",
+      "description": "Laat je snelheid, explosiviteit en sprinttechniek zien door 20 meter zo snel mogelijk te rennen.",
+      "rules": "Instructies:\n- Markeer een afstand van 20 meter met een start- en finishlijn.\n- Start achter de lijn en sprint zo snel mogelijk naar de finish.\n- Neem de volledige poging op van start tot finish.\n\nMateriaal:\n- 2 pionnen\n- Telefooncamera\n- Stopwatch\n- Ruimte van 20 meter\n\nRegels:\n- De speler moet achter de startlijn beginnen.\n- De sprintafstand moet precies 20 meter zijn.\n- De volledige poging moet zichtbaar zijn in de video.\n- De tijd wordt gemeten vanaf de eerste beweging tot het passeren van de finishlijn.\n- Vliegende start is niet toegestaan.\n- Bewerkte of ingekorte video's zijn niet toegestaan.\n- Maximale videolengte is 15 seconden.\n\nScoring:\n- Sprinttijd: 60\n- Explosiviteit bij de start: 20\n- Loopttechniek: 10\n- Geldigheid van de uitvoering: 10\n\nPogingen:\n- Gratis speler: 1 poging\n- Premium speler: meerdere pogingen + beste poging kiezen + betere zichtbaarheid voor scouts",
+      "badgeTitle": "Snelheidsduivel",
+      "badgeDetail": "Badge voor de beste Sprint 20m-deelnemers"
     }
   },
   "rankings": {

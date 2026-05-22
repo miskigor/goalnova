@@ -380,9 +380,9 @@
     "colPosition": "Položaj",
     "colCountry": "Zemlja",
     "colClub": "Klub",
-    "sprint20mTopTitle": "Najbolji Sprint 20m izvođači",
-    "sprint20mTopBody": "Pogledaj Sprint 20m ljestvicu s najboljim vremenima, bodovima i trenutnim nositeljima Speedster značke.",
-    "sprint20mTopCta": "Otvori Sprint 20m ljestvicu"
+    "sprint20mTopTitle": "Najbolji izvođači sprinta 20 m",
+    "sprint20mTopBody": "Pogledaj ljestvicu sprinta 20 m s najboljim vremenima, bodovima i trenutnim nositeljima značke Brzojac.",
+    "sprint20mTopCta": "Otvori ljestvicu sprinta 20 m"
   },
   "scoutVerification": {
     "pageTitle": "Postani verificirani skaut",
@@ -758,11 +758,11 @@
     "statusEnded": "Ended",
     "statusLive": "Live",
     "sprint20m": {
-      "title": "Sprint 20m Challenge",
+      "title": "Sprint 20m izazov",
       "description": "Pokaži svoju brzinu, eksplozivnost i tehniku sprinta trčeći 20 metara što je brže moguće.",
       "rules": "Upute:\n- Označi 20 metara sa startnom i ciljnom linijom.\n- Kreni iza linije i sprintaj do cilja što je brže moguće.\n- Snimi cijeli pokušaj od starta do cilja.\n\nOprema:\n- 2 čunja\n- Kamera na mobitelu\n- Štoperica\n- Prostor od 20 metara\n\nPravila:\n- Igrač mora startati iza startne linije.\n- Udaljenost sprinta mora biti točno 20 metara.\n- Cijeli pokušaj mora biti vidljiv u videu.\n- Vrijeme se mjeri od prvog pokreta do prolaska kroz cilj.\n- Leteći start nije dopušten.\n- Editirani ili rezani videi nisu dopušteni.\n- Maksimalna duljina videa je 15 sekundi.\n\nBodovanje:\n- Vrijeme sprinta: 60\n- Eksplozivnost starta: 20\n- Tehnika trčanja: 10\n- Valjanost izvedbe: 10\n\nPokušaji:\n- Besplatni igrač: 1 pokušaj\n- Premium igrač: više pokušaja + odabir najboljeg pokušaja + bolja vidljivost skautima",
-      "badgeTitle": "Speedster",
-      "badgeDetail": "Značka za najbolje Sprint 20m izvođače"
+      "badgeTitle": "Brzojac",
+      "badgeDetail": "Značka za najbolje izvođače sprinta od 20 metara"
     }
   },
   "rankings": {

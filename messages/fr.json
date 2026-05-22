@@ -380,9 +380,9 @@
     "colPosition": "Poste",
     "colCountry": "Pays",
     "colClub": "Club",
-    "sprint20mTopTitle": "Top Sprint 20m performers",
-    "sprint20mTopBody": "View the Sprint 20m leaderboard with top times, scores, and current Speedster badge holders.",
-    "sprint20mTopCta": "Open Sprint 20m leaderboard"
+    "sprint20mTopTitle": "Meilleurs du sprint 20 m",
+    "sprint20mTopBody": "Consulte le classement du sprint 20 m avec les meilleurs temps, scores et les détenteurs actuels du badge As du sprint.",
+    "sprint20mTopCta": "Ouvrir le classement sprint 20 m"
   },
   "scoutVerification": {
     "pageTitle": "Devenir scout vérifié",
@@ -761,8 +761,8 @@
       "title": "Défi Sprint 20m",
       "description": "Montre ta vitesse, ton explosivité et ta technique de sprint en courant 20 mètres le plus vite possible.",
       "rules": "Instructions :\n- Marque une distance de 20 mètres avec une ligne de départ et d’arrivée.\n- Pars derrière la ligne et sprinte jusqu’à l’arrivée le plus vite possible.\n- Enregistre la tentative complète du départ à l’arrivée.\n\nÉquipement :\n- 2 cônes\n- Caméra de téléphone\n- Chronomètre\n- Espace de 20 mètres\n\nRègles :\n- Le joueur doit démarrer derrière la ligne de départ.\n- La distance du sprint doit être exactement de 20 mètres.\n- La tentative complète doit être visible dans la vidéo.\n- Le temps est mesuré du premier mouvement jusqu’au passage de la ligne d’arrivée.\n- Le départ lancé est interdit.\n- Les vidéos montées ou coupées sont interdites.\n- Durée maximale de la vidéo : 15 secondes.\n\nNotation :\n- Temps de sprint : 60\n- Explosivité du départ : 20\n- Technique de course : 10\n- Validité de l’exécution : 10\n\nTentatives :\n- Joueur gratuit : 1 tentative\n- Joueur premium : tentatives multiples + choix de la meilleure + meilleure visibilité pour les scouts",
-      "badgeTitle": "Speedster",
-      "badgeDetail": "Badge pour les meilleurs performers Sprint 20m"
+      "badgeTitle": "As du sprint",
+      "badgeDetail": "Badge pour les meilleurs du sprint de 20 mètres"
     }
   },
   "rankings": {

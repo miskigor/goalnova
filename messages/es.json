@@ -380,9 +380,9 @@
     "colPosition": "Posición",
     "colCountry": "País",
     "colClub": "Club",
-    "sprint20mTopTitle": "Top Sprint 20m performers",
-    "sprint20mTopBody": "View the Sprint 20m leaderboard with top times, scores, and current Speedster badge holders.",
-    "sprint20mTopCta": "Open Sprint 20m leaderboard"
+    "sprint20mTopTitle": "Mejores en Sprint 20m",
+    "sprint20mTopBody": "Consulta la clasificación de Sprint 20m con los mejores tiempos, puntuaciones y los titulares actuales de la insignia Velocista.",
+    "sprint20mTopCta": "Abrir clasificación Sprint 20m"
   },
   "scoutVerification": {
     "pageTitle": "Conviértete en scout verificado",
@@ -761,8 +761,8 @@
       "title": "Desafío Sprint 20m",
       "description": "Muestra tu velocidad, explosividad y técnica de sprint corriendo 20 metros lo más rápido posible.",
       "rules": "Instrucciones:\n- Marca una distancia de 20 metros con línea de salida y llegada.\n- Comienza detrás de la línea y sprinta hasta la meta lo más rápido posible.\n- Graba el intento completo desde el inicio hasta el final.\n\nEquipo:\n- 2 conos\n- Cámara de móvil\n- Cronómetro\n- Espacio de 20 metros\n\nReglas:\n- El jugador debe iniciar detrás de la línea de salida.\n- La distancia del sprint debe ser exactamente 20 metros.\n- El intento completo debe verse en el video.\n- El tiempo se mide desde el primer movimiento hasta cruzar la meta.\n- No se permite salida lanzada.\n- No se permiten videos editados o recortados.\n- Duración máxima del video: 15 segundos.\n\nPuntuación:\n- Tiempo de sprint: 60\n- Explosividad de salida: 20\n- Técnica de carrera: 10\n- Validez de ejecución: 10\n\nIntentos:\n- Jugador gratis: 1 intento\n- Jugador premium: múltiples intentos + elegir mejor intento + mayor visibilidad para scouts",
-      "badgeTitle": "Speedster",
-      "badgeDetail": "Insignia para los mejores de Sprint 20m"
+      "badgeTitle": "Velocista",
+      "badgeDetail": "Insignia para los mejores del sprint de 20 metros"
     }
   },
   "rankings": {

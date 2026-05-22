@@ -380,9 +380,9 @@
     "colPosition": "Position",
     "colCountry": "Country",
     "colClub": "Club",
-    "sprint20mTopTitle": "Top Sprint 20m performers",
-    "sprint20mTopBody": "View the Sprint 20m leaderboard with top times, scores, and current Speedster badge holders.",
-    "sprint20mTopCta": "Open Sprint 20m leaderboard"
+    "sprint20mTopTitle": "Najbolji izvođači sprinta 20 m",
+    "sprint20mTopBody": "Pogledaj ljestvicu sprinta 20 m sa najboljim vremenima, bodovima i trenutnim nosiocima značke Brzojac.",
+    "sprint20mTopCta": "Otvori ljestvicu sprinta 20 m"
   },
   "scoutVerification": {
     "pageTitle": "Become a Verified Scout",
@@ -758,11 +758,11 @@
     "statusEnded": "Ended",
     "statusLive": "Live",
     "sprint20m": {
-      "title": "Sprint 20m Challenge",
-      "description": "Show your speed, explosiveness, and sprint technique by running 20 meters as fast as possible.",
-      "rules": "Instructions:\n- Mark a 20-meter distance with a start and finish line.\n- Start behind the line and sprint to the finish as fast as possible.\n- Record the full attempt from start to finish.\n\nEquipment:\n- 2 cones\n- Phone camera\n- Stopwatch\n- 20 meter space\n\nRules:\n- The player must start behind the start line.\n- The sprint distance must be exactly 20 meters.\n- The full attempt must be visible in the video.\n- Time is measured from the first movement to crossing the finish line.\n- Flying start is not allowed.\n- Edited or cut videos are not allowed.\n- Maximum video length is 15 seconds.\n\nScoring:\n- Sprint time: 60\n- Start explosiveness: 20\n- Running technique: 10\n- Execution validity: 10\n\nAttempts:\n- Free player: 1 attempt\n- Premium player: multiple attempts + choose best attempt + better visibility to scouts",
-      "badgeTitle": "Speedster",
-      "badgeDetail": "Badge for top Sprint 20m performers"
+      "title": "Sprint 20m izazov",
+      "description": "Pokaži svoju brzinu, eksplozivnost i tehniku sprinta trčeći 20 metara što je brže moguće.",
+      "rules": "Upute:\n- Označi 20 metara sa startnom i ciljnom linijom.\n- Kreni iza linije i sprintaj do cilja što je brže moguće.\n- Snimi cijeli pokušaj od starta do cilja.\n\nOprema:\n- 2 čunja\n- Kamera na mobitelu\n- Štoperica\n- Prostor od 20 metara\n\nPravila:\n- Igrač mora startati iza startne linije.\n- Udaljenost sprinta mora biti tačno 20 metara.\n- Cijeli pokušaj mora biti vidljiv u videu.\n- Vrijeme se mjeri od prvog pokreta do prolaska kroz cilj.\n- Leteći start nije dozvoljen.\n- Editovani ili rezani videi nisu dozvoljeni.\n- Maksimalna dužina videa je 15 sekundi.\n\nBodovanje:\n- Vrijeme sprinta: 60\n- Eksplozivnost starta: 20\n- Tehnika trčanja: 10\n- Valjanost izvedbe: 10\n\nPokušaji:\n- Besplatni igrač: 1 pokušaj\n- Premium igrač: više pokušaja + odabir najboljeg pokušaja + bolja vidljivost skautima",
+      "badgeTitle": "Brzojac",
+      "badgeDetail": "Značka za najbolje izvođače sprinta od 20 metara"
     }
   },
   "rankings": {
