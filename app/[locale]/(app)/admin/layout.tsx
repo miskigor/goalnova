@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AdminGate } from "@/components/admin/AdminGate";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
 
 type Props = {
   children: React.ReactNode;
@@ -11,7 +12,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
-  return { title: t("adminDashboardTitle") };
+  return { title: t("adminDashboardTitle"), robots: PRIVATE_PAGE_ROBOTS };
 }
 
 /**

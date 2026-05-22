@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { UploadForm } from "@/components/upload/UploadForm";
+import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -23,9 +24,9 @@ export async function generateMetadata({
         ? String(raw[0] ?? "").trim()
         : "";
   if (q) {
-    return { title: t("metaTitleChallenge") };
+    return { title: t("metaTitleChallenge"), robots: PRIVATE_PAGE_ROBOTS };
   }
-  return { title: t("uploadTitle") };
+  return { title: t("uploadTitle"), robots: PRIVATE_PAGE_ROBOTS };
 }
 
 export default async function UploadPage({ params }: Props) {

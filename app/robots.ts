@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { privateDisallowPaths } from "@/lib/seo/privateRobots";
 import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 
 export default function robots(): MetadataRoute.Robots {
@@ -8,6 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
+        disallow: privateDisallowPaths(),
       },
     ],
     sitemap: `${origin}/sitemap.xml`,
