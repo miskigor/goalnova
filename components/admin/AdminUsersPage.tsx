@@ -12,6 +12,7 @@ import {
   rpcAdminSetSuspended,
   type AdminUserListRow,
 } from "@/lib/supabase/adminSystem";
+import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { devLog } from "@/lib/devLog";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 
@@ -230,11 +231,20 @@ export function AdminUsersPage() {
                   className="border-b border-white/5 hover:bg-white/[0.03]"
                 >
                   <td className="px-3 py-2 text-zinc-200">
-                    <div className="font-medium">
-                      {row.full_name?.trim() || "—"}
-                    </div>
-                    <div className="text-xs text-zinc-500">
-                      @{row.username?.trim() || "—"}
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <ProfileAvatar
+                        name={row.full_name?.trim() || row.username?.trim() || row.email || "—"}
+                        imageUrl={row.avatar_url?.trim() || undefined}
+                        sizeClassName="h-9 w-9 text-xs"
+                      />
+                      <div className="min-w-0">
+                        <div className="font-medium">
+                          {row.full_name?.trim() || "—"}
+                        </div>
+                        <div className="text-xs text-zinc-500">
+                          @{row.username?.trim() || "—"}
+                        </div>
+                      </div>
                     </div>
                   </td>
                   <td className="max-w-[180px] truncate px-3 py-2 text-zinc-400">

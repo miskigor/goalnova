@@ -1117,6 +1117,7 @@ export type Database = {
           created_at: string | null;
           full_name: string | null;
           username: string | null;
+          avatar_url: string | null;
         }[];
       };
       goalnova_admin_get_user_detail: {

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { adminHardDeleteUser } from "@/lib/supabase/adminDeleteUser";
 import { supabase } from "@/lib/supabase/client";
 import {
@@ -494,12 +495,28 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
   return (
     <div className="mx-auto max-w-4xl space-y-8 pb-16">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-white">
-            {t("userDetailTitle")}
-          </h1>
-          <p className="mt-1 font-mono text-xs text-zinc-500">{userId}</p>
-          <p className="mt-1 text-sm text-zinc-400">{str(user.email)}</p>
+        <div className="flex min-w-0 items-start gap-3">
+          <ProfileAvatar
+            name={
+              pf.full_name.trim() ||
+              pf.username.trim() ||
+              str(user.email) ||
+              t("userDetailTitle")
+            }
+            imageUrl={
+              typeof user.avatar_url === "string"
+                ? user.avatar_url.trim() || undefined
+                : undefined
+            }
+            sizeClassName="h-14 w-14 shrink-0 text-sm"
+          />
+          <div className="min-w-0">
+            <h1 className="text-2xl font-semibold text-white">
+              {t("userDetailTitle")}
+            </h1>
+            <p className="mt-1 font-mono text-xs text-zinc-500">{userId}</p>
+            <p className="mt-1 text-sm text-zinc-400">{str(user.email)}</p>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link
