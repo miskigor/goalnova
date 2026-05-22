@@ -25,6 +25,8 @@ export type ChallengeRowLite =
 export type ExploreFeedItem = {
   video: ExploreVideoRow;
   profile: ExploreProfileRow | null;
+  /** Canonical avatar from `public.users.avatar_url` (not `player_profiles.avatar_url`). */
+  userAvatarUrl: string | null;
   likeCount: number;
   /** Present when the video has a `challenge_id` and the challenge row loads. */
   challenge: ChallengeRowLite | null;
@@ -262,16 +264,21 @@ export async function fetchExploreFeed(params: {
   videos = videos.filter((v) => hasVideoPlaybackUrl(v));
 
   const userIds = [...new Set(videos.map((v) => v.user_id).filter(Boolean))];
+  const avatarByUserId = new Map<string, string | null>();
   if (userIds.length > 0) {
     const { data: users, error: usersErr } = await supabase
       .from("users")
-      .select("id,is_deleted")
+      .select("id,is_deleted,avatar_url")
       .in("id", userIds);
     if (usersErr) {
       logFullSupabaseError("[explore] users(is_deleted) filter", usersErr, {
         userIdsCount: userIds.length,
       });
       return { items: [], error: supabaseErrorToUserMessage(usersErr) };
+    }
+    for (const u of users ?? []) {
+      const v = typeof u.avatar_url === "string" ? u.avatar_url.trim() : "";
+      avatarByUserId.set(u.id, v || null);
     }
     const deletedUserIds = new Set(
       (users ?? []).filter((u) => u.is_deleted).map((u) => u.id),
@@ -413,6 +420,7 @@ export async function fetchExploreFeed(params: {
     return {
       video,
       profile: profileByUserId.get(video.user_id) ?? null,
+      userAvatarUrl: avatarByUserId.get(video.user_id) ?? null,
       likeCount,
       challenge: video.challenge_id
         ? (challengeById.get(video.challenge_id) ?? null)

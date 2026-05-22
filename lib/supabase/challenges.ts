@@ -432,8 +432,22 @@ export async function fetchChallengeFeed(params: {
     string,
     Database["public"]["Tables"]["player_profiles"]["Row"]
   >();
+  const avatarByUserId = new Map<string, string | null>();
 
   if (userIds.length > 0) {
+    const { data: userRows, error: uErr } = await supabase
+      .from("users")
+      .select("id,avatar_url")
+      .in("id", userIds);
+    if (uErr) {
+      logFullSupabaseError("[challenges] fetchChallengeFeed users avatar_url", uErr);
+    } else {
+      for (const u of userRows ?? []) {
+        const v = typeof u.avatar_url === "string" ? u.avatar_url.trim() : "";
+        avatarByUserId.set(u.id, v || null);
+      }
+    }
+
     const { data: profRows, error: pErr } = await supabase
       .from("player_profiles")
       .select("*")
@@ -538,6 +552,7 @@ export async function fetchChallengeFeed(params: {
     return {
       video,
       profile: profileByUserId.get(video.user_id) ?? null,
+      userAvatarUrl: avatarByUserId.get(video.user_id) ?? null,
       likeCount,
       challenge,
       aiOverallScore: params.sort === "leaderboard" ? ai : null,

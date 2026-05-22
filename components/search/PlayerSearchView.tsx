@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
   searchPlayersWithFilters,
-  type SearchPlayerRow,
+  type SearchPlayerResult,
 } from "@/lib/supabase/searchPlayers";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
@@ -29,7 +29,7 @@ export function PlayerSearchView() {
   });
   const [modalOpen, setModalOpen] = useState(false);
 
-  const [rows, setRows] = useState<SearchPlayerRow[]>([]);
+  const [rows, setRows] = useState<SearchPlayerResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -201,7 +201,7 @@ export function PlayerSearchView() {
             const slug = row.username?.trim() || row.id;
             const name = row.full_name?.trim() || row.username?.trim() || t("unknownName");
             const user = row.username?.trim() ? `@${row.username.trim()}` : t("noUsername");
-            const avatar = row.avatar_url?.trim() || undefined;
+            const avatar = row.userAvatarUrl?.trim() || undefined;
             return (
               <li key={row.id}>
                 <Link

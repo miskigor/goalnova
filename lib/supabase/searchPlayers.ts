@@ -6,6 +6,11 @@ import { logFullSupabaseError, supabaseErrorToUserMessage } from "@/lib/supabase
 
 export type SearchPlayerRow = Database["public"]["Tables"]["player_profiles"]["Row"];
 
+export type SearchPlayerResult = SearchPlayerRow & {
+  /** Canonical avatar from `public.users.avatar_url`. */
+  userAvatarUrl: string | null;
+};
+
 const RESULT_LIMIT = 40;
 
 function escapeIlike(value: string): string {
@@ -30,7 +35,7 @@ export type PlayerSearchFilters = {
  */
 export async function searchPlayersWithFilters(
   filters: PlayerSearchFilters,
-): Promise<{ rows: SearchPlayerRow[]; error: string | null }> {
+): Promise<{ rows: SearchPlayerResult[]; error: string | null }> {
   const q = filters.q.trim();
   const position = filters.position?.trim() ?? "";
   const country = filters.country?.trim() ?? "";
@@ -95,11 +100,16 @@ export async function searchPlayersWithFilters(
 
   const rows = (data ?? []) as SearchPlayerRow[];
   const ids = [...new Set(rows.map((r) => r.id).filter(Boolean))];
-  if (ids.length === 0) return { rows, error: null };
+  if (ids.length === 0) {
+    return {
+      rows: rows.map((r) => ({ ...r, userAvatarUrl: null })),
+      error: null,
+    };
+  }
 
   const { data: users, error: uErr } = await supabase
     .from("users")
-    .select("id,is_deleted")
+    .select("id,is_deleted,avatar_url")
     .in("id", ids);
   if (uErr) {
     logFullSupabaseError("[search] users(is_deleted) filter", uErr, {
@@ -107,10 +117,22 @@ export async function searchPlayersWithFilters(
     });
     return { rows: [], error: supabaseErrorToUserMessage(uErr) };
   }
+  const avatarByUserId = new Map<string, string | null>();
+  for (const u of users ?? []) {
+    const v = typeof u.avatar_url === "string" ? u.avatar_url.trim() : "";
+    avatarByUserId.set(u.id, v || null);
+  }
   const active = new Set(
     (users ?? []).filter((u) => !u.is_deleted).map((u) => u.id),
   );
-  const visible = rows.filter((r) => active.has(r.id));
+  const visible = rows
+    .filter((r) => active.has(r.id))
+    .map(
+      (r): SearchPlayerResult => ({
+        ...r,
+        userAvatarUrl: avatarByUserId.get(r.id) ?? null,
+      }),
+    );
   return { rows: sortPlayersForScouts(visible), error: null };
 }
 
@@ -119,6 +141,6 @@ export async function searchPlayersWithFilters(
  */
 export async function searchPlayersByQuery(
   rawQuery: string,
-): Promise<{ rows: SearchPlayerRow[]; error: string | null }> {
+): Promise<{ rows: SearchPlayerResult[]; error: string | null }> {
   return searchPlayersWithFilters({ q: rawQuery });
 }

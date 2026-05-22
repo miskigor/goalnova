@@ -356,7 +356,7 @@ export function ExploreVideoCard({
     profile?.id ||
     video.user_id;
 
-  const avatarUrl = profile?.avatar_url?.trim() || undefined;
+  const avatarUrl = item.userAvatarUrl?.trim() || undefined;
   if (!video.id) return null;
 
   const hasAnySource = exploreTileHasVisualMedia(videoRow, avatarUrl);
