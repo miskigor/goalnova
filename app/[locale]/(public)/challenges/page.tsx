@@ -16,7 +16,7 @@ export default async function ChallengesPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="box-border w-full min-w-0 max-w-full overflow-x-clip py-6 sm:mx-auto sm:max-w-4xl sm:px-5 sm:py-8">
+    <div className="box-border w-full min-w-0 max-w-full overflow-x-clip pt-6 pb-[calc(var(--gn-app-bottom-nav-offset)+2rem)] sm:mx-auto sm:max-w-4xl sm:px-5 sm:pt-8 lg:py-8">
       <ChallengesPageHeader />
       <ChallengesHub />
     </div>
