@@ -28,6 +28,24 @@ import {
   PUBLIC_PLAYER_PROFILE_SECTION_CLASS,
 } from "@/lib/layout/appShellClasses";
 
+function DetailRow({ label, value }: { label: string; value: string | null | undefined }) {
+  const v = value?.trim();
+  if (!v) return null;
+  return (
+    <div className="min-w-0">
+      <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary sm:text-xs">
+        {label}
+      </p>
+      <p className="mt-1 break-words text-sm text-gn-text">{v}</p>
+    </div>
+  );
+}
+
+function formatPlayerAge(age: number | null | undefined): string | null {
+  if (typeof age === "number" && Number.isFinite(age)) return String(age);
+  return null;
+}
+
 function Spinner({ className = "h-5 w-5" }: { className?: string }) {
   return (
     <svg
@@ -63,6 +81,7 @@ type Props = {
 export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
   const t = useTranslations("playerProfile");
   const tProfile = useTranslations("profile");
+  const tFields = useTranslations("profileEditor");
   const tSv = useTranslations("scoutVerification");
   const td = useTranslations("discover");
   const { userId } = usePremium();
@@ -203,6 +222,29 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
     !scoutGate.row ||
     userMayMessagePlayers(scoutGate.row);
   const isOwnProfile = Boolean(userId && profile.id === userId);
+
+  const playerHeight =
+    typeof profile.height === "number" && Number.isFinite(profile.height)
+      ? tFields("heightCmOption", { n: profile.height })
+      : null;
+  const playerWeight =
+    typeof profile.weight === "number" && Number.isFinite(profile.weight)
+      ? tFields("weightKgOption", { n: profile.weight })
+      : null;
+  const playerBio = profile.bio?.trim() || null;
+  const hasPlayerDetails =
+    Boolean(
+      formatPlayerAge(profile.age) ||
+        profile.position?.trim() ||
+        profile.city?.trim() ||
+        profile.country?.trim() ||
+        playerHeight ||
+        playerWeight ||
+        profile.club?.trim() ||
+        profile.preferred_foot?.trim() ||
+        playerBio,
+    );
+
   const showUploadFirstBanner =
     isOwnProfile &&
     videos.length === 0 &&
@@ -291,6 +333,34 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
           </div>
         ) : null}
       </header>
+
+      {hasPlayerDetails ? (
+        <section
+          aria-label={t("detailsSectionAria")}
+          className={`${profileSectionClass} box-border w-full min-w-0 max-w-full space-y-4 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4 sm:p-5`}
+        >
+          <div className="grid min-w-0 gap-4 sm:grid-cols-2">
+            <DetailRow label={t("age")} value={formatPlayerAge(profile.age)} />
+            <DetailRow label={tFields("position")} value={profile.position} />
+            <DetailRow label={t("city")} value={profile.city} />
+            <DetailRow label={t("country")} value={profile.country} />
+            <DetailRow label={tFields("height")} value={playerHeight} />
+            <DetailRow label={tFields("weight")} value={playerWeight} />
+            <DetailRow label={tFields("club")} value={profile.club} />
+            <DetailRow label={tFields("preferredFoot")} value={profile.preferred_foot} />
+          </div>
+          {playerBio ? (
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary sm:text-xs">
+                {t("bio")}
+              </p>
+              <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gn-text">
+                {playerBio}
+              </p>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       <div className={profileSectionClass}>
         <PlayerFollowSection profileUserId={profile.id} />
