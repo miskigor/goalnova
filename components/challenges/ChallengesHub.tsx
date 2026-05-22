@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -17,7 +17,11 @@ import {
 import { challengeRewardHeadline } from "@/lib/challenges/challengeReward";
 import { timeRemainingUntil } from "@/lib/challenges/challengeTime";
 import { ChallengeCardActions } from "@/components/challenges/ChallengeCardActions";
-import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
+import {
+  rankingsPreviewVideoCandidates,
+  videoPlaybackUrl,
+} from "@/lib/video/videoPlaybackUrl";
+import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
   GN_PRIMARY_BUTTON_CLASS,
@@ -25,6 +29,73 @@ import {
 } from "@/components/ui/gnButtonClasses";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 import { withLocalizedChallengeContent } from "@/lib/challenges/challengeContent";
+
+/** Trending carousel hero — prefer `video_url` for inline preview (processed merge often paints black). */
+function TrendingChallengePreview({
+  video,
+  className = "",
+}: {
+  video: ChallengeTopPreview;
+  className?: string;
+}) {
+  const { containerRef, loadMedia } = useMediaNearViewport({
+    rootMargin: "240px 0px 240px 0px",
+  });
+  const sources = useMemo(
+    () => rankingsPreviewVideoCandidates(video),
+    [video],
+  );
+  const unique = useMemo(
+    () => Array.from(new Set(sources.map((s) => s.trim()).filter(Boolean))),
+    [sources],
+  );
+  const uniqueKey = useMemo(() => unique.join("|"), [unique]);
+  const [sourceIndex, setSourceIndex] = useState(0);
+  const activeSrc = unique[sourceIndex] ?? "";
+
+  useEffect(() => {
+    setSourceIndex(0);
+  }, [uniqueKey]);
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  useIosInlineVideoFirstFrameBump(
+    videoRef,
+    Boolean(loadMedia && activeSrc),
+    loadMedia ? activeSrc : "",
+  );
+
+  if (unique.length === 0) {
+    return (
+      <div
+        className={`flex h-full items-center justify-center bg-gradient-to-br from-gn-accent/20 to-transparent text-xs text-gn-text-tertiary ${className}`.trim()}
+      >
+        —
+      </div>
+    );
+  }
+
+  return (
+    <div ref={containerRef} className={`relative h-full w-full bg-black ${className}`.trim()}>
+      {loadMedia && activeSrc ? (
+        <video
+          ref={videoRef}
+          key={activeSrc}
+          className="h-full w-full object-cover opacity-90 transition-opacity group-hover:opacity-100"
+          src={activeSrc}
+          muted
+          playsInline
+          preload="metadata"
+          tabIndex={-1}
+          onError={() => {
+            if (sourceIndex < unique.length - 1) {
+              setSourceIndex((i) => i + 1);
+            }
+          }}
+        />
+      ) : null}
+    </div>
+  );
+}
 
 function VideoThumb({
   video,
@@ -256,13 +327,7 @@ export function ChallengesHub() {
                   </div>
                   <div className="relative aspect-[4/3] w-full bg-black">
                     {hero ? (
-                      <video
-                        className="h-full w-full object-cover opacity-90 transition-opacity group-hover:opacity-100"
-                        src={videoPlaybackUrl(hero)}
-                        muted
-                        playsInline
-                        preload="metadata"
-                      />
+                      <TrendingChallengePreview video={hero} className="absolute inset-0" />
                     ) : (
                       <div className="flex h-full items-center justify-center bg-gradient-to-br from-gn-accent/20 to-transparent text-xs text-gn-text-tertiary">
                         —
