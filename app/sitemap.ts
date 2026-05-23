@@ -17,7 +17,6 @@ const INDEXABLE_PATHS = [
   "/terms",
   "/content-policy",
 ] as const;
-const SITEMAP_PAGE_SIZE = 2000;
 
 function localizedPath(pathname: string, locale: string): string {
   if (locale === routing.defaultLocale) return pathname;
@@ -99,22 +98,11 @@ async function collectAllItems(): Promise<SitemapItem[]> {
   return items;
 }
 
-export async function generateSitemaps() {
-  const items = await collectAllItems();
-  const totalPages = Math.max(1, Math.ceil(items.length / SITEMAP_PAGE_SIZE));
-  return Array.from({ length: totalPages }, (_, id) => ({ id }));
-}
-
-export default async function sitemap({
-  id,
-}: {
-  id: number;
-}): Promise<MetadataRoute.Sitemap> {
+/** Single sitemap at `/sitemap.xml` (robots.txt). Under 50k URLs — no `generateSitemaps` split. */
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const origin = getServerSiteOrigin() ?? "https://pitchrusch.com";
   const items = await collectAllItems();
-  const start = id * SITEMAP_PAGE_SIZE;
-  const page = items.slice(start, start + SITEMAP_PAGE_SIZE);
-  return page.map((item) => ({
+  return items.map((item) => ({
     url: `${origin}${item.path}`,
     lastModified: item.lastModified,
     changeFrequency: item.changeFrequency,
