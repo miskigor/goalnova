@@ -17,7 +17,7 @@ const MOBILE_HEADER_INNER_CLASS =
   "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-visible ps-[max(2.75rem,env(safe-area-inset-left,0px))] pe-[max(2.75rem,env(safe-area-inset-right,0px))]";
 
 /**
- * Fixed top bar on small screens: brand + compact actions (admin, benefits, account menu).
+ * Fixed top bar on small screens: brand + compact actions (admin, challenges, benefits, account menu).
  * Premium lives in the bottom nav; “More” links live in {@link NavUserMenu} when `mobileMoreInMenu`.
  */
 export function AppMobileHeader() {
@@ -27,6 +27,7 @@ export function AppMobileHeader() {
   const tNav = useTranslations("nav");
   const pathname = usePathname();
   const benefitsActive = navItemActive(pathname, "/benefits");
+  const challengesActive = navItemActive(pathname, "/challenges");
   const adminActive = navItemActive(pathname, "/admin");
 
   return (
@@ -73,6 +74,21 @@ export function AppMobileHeader() {
               >
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
+            </Link>
+          ) : null}
+          {authed && user ? (
+            <Link
+              href="/challenges"
+              className={
+                "flex size-9 shrink-0 items-center justify-center rounded-lg border text-gn-text-secondary transition active:scale-[0.98] hover:bg-gn-surface-elevated hover:text-gn-text " +
+                (challengesActive
+                  ? "border-gn-accent/45 bg-gn-accent/10 text-gn-accent"
+                  : "border-gn-border-subtle bg-gn-surface/30")
+              }
+              aria-label={tNav("challenges")}
+              title={tNav("challenges")}
+            >
+              <NavIcon name="challenges" className="size-[18px] shrink-0" />
             </Link>
           ) : null}
           {authed && user ? (
