@@ -356,18 +356,22 @@ html {
     text-align: center;
   }
 
+  /*
+   * Non-home tab pages: root fills the viewport; portaled header/bottom nav stay fixed on body.
+   * Scroll + chrome clearance live on [data-app-main] (not root inset — avoids clipped titles / drift).
+   */
   [data-app-root]:not(:has([data-pitchrusch-home-feed])) {
     position: fixed !important;
-    top: var(--gn-app-header-offset) !important;
-    bottom: var(--gn-app-bottom-nav-offset) !important;
+    top: 0 !important;
+    bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0;
     min-height: 0 !important;
-    height: auto !important;
-    max-height: none !important;
+    height: 100% !important;
+    max-height: 100% !important;
     margin: 0 !important;
     overflow: hidden !important;
     overflow-x: clip;
@@ -401,25 +405,26 @@ html {
     width: 100% !important;
     max-width: 100% !important;
     margin-inline: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+    padding-top: var(--gn-app-header-offset) !important;
+    padding-bottom: var(--gn-app-bottom-nav-offset) !important;
     padding-left: max(0.75rem, env(safe-area-inset-left, 0px)) !important;
     padding-right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
     overflow-y: auto !important;
-    overflow-x: clip;
+    overflow-x: clip !important;
     overscroll-behavior: none;
     overscroll-behavior-y: none;
+    overscroll-behavior-x: none;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
-    align-items: center;
+    align-items: stretch;
   }
 
   [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) {
-    flex: none;
+    flex: 1 1 auto;
     box-sizing: border-box;
     width: 100%;
-    max-width: 22rem;
-    margin-inline: auto;
+    max-width: 100%;
+    margin-inline: 0;
     min-width: 0;
     min-height: 0;
     overflow-x: clip;
