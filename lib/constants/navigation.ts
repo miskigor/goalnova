@@ -116,7 +116,7 @@ export type ShellMobileNavItem = {
 
 export const APP_SHELL_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
   { href: "/home", labelKey: "home", icon: "home" },
-  { href: "/challenges", labelKey: "challenges", icon: "challenges" },
+  { href: "/explore", labelKey: "explore", icon: "explore" },
   { href: "/upload", labelKey: "upload", icon: "upload" },
   { href: "/premium", labelKey: "premium", icon: "premium" },
   { href: "/profile", labelKey: "profile", icon: "profile" },
