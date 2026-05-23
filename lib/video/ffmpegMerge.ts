@@ -158,15 +158,19 @@ export function mergeVideoWithMusicAudio(params: MergeParams): Promise<void> {
   const canCopyVideo = codec === "h264";
   const copyArgs = [...base, "-c:v", "copy", params.outputPath];
 
-  // Fallback for files where stream-copy is not possible.
+  // Re-encode when stream copy is unavailable (e.g. iPhone HEVC in MOV). Higher quality than CRF 23/veryfast.
   const reencodeArgs = [
     ...base,
     "-c:v",
     "libx264",
+    "-profile:v",
+    "high",
+    "-level",
+    "4.1",
     "-preset",
-    "veryfast",
+    "medium",
     "-crf",
-    "23",
+    "20",
     "-pix_fmt",
     "yuv420p",
     params.outputPath,
