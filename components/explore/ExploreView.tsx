@@ -107,23 +107,24 @@ function ExploreTileMedia({
   const videoUrlRaw = trimMediaUrl(video.video_url) || null;
 
   const activeVideoSrc = videoCandidates[videoIdx] ?? "";
-  const displayImageSrc = primaryImage && !imageBroken ? primaryImage : null;
+  const hasVideoCandidates = videoCandidates.length > 0;
   const showVideo =
-    !displayImageSrc &&
-    !videoExhausted &&
-    videoCandidates.length > 0 &&
-    Boolean(activeVideoSrc);
+    hasVideoCandidates && !videoExhausted && Boolean(activeVideoSrc);
+  const displayImageSrc = !showVideo && !imageBroken
+    ? primaryImage || videoPosterUrl || null
+    : null;
 
-  const renderKind: "IMG" | "VIDEO" | "NO_SRC" | "FAILED" = displayImageSrc
-    ? "IMG"
-    : showVideo
-      ? "VIDEO"
+  const renderKind: "IMG" | "VIDEO" | "NO_SRC" | "FAILED" = showVideo
+    ? "VIDEO"
+    : displayImageSrc
+      ? "IMG"
       : !hasAnySource
         ? "NO_SRC"
         : "FAILED";
 
-  const finalChosenSrc =
-    displayImageSrc ?? (showVideo ? activeVideoSrc : null);
+  const finalChosenSrc = showVideo
+    ? activeVideoSrc
+    : displayImageSrc ?? null;
 
   const logKey = useRef<string | null>(null);
   useEffect(() => {
@@ -251,23 +252,6 @@ function ExploreTileMedia({
     [videoId, activeVideoSrc, videoCandidates.length],
   );
 
-  if (displayImageSrc) {
-    return (
-      <div className="relative h-full w-full min-h-0 min-w-0">
-        <Image
-          src={displayImageSrc}
-          alt=""
-          fill
-          sizes="(max-width: 768px) 100vw, 33vw"
-          className="absolute inset-0 z-0 box-border min-h-0 min-w-0 object-cover object-center [transform:translateZ(0)]"
-          priority={isMobileLike}
-          unoptimized
-          onError={onImgError}
-        />
-      </div>
-    );
-  }
-
   if (showVideo && activeVideoSrc) {
     return (
       <div
@@ -300,6 +284,23 @@ function ExploreTileMedia({
         ) : (
           <div className="absolute inset-0 z-0 bg-neutral-900" aria-hidden />
         )}
+      </div>
+    );
+  }
+
+  if (displayImageSrc) {
+    return (
+      <div className="relative h-full w-full min-h-0 min-w-0">
+        <Image
+          src={displayImageSrc}
+          alt=""
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="absolute inset-0 z-0 box-border min-h-0 min-w-0 object-cover object-center [transform:translateZ(0)]"
+          priority={isMobileLike}
+          unoptimized
+          onError={onImgError}
+        />
       </div>
     );
   }

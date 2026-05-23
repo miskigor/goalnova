@@ -67,31 +67,27 @@ export function exploreTileHasRasterThumbnailOrPoster(
 }
 
 /**
- * First static image URL for `<img>`: thumbnail (if image), poster (if image), avatar (if image).
- * Skips values that look like video files so we never feed them to `<img>`.
+ * First static image URL for `<img>`: thumbnail or poster only (image-like).
+ * Profile avatars are excluded so tiles with a video URL render `<video>` preview instead.
  */
 export function exploreTilePrimaryImageUrl(
   video: VideoWithOptionalThumbnail,
-  profileAvatarUrl?: string | null,
+  _profileAvatarUrl?: string | null,
 ): string | undefined {
-  for (const raw of [
-    trimMediaUrl(video.thumbnail_url),
-    trimMediaUrl(video.poster_url),
-    trimMediaUrl(profileAvatarUrl),
-  ]) {
-    if (!raw || !isValidHttpMediaUrl(raw)) continue;
-    if (exploreThumbPosterUrlKind(raw) === "video") continue;
-    return raw;
-  }
-  return undefined;
+  return exploreTileThumbnailOrPosterImageUrl(video);
 }
 
-/** Still frame for `<video poster>` when the tile falls back to `<video>` (thumb/poster image, else avatar). */
+/** Still frame for `<video poster>`: thumb/poster image, else profile avatar (does not block `<video>`). */
 export function exploreTileVideoPosterAttribute(
   video: VideoWithOptionalThumbnail,
   profileAvatarUrl?: string | null,
 ): string | undefined {
-  return exploreTilePrimaryImageUrl(video, profileAvatarUrl);
+  const thumbPoster = exploreTileThumbnailOrPosterImageUrl(video);
+  if (thumbPoster) return thumbPoster;
+  const avatar = trimMediaUrl(profileAvatarUrl);
+  if (!avatar || !isValidHttpMediaUrl(avatar)) return undefined;
+  if (exploreThumbPosterUrlKind(avatar) === "video") return undefined;
+  return avatar;
 }
 
 /**
@@ -125,25 +121,23 @@ export function exploreTileVideoSrcCandidates(
   return out;
 }
 
-/** True if the tile can show either an `<img>` or a `<video>`. */
+/** True if the tile can show either an `<img>` (thumb/poster) or a `<video>`. */
 export function exploreTileHasVisualMedia(
   video: VideoWithOptionalThumbnail,
-  profileAvatarUrl?: string | null,
+  _profileAvatarUrl?: string | null,
 ): boolean {
   return (
-    Boolean(exploreTilePrimaryImageUrl(video, profileAvatarUrl)) ||
+    Boolean(exploreTilePrimaryImageUrl(video)) ||
     exploreTileVideoSrcCandidates(video).length > 0
   );
 }
 
-/**
- * Static image for the tile: real thumbnail / poster first, then profile avatar (image-like only).
- */
+/** @deprecated Use exploreTileVideoPosterAttribute */
 export function exploreTilePosterUrl(
   video: VideoWithOptionalThumbnail,
   profileAvatarUrl?: string | null,
 ): string | undefined {
-  return exploreTilePrimaryImageUrl(video, profileAvatarUrl);
+  return exploreTileVideoPosterAttribute(video, profileAvatarUrl);
 }
 
 /** @deprecated Use exploreTileVideoSrcCandidates — kept for call sites that import the old name. */
