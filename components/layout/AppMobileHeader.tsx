@@ -80,15 +80,16 @@ export function AppMobileHeader() {
             <Link
               href="/challenges"
               className={
-                "flex size-9 shrink-0 items-center justify-center rounded-lg border text-gn-text-secondary transition active:scale-[0.98] hover:bg-gn-surface-elevated hover:text-gn-text " +
+                "flex h-8 min-w-0 max-w-[5.25rem] shrink items-center justify-center rounded-lg border px-1.5 text-[10px] font-semibold leading-tight tracking-tight text-gn-accent transition active:scale-[0.98] hover:bg-gn-accent/10 sm:max-w-[6.25rem] sm:px-2 sm:text-[11px] " +
                 (challengesActive
-                  ? "border-gn-accent/45 bg-gn-accent/10 text-gn-accent"
-                  : "border-gn-border-subtle bg-gn-surface/30")
+                  ? "border-gn-accent bg-gn-accent/25"
+                  : "border-gn-accent/55 bg-gn-surface/30")
               }
               aria-label={tNav("challenges")}
               title={tNav("challenges")}
+              aria-current={challengesActive ? "page" : undefined}
             >
-              <NavIcon name="challenges" className="size-[18px] shrink-0" />
+              <span className="min-w-0 truncate">{tNav("challenges")}</span>
             </Link>
           ) : null}
           {authed && user ? (
