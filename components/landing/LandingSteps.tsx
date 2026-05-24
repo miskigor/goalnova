@@ -6,8 +6,8 @@ type Props = {
 
 export function LandingSteps({ steps }: Props) {
   return (
-    <section className="border-t border-white/[0.06] px-4 py-12 sm:px-6 sm:py-16">
-      <ol className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-3 sm:gap-5">
+    <section className="box-border w-full min-w-0 max-w-full overflow-x-clip border-t border-white/[0.06] px-4 py-12 sm:px-6 sm:py-16">
+      <ol className="mx-auto grid w-full min-w-0 max-w-6xl gap-6 sm:grid-cols-3 sm:gap-5">
         {steps.map((step, index) => (
           <li
             key={step.title}

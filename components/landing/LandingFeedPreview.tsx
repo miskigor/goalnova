@@ -12,8 +12,8 @@ type Props = {
 /** Feed-style phone mock with optimized highlight still (no video playback). */
 export function LandingFeedPreview({ badge, caption }: Props) {
   return (
-    <div className="mx-auto w-full max-w-[280px] lg:mx-0 lg:ml-auto">
-      <div className="relative aspect-[9/16] overflow-hidden rounded-3xl border border-white/10 bg-zinc-950 shadow-[0_24px_80px_-24px_rgba(249,115,22,0.35)]">
+    <div className="mx-auto box-border w-full min-w-0 max-w-[min(100%,280px)] overflow-x-clip lg:mx-0 lg:ml-auto">
+      <div className="relative aspect-[9/16] w-full max-w-full overflow-hidden rounded-3xl border border-white/10 bg-zinc-950 shadow-[0_24px_80px_-24px_rgba(249,115,22,0.35)]">
         <Image
           src={PREVIEW_SRC}
           alt=""
@@ -22,7 +22,7 @@ export function LandingFeedPreview({ badge, caption }: Props) {
           quality={82}
           priority
           sizes="(max-width: 1024px) 280px, 340px"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          className="absolute inset-0 h-full w-full max-w-full object-cover object-center"
         />
         <div
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-black/85"

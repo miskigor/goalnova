@@ -1,3 +1,4 @@
+import { AppRouteHorizontalScrollRecovery } from "@/components/layout/AppRouteHorizontalScrollRecovery";
 import { AppShell } from "@/components/layout/AppShell";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { EmailConfirmationGate } from "@/components/auth/EmailConfirmationGate";
@@ -14,7 +15,10 @@ export default function AppSectionLayout({
       <EmailConfirmationGate>
       <RoleOnboardingGate mode="require-onboarding">
         <RequireReauthOnReturn />
-        <AppShell>{children}</AppShell>
+        <AppShell>
+          <AppRouteHorizontalScrollRecovery />
+          {children}
+        </AppShell>
       </RoleOnboardingGate>
       </EmailConfirmationGate>
     </AuthGate>

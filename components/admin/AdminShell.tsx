@@ -58,10 +58,13 @@ export function AdminShell({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="min-h-dvh min-w-0 w-full overflow-x-clip bg-[#0a0a0c] text-zinc-100">
+    <div
+      data-admin-shell
+      className="box-border min-h-0 min-w-0 w-full max-w-full flex-1 overflow-x-clip bg-[#0a0a0c] text-zinc-100"
+    >
       <div className="mx-auto flex min-w-0 max-w-[1600px] flex-col md:flex-row">
         <aside className="min-w-0 border-b border-white/10 bg-black/60 md:sticky md:top-0 md:h-dvh md:w-56 md:shrink-0 md:border-b-0 md:border-r md:px-3 md:py-6">
-          <div className="flex gap-2 overflow-x-auto px-3 py-3 md:flex-col md:gap-1 md:overflow-visible md:px-0 md:py-0">
+          <div className="flex max-w-full gap-2 overflow-x-auto overscroll-x-contain px-3 py-3 md:flex-col md:gap-1 md:overflow-visible md:px-0 md:py-0">
             <Link
               href="/home"
               className="shrink-0 rounded-lg px-2 py-1.5 text-xs font-medium text-orange-400 hover:bg-white/5 md:mb-4 md:px-3"
