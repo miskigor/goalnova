@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "@/i18n/navigation";
+import { useNavSession } from "@/components/layout/useNavSession";
+import { supabase } from "@/lib/supabase/client";
 
 const REFRESH_MS = 500;
 const SHELL_SELECTORS = [
@@ -32,7 +34,74 @@ type ShellDebugSnapshot = {
   horizontalOverflow: string;
   verticalScroller: string;
   elements: string[];
+  deployCommit: string;
+  bundleProbe: string;
+  userAgent: string;
+  sbStorageKeys: string;
+  supabaseTokenExists: boolean;
+  navAuthed: string;
+  authEventsCount: number;
+  lastAuthEvent: string;
 };
+
+function deployCommitLabel(): string {
+  return (
+    process.env.NEXT_PUBLIC_DEPLOY_COMMIT ??
+    process.env.NEXT_PUBLIC_COMMIT_SHA ??
+    "(not set at build)"
+  );
+}
+
+function listSbLocalStorageKeys(): string {
+  if (typeof window === "undefined") return "(ssr)";
+  try {
+    const keys = Object.keys(window.localStorage).filter((k) => k.startsWith("sb-"));
+    return keys.length > 0 ? keys.join(", ") : "(none)";
+  } catch {
+    return "(localStorage blocked)";
+  }
+}
+
+function supabaseAuthTokenExists(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!url) return false;
+    const ref = new URL(url).hostname.split(".")[0];
+    const raw = window.localStorage.getItem(`sb-${ref}-auth-token`);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw) as { access_token?: string };
+    return (
+      typeof parsed?.access_token === "string" && parsed.access_token.length > 0
+    );
+  } catch {
+    return false;
+  }
+}
+
+async function probeUseNavSessionBundle(): Promise<string> {
+  const scripts = [
+    ...document.querySelectorAll('script[src*="/_next/static/chunks/"]'),
+  ]
+    .map((el) => (el as HTMLScriptElement).src)
+    .filter(Boolean);
+
+  for (const src of scripts) {
+    try {
+      const text = await (await fetch(src)).text();
+      if (text.includes("},22e3)") && text.includes("getUser")) {
+        return "4ce53aa+ (22s failsafe, getUser fallback)";
+      }
+      if (text.includes("prev===null?false")) {
+        return "pre-4ce53aa (10s failsafe → false)";
+      }
+    } catch {
+      /* skip unreadable chunk */
+    }
+  }
+
+  return "unknown (chunk marker not found)";
+}
 
 function shellDebugEnabledFromLocation(): boolean {
   if (typeof window === "undefined") return false;
@@ -150,7 +219,15 @@ function findVerticalScroller(): string {
   return hits.length > 0 ? hits.join("\n") : "(none)";
 }
 
-function collectSnapshot(pathname: string): ShellDebugSnapshot {
+function collectSnapshot(
+  pathname: string,
+  extras: {
+    bundleProbe: string;
+    navAuthed: boolean | null;
+    authEventsCount: number;
+    lastAuthEvent: string;
+  },
+): ShellDebugSnapshot {
   const vv = window.visualViewport;
   const viewportWidth = window.innerWidth;
 
@@ -159,6 +236,13 @@ function collectSnapshot(pathname: string): ShellDebugSnapshot {
     const line = describeElement(selector);
     if (line) elements.push(line);
   }
+
+  const navAuthedLabel =
+    extras.navAuthed === null
+      ? "null (loading)"
+      : extras.navAuthed
+        ? "true"
+        : "false";
 
   return {
     pathname,
@@ -179,6 +263,14 @@ function collectSnapshot(pathname: string): ShellDebugSnapshot {
     horizontalOverflow: findHorizontalOverflowLines(viewportWidth),
     verticalScroller: findVerticalScroller(),
     elements,
+    deployCommit: deployCommitLabel(),
+    bundleProbe: extras.bundleProbe,
+    userAgent: navigator.userAgent,
+    sbStorageKeys: listSbLocalStorageKeys(),
+    supabaseTokenExists: supabaseAuthTokenExists(),
+    navAuthed: navAuthedLabel,
+    authEventsCount: extras.authEventsCount,
+    lastAuthEvent: extras.lastAuthEvent,
   };
 }
 
@@ -186,6 +278,13 @@ function snapshotToText(snapshot: ShellDebugSnapshot): string {
   return [
     `pathname: ${snapshot.pathname}`,
     `shell: ${snapshot.shellType}`,
+    `deploy commit (build env): ${snapshot.deployCommit}`,
+    `useNavSession bundle: ${snapshot.bundleProbe}`,
+    `navigator.userAgent: ${snapshot.userAgent}`,
+    `localStorage sb-* keys: ${snapshot.sbStorageKeys}`,
+    `supabase auth token in localStorage: ${snapshot.supabaseTokenExists ? "YES" : "NO"}`,
+    `useNavSession authed: ${snapshot.navAuthed}`,
+    `auth events: count=${snapshot.authEventsCount} last=${snapshot.lastAuthEvent}`,
     `innerWidth: ${snapshot.innerWidth}`,
     `visualViewport: ${snapshot.vvWidth} x ${snapshot.vvHeight}`,
     `visualViewport offset: top=${snapshot.vvOffsetTop} left=${snapshot.vvOffsetLeft}`,
@@ -212,9 +311,13 @@ function snapshotToText(snapshot: ShellDebugSnapshot): string {
  */
 export function AppShellDebugOverlay() {
   const pathname = usePathname();
+  const { authed: navAuthed } = useNavSession();
   const [enabled, setEnabled] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [text, setText] = useState("");
+  const [bundleProbe, setBundleProbe] = useState("pending…");
+  const [authEventsCount, setAuthEventsCount] = useState(0);
+  const [lastAuthEvent, setLastAuthEvent] = useState("-");
 
   const shouldShow = useMemo(
     () => enabled && !isHomePath(pathname),
@@ -223,13 +326,46 @@ export function AppShellDebugOverlay() {
 
   const refresh = useCallback(() => {
     if (!shellDebugEnabledFromLocation() || isHomePath(pathname)) return;
-    setText(snapshotToText(collectSnapshot(pathname)));
-  }, [pathname]);
+    setText(
+      snapshotToText(
+        collectSnapshot(pathname, {
+          bundleProbe,
+          navAuthed,
+          authEventsCount,
+          lastAuthEvent,
+        }),
+      ),
+    );
+  }, [pathname, bundleProbe, navAuthed, authEventsCount, lastAuthEvent]);
 
   useEffect(() => {
     setEnabled(shellDebugEnabledFromLocation());
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
+    let cancelled = false;
+    void probeUseNavSessionBundle().then((label) => {
+      if (!cancelled) setBundleProbe(label);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [enabled]);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      setAuthEventsCount((n) => n + 1);
+      setLastAuthEvent(event);
+    });
+
+    return () => {
+      sub.subscription.unsubscribe();
+    };
+  }, [enabled]);
 
   useEffect(() => {
     if (!enabled || isHomePath(pathname)) return;
