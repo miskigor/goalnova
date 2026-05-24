@@ -8,6 +8,7 @@ export const PRIVATE_ROUTE_PATHS = [
   "/forgot-password",
   "/confirm-email",
   "/auth/confirm",
+  "/reset-password",
   "/home",
   "/profile",
   "/upload",
