@@ -12,9 +12,9 @@ import { navItemActive } from "@/lib/navigation/navItemActive";
 import { NavIcon } from "@/components/icons/NavIcons";
 import { APP_MOBILE_HEADER_CLASS } from "@/lib/layout/appShellClasses";
 
-/** Logo + actions in one row from the left; safe-area padding only (no extra inset that clips the logo). */
+/** Logo flush left; actions grouped on the right — all inside the header band. */
 const MOBILE_HEADER_INNER_CLASS =
-  "box-border flex h-14 w-full max-w-full min-w-0 items-center gap-1.5 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+  "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
 /**
  * Fixed top bar on small screens: brand + compact actions (admin, challenges, benefits, account menu).
@@ -44,7 +44,7 @@ export function AppMobileHeader() {
           className="!shrink-0 [&_span]:overflow-visible [&_img]:!size-10 [&_img]:!max-h-10 [&_img]:!max-w-10 [&_img]:!object-contain min-[360px]:[&_img]:!size-11 min-[360px]:[&_img]:!max-h-11 min-[360px]:[&_img]:!max-w-11"
         />
 
-        <div className="flex min-w-0 flex-1 items-center justify-start gap-0.5 overflow-x-clip min-[360px]:gap-1">
+        <div className="flex shrink-0 items-center justify-end gap-0.5 overflow-x-clip min-[360px]:gap-1">
           {authed && user && adminLoaded && isAdmin ? (
             <Link
               href="/admin"

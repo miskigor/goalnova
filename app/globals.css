@@ -137,7 +137,19 @@ html {
   }
 
   [data-app-mobile-chrome-fixed="bottom"] {
-    bottom: 0;
+    bottom: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: clip !important;
+    z-index: 1000;
+  }
+
+  [data-app-mobile-chrome-fixed="bottom"] [data-app-bottom-nav] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.55);
   }
 
   [data-app-mobile-header] {
