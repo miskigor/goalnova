@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
@@ -13,6 +13,7 @@ import {
   urlHasPendingAuthRedirect,
 } from "@/lib/auth/consumeAuthRedirectFromUrl";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
+import { AppChromeLayout } from "@/components/layout/AppChromeLayout";
 import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
 import type { Session } from "@supabase/supabase-js";
@@ -81,6 +82,14 @@ const GUEST_MANUAL_AUTH_PATHS = new Set([
   "/forgot-password",
   CONFIRM_EMAIL_PATH,
 ]);
+
+function protectedChromeLoading(
+  mode: AuthGateMode,
+  node: React.ReactNode,
+): React.ReactNode {
+  if (mode !== "protected") return node;
+  return <AppChromeLayout>{node}</AppChromeLayout>;
+}
 
 export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const tCommon = useTranslations("authCommon");
@@ -260,13 +269,14 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   }, [checking, isAuthenticated, emailConfirmed, mode, pathname, redirectTo, router, session]);
 
   if (checking) {
-    return (
+    return protectedChromeLoading(
+      mode,
       <div className="flex min-h-[50vh] items-center justify-center">
         <div className="flex items-center gap-2 text-sm text-gn-text-secondary">
           <InlineSpinner />
           {tCommon("loading")}
         </div>
-      </div>
+      </div>,
     );
   }
 
@@ -295,13 +305,14 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     blockedUnconfirmed ||
     staleSessionWithoutFreshLogin
   ) {
-    return (
+    return protectedChromeLoading(
+      mode,
       <div className="flex min-h-[50vh] items-center justify-center">
         <div className="flex items-center gap-2 text-sm text-gn-text-secondary">
           <InlineSpinner />
           {tCommon("loading")}
         </div>
-      </div>
+      </div>,
     );
   }
 

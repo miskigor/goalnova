@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { LandingAuthedHomeRedirect } from "@/components/landing/LandingAuthedHomeRedirect";
 import { LandingNav } from "@/components/landing/LandingNav";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { LandingSteps } from "@/components/landing/LandingSteps";
@@ -85,6 +86,8 @@ export default async function LandingPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
       />
+
+      <LandingAuthedHomeRedirect />
 
       <LandingNav
         homeHref={h("/")}

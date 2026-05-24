@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { AppMobileHeader } from "@/components/layout/AppMobileHeader";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
@@ -12,7 +12,7 @@ import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
 export function AppMobileChromePortal() {
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setMounted(true);
   }, []);
 

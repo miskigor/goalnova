@@ -33,23 +33,10 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
 
   if (authed === null) {
     return (
-      <>
+      <AppChromeLayout>
         <AppShellDebugOverlay />
-        <div
-          data-public-shell
-          className="flex min-h-dvh min-w-0 w-full flex-col overflow-x-clip bg-gn-bg text-gn-text"
-        >
-        <header className="sticky top-0 z-50 border-b border-gn-border-subtle bg-gn-bg/80 backdrop-blur-xl backdrop-saturate-150 transition-[background-color,box-shadow,border-color] duration-300 ease-gn-smooth">
-          <div className="mx-auto flex h-[3.75rem] min-w-0 max-w-6xl items-center pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-6 sm:pr-6">
-            <div className="h-9 w-28 animate-pulse rounded-lg bg-gn-surface/40" />
-            <div className="ms-auto h-9 w-36 animate-pulse rounded-lg bg-gn-surface/40" />
-          </div>
-        </header>
-        <div className="mx-auto min-w-0 w-full max-w-6xl flex-1 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-6 sm:pr-6">
-          {children}
-        </div>
-        </div>
-      </>
+        {children}
+      </AppChromeLayout>
     );
   }
 
