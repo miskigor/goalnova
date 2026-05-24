@@ -1,5 +1,41 @@
 /** Shared mobile app shell layout — single horizontal padding, no side safe-area (WhatsApp WebView-safe). */
 
+/** V2 mobile shell: flex column between top bar and bottom tabs (see {@link MobileAppShell}). */
+export const MOBILE_APP_SHELL_V2_CLASS =
+  "relative mx-auto box-border flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col overflow-x-clip max-lg:h-svh max-lg:max-h-svh max-lg:min-h-0 max-lg:overflow-y-hidden lg:min-h-dvh";
+
+/** V2 main scrollport — only this region scrolls on mobile. */
+export const MOBILE_APP_SHELL_V2_MAIN_CLASS =
+  "max-lg:flex-1 max-lg:min-h-0 max-lg:overflow-y-auto max-lg:overflow-x-clip max-lg:overscroll-y-contain";
+
+export const MOBILE_TOP_BAR_V2_CLASS = [
+  "relative z-[1] box-border w-full max-w-full shrink-0",
+  "border-b border-gn-border-subtle bg-gn-bg",
+  "pt-[env(safe-area-inset-top,0px)]",
+  "shadow-[0_8px_32px_rgba(0,0,0,0.2)]",
+  "lg:hidden",
+].join(" ");
+
+export const MOBILE_TOP_BAR_V2_INNER_CLASS =
+  "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+
+export const MOBILE_BOTTOM_TABS_V2_CLASS = [
+  "relative z-[1] box-border w-full max-w-full min-w-0 shrink-0 overflow-x-clip bg-gn-bg",
+  "border-t border-gn-border-subtle",
+  "pb-[max(0.25rem,env(safe-area-inset-bottom,0px))] pt-0.5",
+  "shadow-[0_-6px_20px_rgba(0,0,0,0.4)]",
+  "lg:hidden",
+].join(" ");
+
+export const MOBILE_BOTTOM_TABS_V2_INNER_CLASS =
+  "pointer-events-auto box-border grid h-12 w-full min-w-0 max-w-full grid-cols-5 items-end justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+
+export const MOBILE_BOTTOM_TABS_V2_ITEM_CLASS =
+  "flex h-10 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-visible rounded-md border border-transparent px-0 py-0 text-[9px] font-medium leading-none tracking-tight min-[360px]:text-[10px]";
+
+export const MOBILE_BOTTOM_TABS_V2_UPLOAD_FAB_CLASS =
+  "pointer-events-auto -mt-4 flex w-full min-w-0 max-w-full flex-col items-center justify-end gap-0.5";
+
 export const APP_SHELL_ROOT_CLASS =
   "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-0 max-lg:h-svh max-lg:max-h-svh max-lg:min-h-0 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden lg:flex-row";
 
