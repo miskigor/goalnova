@@ -357,8 +357,8 @@ export function LoginCard({ labels }: Props) {
   }
 
   return (
-    <div className="mx-auto w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:p-8">
-      <div className="mb-6 text-center sm:mb-8">
+    <div className="mx-auto box-border w-full min-w-0 max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:p-8">
+      <div className="mb-6 min-w-0 max-w-full text-center sm:mb-8">
         <Logo href="/" variant="entry" className="justify-center" showWordmark={false} />
         <h1 className="mt-4 text-xl font-semibold tracking-tight text-gn-text sm:mt-6">
           {labels.title}
@@ -367,7 +367,7 @@ export function LoginCard({ labels }: Props) {
       </div>
 
       <form
-        className="space-y-4"
+        className="w-full min-w-0 max-w-full space-y-4"
         noValidate
         onSubmit={(e) => {
           e.preventDefault();
@@ -375,7 +375,7 @@ export function LoginCard({ labels }: Props) {
           void onSubmit();
         }}
       >
-        <div>
+        <div className="min-w-0 max-w-full">
           <label htmlFor="login-email" className="text-sm font-medium text-gn-text">
             {labels.email}
           </label>
@@ -392,7 +392,7 @@ export function LoginCard({ labels }: Props) {
           />
         </div>
 
-        <div>
+        <div className="min-w-0 max-w-full">
           <label htmlFor="login-password" className="text-sm font-medium text-gn-text">
             {labels.password}
           </label>
@@ -407,10 +407,10 @@ export function LoginCard({ labels }: Props) {
             onChange={(e) => setPassword(e.target.value)}
             className="mt-1.5 w-full rounded-xl border border-gn-border bg-gn-surface px-3.5 py-3 text-sm text-gn-text placeholder:text-gn-text-tertiary outline-none transition-[border-color,box-shadow] focus:border-gn-accent/60 focus:ring-2 focus:ring-gn-accent/25"
           />
-          <div className="mt-2 text-end">
+          <div className="mt-2 min-w-0 max-w-full overflow-x-clip text-end">
             <Link
               href="/forgot-password"
-              className="text-xs font-medium text-gn-accent hover:text-gn-accent-hover"
+              className="inline-block max-w-full break-words text-xs font-medium text-gn-accent hover:text-gn-accent-hover"
             >
               {labels.forgotPasswordLink}
             </Link>
@@ -421,11 +421,11 @@ export function LoginCard({ labels }: Props) {
           <div
             role="alert"
             aria-live="assertive"
-            className="space-y-2 rounded-xl border border-red-500/35 bg-red-950/20 px-3.5 py-2 text-sm text-red-100/90"
+            className="min-w-0 max-w-full space-y-2 overflow-x-clip rounded-xl border border-red-500/35 bg-red-950/20 px-3.5 py-2 text-sm text-red-100/90"
           >
-            <p>{error}</p>
+            <p className="break-words">{error}</p>
             {errorDetail ? (
-              <pre className="whitespace-pre-wrap break-words font-mono text-[11px] leading-snug text-red-100/75">
+              <pre className="max-w-full overflow-x-auto whitespace-pre-wrap break-words font-mono text-[11px] leading-snug text-red-100/75">
                 {errorDetail}
               </pre>
             ) : null}
@@ -443,11 +443,11 @@ export function LoginCard({ labels }: Props) {
         </button>
       </form>
 
-      <p className="mt-8 text-center text-sm text-gn-text-secondary">
+      <p className="mt-8 min-w-0 max-w-full text-center text-sm text-gn-text-secondary">
         {labels.noAccount}{" "}
         <Link
           href="/signup"
-          className="font-medium text-gn-accent hover:text-gn-accent-hover"
+          className="inline-block max-w-full break-words font-medium text-gn-accent hover:text-gn-accent-hover"
         >
           {labels.signUpLink}
         </Link>
