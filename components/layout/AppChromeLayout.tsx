@@ -24,11 +24,14 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
         <AppLayoutDebugProbe />
         <AppShellDebugOverlay />
         <AppMobileChromePortal />
-        <div data-app-root className={APP_SHELL_ROOT_CLASS}>
+        <div data-app-root data-app-shell-band className={APP_SHELL_ROOT_CLASS}>
           <AppSidebar />
           <div data-app-column className={APP_SHELL_COLUMN_CLASS}>
             <main data-app-main className={APP_SHELL_MAIN_CLASS}>
-              <div data-app-main-inner className={APP_SHELL_MAIN_INNER_CLASS}>
+              <div
+                data-app-main-inner
+                className={`${APP_SHELL_MAIN_INNER_CLASS} max-lg:w-full max-lg:max-w-full max-lg:min-w-0`}
+              >
                 <ScoutVerificationBanner />
                 {children}
               </div>

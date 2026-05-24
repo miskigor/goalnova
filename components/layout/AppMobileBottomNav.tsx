@@ -62,7 +62,7 @@ export function AppMobileBottomNav() {
   return (
     <nav
       data-app-bottom-nav
-      className={APP_MOBILE_BOTTOM_NAV_CLASS}
+      className={`${APP_MOBILE_BOTTOM_NAV_CLASS} box-border overflow-x-clip`}
       aria-label={tNav("primary")}
     >
       <div className={APP_MOBILE_BOTTOM_NAV_INNER_CLASS}>

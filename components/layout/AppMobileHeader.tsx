@@ -33,7 +33,7 @@ export function AppMobileHeader() {
   return (
     <header
       data-app-mobile-header
-      className={`${APP_MOBILE_HEADER_CLASS} overflow-visible`}
+      className={`${APP_MOBILE_HEADER_CLASS} box-border w-full max-w-full overflow-x-clip overflow-y-visible`}
     >
       <div className={MOBILE_HEADER_INNER_CLASS}>
         <Logo
