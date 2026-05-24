@@ -39,7 +39,7 @@ function ProfilePageShell({ children }: { children: React.ReactNode }) {
   return (
     <div
       data-profile-shell
-      className="box-border w-full min-w-0 max-w-full space-y-6 overflow-x-clip pb-8"
+      className="box-border mx-auto w-full min-w-0 max-w-md space-y-6 overflow-x-clip pb-[max(2.5rem,calc(var(--gn-app-bottom-nav-offset,3rem)+1.25rem))]"
     >
       {children}
     </div>
