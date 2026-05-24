@@ -3,40 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { resolveGateAuthEventAction } from "@/lib/auth/gateAuthEvent";
+import { readGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
-import type { Session, User } from "@supabase/supabase-js";
-
-const GATE_SESSION_TIMEOUT_MS = 10_000;
-
-/** Avoid unbounded `getSession()` waits that block AppShell on slow mobile auth init. */
-async function readGateSessionSnapshot(gateLabel: string): Promise<{
-  session: Session | null;
-  user: User | null;
-}> {
-  const result = await Promise.race([
-    supabase.auth.getSession(),
-    new Promise<"timeout">((resolve) => {
-      window.setTimeout(() => resolve("timeout"), GATE_SESSION_TIMEOUT_MS);
-    }),
-  ]);
-
-  if (result !== "timeout") {
-    const session = result.data.session ?? null;
-    return { session, user: session?.user ?? null };
-  }
-
-  devError(
-    `${gateLabel}: getSession did not resolve within ${GATE_SESSION_TIMEOUT_MS}ms; falling back to getUser`,
-  );
-  const { data: userData, error: userErr } = await supabase.auth.getUser();
-  if (userErr) {
-    devError(`${gateLabel}: getUser fallback failed`, userErr);
-  }
-  return { session: null, user: userData.user ?? null };
-}
+import type { Session } from "@supabase/supabase-js";
 
 type Props = {
   children: React.ReactNode;
@@ -82,18 +55,36 @@ export function EmailConfirmationGate({ children }: Props) {
   const router = useRouter();
   const [allowed, setAllowed] = useState(false);
   const didRedirectRef = useRef(false);
+  const allowedRef = useRef(false);
+  const trackedUserIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    allowedRef.current = allowed;
+  }, [allowed]);
 
   useEffect(() => {
     let cancelled = false;
 
-    async function evaluate() {
+    async function evaluate(options?: {
+      session?: Session | null;
+      blockShell?: boolean;
+    }) {
+      if (options?.blockShell) {
+        setAllowed(false);
+      }
+
       const { session, user: sessionUser } = await readGateSessionSnapshot(
         "EmailConfirmationGate",
+        options?.session !== undefined ? { session: options.session } : undefined,
       );
       if (!session && !sessionUser?.id) {
+        trackedUserIdRef.current = null;
         if (!cancelled) setAllowed(true);
         return;
       }
+
+      trackedUserIdRef.current =
+        sessionUser?.id ?? session?.user?.id ?? null;
 
       let user = sessionUser;
       if (!user) {
@@ -120,14 +111,22 @@ export function EmailConfirmationGate({ children }: Props) {
       }
     }
 
-    void evaluate();
+    void evaluate({ blockShell: true });
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(() => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      const action = resolveGateAuthEventAction(event, session, {
+        allowed: allowedRef.current,
+        trackedUserId: trackedUserIdRef.current,
+      });
+      if (action === "skip") return;
+
       didRedirectRef.current = false;
-      setAllowed(false);
-      void evaluate();
+      void evaluate({
+        session,
+        blockShell: action === "reevaluate-block",
+      });
     });
 
     return () => {
