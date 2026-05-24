@@ -24,8 +24,8 @@ export function LandingFooter({
   navAriaLabel,
 }: Props) {
   return (
-    <footer className="box-border w-full min-w-0 max-w-full overflow-x-clip border-t border-white/[0.06] px-4 py-8 sm:px-6">
-      <div className="mx-auto flex w-full min-w-0 max-w-6xl flex-col items-center gap-4">
+    <footer className="border-t border-white/[0.06] px-4 py-8 sm:px-6">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4">
         <nav
           className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-medium text-gn-text-secondary sm:text-sm"
           aria-label={navAriaLabel}

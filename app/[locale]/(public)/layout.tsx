@@ -1,7 +1,6 @@
 import { PremiumProvider } from "@/components/premium/PremiumProvider";
 import { NotificationsInboxProvider } from "@/components/notifications/NotificationsInboxContext";
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
-import { PublicRouteHorizontalScrollRecovery } from "@/components/layout/PublicRouteHorizontalScrollRecovery";
 import { PublicShell } from "@/components/layout/PublicShell";
 
 export default function PublicAppLayout({
@@ -13,10 +12,7 @@ export default function PublicAppLayout({
     <PremiumProvider>
       <NotificationsInboxProvider>
         <FeedbackProvider>
-          <PublicShell>
-            <PublicRouteHorizontalScrollRecovery />
-            {children}
-          </PublicShell>
+          <PublicShell>{children}</PublicShell>
         </FeedbackProvider>
       </NotificationsInboxProvider>
     </PremiumProvider>

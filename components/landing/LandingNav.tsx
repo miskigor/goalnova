@@ -12,8 +12,8 @@ type Props = {
 
 export function LandingNav({ homeHref, loginHref, signupHref, loginLabel, joinLabel }: Props) {
   return (
-    <header className="sticky top-0 z-30 box-border w-full max-w-full min-w-0 overflow-x-clip border-b border-white/[0.06] bg-black/80 pt-[env(safe-area-inset-top,0px)] backdrop-blur-md">
-      <div className="mx-auto box-border flex w-full min-w-0 max-w-6xl items-center gap-1.5 overflow-x-clip px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3">
+    <header className="sticky top-0 z-30 border-b border-white/[0.06] bg-black/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-3 sm:gap-3 sm:px-6">
         <a
           href={homeHref}
           className="inline-flex min-w-0 flex-1 items-center gap-2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 sm:gap-2.5"
@@ -23,7 +23,7 @@ export function LandingNav({ homeHref, loginHref, signupHref, loginLabel, joinLa
             PitchRusch
           </span>
         </a>
-        <div className="flex min-w-0 shrink-0 items-center gap-0.5 overflow-x-clip sm:gap-2">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           <LanguageSwitcher variant="landing" />
           <a
             href={loginHref}

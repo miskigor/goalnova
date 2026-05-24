@@ -11,10 +11,10 @@ type Props = {
 export function LandingFoundingPlayer({ signupHref, title, body, bullets, cta }: Props) {
   return (
     <section
-      className="box-border w-full min-w-0 max-w-full overflow-x-clip border-t border-white/[0.06] px-4 py-12 sm:px-6 sm:py-16"
+      className="border-t border-white/[0.06] px-4 py-12 sm:px-6 sm:py-16"
       aria-labelledby="landing-founding-heading"
     >
-      <div className="mx-auto box-border w-full min-w-0 max-w-6xl overflow-x-clip rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 via-white/[0.04] to-transparent p-5 shadow-[0_0_40px_-12px_rgba(249,115,22,0.35)] sm:p-8">
+      <div className="mx-auto max-w-6xl rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 via-white/[0.04] to-transparent p-5 shadow-[0_0_40px_-12px_rgba(249,115,22,0.35)] sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
           <div className="min-w-0 flex-1">
             <h2

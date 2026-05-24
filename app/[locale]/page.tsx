@@ -5,8 +5,6 @@ import { LandingHero } from "@/components/landing/LandingHero";
 import { LandingSteps } from "@/components/landing/LandingSteps";
 import { LandingFoundingPlayer } from "@/components/landing/LandingFoundingPlayer";
 import { LandingFooter } from "@/components/landing/LandingFooter";
-import { LandingHorizontalScrollRecovery } from "@/components/landing/LandingHorizontalScrollRecovery";
-import { LandingIgDebugOverlay } from "@/components/landing/LandingIgDebugOverlay";
 import { hrefWithLocale } from "@/i18n/routing";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
@@ -82,17 +80,11 @@ export default async function LandingPage({ params }: Props) {
   ];
 
   return (
-    <div
-      data-landing-root
-      className="box-border flex w-full min-w-0 max-w-full flex-col overflow-x-clip bg-black text-gn-text min-h-[100svh] pb-[max(0.75rem,env(safe-area-inset-bottom,0px))]"
-    >
+    <div className="min-h-[100dvh] bg-black text-gn-text">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
       />
-
-      <LandingIgDebugOverlay />
-      <LandingHorizontalScrollRecovery />
 
       <LandingNav
         homeHref={h("/")}
@@ -102,7 +94,7 @@ export default async function LandingPage({ params }: Props) {
         joinLabel={t("navJoin")}
       />
 
-      <main className="box-border w-full min-w-0 max-w-full flex-1 overflow-x-clip">
+      <main>
         <LandingHero
           signupHref={h("/signup")}
           challengesHref={h("/challenges")}
