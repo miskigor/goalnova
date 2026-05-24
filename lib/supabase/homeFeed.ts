@@ -80,14 +80,16 @@ type NormalizedVideo = { video: HomeFeedVideo; embedChallenge: HomeFeedChallenge
 
 function isMissingUsersScoutApplyFullNameColumn(error: unknown): boolean {
   const e = error as { code?: string | null; message?: string | null };
-  if (e?.code !== "PGRST204") return false;
+  const code = e?.code ?? "";
+  if (code !== "PGRST204" && code !== "42703") return false;
   const m = (e.message ?? "").toLowerCase();
   return m.includes("scout_apply_full_name") && m.includes("users");
 }
 
 function isMissingUsersIsDeletedColumn(error: unknown): boolean {
   const e = error as { code?: string | null; message?: string | null };
-  if (e?.code !== "PGRST204") return false;
+  const code = e?.code ?? "";
+  if (code !== "PGRST204" && code !== "42703") return false;
   const m = (e.message ?? "").toLowerCase();
   return m.includes("is_deleted") && m.includes("users");
 }
