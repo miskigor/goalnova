@@ -1,14 +1,14 @@
 /** Shared mobile app shell layout — single horizontal padding, no side safe-area (WhatsApp WebView-safe). */
 
 export const APP_SHELL_ROOT_CLASS =
-  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-0 max-lg:h-svh max-lg:max-h-svh max-lg:min-h-0 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden lg:flex-row";
+  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text max-lg:min-h-0 max-lg:w-full max-lg:max-w-full max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden lg:flex-row";
 
 export const APP_SHELL_COLUMN_CLASS =
   "relative mx-auto flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col ps-0 max-lg:min-h-0 lg:min-h-dvh lg:overflow-x-hidden lg:ps-[15.5rem]";
 
 export const APP_SHELL_MAIN_CLASS = [
-  "mx-auto box-border flex w-full min-w-0 max-w-full flex-1 flex-col items-stretch overflow-x-hidden px-4",
-  "min-h-0 max-lg:min-h-0",
+  "mx-auto box-border flex w-full min-w-0 max-w-full flex-1 flex-col items-stretch overflow-x-clip",
+  "min-h-0 max-lg:min-h-0 max-lg:items-center max-lg:px-0",
   "max-lg:pt-0 max-lg:pb-0",
   "lg:max-w-4xl lg:px-6 lg:pt-8 lg:pb-12",
 ].join(" ");
@@ -28,7 +28,7 @@ export const APP_MOBILE_HEADER_INNER_CLASS =
   "mx-auto flex h-14 w-full max-w-full min-w-0 items-center gap-2 overflow-visible box-border px-3";
 
 export const APP_MOBILE_BOTTOM_NAV_CLASS = [
-  "relative z-[1] box-border w-full max-w-full min-w-0 shrink-0 overflow-visible bg-gn-bg",
+  "relative z-[1] box-border w-full max-w-full min-w-0 shrink-0 overflow-x-clip bg-gn-bg",
   "border-t border-gn-border-subtle",
   "pb-[max(0.25rem,env(safe-area-inset-bottom,0px))] pt-0.5",
   "shadow-[0_-6px_20px_rgba(0,0,0,0.4)]",
@@ -37,10 +37,10 @@ export const APP_MOBILE_BOTTOM_NAV_CLASS = [
 
 /** Inner grid for five bottom-nav items — never wider than the viewport. */
 export const APP_MOBILE_BOTTOM_NAV_INNER_CLASS =
-  "pointer-events-auto box-border grid h-10 w-full min-w-0 max-w-full grid-cols-5 items-center justify-items-center gap-0 overflow-visible ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+  "pointer-events-auto box-border grid h-10 w-full min-w-0 max-w-full grid-cols-5 items-center justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
 export const APP_MOBILE_BOTTOM_NAV_ITEM_CLASS =
-  "flex h-10 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-visible rounded-md border border-transparent px-0 py-0 text-[9px] font-medium leading-none tracking-tight min-[360px]:text-[10px]";
+  "flex h-10 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-x-clip rounded-md border border-transparent px-0 py-0 text-[9px] font-medium leading-none tracking-tight min-[360px]:text-[10px]";
 
 /** `/notifications` inbox — bounded column inside main shell padding. */
 export const APP_MESSAGES_INBOX_PAGE_CLASS =
@@ -55,7 +55,7 @@ export const APP_MESSAGES_THREAD_PAGE_CLASS = [
 
 /** Stable profile column — same width on loading skeleton and loaded content (mobile-first). */
 export const APP_PROFILE_CONTENT_CLASS =
-  "mx-auto box-border w-full min-w-0 max-w-md overflow-x-clip px-4";
+  "mx-auto box-border w-full min-w-0 max-w-full overflow-x-clip max-lg:px-0 lg:max-w-md lg:px-4";
 
 export const APP_PROFILE_SHELL_CLASS = [
   APP_PROFILE_CONTENT_CLASS,

@@ -25,14 +25,14 @@ export function AppMobileChromePortal() {
       <div
         data-app-mobile-chrome
         data-app-mobile-chrome-fixed="top"
-        className="pointer-events-auto fixed inset-x-0 top-0 z-[610] translate-z-0 max-lg:block lg:hidden"
+        className="pointer-events-auto fixed inset-x-0 top-0 z-[610] box-border w-full max-w-full min-w-0 translate-z-0 overflow-x-clip max-lg:block lg:hidden"
       >
         <AppMobileHeader />
       </div>
       <div
         data-app-mobile-chrome
         data-app-mobile-chrome-fixed="bottom"
-        className="pointer-events-auto fixed inset-x-0 bottom-0 z-[610] translate-z-0 max-lg:block lg:hidden"
+        className="pointer-events-auto fixed inset-x-0 bottom-0 z-[610] box-border w-full max-w-full min-w-0 translate-z-0 overflow-x-clip max-lg:block lg:hidden"
       >
         <AppMobileBottomNav />
       </div>

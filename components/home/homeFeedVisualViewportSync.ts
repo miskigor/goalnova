@@ -3,9 +3,8 @@ import { isHomeFeedMobileViewport } from "@/components/home/homeFeedMobileScroll
 export const GN_HOME_FEED_VV_LEFT_VAR = "--gn-home-feed-vv-left";
 export const GN_HOME_FEED_VV_WIDTH_VAR = "--gn-home-feed-vv-width";
 
+/** Feed nodes only — never set VV vars on `[data-app-main]` (leaks into profile/admin after SPA nav). */
 const HOME_FEED_VV_SYNC_SELECTORS = [
-  "[data-app-main]",
-  "[data-app-main-inner]",
   "[data-pitchrusch-home-feed]",
   "[data-pitchrusch-feed-panel]",
   "[data-pitchrusch-feed-scroll-root]",

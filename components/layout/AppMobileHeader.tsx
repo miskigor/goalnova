@@ -14,7 +14,7 @@ import { APP_MOBILE_HEADER_CLASS } from "@/lib/layout/appShellClasses";
 
 /** Mobile-only header row layout (padding + alignment tuned here, not in shared shell constants). */
 const MOBILE_HEADER_INNER_CLASS =
-  "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-visible ps-[max(2.75rem,env(safe-area-inset-left,0px))] pe-[max(2.75rem,env(safe-area-inset-right,0px))]";
+  "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-clip ps-[max(2.75rem,env(safe-area-inset-left,0px))] pe-[max(2.75rem,env(safe-area-inset-right,0px))]";
 
 /**
  * Fixed top bar on small screens: brand + compact actions (admin, challenges, benefits, account menu).
@@ -33,7 +33,7 @@ export function AppMobileHeader() {
   return (
     <header
       data-app-mobile-header
-      className={`${APP_MOBILE_HEADER_CLASS} overflow-visible`}
+      className={`${APP_MOBILE_HEADER_CLASS} overflow-x-clip`}
     >
       <div className={MOBILE_HEADER_INNER_CLASS}>
         <Logo
