@@ -15,7 +15,7 @@ export default async function ExplorePage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="mx-auto box-border w-full min-w-0 max-w-6xl touch-pan-y overflow-x-clip px-2 py-5 sm:px-5 sm:py-8">
+    <div className="mx-auto box-border w-full min-w-0 max-w-full touch-pan-y overflow-x-clip px-3 py-5 sm:px-4 sm:py-8 lg:max-w-6xl lg:px-5 lg:py-8">
       <ExploreView />
     </div>
   );

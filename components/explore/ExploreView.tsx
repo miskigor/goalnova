@@ -256,7 +256,7 @@ function ExploreTileMedia({
     return (
       <div
         ref={videoNearRef}
-        className="relative z-0 flex h-full min-h-0 w-full min-w-0"
+        className="relative z-0 flex h-full min-h-0 w-full min-w-0 max-w-full overflow-hidden"
       >
         {loadExploreVideo ? (
           <video
@@ -290,7 +290,7 @@ function ExploreTileMedia({
 
   if (displayImageSrc) {
     return (
-      <div className="relative h-full w-full min-h-0 min-w-0">
+      <div className="relative h-full w-full min-h-0 min-w-0 max-w-full overflow-hidden">
         <Image
           src={displayImageSrc}
           alt=""
@@ -366,8 +366,8 @@ export function ExploreVideoCard({
   const videoPageHref = `/video/${encodeURIComponent(video.id)}` as const;
 
   return (
-    <div className="flex min-w-0 max-w-full flex-col overflow-hidden">
-      <div className="relative aspect-[3/4] w-full min-w-0 overflow-hidden lg:aspect-video">
+    <div className="box-border flex w-full min-w-0 max-w-full flex-col overflow-hidden">
+      <div className="relative aspect-[3/4] w-full min-w-0 max-w-full overflow-hidden lg:aspect-video">
         <Link
           href={videoPageHref}
           className="block h-full w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/50"
@@ -385,16 +385,16 @@ export function ExploreVideoCard({
         </Link>
       </div>
 
-      <div className="min-w-0 px-2 py-1.5">
+      <div className="box-border min-w-0 max-w-full overflow-hidden px-1.5 py-1.5 sm:px-2">
         <Link
           href={playerHref}
-          className="block min-w-0 truncate text-sm text-gn-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/50"
+          className="block min-w-0 max-w-full truncate text-sm text-gn-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/50"
           aria-label={t("openPlayerProfileAria", { name: username })}
         >
           @{username}
         </Link>
         {isPlayerPremium(profile) ? (
-          <div className="mt-1">
+          <div className="mt-1 max-w-full min-w-0 overflow-hidden">
             <PremiumBadge />
           </div>
         ) : null}
@@ -474,16 +474,16 @@ export function ExploreView() {
   }, [load]);
 
   return (
-    <div className="min-w-0 max-w-full touch-pan-y space-y-5 overflow-x-clip sm:space-y-6">
-      <header className="min-w-0 space-y-1">
-        <h1 className="text-xl font-bold tracking-tight text-gn-text sm:text-2xl lg:text-3xl">
+    <div className="box-border w-full min-w-0 max-w-full touch-pan-y space-y-5 overflow-x-clip sm:space-y-6">
+      <header className="box-border min-w-0 max-w-full space-y-1 overflow-x-clip">
+        <h1 className="break-words text-xl font-bold tracking-tight text-gn-text sm:text-2xl lg:text-3xl">
           {t("title")}
         </h1>
         <p className="text-xs text-gn-text-secondary sm:text-sm">{t("subtitle")}</p>
       </header>
 
       <section
-        className="min-w-0 space-y-4 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-3 sm:p-5"
+        className="box-border w-full min-w-0 max-w-full space-y-4 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-3 sm:p-5"
         aria-label={t("filtersAria")}
       >
         <h2 className="text-sm font-semibold tracking-tight text-gn-text">
@@ -539,7 +539,7 @@ export function ExploreView() {
           exploreSortDisabled={loading}
         />
 
-        <div className="grid min-w-0 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="box-border grid w-full min-w-0 max-w-full grid-cols-1 gap-3 overflow-x-clip sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           <label className="flex cursor-pointer items-center gap-2 sm:col-span-2 lg:col-span-2 lg:justify-end">
             <input
               suppressHydrationWarning
@@ -607,10 +607,10 @@ export function ExploreView() {
       ) : null}
 
       {!loading && !loadFailed && items.length > 0 ? (
-        <ul className="grid w-full min-w-0 grid-cols-3 gap-1 sm:gap-1.5 md:gap-2 lg:grid-cols-3 lg:gap-4">
+        <ul className="box-border grid w-full min-w-0 max-w-full grid-cols-[repeat(3,minmax(0,1fr))] gap-1 overflow-x-clip sm:gap-1.5 md:gap-2 lg:grid-cols-3 lg:gap-4">
           {items.map((item) => (
             <li
-              className="min-w-0"
+              className="box-border min-w-0 max-w-full overflow-hidden"
               key={item.video.id ?? `${item.video.user_id}-${item.video.created_at}`}
             >
               <ExploreVideoCard item={item} />
