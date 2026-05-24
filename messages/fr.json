@@ -671,6 +671,12 @@
     "createHint": "Utilise le formulaire pour publier une nouvelle piste dans le catalogue.",
     "validationRequired": "Le titre, l’artiste et l’URL audio sont obligatoires."
   },
+  "publicGuest": {
+    "banner": "Vous consultez la version publique. Connectez-vous pour l'expérience PitchRusch complète avec la navigation de l'app.",
+    "headerCta": "Ouvrir l'app",
+    "signIn": "Connexion",
+    "signUp": "S'inscrire"
+  },
   "challenges": {
     "title": "Défis",
     "subtitle": "Participez à un défi et identifiez vos vidéos. Découvrez les campagnes tendance et les meilleurs clips.",

@@ -671,6 +671,12 @@
     "createHint": "Koristi obrazac za novu stavku u katalogu.",
     "validationRequired": "Naslov, izvođač i URL audija su obavezni."
   },
+  "publicGuest": {
+    "banner": "Pregledavaš javnu verziju. Prijavi se za puni PitchRusch doživljaj s aplikacijskom navigacijom.",
+    "headerCta": "Otvori aplikaciju",
+    "signIn": "Prijava",
+    "signUp": "Registracija"
+  },
   "challenges": {
     "title": "Izazovi",
     "subtitle": "Pridruži se izazovu i označi svoje videozapise. Pregledaj popularne kampanje i najbolje klipove.",

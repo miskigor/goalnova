@@ -54,6 +54,7 @@ export function PublicTopNav({ trailing }: Props) {
   const pathname = usePathname();
   const tNav = useTranslations("nav");
   const tExplore = useTranslations("explore");
+  const tPublicGuest = useTranslations("publicGuest");
   const reduceMotion = useReducedMotion();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sheetMounted, setSheetMounted] = useState(false);
@@ -103,7 +104,7 @@ export function PublicTopNav({ trailing }: Props) {
 
   return (
     <>
-      <div className="flex w-full min-w-0 items-center gap-3 sm:gap-4 lg:gap-6">
+      <div className="box-border flex w-full min-w-0 max-w-full items-center gap-2 overflow-x-clip sm:gap-4 lg:gap-6">
         <Logo href="/explore" variant="header" className="min-w-0 shrink-0" />
 
         <nav
@@ -154,9 +155,17 @@ export function PublicTopNav({ trailing }: Props) {
         <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3 lg:flex-none lg:gap-3">
           <div className="hidden items-center gap-2 lg:flex">{trailing}</div>
 
+          <Link
+            href="/login"
+            className="inline-flex h-10 max-w-[min(100%,9.5rem)] shrink-0 items-center justify-center truncate rounded-xl bg-gn-accent px-3 text-xs font-semibold text-gn-bg shadow-[0_6px_20px_-8px_rgba(249,115,22,0.5)] transition-[background-color,transform] duration-200 hover:bg-gn-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/40 motion-safe:active:scale-[0.98] sm:max-w-none sm:px-3.5 sm:text-sm lg:hidden"
+            aria-current={navItemActive(pathname, "/login") ? "page" : undefined}
+          >
+            {tPublicGuest("headerCta")}
+          </Link>
+
           <button
             type="button"
-            className="inline-flex size-11 items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/40 text-gn-text transition-all duration-200 hover:border-gn-border hover:bg-gn-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/40 lg:hidden"
+            className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/40 text-gn-text transition-all duration-200 hover:border-gn-border hover:bg-gn-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/40 lg:hidden"
             aria-expanded={mobileOpen}
             aria-controls="pitchrusch-public-mobile-nav"
             onClick={() => (mobileOpen ? closeMobile() : openMobileSheet())}

@@ -671,6 +671,12 @@
     "createHint": "Use the form to add a catalog track.",
     "validationRequired": "Title, artist, and audio URL are required."
   },
+  "publicGuest": {
+    "banner": "Estás a ver a versão pública. Inicia sessão para a experiência completa do PitchRusch com navegação da app.",
+    "headerCta": "Abrir app",
+    "signIn": "Entrar",
+    "signUp": "Registar"
+  },
   "challenges": {
     "title": "Desafios",
     "subtitle": "Junta-te a um desafio e identifica os teus vídeos. Descobre campanhas em destaque e os melhores clipes.",

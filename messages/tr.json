@@ -671,6 +671,12 @@
     "createHint": "Use the form to publish a new catalog track.",
     "validationRequired": "Title, artist, and audio URL are required."
   },
+  "publicGuest": {
+    "banner": "Herkese açık sürümü görüntülüyorsun. Uygulama gezintisiyle tam PitchRusch deneyimi için giriş yap.",
+    "headerCta": "Uygulamayı aç",
+    "signIn": "Giriş",
+    "signUp": "Kayıt ol"
+  },
   "challenges": {
     "title": "Challenges",
     "subtitle": "Join a challenge and tag your uploads. Browse trending campaigns and top clips.",

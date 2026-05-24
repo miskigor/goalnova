@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ChallengesHub } from "@/components/challenges/ChallengesHub";
+import { GuestPublicCallout } from "@/components/layout/GuestPublicCallout";
 import { ChallengesPageHeader } from "./ChallengesPageHeader";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -18,8 +19,9 @@ export default async function ChallengesPage({ params }: Props) {
   return (
     <div
       data-challenges-page
-      className="box-border w-full min-w-0 max-w-full overflow-x-clip max-lg:pt-[calc(var(--gn-app-header-offset)+1rem)] max-lg:pb-[calc(var(--gn-app-bottom-nav-offset)+2rem)] sm:mx-auto sm:max-w-4xl sm:px-5 lg:py-8"
+      className="box-border w-full min-w-0 max-w-full overflow-x-clip py-5 sm:mx-auto sm:max-w-4xl sm:px-5 sm:py-8 lg:py-8"
     >
+      <GuestPublicCallout />
       <ChallengesPageHeader />
       <ChallengesHub />
     </div>

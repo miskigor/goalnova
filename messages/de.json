@@ -671,6 +671,12 @@
     "createHint": "Formular nutzen, um einen neuen Katalog-Track zu veröffentlichen.",
     "validationRequired": "Titel, Künstler und Audio-URL sind Pflicht."
   },
+  "publicGuest": {
+    "banner": "Du siehst die öffentliche Version. Melde dich an für das volle PitchRusch-Erlebnis mit App-Navigation.",
+    "headerCta": "App öffnen",
+    "signIn": "Anmelden",
+    "signUp": "Registrieren"
+  },
   "challenges": {
     "title": "Herausforderungen",
     "subtitle": "Nimm an einer Challenge teil und markiere deine Uploads. Entdecke trendige Kampagnen und Top-Clips.",
