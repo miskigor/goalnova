@@ -9,8 +9,7 @@ export const APP_SHELL_COLUMN_CLASS =
 export const APP_SHELL_MAIN_CLASS = [
   "mx-auto box-border flex w-full min-w-0 max-w-full flex-1 flex-col items-stretch overflow-x-hidden px-4",
   "min-h-0 max-lg:min-h-0",
-  "pt-[var(--gn-app-header-offset)]",
-  "pb-[var(--gn-app-bottom-nav-offset)]",
+  "max-lg:pt-0 max-lg:pb-0",
   "lg:max-w-4xl lg:px-6 lg:pt-8 lg:pb-12",
 ].join(" ");
 

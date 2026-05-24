@@ -171,7 +171,8 @@ html {
     min-width: 0;
     flex-shrink: 0;
     box-sizing: border-box;
-    overflow: visible;
+    overflow-x: clip;
+    overflow-y: visible;
     background-color: var(--gn-bg);
   }
 
@@ -357,21 +358,21 @@ html {
   }
 
   /*
-   * Non-home tab pages: root fills the viewport; portaled header/bottom nav stay fixed on body.
-   * Scroll + chrome clearance live on [data-app-main] (not root inset — avoids clipped titles / drift).
+   * Non-home tab pages: same chrome band as home — root sits between portaled header and bottom nav
+   * so the full-screen layer does not paint over the top header (WhatsApp / iOS WebView).
    */
   [data-app-root]:not(:has([data-pitchrusch-home-feed])) {
     position: fixed !important;
-    top: 0 !important;
-    bottom: 0 !important;
+    top: var(--gn-app-header-offset) !important;
+    bottom: var(--gn-app-bottom-nav-offset) !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0;
     min-height: 0 !important;
-    height: 100% !important;
-    max-height: 100% !important;
+    height: auto !important;
+    max-height: none !important;
     margin: 0 !important;
     overflow: hidden !important;
     overflow-x: clip;
@@ -405,8 +406,8 @@ html {
     width: 100% !important;
     max-width: 100% !important;
     margin-inline: 0 !important;
-    padding-top: var(--gn-app-header-offset) !important;
-    padding-bottom: var(--gn-app-bottom-nav-offset) !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
     padding-left: max(0.75rem, env(safe-area-inset-left, 0px)) !important;
     padding-right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
     overflow-y: auto !important;
