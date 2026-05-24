@@ -12,7 +12,7 @@ import {
   unfollowUser,
 } from "@/lib/supabase/follows";
 
-type Props = { profileUserId: string; className?: string };
+type Props = { profileUserId: string };
 
 function countsForUi(
   counts: Awaited<ReturnType<typeof fetchFollowCountsForUser>>
@@ -23,7 +23,7 @@ function countsForUi(
   };
 }
 
-export function PlayerFollowSection({ profileUserId, className = "" }: Props) {
+export function PlayerFollowSection({ profileUserId }: Props) {
   const t = useTranslations("follow");
 
   const [viewerId, setViewerId] = useState<string | null>(null);
@@ -277,12 +277,7 @@ export function PlayerFollowSection({ profileUserId, className = "" }: Props) {
   );
 
   return (
-    <div
-      className={[
-        "box-border min-w-0 w-full max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4",
-        className,
-      ].join(" ")}
-    >
+    <div className="box-border min-w-0 w-full max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4">
       {loading ? (
         <p className="text-sm text-gn-text-secondary" role="status">
           {t("loading")}

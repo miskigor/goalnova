@@ -5,7 +5,6 @@ import { LandingHero } from "@/components/landing/LandingHero";
 import { LandingSteps } from "@/components/landing/LandingSteps";
 import { LandingFoundingPlayer } from "@/components/landing/LandingFoundingPlayer";
 import { LandingFooter } from "@/components/landing/LandingFooter";
-import { LandingAuthedHomeRedirect } from "@/components/landing/LandingAuthedHomeRedirect";
 import { LandingHorizontalScrollRecovery } from "@/components/landing/LandingHorizontalScrollRecovery";
 import { LandingIgDebugOverlay } from "@/components/landing/LandingIgDebugOverlay";
 import { hrefWithLocale } from "@/i18n/routing";
@@ -92,7 +91,6 @@ export default async function LandingPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
       />
 
-      <LandingAuthedHomeRedirect />
       <LandingIgDebugOverlay />
       <LandingHorizontalScrollRecovery />
 

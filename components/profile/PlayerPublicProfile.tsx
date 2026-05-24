@@ -266,46 +266,22 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
     setVideos((prev) => prev.filter((v) => v.id !== videoId));
   }
 
-  const ownProfileMobileCentered = embedded && isOwnProfile;
-
   return wrapInProfileShell(
-    <div
-      className={[
-        profileInnerClass,
-        ownProfileMobileCentered ? "max-lg:text-center" : "",
-      ].join(" ")}
-    >
+    <div className={profileInnerClass}>
       <header className={`${profileSectionClass} space-y-3`}>
-        <div
-          className={[
-            "flex min-w-0 items-center gap-3",
-            ownProfileMobileCentered ? "max-lg:flex-col max-lg:justify-center" : "",
-          ].join(" ")}
-        >
+        <div className="flex min-w-0 items-center gap-3">
           <ProfileAvatar
             name={displayName}
             imageUrl={userAvatarUrl?.trim() || undefined}
             className="shrink-0"
           />
-          <div
-            className={[
-              "min-w-0 flex-1 overflow-hidden",
-              ownProfileMobileCentered ? "max-lg:flex max-lg:w-full max-lg:flex-col max-lg:items-center" : "",
-            ].join(" ")}
-          >
-            <h1 className="truncate text-xl font-semibold tracking-tight text-gn-text-primary sm:text-2xl max-lg:max-w-full">
+          <div className="min-w-0 flex-1 overflow-hidden">
+            <h1 className="truncate text-xl font-semibold tracking-tight text-gn-text-primary sm:text-2xl">
               {displayName}
             </h1>
-            <p className="truncate text-sm text-gn-text-secondary max-lg:max-w-full">
-              @{displayUsername}
-            </p>
+            <p className="truncate text-sm text-gn-text-secondary">@{displayUsername}</p>
             {profile.founding_player === true || isPlayerPremium(profile) ? (
-              <div
-                className={[
-                  "mt-1.5 flex min-w-0 max-w-full flex-wrap items-center gap-1.5",
-                  ownProfileMobileCentered ? "max-lg:justify-center" : "",
-                ].join(" ")}
-              >
+              <div className="mt-1.5 flex min-w-0 max-w-full flex-wrap items-center gap-1.5">
                 {profile.founding_player === true ? <FoundingPlayerBadge /> : null}
                 {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
               </div>
@@ -363,14 +339,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
           aria-label={t("detailsSectionAria")}
           className={`${profileSectionClass} box-border w-full min-w-0 max-w-full space-y-4 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4 sm:p-5`}
         >
-          <div
-            className={[
-              "grid min-w-0 gap-4 sm:grid-cols-2",
-              ownProfileMobileCentered
-                ? "max-lg:grid-cols-1 max-lg:justify-items-center max-lg:text-center"
-                : "",
-            ].join(" ")}
-          >
+          <div className="grid min-w-0 gap-4 sm:grid-cols-2">
             <DetailRow label={t("age")} value={formatPlayerAge(profile.age)} />
             <DetailRow label={tFields("position")} value={profile.position} />
             <DetailRow label={t("city")} value={profile.city} />
@@ -393,16 +362,8 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
         </section>
       ) : null}
 
-      <div
-        className={[
-          profileSectionClass,
-          ownProfileMobileCentered ? "max-lg:flex max-lg:justify-center" : "",
-        ].join(" ")}
-      >
-        <PlayerFollowSection
-          profileUserId={profile.id}
-          className={ownProfileMobileCentered ? "max-lg:mx-auto max-lg:max-w-md" : undefined}
-        />
+      <div className={profileSectionClass}>
+        <PlayerFollowSection profileUserId={profile.id} />
       </div>
 
       {showUploadFirstBanner ? (
