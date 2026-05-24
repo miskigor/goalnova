@@ -12,9 +12,9 @@ import { navItemActive } from "@/lib/navigation/navItemActive";
 import { NavIcon } from "@/components/icons/NavIcons";
 import { APP_MOBILE_HEADER_CLASS } from "@/lib/layout/appShellClasses";
 
-/** Mobile-only header row layout (padding + alignment tuned here, not in shared shell constants). */
+/** Logo + actions in one row from the left; safe-area padding only (no extra inset that clips the logo). */
 const MOBILE_HEADER_INNER_CLASS =
-  "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-visible ps-[max(2.75rem,env(safe-area-inset-left,0px))] pe-[max(2.75rem,env(safe-area-inset-right,0px))]";
+  "box-border flex h-14 w-full max-w-full min-w-0 items-center gap-1.5 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
 /**
  * Fixed top bar on small screens: brand + compact actions (admin, challenges, benefits, account menu).
@@ -33,7 +33,7 @@ export function AppMobileHeader() {
   return (
     <header
       data-app-mobile-header
-      className={`${APP_MOBILE_HEADER_CLASS} overflow-visible`}
+      className={`${APP_MOBILE_HEADER_CLASS} overflow-x-clip`}
     >
       <div className={MOBILE_HEADER_INNER_CLASS}>
         <Logo
@@ -41,10 +41,10 @@ export function AppMobileHeader() {
           variant="header"
           showWordmark={false}
           priority
-          className="!shrink-0 [&_span]:overflow-visible [&_img]:!size-11 [&_img]:!max-h-11 [&_img]:!max-w-11 [&_img]:!object-contain"
+          className="!shrink-0 [&_span]:overflow-visible [&_img]:!size-10 [&_img]:!max-h-10 [&_img]:!max-w-10 [&_img]:!object-contain min-[360px]:[&_img]:!size-11 min-[360px]:[&_img]:!max-h-11 min-[360px]:[&_img]:!max-w-11"
         />
 
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex min-w-0 flex-1 items-center justify-start gap-0.5 overflow-x-clip min-[360px]:gap-1">
           {authed && user && adminLoaded && isAdmin ? (
             <Link
               href="/admin"
@@ -80,7 +80,7 @@ export function AppMobileHeader() {
             <Link
               href="/challenges"
               className={
-                "flex h-8 min-w-0 max-w-[5.25rem] shrink items-center justify-center rounded-lg border px-1.5 text-[10px] font-semibold leading-tight tracking-tight text-gn-accent transition active:scale-[0.98] hover:bg-gn-accent/10 sm:max-w-[6.25rem] sm:px-2 sm:text-[11px] " +
+                "flex h-8 min-w-0 max-w-[4.5rem] shrink items-center justify-center rounded-lg border px-1 text-[10px] font-semibold leading-tight tracking-tight text-gn-accent transition active:scale-[0.98] hover:bg-gn-accent/10 min-[360px]:max-w-[5.25rem] min-[360px]:px-1.5 sm:max-w-[6.25rem] sm:px-2 sm:text-[11px] " +
                 (challengesActive
                   ? "border-gn-accent bg-gn-accent/25"
                   : "border-gn-accent/55 bg-gn-surface/30")

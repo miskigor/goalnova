@@ -128,7 +128,12 @@ html {
   }
 
   [data-app-mobile-chrome-fixed="top"] {
-    top: 0;
+    top: 0 !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: clip !important;
+    z-index: 1000;
   }
 
   [data-app-mobile-chrome-fixed="bottom"] {
