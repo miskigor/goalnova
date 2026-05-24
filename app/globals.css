@@ -118,7 +118,6 @@ html {
   [data-app-mobile-chrome-fixed="top"],
   [data-app-mobile-chrome-fixed="bottom"] {
     position: fixed !important;
-    inset-inline: 0 !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
@@ -126,26 +125,19 @@ html {
     min-width: 0;
     box-sizing: border-box;
     overflow-x: clip !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    z-index: 1000;
-    transform: translateZ(0) !important;
-    -webkit-transform: translateZ(0) !important;
+    z-index: 610;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    isolation: isolate;
   }
 
   [data-app-mobile-chrome-fixed="top"] {
-    top: 0 !important;
-    bottom: auto !important;
+    top: 0;
   }
 
   [data-app-mobile-chrome-fixed="bottom"] {
-    bottom: 0 !important;
-    top: auto !important;
+    bottom: 0;
   }
 
   [data-app-mobile-header] {
@@ -187,13 +179,6 @@ html {
     overflow-x: clip;
     overflow-y: visible;
     background-color: var(--gn-bg);
-    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.55);
-  }
-
-  [data-app-mobile-chrome-fixed="bottom"] [data-app-bottom-nav] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
   }
 
   [data-app-column],
@@ -242,7 +227,7 @@ html {
     overflow-x: clip;
     overscroll-behavior: none;
     transform: none !important;
-    z-index: 1;
+    z-index: 0;
   }
 
   [data-app-column]:has([data-pitchrusch-home-feed]) {
@@ -297,8 +282,7 @@ html {
     max-height: 100%;
     overflow: hidden;
     overflow-x: clip;
-    transform: none !important;
-    margin-inline: auto;
+    transform: translateX(var(--gn-home-feed-vv-left, 0px));
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root],
@@ -399,7 +383,7 @@ html {
     overscroll-behavior: none;
     overscroll-behavior-x: none;
     transform: none !important;
-    z-index: 1;
+    z-index: 0;
   }
 
   [data-app-column]:not(:has([data-pitchrusch-home-feed])) {

@@ -12,9 +12,10 @@ const HOME_FEED_VV_SYNC_SELECTORS = [
 
 function homeFeedVisualViewportMetrics(): { left: string; width: string } {
   const vv = typeof window !== "undefined" ? window.visualViewport : null;
+  const offsetLeft = Math.max(0, vv?.offsetLeft ?? 0);
   const widthPx = vv?.width ?? window.innerWidth;
   return {
-    left: "0px",
+    left: `${offsetLeft}px`,
     width: `${widthPx}px`,
   };
 }

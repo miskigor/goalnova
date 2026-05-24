@@ -37,7 +37,7 @@ export const APP_MOBILE_BOTTOM_NAV_CLASS = [
 
 /** Inner grid for five bottom-nav items — never wider than the viewport. */
 export const APP_MOBILE_BOTTOM_NAV_INNER_CLASS =
-  "pointer-events-auto box-border mx-auto grid h-10 w-full min-w-0 max-w-full grid-cols-5 items-center justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+  "pointer-events-auto box-border grid h-10 w-full min-w-0 max-w-full grid-cols-5 items-center justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
 export const APP_MOBILE_BOTTOM_NAV_ITEM_CLASS =
   "flex h-10 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-x-clip rounded-md border border-transparent px-0 py-0 text-[9px] font-medium leading-none tracking-tight min-[360px]:text-[10px]";
