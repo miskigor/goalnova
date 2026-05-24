@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { AppMobileChromeMetrics } from "@/components/layout/AppMobileChromeMetrics";
 import { AppMobileHeader } from "@/components/layout/AppMobileHeader";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
 
@@ -22,17 +23,20 @@ export function AppMobileChromePortal() {
 
   return createPortal(
     <>
+      <AppMobileChromeMetrics />
       <div
         data-app-mobile-chrome
         data-app-mobile-chrome-fixed="top"
-        className="pointer-events-auto fixed inset-x-0 top-0 z-[610] box-border w-full max-w-full min-w-0 translate-z-0 overflow-x-clip max-lg:block lg:hidden"
+        className="pointer-events-auto fixed start-0 end-0 top-0 z-[1000] box-border w-full max-w-full min-w-0 overflow-x-clip max-lg:block lg:hidden"
+        style={{ transform: "translateZ(0)" }}
       >
         <AppMobileHeader />
       </div>
       <div
         data-app-mobile-chrome
         data-app-mobile-chrome-fixed="bottom"
-        className="pointer-events-auto fixed inset-x-0 bottom-0 z-[610] box-border w-full max-w-full min-w-0 translate-z-0 overflow-x-clip max-lg:block lg:hidden"
+        className="pointer-events-auto fixed start-0 end-0 bottom-0 z-[1000] box-border w-full max-w-full min-w-0 overflow-x-clip max-lg:block lg:hidden"
+        style={{ transform: "translateZ(0)" }}
       >
         <AppMobileBottomNav />
       </div>

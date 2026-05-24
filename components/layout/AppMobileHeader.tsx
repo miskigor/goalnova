@@ -14,7 +14,7 @@ import { APP_MOBILE_HEADER_CLASS } from "@/lib/layout/appShellClasses";
 
 /** Mobile-only header row layout (padding + alignment tuned here, not in shared shell constants). */
 const MOBILE_HEADER_INNER_CLASS =
-  "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-clip ps-[max(2.75rem,env(safe-area-inset-left,0px))] pe-[max(2.75rem,env(safe-area-inset-right,0px))]";
+  "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-clip ps-[max(0.75rem,env(safe-area-inset-left,0px))] pe-[max(0.75rem,env(safe-area-inset-right,0px))]";
 
 /**
  * Fixed top bar on small screens: brand + compact actions (admin, challenges, benefits, account menu).
@@ -41,10 +41,10 @@ export function AppMobileHeader() {
           variant="header"
           showWordmark={false}
           priority
-          className="!shrink-0 [&_span]:overflow-visible [&_img]:!size-11 [&_img]:!max-h-11 [&_img]:!max-w-11 [&_img]:!object-contain"
+          className="min-w-0 !shrink-0 [&_span]:overflow-visible [&_img]:!size-11 [&_img]:!max-h-11 [&_img]:!max-w-11 [&_img]:!object-contain"
         />
 
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex min-w-0 shrink-0 items-center justify-end gap-1">
           {authed && user && adminLoaded && isAdmin ? (
             <Link
               href="/admin"
