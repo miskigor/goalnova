@@ -120,11 +120,6 @@ html {
     position: fixed !important;
     left: 0 !important;
     right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0;
-    box-sizing: border-box;
-    overflow-x: clip !important;
     z-index: 610;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -188,7 +183,9 @@ html {
     max-width: 100%;
   }
 
-  /* Home feed: VV width vars on feed nodes only (not app main — avoids leak to other routes). */
+  /* Home feed: visual viewport width + offset (vars set in HomeFeed while mounted). */
+  [data-app-main]:has([data-pitchrusch-home-feed]),
+  [data-app-main-inner]:has([data-pitchrusch-home-feed]),
   [data-pitchrusch-home-feed],
   [data-pitchrusch-feed-panel],
   [data-pitchrusch-feed-scroll-root],
@@ -259,7 +256,7 @@ html {
     overflow: hidden !important;
     overflow-x: clip;
     overscroll-behavior: none;
-    transform: none !important;
+    transform: translateX(var(--gn-home-feed-vv-left, 0px));
   }
 
   [data-app-main-inner]:has([data-pitchrusch-home-feed]) {
@@ -282,7 +279,6 @@ html {
     max-height: 100%;
     overflow: hidden;
     overflow-x: clip;
-    transform: translateX(var(--gn-home-feed-vv-left, 0px));
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root],
@@ -421,7 +417,7 @@ html {
     overscroll-behavior-x: none;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
-    align-items: center !important;
+    align-items: stretch;
   }
 
   [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) {
@@ -433,11 +429,6 @@ html {
     min-width: 0;
     min-height: 0;
     overflow-x: clip;
-  }
-
-  [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])):not(:has([data-admin-shell])) {
-    max-width: min(100%, 42rem);
-    margin-inline: auto !important;
   }
 
   [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) > * {
