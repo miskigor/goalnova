@@ -92,20 +92,20 @@ export const APP_MOBILE_BOTTOM_NAV_CLASS = [
 
 /** Inner grid for five bottom-nav items — never wider than the viewport. */
 export const APP_MOBILE_BOTTOM_NAV_INNER_CLASS =
-  "pointer-events-auto box-border grid h-10 w-full min-w-0 max-w-full grid-cols-5 items-center justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+  "pointer-events-auto box-border grid h-9 w-full min-w-0 max-w-full grid-cols-5 items-center justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
 export const APP_MOBILE_BOTTOM_NAV_ITEM_CLASS =
-  "flex h-10 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-visible rounded-md border border-transparent px-0 py-0 text-[9px] font-medium leading-none tracking-tight min-[360px]:text-[10px]";
+  "flex h-9 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0 overflow-visible rounded-md border border-transparent px-0 py-0 text-[9px] font-medium leading-none tracking-tight min-[360px]:text-[10px]";
 
 /** Player bottom nav — centered Upload FAB (does not increase nav bar height). */
 export const APP_MOBILE_BOTTOM_NAV_INNER_WITH_UPLOAD_FAB_CLASS =
-  "pointer-events-auto box-border grid h-10 w-full min-w-0 max-w-full grid-cols-5 items-end justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+  "pointer-events-auto box-border grid h-9 w-full min-w-0 max-w-full grid-cols-5 items-end justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
 export const APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_LINK_CLASS =
-  "pointer-events-auto -mt-1.5 flex w-full min-w-0 max-w-full flex-col items-center justify-end gap-0.5";
+  "pointer-events-auto -mt-1 flex w-full min-w-0 max-w-full flex-col items-center justify-end gap-0";
 
 export const APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_BUTTON_CLASS =
-  "flex size-8 shrink-0 items-center justify-center rounded-full border-2 border-gn-accent/80 bg-gn-accent text-black shadow-[0_2px_10px_rgba(249,115,22,0.35)] transition active:scale-[0.96] hover:bg-gn-accent-hover";
+  "flex size-7 shrink-0 items-center justify-center rounded-full border border-gn-accent/80 bg-gn-accent text-black shadow-[0_2px_10px_rgba(249,115,22,0.35)] transition active:scale-[0.96] hover:bg-gn-accent-hover";
 
 /** `/notifications` inbox — bounded column inside main shell padding. */
 export const APP_MESSAGES_INBOX_PAGE_CLASS =
@@ -132,7 +132,7 @@ export const APP_PROFILE_SHELL_CLASS = [
  * Horizontal padding comes from `[data-app-main]`; no extra `px-*` on this shell.
  */
 export const APP_MOBILE_TAB_PAGE_SHELL_CLASS =
-  "box-border w-full min-w-0 max-w-full space-y-6 overflow-x-clip max-lg:pt-4 max-lg:pb-2 lg:mx-auto lg:max-w-2xl lg:pb-8";
+  "box-border w-full min-w-0 max-w-full space-y-6 max-lg:space-y-4 overflow-x-clip max-lg:pt-3 max-lg:pb-4 lg:mx-auto lg:max-w-2xl lg:pb-8";
 
 export const APP_PROFILE_LOADING_INNER_CLASS =
   "flex min-h-[35vh] w-full min-w-0 max-w-full flex-col items-center justify-center gap-2 text-sm text-gn-text-secondary";
