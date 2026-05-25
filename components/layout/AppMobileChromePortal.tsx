@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AppMobileHeader } from "@/components/layout/AppMobileHeader";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
+import { GN_MOBILE_APP_MAX_WIDTH_CLASS } from "@/lib/layout/appShellClasses";
 import { devLog, devTable, isDev } from "@/lib/devLog";
 
 const GN_MOBILE_VISUAL_BOTTOM_INSET_VAR = "--gn-mobile-visual-bottom-inset";
@@ -200,7 +201,7 @@ export function AppMobileChromePortal() {
       <div
         data-app-mobile-chrome
         data-app-mobile-chrome-fixed="top"
-        className="pointer-events-auto fixed inset-x-0 top-0 z-[1000] box-border w-full max-w-full min-w-0 overflow-x-clip max-lg:block lg:hidden"
+        className={`pointer-events-auto fixed top-0 left-0 right-0 z-[1000] box-border min-w-0 overflow-x-clip max-lg:block lg:hidden ${GN_MOBILE_APP_MAX_WIDTH_CLASS}`}
         style={{ transform: "translateZ(0)" }}
       >
         <AppMobileHeader />
@@ -209,7 +210,7 @@ export function AppMobileChromePortal() {
         ref={bottomWrapRef}
         data-app-mobile-chrome
         data-app-mobile-chrome-fixed="bottom"
-        className="pointer-events-auto fixed inset-x-0 z-[1000] box-border w-full max-w-full min-w-0 overflow-x-clip max-lg:block lg:hidden"
+        className={`pointer-events-auto fixed left-0 right-0 z-[1000] box-border min-w-0 overflow-x-clip max-lg:block lg:hidden ${GN_MOBILE_APP_MAX_WIDTH_CLASS}`}
         style={{ transform: "translateZ(0)" }}
       >
         <AppMobileBottomNav />

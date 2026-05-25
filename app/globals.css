@@ -77,6 +77,7 @@ html {
 /* Mobile: fixed inset shell (Safari URL bar — avoid 100dvh pushing chrome off-screen). */
 @media (max-width: 1023px) {
   :root {
+    --gn-mobile-app-max-width: 430px;
     /* ~120px header band (safe-area + 3.5rem bar + spacing) on iPhone / in-app browsers */
     --gn-app-header-offset: calc(
       3.5rem + 0.5rem + env(safe-area-inset-top, 0px)
@@ -124,6 +125,10 @@ html {
     position: fixed !important;
     left: 0 !important;
     right: 0 !important;
+    margin-inline: auto !important;
+    width: min(100%, var(--gn-mobile-app-max-width)) !important;
+    max-width: var(--gn-mobile-app-max-width) !important;
+    box-sizing: border-box;
     z-index: 610;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -134,8 +139,6 @@ html {
   [data-app-mobile-chrome-fixed="top"] {
     top: 0 !important;
     bottom: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
     overflow-x: clip !important;
     z-index: 1000;
   }
@@ -146,8 +149,6 @@ html {
       var(--gn-mobile-visual-bottom-inset, 0px)
     ) !important;
     top: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
     overflow-x: clip !important;
     z-index: 1000;
   }
@@ -218,7 +219,10 @@ html {
     max-width: 100%;
   }
 
-  /* Home feed: visual viewport width + offset (vars set in HomeFeed while mounted). */
+  /*
+   * Home feed: stay inside the shared mobile app frame (do not widen past 430px).
+   * Inline vv vars from HomeFeed sync are overridden here for consistent page width.
+   */
   [data-app-main]:has([data-pitchrusch-home-feed]),
   [data-app-main-inner]:has([data-pitchrusch-home-feed]),
   [data-pitchrusch-home-feed],
@@ -227,12 +231,13 @@ html {
   [data-pitchrusch-feed-item],
   [data-pitchrusch-feed-card] {
     box-sizing: border-box;
-    width: var(--gn-home-feed-vv-width, 100%);
-    max-width: var(--gn-home-feed-vv-width, 100%);
+    width: 100% !important;
+    max-width: 100% !important;
     min-width: 0;
     margin-left: 0 !important;
     margin-right: 0 !important;
     overflow-x: clip;
+    transform: none !important;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-panel] {
@@ -250,13 +255,13 @@ html {
     ) !important;
     left: 0 !important;
     right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    margin-inline: auto !important;
+    width: min(100%, var(--gn-mobile-app-max-width)) !important;
+    max-width: var(--gn-mobile-app-max-width) !important;
     min-width: 0;
     min-height: 0 !important;
     height: auto !important;
     max-height: none !important;
-    margin: 0 !important;
     overflow: hidden !important;
     overflow-x: clip;
     overscroll-behavior: none;
@@ -271,8 +276,8 @@ html {
     min-height: 0;
     height: 100%;
     width: 100% !important;
-    max-width: 100% !important;
-    margin-inline: 0 !important;
+    max-width: var(--gn-mobile-app-max-width) !important;
+    margin-inline: auto !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     overflow: hidden !important;
@@ -293,7 +298,7 @@ html {
     overflow: hidden !important;
     overflow-x: clip;
     overscroll-behavior: none;
-    transform: translateX(var(--gn-home-feed-vv-left, 0px));
+    transform: none !important;
   }
 
   [data-app-main-inner]:has([data-pitchrusch-home-feed]) {
@@ -350,7 +355,7 @@ html {
       calc(0.75rem + 0.625rem),
       calc(0.75rem + 0.625rem + var(--gn-mobile-visual-bottom-inset, 0px))
     ) !important;
-    max-width: calc(var(--gn-home-feed-vv-width, 100%) - 5.5rem);
+    max-width: calc(100% - 5.5rem);
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px));
     padding-bottom: 0.125rem;
   }
@@ -425,13 +430,13 @@ html {
     ) !important;
     left: 0 !important;
     right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    margin-inline: auto !important;
+    width: min(100%, var(--gn-mobile-app-max-width)) !important;
+    max-width: var(--gn-mobile-app-max-width) !important;
     min-width: 0;
     min-height: 0 !important;
     height: auto !important;
     max-height: none !important;
-    margin: 0 !important;
     overflow: hidden !important;
     overflow-x: clip;
     overscroll-behavior: none;
@@ -447,8 +452,8 @@ html {
     min-height: 0;
     height: 100%;
     width: 100% !important;
-    max-width: 100% !important;
-    margin-inline: 0 !important;
+    max-width: var(--gn-mobile-app-max-width) !important;
+    margin-inline: auto !important;
     overflow: hidden !important;
     overflow-x: clip;
     box-sizing: border-box;
@@ -462,10 +467,10 @@ html {
     height: 100% !important;
     max-height: 100% !important;
     width: 100% !important;
-    max-width: 100% !important;
-    margin-inline: 0 !important;
+    max-width: var(--gn-mobile-app-max-width) !important;
+    margin-inline: auto !important;
     padding-top: 0 !important;
-    padding-bottom: 0 !important;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px)) !important;
     padding-left: max(0.75rem, env(safe-area-inset-left, 0px)) !important;
     padding-right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
     overflow-y: auto !important;
@@ -482,8 +487,8 @@ html {
     flex: 1 1 auto;
     box-sizing: border-box;
     width: 100%;
-    max-width: 100%;
-    margin-inline: 0;
+    max-width: var(--gn-mobile-app-max-width);
+    margin-inline: auto;
     min-width: 0;
     min-height: 0;
     overflow-x: clip;
@@ -494,6 +499,14 @@ html {
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    overflow-x: clip;
+  }
+
+  [data-app-mobile-header],
+  [data-app-bottom-nav] {
+    width: 100% !important;
+    max-width: var(--gn-mobile-app-max-width) !important;
+    margin-inline: auto !important;
   }
 }
 
