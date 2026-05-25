@@ -137,7 +137,7 @@ html {
   }
 
   [data-app-mobile-chrome-fixed="bottom"] {
-    bottom: 0 !important;
+    bottom: var(--gn-mobile-visual-bottom-inset, 0px) !important;
     top: auto !important;
     width: 100% !important;
     max-width: 100% !important;
