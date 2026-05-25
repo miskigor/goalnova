@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BenefitsReferralPage } from "@/components/benefits/BenefitsReferralPage";
+import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -14,5 +15,9 @@ export default async function BenefitsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <BenefitsReferralPage />;
+  return (
+    <AppMobileTabPageShell>
+      <BenefitsReferralPage />
+    </AppMobileTabPageShell>
+  );
 }

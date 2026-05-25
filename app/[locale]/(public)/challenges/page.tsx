@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ChallengesHub } from "@/components/challenges/ChallengesHub";
+import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
 import { GuestPublicCallout } from "@/components/layout/GuestPublicCallout";
 import { ChallengesPageHeader } from "./ChallengesPageHeader";
 
@@ -17,13 +18,10 @@ export default async function ChallengesPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div
-      data-challenges-page
-      className="box-border w-full min-w-0 max-w-full overflow-x-clip py-5 sm:mx-auto sm:max-w-4xl sm:px-5 sm:py-8 lg:py-8"
-    >
+    <AppMobileTabPageShell data-challenges-page>
       <GuestPublicCallout />
       <ChallengesPageHeader />
       <ChallengesHub />
-    </div>
+    </AppMobileTabPageShell>
   );
 }

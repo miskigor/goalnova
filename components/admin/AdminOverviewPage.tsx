@@ -7,7 +7,7 @@ export function AdminOverviewPage() {
   const t = useTranslations("adminDashboard");
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="min-w-0 max-w-full space-y-6">
       <h1 className="text-2xl font-semibold tracking-tight text-white">
         {t("overviewTitle")}
       </h1>

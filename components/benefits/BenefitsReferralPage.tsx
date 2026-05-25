@@ -71,7 +71,7 @@ function BenefitsPageShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto min-w-0 w-full max-w-full space-y-6 pb-4">
+    <div className="min-w-0 w-full max-w-full space-y-6">
       <header>
         <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">{title}</h1>
       </header>
@@ -94,7 +94,7 @@ function BenefitsScoutInfo() {
   const t = useTranslations("benefits");
 
   return (
-    <div className="mx-auto min-w-0 w-full max-w-full space-y-6 pb-4">
+    <div className="min-w-0 w-full max-w-full space-y-6">
       <header>
         <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">
           {t("scoutBenefitsTitle")}
@@ -315,7 +315,7 @@ function BenefitsPlayerReferralContent() {
   }
 
   return (
-    <div className="mx-auto min-w-0 w-full max-w-full space-y-8 pb-4 sm:space-y-10">
+    <div className="min-w-0 w-full max-w-full space-y-8 sm:space-y-10">
       <header>
         <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">{t("benefitsTitle")}</h1>
       </header>
