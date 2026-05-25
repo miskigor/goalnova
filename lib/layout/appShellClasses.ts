@@ -85,10 +85,10 @@ export const APP_MOBILE_BOTTOM_NAV_INNER_WITH_UPLOAD_FAB_CLASS =
   "pointer-events-auto box-border grid h-10 w-full min-w-0 max-w-full grid-cols-5 items-end justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
 export const APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_LINK_CLASS =
-  "pointer-events-auto -mt-2 flex w-full min-w-0 max-w-full flex-col items-center justify-end gap-0.5";
+  "pointer-events-auto -mt-1.5 flex w-full min-w-0 max-w-full flex-col items-center justify-end gap-0.5";
 
 export const APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_BUTTON_CLASS =
-  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-gn-accent/80 bg-gn-accent text-black shadow-[0_3px_12px_rgba(249,115,22,0.38)] transition active:scale-[0.96] hover:bg-gn-accent-hover";
+  "flex size-8 shrink-0 items-center justify-center rounded-full border-2 border-gn-accent/80 bg-gn-accent text-black shadow-[0_2px_10px_rgba(249,115,22,0.35)] transition active:scale-[0.96] hover:bg-gn-accent-hover";
 
 /** `/notifications` inbox — bounded column inside main shell padding. */
 export const APP_MESSAGES_INBOX_PAGE_CLASS =

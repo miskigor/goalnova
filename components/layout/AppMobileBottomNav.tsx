@@ -109,7 +109,7 @@ export function AppMobileBottomNav() {
                 aria-label={tNav(item.labelKey)}
               >
                 <span className={uploadFabButtonClass(pathname)}>
-                  <NavIcon name={item.icon} variant="tabBar" className="size-[18px] shrink-0" />
+                  <NavIcon name={item.icon} variant="tabBar" className="size-4 shrink-0" />
                 </span>
                 <span
                   className="w-full min-w-0 max-w-full truncate px-0.5 text-center text-[9px] font-medium leading-none min-[360px]:text-[10px]"
