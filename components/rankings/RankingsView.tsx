@@ -13,6 +13,11 @@ import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { VideoMusicCredit } from "@/components/video/VideoMusicCredit";
 import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
+import {
+  GN_VIDEO_MEDIA_ELEMENT_ABSOLUTE_CLASS,
+  GN_VIDEO_MEDIA_STAGE_CLASS,
+  gnVideoMediaDataProps,
+} from "@/lib/video/videoMediaDisplayClasses";
 
 const RANKINGS_PAGE_LIMIT = 50;
 
@@ -48,13 +53,14 @@ function RankingsVideoThumb({ sources }: { sources: string[] }) {
   return (
     <div
       ref={containerRef}
-      className="relative aspect-video w-[6.5rem] shrink-0 overflow-hidden rounded-lg bg-black sm:w-32"
+      {...gnVideoMediaDataProps}
+      className={`relative aspect-video w-[6.5rem] shrink-0 rounded-lg sm:w-32 ${GN_VIDEO_MEDIA_STAGE_CLASS}`}
     >
       {loadMedia && activeSrc ? (
         <video
           ref={videoRef}
           key={activeSrc}
-          className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover [transform:translateZ(0)]"
+          className={`${GN_VIDEO_MEDIA_ELEMENT_ABSOLUTE_CLASS} [transform:translateZ(0)]`}
           src={activeSrc}
           muted
           playsInline

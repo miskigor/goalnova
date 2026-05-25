@@ -129,8 +129,6 @@ export function FeedItemCard({
 
   const captionText = video.caption?.trim();
 
-  const isHomeFeedSlide = feedIndex !== undefined;
-
   const shareTrailing =
     video.id ? (
       <VideoShareButton
@@ -170,7 +168,7 @@ export function FeedItemCard({
             sources={playbackSources}
             renderedPrimarySrc={renderedPrimarySrc}
             videoId={feedVideoKey}
-            mediaFit={isHomeFeedSlide ? "contain" : "cover"}
+            mediaFit="contain"
             preload={videoPreload}
             fetchPriority={videoFetchPriority}
             debugMeta={feedVideoDebugMeta}

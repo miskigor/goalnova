@@ -11,6 +11,11 @@ import {
 } from "@/lib/challenges/challengeRowUtils";
 import { videoPlaybackCandidates, videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { PlaybackVideo } from "@/components/video/PlaybackVideo";
+import {
+  GN_VIDEO_MEDIA_ELEMENT_CLASS,
+  GN_VIDEO_MEDIA_STAGE_FLEX_CLASS,
+  gnVideoMediaDataProps,
+} from "@/lib/video/videoMediaDisplayClasses";
 
 export type UserVideoRow = Database["public"]["Tables"]["videos"]["Row"];
 
@@ -34,13 +39,14 @@ export function UserVideoDisplay({ video, challenge }: Props) {
   return (
     <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4">
       <div
-        className="relative flex w-full max-w-full items-center justify-center overflow-hidden rounded-xl bg-black max-sm:aspect-[9/16] sm:min-h-[280px]"
+        {...gnVideoMediaDataProps}
+        className={`max-sm:aspect-[9/16] sm:min-h-[280px] rounded-xl ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`}
         style={{ minWidth: "100%" }}
       >
         {hasUrl ? (
           <>
             <PlaybackVideo
-              className="absolute inset-0 z-0 h-full w-full object-cover sm:relative sm:inset-auto sm:block sm:h-auto sm:min-h-[240px] sm:max-h-[min(70vh,520px)] sm:w-full sm:object-contain"
+              className={`relative z-0 sm:max-h-[min(70vh,520px)] ${GN_VIDEO_MEDIA_ELEMENT_CLASS}`}
               sources={playbackSources}
               preload="metadata"
               onLoadOk={() => {

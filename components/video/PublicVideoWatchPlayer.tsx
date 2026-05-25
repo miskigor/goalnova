@@ -3,6 +3,11 @@
 import { FeedVideoEngagement } from "@/components/home/FeedVideoEngagement";
 import { VideoShareButton } from "@/components/share/VideoShareButton";
 import { PlaybackVideo } from "@/components/video/PlaybackVideo";
+import {
+  GN_VIDEO_MEDIA_ELEMENT_CLASS,
+  GN_VIDEO_MEDIA_STAGE_FLEX_CLASS,
+  gnVideoMediaDataProps,
+} from "@/lib/video/videoMediaDisplayClasses";
 
 type Props = {
   videoId: string;
@@ -24,9 +29,12 @@ export function PublicVideoWatchPlayer({
 
   return (
     <div className="relative isolate mx-auto w-full min-w-0 max-w-full overflow-hidden bg-black sm:rounded-2xl sm:border sm:border-gn-border-subtle sm:shadow-lg">
-      <div className="relative aspect-[9/16] max-h-[min(82dvh,720px)] w-full min-w-0 max-w-full overflow-hidden bg-black sm:aspect-auto sm:max-h-[min(75vh,640px)]">
+      <div
+        {...gnVideoMediaDataProps}
+        className={`relative aspect-[9/16] max-h-[min(82dvh,720px)] w-full min-w-0 max-w-full sm:aspect-auto sm:max-h-[min(75vh,640px)] ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`}
+      >
         <PlaybackVideo
-          className="absolute inset-0 z-0 h-full w-full object-cover sm:relative sm:inset-auto sm:z-auto sm:block sm:max-h-[min(75vh,640px)] sm:w-full sm:object-contain"
+          className={`relative z-0 sm:max-h-[min(75vh,640px)] ${GN_VIDEO_MEDIA_ELEMENT_CLASS}`}
           sources={sources}
           preload="auto"
           fetchPriority="high"

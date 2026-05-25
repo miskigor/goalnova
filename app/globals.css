@@ -312,6 +312,7 @@ html {
     transform: none !important;
   }
 
+  [data-gn-video-media] video,
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] video {
     box-sizing: border-box;
     width: 100% !important;

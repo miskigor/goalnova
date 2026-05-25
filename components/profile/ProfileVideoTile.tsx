@@ -7,6 +7,11 @@ import type { VideoRow } from "@/lib/supabase/playerPublicProfile";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
+import {
+  GN_VIDEO_MEDIA_ELEMENT_ABSOLUTE_CLASS,
+  GN_VIDEO_MEDIA_STAGE_CLASS,
+  gnVideoMediaDataProps,
+} from "@/lib/video/videoMediaDisplayClasses";
 
 type Props = {
   video: VideoRow;
@@ -53,13 +58,14 @@ export function ProfileVideoTile({
   const tile = (
     <div
       ref={containerRef}
-      className="relative box-border h-full w-full max-w-full min-w-0 overflow-hidden rounded-[0.85rem] border border-white/[0.08] bg-black"
+      {...gnVideoMediaDataProps}
+      className={`${GN_VIDEO_MEDIA_STAGE_CLASS} rounded-[0.85rem] border border-white/[0.08]`}
       style={{ aspectRatio: "9 / 16" }}
     >
       {src && loadMedia ? (
         <video
           ref={videoRef}
-          className="pointer-events-none absolute inset-0 h-full w-full max-w-full min-w-0 object-cover"
+          className={GN_VIDEO_MEDIA_ELEMENT_ABSOLUTE_CLASS}
           muted
           playsInline
           preload="metadata"

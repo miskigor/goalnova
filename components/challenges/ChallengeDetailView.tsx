@@ -23,6 +23,11 @@ import { supabase } from "@/lib/supabase/client";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import type { ExploreFeedItem, ExploreSort } from "@/lib/supabase/exploreFeed";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
+import {
+  GN_VIDEO_MEDIA_ELEMENT_CLASS,
+  GN_VIDEO_MEDIA_STAGE_FLEX_CLASS,
+  gnVideoMediaDataProps,
+} from "@/lib/video/videoMediaDisplayClasses";
 
 type Props = { slug: string };
 
@@ -55,11 +60,14 @@ function ChallengeTikTokCard({ item }: { item: ExploreFeedItem }) {
   const playerHref = `/player/${encodeURIComponent(slug)}` as const;
   const src = videoPlaybackUrl(video);
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-2xl border border-gn-border-subtle bg-black">
+    <div
+      {...gnVideoMediaDataProps}
+      className={`relative h-full w-full overflow-hidden rounded-2xl border border-gn-border-subtle ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`}
+    >
       {src ? (
         <video
           src={src}
-          className="h-full w-full object-cover"
+          className={GN_VIDEO_MEDIA_ELEMENT_CLASS}
           playsInline
           controls
           preload="metadata"

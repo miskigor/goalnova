@@ -21,6 +21,7 @@ export const feedCardProps = {
 
 export const feedVideoProps = {
   "data-pitchrusch-feed-video": true,
+  "data-gn-video-media": true,
 } as const;
 
 export const feedMetaProps = {

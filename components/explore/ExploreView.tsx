@@ -28,6 +28,13 @@ import {
 } from "@/lib/video/exploreTileMedia";
 import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
+import {
+  GN_VIDEO_MEDIA_ELEMENT_CLASS,
+  GN_VIDEO_MEDIA_POSTER_ABSOLUTE_CLASS,
+  GN_VIDEO_MEDIA_STAGE_CLASS,
+  GN_VIDEO_MEDIA_STAGE_FLEX_CLASS,
+  gnVideoMediaDataProps,
+} from "@/lib/video/videoMediaDisplayClasses";
 import { devWarn } from "@/lib/devLog";
 import { PlayerProfileFiltersModal } from "@/components/search/PlayerProfileFiltersModal";
 import { PremiumBadge } from "@/components/premium/PremiumBadges";
@@ -256,13 +263,14 @@ function ExploreTileMedia({
     return (
       <div
         ref={videoNearRef}
-        className="relative z-0 flex h-full min-h-0 w-full min-w-0 max-w-full overflow-hidden"
+        {...gnVideoMediaDataProps}
+        className={`relative z-0 ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`}
       >
         {loadExploreVideo ? (
           <video
             ref={exploreVideoRefCallback}
             key={`${videoId}-${activeVideoSrc}`}
-            className="pointer-events-none z-0 h-full w-full min-h-0 min-w-0 flex-1 object-cover object-center [transform:translateZ(0)]"
+            className={`pointer-events-none z-0 flex-1 [transform:translateZ(0)] ${GN_VIDEO_MEDIA_ELEMENT_CLASS}`}
             src={activeVideoSrc}
             poster={videoPosterUrl || undefined}
             muted
@@ -278,7 +286,7 @@ function ExploreTileMedia({
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
-            className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center"
+            className={GN_VIDEO_MEDIA_POSTER_ABSOLUTE_CLASS}
             unoptimized
           />
         ) : (
@@ -290,13 +298,16 @@ function ExploreTileMedia({
 
   if (displayImageSrc) {
     return (
-      <div className="relative h-full w-full min-h-0 min-w-0 max-w-full overflow-hidden">
+      <div
+        {...gnVideoMediaDataProps}
+        className={`relative ${GN_VIDEO_MEDIA_STAGE_CLASS}`}
+      >
         <Image
           src={displayImageSrc}
           alt=""
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
-          className="absolute inset-0 z-0 box-border min-h-0 min-w-0 object-cover object-center [transform:translateZ(0)]"
+          className={`z-0 [transform:translateZ(0)] ${GN_VIDEO_MEDIA_POSTER_ABSOLUTE_CLASS}`}
           priority={isMobileLike}
           unoptimized
           onError={onImgError}

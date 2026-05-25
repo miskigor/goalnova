@@ -5,17 +5,23 @@ import { Link } from "@/i18n/navigation";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import type { ExploreFeedItem } from "@/lib/supabase/exploreFeed";
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
+import {
+  GN_VIDEO_MEDIA_ELEMENT_CLASS,
+  GN_VIDEO_MEDIA_STAGE_FLEX_CLASS,
+  gnVideoMediaDataProps,
+} from "@/lib/video/videoMediaDisplayClasses";
 
 function WinnerEntryVideo({ url }: { url: string }) {
   const { containerRef, loadMedia } = useMediaNearViewport();
   return (
     <div
       ref={containerRef}
-      className="mt-2 overflow-hidden rounded-lg border border-gn-border-subtle bg-black"
+      {...gnVideoMediaDataProps}
+      className={`mt-2 aspect-video max-h-36 overflow-hidden rounded-lg border border-gn-border-subtle ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`}
     >
       {loadMedia ? (
         <video
-          className="aspect-video max-h-36 w-full object-cover"
+          className={GN_VIDEO_MEDIA_ELEMENT_CLASS}
           src={url}
           muted
           playsInline

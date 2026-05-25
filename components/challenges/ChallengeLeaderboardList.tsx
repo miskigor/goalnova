@@ -7,6 +7,11 @@ import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import type { ExploreFeedItem } from "@/lib/supabase/exploreFeed";
 import { VideoMusicCredit } from "@/components/video/VideoMusicCredit";
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
+import {
+  GN_VIDEO_MEDIA_ELEMENT_CLASS,
+  GN_VIDEO_MEDIA_STAGE_FLEX_CLASS,
+  gnVideoMediaDataProps,
+} from "@/lib/video/videoMediaDisplayClasses";
 
 function LeaderboardEntryVideo({ url }: { url: string }) {
   const { containerRef, loadMedia } = useMediaNearViewport({
@@ -15,11 +20,12 @@ function LeaderboardEntryVideo({ url }: { url: string }) {
   return (
     <div
       ref={containerRef}
-      className="mt-3 overflow-hidden rounded-xl border border-gn-border-subtle bg-black"
+      {...gnVideoMediaDataProps}
+      className={`mt-3 aspect-video max-h-40 overflow-hidden rounded-xl border border-gn-border-subtle sm:max-h-48 ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`}
     >
       {loadMedia ? (
         <video
-          className="aspect-video max-h-40 w-full object-cover sm:max-h-48"
+          className={GN_VIDEO_MEDIA_ELEMENT_CLASS}
           src={url}
           muted
           playsInline

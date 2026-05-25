@@ -17,6 +17,11 @@ import {
   HOME_FEED_ACTIVE_CLIP_RATIO_MIN,
   useHomeFeedSound,
 } from "@/components/home/HomeFeedSoundContext";
+import {
+  GN_VIDEO_MEDIA_ELEMENT_CLASS,
+  GN_VIDEO_MEDIA_STAGE_FLEX_CLASS,
+  gnVideoMediaDataProps,
+} from "@/lib/video/videoMediaDisplayClasses";
 
 type Props = {
   sources: string[];
@@ -56,7 +61,7 @@ export function FeedVideoSurface({
   renderedPrimarySrc,
   videoId,
   className,
-  mediaFit = "cover",
+  mediaFit = "contain",
   preload = "metadata",
   fetchPriority = "auto",
   onLoadOk,
@@ -413,19 +418,22 @@ export function FeedVideoSurface({
     queueMicrotask(() => executePlay());
   }, [executePlay, notifyFeedUserActivation, requestPlaybackRetry]);
 
-  const containMedia = mediaFit === "contain";
+  const containMedia = mediaFit !== "cover";
   const mediaStageClass = containMedia
-    ? "pointer-events-none absolute inset-0 z-[2] flex max-h-full max-w-full items-center justify-center"
+    ? `pointer-events-none absolute inset-0 z-[2] ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`
     : "pointer-events-none absolute inset-0 z-[2]";
   const defaultVideoClass = containMedia
-    ? "h-full w-full max-h-full max-w-full min-h-0 min-w-0 object-contain object-center [color-scheme:dark]"
+    ? GN_VIDEO_MEDIA_ELEMENT_CLASS
     : "h-full w-full max-w-full object-cover [color-scheme:dark]";
   const videoClassName = [className ?? defaultVideoClass, "pointer-events-none"]
     .filter(Boolean)
     .join(" ");
 
   return (
-    <div className="absolute inset-0 max-w-full overflow-hidden bg-black">
+    <div
+      {...gnVideoMediaDataProps}
+      className={`absolute inset-0 max-w-full overflow-hidden bg-black`}
+    >
       {/* Backdrop so inactive / buffering slides are never flat pure black */}
       <div
         className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-neutral-950 via-black to-neutral-950"

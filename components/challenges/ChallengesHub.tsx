@@ -19,6 +19,11 @@ import { timeRemainingUntil } from "@/lib/challenges/challengeTime";
 import { ChallengeCardActions } from "@/components/challenges/ChallengeCardActions";
 import { rankingsPreviewVideoCandidates } from "@/lib/video/videoPlaybackUrl";
 import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
+import {
+  GN_VIDEO_MEDIA_ELEMENT_CLASS,
+  GN_VIDEO_MEDIA_STAGE_CLASS,
+  gnVideoMediaDataProps,
+} from "@/lib/video/videoMediaDisplayClasses";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
   GN_PRIMARY_BUTTON_CLASS,
@@ -72,12 +77,16 @@ function TrendingChallengePreview({
   }
 
   return (
-    <div ref={containerRef} className={`relative h-full w-full bg-black ${className}`.trim()}>
+    <div
+      ref={containerRef}
+      {...gnVideoMediaDataProps}
+      className={`relative h-full w-full ${GN_VIDEO_MEDIA_STAGE_CLASS} ${className}`.trim()}
+    >
       {loadMedia && activeSrc ? (
         <video
           ref={videoRef}
           key={activeSrc}
-          className="h-full w-full object-cover opacity-90 transition-opacity group-hover:opacity-100"
+          className={`${GN_VIDEO_MEDIA_ELEMENT_CLASS} opacity-90 transition-opacity group-hover:opacity-100`}
           src={activeSrc}
           muted
           playsInline
@@ -134,13 +143,14 @@ function VideoThumb({
   return (
     <div
       ref={containerRef}
-      className={`relative aspect-video overflow-hidden rounded-xl bg-black ring-1 ring-white/[0.08] ${className}`.trim()}
+      {...gnVideoMediaDataProps}
+      className={`relative aspect-video overflow-hidden rounded-xl ring-1 ring-white/[0.08] ${GN_VIDEO_MEDIA_STAGE_CLASS} ${className}`.trim()}
     >
       {loadMedia && activeSrc ? (
         <video
           ref={videoRef}
           key={activeSrc}
-          className="h-full w-full object-cover opacity-95 [transform:translateZ(0)]"
+          className={`${GN_VIDEO_MEDIA_ELEMENT_CLASS} opacity-95 [transform:translateZ(0)]`}
           src={activeSrc}
           muted
           playsInline

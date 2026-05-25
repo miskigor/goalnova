@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { GN_VIDEO_MEDIA_POSTER_ABSOLUTE_CLASS, gnVideoMediaDataProps } from "@/lib/video/videoMediaDisplayClasses";
 
 const PREVIEW_SRC = "/images/landing/football-kick-preview.jpg";
 const PREVIEW_WIDTH = 576;
@@ -13,7 +14,10 @@ type Props = {
 export function LandingFeedPreview({ badge, caption }: Props) {
   return (
     <div className="mx-auto w-full max-w-[280px] lg:mx-0 lg:ml-auto">
-      <div className="relative aspect-[9/16] overflow-hidden rounded-3xl border border-white/10 bg-zinc-950 shadow-[0_24px_80px_-24px_rgba(249,115,22,0.35)]">
+      <div
+        {...gnVideoMediaDataProps}
+        className="relative aspect-[9/16] overflow-hidden rounded-3xl border border-white/10 bg-black shadow-[0_24px_80px_-24px_rgba(249,115,22,0.35)]"
+      >
         <Image
           src={PREVIEW_SRC}
           alt=""
@@ -22,7 +26,7 @@ export function LandingFeedPreview({ badge, caption }: Props) {
           quality={82}
           priority
           sizes="(max-width: 1024px) 280px, 340px"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          className={GN_VIDEO_MEDIA_POSTER_ABSOLUTE_CLASS}
         />
         <div
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-black/85"
