@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --gn-app-header-offset: calc(3.5rem + env(safe-area-inset-top, 0px));
+  --gn-app-header-offset: calc(3.5rem + 0.5rem + env(safe-area-inset-top, 0px));
   --gn-app-bottom-nav-offset: calc(
-    3rem + max(0.25rem, env(safe-area-inset-bottom, 0px))
+    4.5rem + max(0.375rem, env(safe-area-inset-bottom, 0px))
   );
   --gn-bg: #000000;
   --gn-surface: #0a0b0c;
@@ -77,9 +77,13 @@ html {
 /* Mobile: fixed inset shell (Safari URL bar — avoid 100dvh pushing chrome off-screen). */
 @media (max-width: 1023px) {
   :root {
-    --gn-app-header-offset: calc(3.5rem + env(safe-area-inset-top, 0px));
+    /* ~120px header band (safe-area + 3.5rem bar + spacing) on iPhone / in-app browsers */
+    --gn-app-header-offset: calc(
+      3.5rem + 0.5rem + env(safe-area-inset-top, 0px)
+    );
+    /* ~100–105px bottom nav band (4.5rem chrome + safe-area / home indicator) */
     --gn-app-bottom-nav-offset: calc(
-      3rem + env(safe-area-inset-bottom, 0px)
+      4.5rem + max(0.375rem, env(safe-area-inset-bottom, 0px))
     );
   }
 
@@ -157,6 +161,7 @@ html {
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    min-height: var(--gn-app-header-offset);
     flex-shrink: 0;
     background-color: var(--gn-bg);
   }
@@ -186,6 +191,7 @@ html {
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    min-height: var(--gn-app-bottom-nav-offset);
     flex-shrink: 0;
     box-sizing: border-box;
     overflow-x: clip;
@@ -402,7 +408,9 @@ html {
   [data-app-root]:not(:has([data-pitchrusch-home-feed])) {
     position: fixed !important;
     top: var(--gn-app-header-offset) !important;
-    bottom: var(--gn-app-bottom-nav-offset) !important;
+    bottom: calc(
+      var(--gn-app-bottom-nav-offset) + var(--gn-mobile-visual-bottom-inset, 0px)
+    ) !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;

@@ -1,4 +1,4 @@
-/** Phase 1+ mobile shell V2 — opt-in via env; off keeps {@link AppMobileChromePortal}. */
+/** V2 in-layout shell is disabled — production uses {@link AppMobileChromePortal} only. */
 export function isMobileShellV2Enabled(): boolean {
-  return process.env.NEXT_PUBLIC_MOBILE_SHELL_V2 === "1";
+  return false;
 }
