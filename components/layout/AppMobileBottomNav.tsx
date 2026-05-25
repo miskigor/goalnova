@@ -8,13 +8,17 @@ import {
   APP_SHELL_MOBILE_BOTTOM_NAV,
   APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV,
   APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED,
+  type ShellMobileNavItem,
 } from "@/lib/constants/navigation";
 import { navItemActive } from "@/lib/navigation/navItemActive";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import {
   APP_MOBILE_BOTTOM_NAV_CLASS,
   APP_MOBILE_BOTTOM_NAV_INNER_CLASS,
+  APP_MOBILE_BOTTOM_NAV_INNER_WITH_UPLOAD_FAB_CLASS,
   APP_MOBILE_BOTTOM_NAV_ITEM_CLASS,
+  APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_BUTTON_CLASS,
+  APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_LINK_CLASS,
 } from "@/lib/layout/appShellClasses";
 import { mobileBottomNavDisplayLabel } from "@/lib/layout/mobileBottomNavLabel";
 
@@ -28,6 +32,10 @@ function isScoutAppPath(pathname: string): boolean {
   );
 }
 
+function isUploadTab(item: ShellMobileNavItem): boolean {
+  return item.href === "/upload";
+}
+
 function bottomItemClass(pathname: string, href: string) {
   const active = navItemActive(pathname, href);
   return [
@@ -36,6 +44,22 @@ function bottomItemClass(pathname: string, href: string) {
     active
       ? "border-gn-accent/35 bg-gn-accent/10 text-gn-accent"
       : "text-gn-text-secondary hover:border-gn-border-subtle hover:bg-gn-surface/40 hover:text-gn-text",
+  ].join(" ");
+}
+
+function uploadFabLinkClass(pathname: string) {
+  const active = navItemActive(pathname, "/upload");
+  return [
+    APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_LINK_CLASS,
+    active ? "text-gn-accent" : "text-gn-text-secondary",
+  ].join(" ");
+}
+
+function uploadFabButtonClass(pathname: string) {
+  const active = navItemActive(pathname, "/upload");
+  return [
+    APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_BUTTON_CLASS,
+    active ? "border-gn-accent" : "",
   ].join(" ");
 }
 
@@ -59,29 +83,61 @@ export function AppMobileBottomNav() {
     return APP_SHELL_MOBILE_BOTTOM_NAV;
   }, [loaded, row?.role, isApprovedScout, pathname]);
 
+  const useUploadFab = items === APP_SHELL_MOBILE_BOTTOM_NAV;
+  const innerClass = useUploadFab
+    ? APP_MOBILE_BOTTOM_NAV_INNER_WITH_UPLOAD_FAB_CLASS
+    : APP_MOBILE_BOTTOM_NAV_INNER_CLASS;
+
   return (
     <nav
       data-app-bottom-nav
       className={APP_MOBILE_BOTTOM_NAV_CLASS}
       aria-label={tNav("primary")}
     >
-      <div className={APP_MOBILE_BOTTOM_NAV_INNER_CLASS}>
-        {items.map((item) => (
-          <Link
-            key={`${item.href}-${item.labelKey}`}
-            href={item.href}
-            className={bottomItemClass(pathname, item.href)}
-            aria-current={navItemActive(pathname, item.href) ? "page" : undefined}
-          >
-            <NavIcon name={item.icon} variant="tabBar" className="size-5 shrink-0 min-[360px]:size-[22px]" />
-            <span
-              className="w-full min-w-0 max-w-full truncate px-0.5 text-center"
-              title={tNav(item.labelKey)}
+      <div className={innerClass}>
+        {items.map((item) => {
+          const label = mobileBottomNavDisplayLabel(tNav(item.labelKey));
+          const active = navItemActive(pathname, item.href);
+
+          if (useUploadFab && isUploadTab(item)) {
+            return (
+              <Link
+                key={`${item.href}-${item.labelKey}`}
+                href={item.href}
+                className={uploadFabLinkClass(pathname)}
+                aria-current={active ? "page" : undefined}
+                aria-label={tNav(item.labelKey)}
+              >
+                <span className={uploadFabButtonClass(pathname)}>
+                  <NavIcon name={item.icon} variant="tabBar" className="size-[18px] shrink-0" />
+                </span>
+                <span
+                  className="w-full min-w-0 max-w-full truncate px-0.5 text-center text-[9px] font-medium leading-none min-[360px]:text-[10px]"
+                  title={tNav(item.labelKey)}
+                >
+                  {label}
+                </span>
+              </Link>
+            );
+          }
+
+          return (
+            <Link
+              key={`${item.href}-${item.labelKey}`}
+              href={item.href}
+              className={bottomItemClass(pathname, item.href)}
+              aria-current={active ? "page" : undefined}
             >
-              {mobileBottomNavDisplayLabel(tNav(item.labelKey))}
-            </span>
-          </Link>
-        ))}
+              <NavIcon name={item.icon} variant="tabBar" className="size-5 shrink-0 min-[360px]:size-[22px]" />
+              <span
+                className="w-full min-w-0 max-w-full truncate px-0.5 text-center"
+                title={tNav(item.labelKey)}
+              >
+                {label}
+              </span>
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );

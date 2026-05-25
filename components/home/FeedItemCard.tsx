@@ -129,6 +129,8 @@ export function FeedItemCard({
 
   const captionText = video.caption?.trim();
 
+  const isHomeFeedSlide = feedIndex !== undefined;
+
   const shareTrailing =
     video.id ? (
       <VideoShareButton
@@ -168,12 +170,12 @@ export function FeedItemCard({
             sources={playbackSources}
             renderedPrimarySrc={renderedPrimarySrc}
             videoId={feedVideoKey}
+            mediaFit={isHomeFeedSlide ? "contain" : "cover"}
             preload={videoPreload}
             fetchPriority={videoFetchPriority}
             debugMeta={feedVideoDebugMeta}
             onLoadOk={() => setLoadFailed(false)}
             onLoadError={() => setLoadFailed(true)}
-            className="h-full w-full max-w-full object-cover [color-scheme:dark]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-neutral-950 px-4 text-center text-xs text-white/45">
@@ -194,7 +196,7 @@ export function FeedItemCard({
       {/* Floating action rail — above bottom nav inset */}
       <div
         data-pitchrusch-feed-rail
-        className="pointer-events-auto absolute end-[max(0.5rem,env(safe-area-inset-right,0px))] z-50 flex w-11 max-w-11 flex-col items-center justify-center gap-1 max-lg:bottom-[max(5rem,calc(5rem+var(--gn-mobile-visual-bottom-inset,0px)))] max-lg:top-auto max-lg:max-h-[12rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:justify-end"
+        className="pointer-events-auto absolute end-[max(0.75rem,env(safe-area-inset-right,0px))] z-50 flex w-11 max-w-11 flex-col items-center justify-center gap-1 max-lg:bottom-[max(calc(5rem+0.75rem),calc(5rem+0.75rem+var(--gn-mobile-visual-bottom-inset,0px)))] max-lg:top-auto max-lg:max-h-[12rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:justify-end"
       >
         <FeedVideoEngagement
           videoId={video.id}
@@ -211,7 +213,7 @@ export function FeedItemCard({
       {/* Bottom-left: avatar + identity + caption (over video) */}
       <div
         {...feedMetaProps}
-        className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border min-w-0 max-w-[calc(100%-5.5rem)] pb-0 pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[max(0.75rem,calc(0.75rem+var(--gn-mobile-visual-bottom-inset,0px)))] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+        className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border min-w-0 max-w-[calc(100%-5.5rem)] pb-0 pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[max(calc(0.75rem+0.625rem),calc(0.75rem+0.625rem+var(--gn-mobile-visual-bottom-inset,0px)))] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
         {loadFailed && hasUrl ? (
           <p

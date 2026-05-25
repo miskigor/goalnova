@@ -312,14 +312,21 @@ html {
     transform: none !important;
   }
 
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] video {
+    object-fit: contain !important;
+    object-position: center !important;
+    max-height: 100%;
+    max-width: 100%;
+  }
+
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-meta] {
     left: 0 !important;
     right: auto !important;
     inset-inline-start: 0 !important;
     inset-inline-end: auto !important;
     bottom: max(
-      0.75rem,
-      calc(0.75rem + var(--gn-mobile-visual-bottom-inset, 0px))
+      calc(0.75rem + 0.625rem),
+      calc(0.75rem + 0.625rem + var(--gn-mobile-visual-bottom-inset, 0px))
     ) !important;
     max-width: calc(var(--gn-home-feed-vv-width, 100%) - 5.5rem);
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px));
@@ -328,11 +335,14 @@ html {
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-rail] {
     z-index: 50;
-    bottom: max(5rem, calc(5rem + var(--gn-mobile-visual-bottom-inset, 0px))) !important;
+    bottom: max(
+      calc(5rem + 0.75rem),
+      calc(5rem + 0.75rem + var(--gn-mobile-visual-bottom-inset, 0px))
+    ) !important;
     top: auto !important;
-    right: max(0.5rem, env(safe-area-inset-right, 0px)) !important;
+    right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
     left: auto !important;
-    inset-inline-end: max(0.5rem, env(safe-area-inset-right, 0px)) !important;
+    inset-inline-end: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
     inset-inline-start: auto !important;
     max-width: 3rem;
   }

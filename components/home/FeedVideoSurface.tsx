@@ -24,6 +24,8 @@ type Props = {
   renderedPrimarySrc: string;
   videoId: string;
   className?: string;
+  /** Home immersive slides: letterbox inside the card; dashboard embed keeps cover. */
+  mediaFit?: "cover" | "contain";
   preload?: "none" | "metadata" | "auto";
   /** Prefer network / decode for the visible or first slide. */
   fetchPriority?: "high" | "low" | "auto";
@@ -54,6 +56,7 @@ export function FeedVideoSurface({
   renderedPrimarySrc,
   videoId,
   className,
+  mediaFit = "cover",
   preload = "metadata",
   fetchPriority = "auto",
   onLoadOk,
@@ -410,14 +413,25 @@ export function FeedVideoSurface({
     queueMicrotask(() => executePlay());
   }, [executePlay, notifyFeedUserActivation, requestPlaybackRetry]);
 
+  const containMedia = mediaFit === "contain";
+  const mediaStageClass = containMedia
+    ? "pointer-events-none absolute inset-0 z-[2] flex max-h-full max-w-full items-center justify-center"
+    : "pointer-events-none absolute inset-0 z-[2]";
+  const defaultVideoClass = containMedia
+    ? "max-h-full max-w-full h-auto w-auto min-h-0 min-w-0 object-contain object-center [color-scheme:dark]"
+    : "h-full w-full max-w-full object-cover [color-scheme:dark]";
+  const videoClassName = [className ?? defaultVideoClass, "pointer-events-none"]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div className="absolute inset-0 max-w-full overflow-hidden">
+    <div className="absolute inset-0 max-w-full overflow-hidden bg-black">
       {/* Backdrop so inactive / buffering slides are never flat pure black */}
       <div
         className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-neutral-950 via-black to-neutral-950"
         aria-hidden
       />
-      <div ref={wrapRef} className="pointer-events-none absolute inset-0 z-[2]">
+      <div ref={wrapRef} className={mediaStageClass}>
         <PlaybackVideo
           ref={videoRef}
           sources={sources}
@@ -448,7 +462,7 @@ export function FeedVideoSurface({
           }}
           onLoadOk={onMediaLoaded}
           onLoadError={onLoadError}
-          className={[className, "pointer-events-none"].filter(Boolean).join(" ")}
+          className={videoClassName}
         />
       </div>
 
