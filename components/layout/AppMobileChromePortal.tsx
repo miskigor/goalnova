@@ -46,22 +46,26 @@ export function AppMobileChromePortal() {
     setMounted(true);
   }, []);
 
+  useLayoutEffect(() => {
+    if (!mounted) return;
+    syncMobileVisualBottomInset();
+  }, [mounted]);
+
   useEffect(() => {
     if (!mounted) return;
 
     syncMobileVisualBottomInset();
 
     const vv = window.visualViewport;
-    vv?.addEventListener("resize", syncMobileVisualBottomInset);
-    vv?.addEventListener("scroll", syncMobileVisualBottomInset);
-    window.addEventListener("resize", syncMobileVisualBottomInset, {
-      passive: true,
-    });
+    const onViewportChange = () => syncMobileVisualBottomInset();
+    vv?.addEventListener("resize", onViewportChange);
+    vv?.addEventListener("scroll", onViewportChange);
+    window.addEventListener("resize", onViewportChange, { passive: true });
 
     return () => {
-      vv?.removeEventListener("resize", syncMobileVisualBottomInset);
-      vv?.removeEventListener("scroll", syncMobileVisualBottomInset);
-      window.removeEventListener("resize", syncMobileVisualBottomInset);
+      vv?.removeEventListener("resize", onViewportChange);
+      vv?.removeEventListener("scroll", onViewportChange);
+      window.removeEventListener("resize", onViewportChange);
       clearMobileVisualBottomInset();
     };
   }, [mounted]);
@@ -84,7 +88,11 @@ export function AppMobileChromePortal() {
         data-app-mobile-chrome
         data-app-mobile-chrome-fixed="bottom"
         className="pointer-events-auto fixed inset-x-0 z-[1000] box-border w-full max-w-full min-w-0 overflow-x-clip max-lg:block lg:hidden"
-        style={{ transform: "translateZ(0)" }}
+        style={{
+          transform: "translateZ(0)",
+          bottom:
+            "calc(var(--gn-mobile-visual-bottom-inset, 0px) + env(safe-area-inset-bottom, 0px))",
+        }}
       >
         <AppMobileBottomNav />
       </div>
