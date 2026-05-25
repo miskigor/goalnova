@@ -12,13 +12,21 @@ import {
 } from "@/lib/constants/navigation";
 import { navItemActive } from "@/lib/navigation/navItemActive";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
-import {
-  MOBILE_BOTTOM_TABS_V2_CLASS,
-  MOBILE_BOTTOM_TABS_V2_INNER_CLASS,
-  MOBILE_BOTTOM_TABS_V2_ITEM_CLASS,
-  MOBILE_BOTTOM_TABS_V2_UPLOAD_FAB_CLASS,
-} from "@/lib/layout/appShellClasses";
+import { MOBILE_BOTTOM_TABS_V2_CLASS } from "@/lib/layout/appShellClasses";
 import { mobileBottomNavDisplayLabel } from "@/lib/layout/mobileBottomNavLabel";
+
+/** Compact V2 bottom chrome — local only (more feed space, still tappable). */
+const COMPACT_BOTTOM_TABS_INNER_CLASS =
+  "pointer-events-auto box-border grid h-11 min-h-[2.75rem] w-full min-w-0 max-w-full grid-cols-5 items-end justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+
+const COMPACT_BOTTOM_TABS_ITEM_CLASS =
+  "flex h-9 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0 overflow-visible rounded-md border border-transparent px-0 py-0 text-[9px] font-medium leading-none tracking-tight min-[360px]:text-[10px]";
+
+const COMPACT_UPLOAD_FAB_CLASS =
+  "pointer-events-auto -mt-3 flex w-full min-w-0 max-w-full flex-col items-center justify-end gap-0";
+
+const COMPACT_TAB_LABEL_CLASS =
+  "w-full min-w-0 max-w-full truncate px-0.5 text-center text-[9px] font-medium leading-none min-[360px]:text-[10px]";
 
 /** Scout app routes: show scout tab bar before async role verification finishes. */
 function isScoutAppPath(pathname: string): boolean {
@@ -37,7 +45,7 @@ function isPlayerUploadTab(item: ShellMobileNavItem): boolean {
 function sideTabClass(pathname: string, href: string) {
   const active = navItemActive(pathname, href);
   return [
-    MOBILE_BOTTOM_TABS_V2_ITEM_CLASS,
+    COMPACT_BOTTOM_TABS_ITEM_CLASS,
     "transition-[color,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors",
     active
       ? "border-gn-accent/35 bg-gn-accent/10 text-gn-accent"
@@ -48,7 +56,7 @@ function sideTabClass(pathname: string, href: string) {
 function uploadFabClass(pathname: string) {
   const active = navItemActive(pathname, "/upload");
   return [
-    MOBILE_BOTTOM_TABS_V2_UPLOAD_FAB_CLASS,
+    COMPACT_UPLOAD_FAB_CLASS,
     active ? "text-gn-accent" : "text-gn-text-secondary",
   ].join(" ");
 }
@@ -56,7 +64,7 @@ function uploadFabClass(pathname: string) {
 function uploadFabButtonClass(pathname: string) {
   const active = navItemActive(pathname, "/upload");
   return [
-    "flex size-12 shrink-0 items-center justify-center rounded-full border-2 shadow-[0_6px_20px_rgba(249,115,22,0.45)] transition active:scale-[0.96]",
+    "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 shadow-[0_4px_14px_rgba(249,115,22,0.4)] transition active:scale-[0.96]",
     active
       ? "border-gn-accent bg-gn-accent text-black"
       : "border-gn-accent/80 bg-gn-accent text-black hover:bg-gn-accent-hover",
@@ -91,10 +99,10 @@ export function MobileBottomTabs() {
   return (
     <nav
       data-mobile-bottom-tabs
-      className={MOBILE_BOTTOM_TABS_V2_CLASS}
+      className={`${MOBILE_BOTTOM_TABS_V2_CLASS} pt-0 pb-[max(0.125rem,env(safe-area-inset-bottom,0px))]`}
       aria-label={tNav("primary")}
     >
-      <div className={MOBILE_BOTTOM_TABS_V2_INNER_CLASS}>
+      <div className={COMPACT_BOTTOM_TABS_INNER_CLASS}>
         {items.map((item) => {
           const label = mobileBottomNavDisplayLabel(tNav(item.labelKey));
           const active = navItemActive(pathname, item.href);
@@ -109,12 +117,9 @@ export function MobileBottomTabs() {
                 aria-label={tNav(item.labelKey)}
               >
                 <span className={uploadFabButtonClass(pathname)}>
-                  <NavIcon name={item.icon} variant="tabBar" className="size-6 shrink-0" />
+                  <NavIcon name={item.icon} variant="tabBar" className="size-5 shrink-0" />
                 </span>
-                <span
-                  className="w-full min-w-0 max-w-full truncate px-0.5 text-center text-[9px] font-medium min-[360px]:text-[10px]"
-                  title={tNav(item.labelKey)}
-                >
+                <span className={COMPACT_TAB_LABEL_CLASS} title={tNav(item.labelKey)}>
                   {label}
                 </span>
               </Link>
@@ -128,15 +133,8 @@ export function MobileBottomTabs() {
               className={sideTabClass(pathname, item.href)}
               aria-current={active ? "page" : undefined}
             >
-              <NavIcon
-                name={item.icon}
-                variant="tabBar"
-                className="size-5 shrink-0 min-[360px]:size-[22px]"
-              />
-              <span
-                className="w-full min-w-0 max-w-full truncate px-0.5 text-center"
-                title={tNav(item.labelKey)}
-              >
+              <NavIcon name={item.icon} variant="tabBar" className="size-5 shrink-0" />
+              <span className={COMPACT_TAB_LABEL_CLASS} title={tNav(item.labelKey)}>
                 {label}
               </span>
             </Link>

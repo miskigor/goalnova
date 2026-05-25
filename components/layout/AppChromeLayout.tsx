@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "@/i18n/navigation";
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
 import { AdminSupportUnreadProvider } from "@/components/layout/AdminSupportUnreadContext";
 import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
@@ -19,6 +20,8 @@ import { isMobileShellV2Enabled } from "@/lib/layout/mobileShellV2Flag";
 
 function AppMainColumn({ children }: { children: React.ReactNode }) {
   const shellV2 = isMobileShellV2Enabled();
+  const pathname = usePathname();
+  const routeKey = shellV2 ? pathname : undefined;
 
   return (
     <div data-app-column className={APP_SHELL_COLUMN_CLASS}>
@@ -28,7 +31,7 @@ function AppMainColumn({ children }: { children: React.ReactNode }) {
           .filter(Boolean)
           .join(" ")}
       >
-        <div data-app-main-inner className={APP_SHELL_MAIN_INNER_CLASS}>
+        <div key={routeKey} data-app-main-inner className={APP_SHELL_MAIN_INNER_CLASS}>
           <ScoutVerificationBanner />
           {children}
         </div>
@@ -42,6 +45,8 @@ function AppMainColumn({ children }: { children: React.ReactNode }) {
  */
 export function AppChromeLayout({ children }: { children: React.ReactNode }) {
   const shellV2 = isMobileShellV2Enabled();
+  const pathname = usePathname();
+  const routeKey = shellV2 ? pathname : undefined;
 
   return (
     <FeedbackProvider>
@@ -49,11 +54,11 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
         <AppLayoutDebugProbe />
         <AppShellDebugOverlay />
         {!shellV2 ? <AppMobileChromePortal /> : null}
-        <div data-app-root className={APP_SHELL_ROOT_CLASS}>
+        <div key={routeKey} data-app-root className={APP_SHELL_ROOT_CLASS}>
           <AppSidebar />
           {shellV2 ? (
             <MobileAppShell>
-              <AppMainColumn>{children}</AppMainColumn>
+              <AppMainColumn key={routeKey}>{children}</AppMainColumn>
             </MobileAppShell>
           ) : (
             <AppMainColumn>{children}</AppMainColumn>

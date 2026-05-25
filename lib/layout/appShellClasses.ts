@@ -11,13 +11,15 @@ export const MOBILE_APP_SHELL_V2_MAIN_CLASS =
 export const MOBILE_TOP_BAR_V2_CLASS = [
   "relative z-[1] box-border w-full max-w-full shrink-0",
   "border-b border-gn-border-subtle bg-gn-bg",
-  "pt-[env(safe-area-inset-top,0px)]",
+  "pt-[max(0.25rem,env(safe-area-inset-top,0px))]",
+  "pb-1",
+  "min-h-[3.125rem]",
   "shadow-[0_8px_32px_rgba(0,0,0,0.2)]",
   "lg:hidden",
 ].join(" ");
 
 export const MOBILE_TOP_BAR_V2_INNER_CLASS =
-  "box-border flex h-14 w-full max-w-full min-w-0 items-center justify-between gap-2 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+  "box-border flex h-10 min-h-10 w-full max-w-full min-w-0 items-center justify-between gap-1 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
 export const MOBILE_BOTTOM_TABS_V2_CLASS = [
   "relative z-[1] box-border w-full max-w-full min-w-0 shrink-0 overflow-x-clip bg-gn-bg",

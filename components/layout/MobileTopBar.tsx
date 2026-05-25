@@ -39,7 +39,7 @@ export function MobileTopBar() {
           variant="header"
           showWordmark={false}
           priority
-          className="!shrink-0 [&_span]:overflow-visible [&_img]:!size-10 [&_img]:!max-h-10 [&_img]:!max-w-10 [&_img]:!object-contain min-[360px]:[&_img]:!size-11 min-[360px]:[&_img]:!max-h-11 min-[360px]:[&_img]:!max-w-11"
+          className="!shrink-0 [&_span]:overflow-visible [&_img]:!size-9 [&_img]:!max-h-9 [&_img]:!max-w-9 [&_img]:!object-contain"
         />
 
         <div className="flex shrink-0 items-center justify-end gap-0.5 overflow-x-clip min-[360px]:gap-1">
@@ -61,7 +61,7 @@ export function MobileTopBar() {
             >
               <UnreadNotificationBadge count={adminSupportUnread} variant="navCompact" />
               <svg
-                className="size-[18px] shrink-0"
+                className="size-4 shrink-0"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -78,7 +78,7 @@ export function MobileTopBar() {
             <Link
               href="/challenges"
               className={
-                "flex h-8 min-w-0 max-w-[4.5rem] shrink items-center justify-center rounded-lg border px-1 text-[10px] font-semibold leading-tight tracking-tight text-gn-accent transition active:scale-[0.98] hover:bg-gn-accent/10 min-[360px]:max-w-[5.25rem] min-[360px]:px-1.5 sm:max-w-[6.25rem] sm:px-2 sm:text-[11px] " +
+                "flex h-8 min-h-8 min-w-0 max-w-[4.25rem] shrink items-center justify-center rounded-lg border px-1 text-[10px] font-semibold leading-none tracking-tight text-gn-accent transition active:scale-[0.98] hover:bg-gn-accent/10 min-[360px]:max-w-[5rem] min-[360px]:px-1.5 " +
                 (challengesActive
                   ? "border-gn-accent bg-gn-accent/25"
                   : "border-gn-accent/55 bg-gn-surface/30")
@@ -102,7 +102,7 @@ export function MobileTopBar() {
               aria-label={tNav("myBenefits")}
               title={tNav("myBenefits")}
             >
-              <NavIcon name="benefits" className="size-[18px] shrink-0" />
+              <NavIcon name="benefits" className="size-4 shrink-0" />
             </Link>
           ) : null}
           {authed && user ? (
