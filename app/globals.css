@@ -141,12 +141,24 @@ html {
   }
 
   [data-app-mobile-chrome-fixed="bottom"] {
-    bottom: var(--gn-mobile-visual-bottom-inset, 0px) !important;
+    bottom: max(
+      env(safe-area-inset-bottom, 0px),
+      var(--gn-mobile-visual-bottom-inset, 0px)
+    ) !important;
     top: auto !important;
     width: 100% !important;
     max-width: 100% !important;
     overflow-x: clip !important;
     z-index: 1000;
+  }
+
+  /*
+   * WhatsApp / iOS WebView: when layout bottom inset is 0 but visualViewport is shorter,
+   * portal sets data-vv-positioned and --gn-mobile-chrome-bottom-top (see AppMobileChromePortal).
+   */
+  [data-app-mobile-chrome-fixed="bottom"][data-vv-positioned="true"] {
+    top: var(--gn-mobile-chrome-bottom-top, auto) !important;
+    bottom: auto !important;
   }
 
   [data-app-mobile-chrome-fixed="bottom"] [data-app-bottom-nav] {
