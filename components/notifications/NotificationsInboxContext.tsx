@@ -228,8 +228,7 @@ const NOTIFICATIONS_INBOX_FALLBACK: NotificationsInboxContextValue = {
 export function useNotificationsInbox(): NotificationsInboxContextValue {
   const ctx = useContext(NotificationsInboxContext);
   if (ctx) return ctx;
-  // Always log: production mis-mounts should show in Netlify / browser console.
-  console.error(
+  devWarn(
     "[notifications] useNotificationsInbox outside NotificationsInboxProvider — using fallback (badge disabled).",
   );
   return NOTIFICATIONS_INBOX_FALLBACK;
