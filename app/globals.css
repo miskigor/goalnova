@@ -227,7 +227,9 @@ html {
   [data-app-root]:has([data-pitchrusch-home-feed]) {
     position: fixed !important;
     top: var(--gn-app-header-offset) !important;
-    bottom: var(--gn-app-bottom-nav-offset) !important;
+    bottom: calc(
+      var(--gn-app-bottom-nav-offset) + var(--gn-mobile-visual-bottom-inset, 0px)
+    ) !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
@@ -315,7 +317,10 @@ html {
     right: auto !important;
     inset-inline-start: 0 !important;
     inset-inline-end: auto !important;
-    bottom: max(0.5rem, calc(var(--gn-app-bottom-nav-offset) - 2.5rem)) !important;
+    bottom: max(
+      0.75rem,
+      calc(0.75rem + var(--gn-mobile-visual-bottom-inset, 0px))
+    ) !important;
     max-width: calc(var(--gn-home-feed-vv-width, 100%) - 5.5rem);
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px));
     padding-bottom: 0.125rem;
@@ -323,6 +328,8 @@ html {
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-rail] {
     z-index: 50;
+    bottom: max(5rem, calc(5rem + var(--gn-mobile-visual-bottom-inset, 0px))) !important;
+    top: auto !important;
     right: max(0.5rem, env(safe-area-inset-right, 0px)) !important;
     left: auto !important;
     inset-inline-end: max(0.5rem, env(safe-area-inset-right, 0px)) !important;

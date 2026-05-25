@@ -194,7 +194,7 @@ export function FeedItemCard({
       {/* Floating action rail — above bottom nav inset */}
       <div
         data-pitchrusch-feed-rail
-        className="pointer-events-auto absolute end-[max(0.5rem,env(safe-area-inset-right,0px))] top-1/2 z-50 flex w-11 max-w-11 -translate-y-1/2 flex-col items-center justify-center gap-1 max-lg:top-[64%] max-lg:max-h-[14.5rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:translate-y-0 lg:justify-end"
+        className="pointer-events-auto absolute end-[max(0.5rem,env(safe-area-inset-right,0px))] z-50 flex w-11 max-w-11 flex-col items-center justify-center gap-1 max-lg:bottom-[max(5rem,calc(5rem+var(--gn-mobile-visual-bottom-inset,0px)))] max-lg:top-auto max-lg:max-h-[12rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:justify-end"
       >
         <FeedVideoEngagement
           videoId={video.id}
@@ -211,7 +211,7 @@ export function FeedItemCard({
       {/* Bottom-left: avatar + identity + caption (over video) */}
       <div
         {...feedMetaProps}
-        className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border min-w-0 max-w-[calc(100%-5.5rem)] pb-0 pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[max(0.75rem,calc(var(--gn-app-bottom-nav-offset)-3rem))]! lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+        className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border min-w-0 max-w-[calc(100%-5.5rem)] pb-0 pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[max(0.75rem,calc(0.75rem+var(--gn-mobile-visual-bottom-inset,0px)))] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
         {loadFailed && hasUrl ? (
           <p
