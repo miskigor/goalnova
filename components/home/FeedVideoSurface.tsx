@@ -418,7 +418,7 @@ export function FeedVideoSurface({
     ? "pointer-events-none absolute inset-0 z-[2] flex max-h-full max-w-full items-center justify-center"
     : "pointer-events-none absolute inset-0 z-[2]";
   const defaultVideoClass = containMedia
-    ? "max-h-full max-w-full h-auto w-auto min-h-0 min-w-0 object-contain object-center [color-scheme:dark]"
+    ? "h-full w-full max-h-full max-w-full min-h-0 min-w-0 object-contain object-center [color-scheme:dark]"
     : "h-full w-full max-w-full object-cover [color-scheme:dark]";
   const videoClassName = [className ?? defaultVideoClass, "pointer-events-none"]
     .filter(Boolean)
