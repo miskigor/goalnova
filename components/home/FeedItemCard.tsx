@@ -31,6 +31,10 @@ import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 const DASHBOARD_SLIDE =
   "min-h-[26rem] w-full overflow-hidden rounded-2xl border border-white/[0.06] bg-black sm:min-h-[28rem] lg:min-h-[30rem]";
 
+/** Mobile home feed: smaller centered tile (not `data-pitchrusch-feed-card` — vv CSS targets that). */
+const HOME_FEED_MOBILE_FRAME =
+  "relative isolate mx-auto box-border flex h-[65dvh] max-h-[65dvh] w-[92%] max-w-[360px] min-h-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black lg:contents";
+
 type Props = {
   item: AugmentedHomeFeedItem;
   slideClassName?: string;
@@ -141,11 +145,9 @@ export function FeedItemCard({
       />
     ) : null;
 
-  return (
-    <article
-      {...feedCardProps}
-      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden bg-black max-lg:left-0 max-lg:right-0 max-lg:mx-0 max-lg:translate-x-0 ${slideClassName}`}
-    >
+  const isHomeSnapSlide = feedIndex !== undefined;
+  const slideBody = (
+    <>
       {/* Fullscreen video — non-interactive so rail controls receive taps */}
       <div
         {...feedVideoProps}
@@ -288,6 +290,19 @@ export function FeedItemCard({
           ) : null}
         </div>
       </div>
+    </>
+  );
+
+  return (
+    <article
+      {...feedCardProps}
+      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden ${slideClassName}`}
+    >
+      {isHomeSnapSlide ? (
+        <div className={HOME_FEED_MOBILE_FRAME}>{slideBody}</div>
+      ) : (
+        slideBody
+      )}
     </article>
   );
 }

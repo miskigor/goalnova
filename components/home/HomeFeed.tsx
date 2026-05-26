@@ -63,11 +63,14 @@ const FEED_SCROLLPORT =
   "max-lg:flex-1 max-lg:h-full max-lg:min-h-0 max-lg:max-h-full " +
   "lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
-/** Card fills its snap `li`; desktop keeps a subtle framed tile. */
+/**
+ * Desktop: card fills snap `li` (cqh tile). Mobile: outer slide is a centering shell;
+ * bounded video frame lives in {@link FeedItemCard} (avoids vv-width rules on feed-card).
+ */
 const FEED_SLIDE =
-  "h-full min-h-0 min-w-0 w-full max-w-full overflow-hidden rounded-none border-0 bg-black " +
-  "max-lg:h-full max-lg:min-h-0 " +
-  "lg:h-[100cqh] lg:max-h-[100cqh] lg:rounded-2xl lg:border lg:border-white/[0.06]";
+  "box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden rounded-none border-0 bg-transparent " +
+  "max-lg:items-center max-lg:justify-center max-lg:overflow-visible " +
+  "lg:h-[100cqh] lg:max-h-[100cqh] lg:rounded-2xl lg:border lg:border-white/[0.06] lg:bg-black";
 
 type MyVideosStatus =
   | { state: "loading" }
@@ -130,7 +133,7 @@ function HomeFeedSnapList({
               item.video.id ??
               `${item.video.user_id}-${item.video.created_at ?? ""}-${index}`
             }
-            className="min-h-0 min-w-0 w-full shrink-0 grow-0 basis-full snap-start snap-always overflow-x-clip"
+            className="min-h-0 min-w-0 w-full shrink-0 grow-0 basis-full snap-start snap-always overflow-x-clip max-lg:bg-black"
           >
             <FeedItemCard
               item={item}
