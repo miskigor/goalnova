@@ -5,7 +5,6 @@ import { createPortal } from "react-dom";
 import { usePathname } from "@/i18n/navigation";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
 import { devLog, devTable, isDev } from "@/lib/devLog";
-import { normalizeAppPathname } from "@/lib/layout/normalizeAppPathname";
 
 const GN_MOBILE_VISUAL_BOTTOM_INSET_VAR = "--gn-mobile-visual-bottom-inset";
 
@@ -111,16 +110,12 @@ function syncBottomChromeGeometry(bottomWrap: HTMLElement | null) {
  * viewport (not `display:contents`, nested fixed shells, or `body { position: fixed }` on tab pages).
  */
 export function AppMobileChromePortal() {
-  const pathname = normalizeAppPathname(usePathname());
+  const pathname = usePathname();
   const bottomWrapRef = useRef<HTMLDivElement | null>(null);
 
-  const syncChrome = () => syncBottomChromeGeometry(bottomWrapRef.current);
-
   useLayoutEffect(() => {
-    syncChrome();
+    syncBottomChromeGeometry(bottomWrapRef.current);
     logChromeDiag(bottomWrapRef.current, "layout");
-    const raf = window.requestAnimationFrame(syncChrome);
-    return () => window.cancelAnimationFrame(raf);
   }, [pathname]);
 
   useEffect(() => {
