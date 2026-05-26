@@ -2,7 +2,6 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { AppMobileHeader } from "@/components/layout/AppMobileHeader";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
 import { devLog, devTable, isDev } from "@/lib/devLog";
 
@@ -109,16 +108,18 @@ function syncBottomChromeGeometry(bottomWrap: HTMLElement | null) {
 
   if (!bottomWrap) return;
 
-  const navHeight =
-    bottomWrap.getBoundingClientRect().height || BOTTOM_CHROME_FALLBACK_HEIGHT_PX;
-  const topPx = Math.max(0, vv.offsetTop + vv.height - navHeight);
+  const measuredHeight = bottomWrap.getBoundingClientRect().height;
+  const navHeight = Math.max(measuredHeight, BOTTOM_CHROME_FALLBACK_HEIGHT_PX);
+  const visibleBottom = vv.offsetTop + vv.height;
+  const topPx = Math.max(0, visibleBottom - navHeight);
   root.style.setProperty(GN_MOBILE_CHROME_BOTTOM_TOP_VAR, `${Math.ceil(topPx)}px`);
 
   const visualSmallerThanLayout =
     vv.height > 0 && vv.height < window.innerHeight - 8;
   const insetUnreliable = layoutBottomGap < 8 && visualSmallerThanLayout;
+  const fitsInLayout = topPx + navHeight <= window.innerHeight + 1;
 
-  if (insetUnreliable) {
+  if (insetUnreliable && fitsInLayout) {
     bottomWrap.setAttribute("data-vv-positioned", "true");
   } else {
     bottomWrap.removeAttribute("data-vv-positioned");
@@ -133,7 +134,7 @@ function clearBottomChromeGeometry() {
 }
 
 /**
- * Renders mobile header + tab bar on `document.body` so `position: fixed` anchors to the
+ * Renders mobile bottom tab bar on `document.body` so `position: fixed` anchors to the
  * viewport (not `display:contents`, nested fixed shells, or `body { position: fixed }` on tab pages).
  */
 export function AppMobileChromePortal() {
@@ -196,25 +197,15 @@ export function AppMobileChromePortal() {
   }
 
   return createPortal(
-    <>
-      <div
-        data-app-mobile-chrome
-        data-app-mobile-chrome-fixed="top"
-        className="pointer-events-auto fixed inset-x-0 top-0 z-[1000] box-border w-full max-w-full min-w-0 overflow-x-clip max-lg:block lg:hidden"
-        style={{ transform: "translateZ(0)" }}
-      >
-        <AppMobileHeader />
-      </div>
-      <div
-        ref={bottomWrapRef}
-        data-app-mobile-chrome
-        data-app-mobile-chrome-fixed="bottom"
-        className="pointer-events-auto fixed inset-x-0 z-[1000] box-border w-full max-w-full min-w-0 overflow-x-clip max-lg:block lg:hidden"
-        style={{ transform: "translateZ(0)" }}
-      >
-        <AppMobileBottomNav />
-      </div>
-    </>,
+    <div
+      ref={bottomWrapRef}
+      data-app-mobile-chrome
+      data-app-mobile-chrome-fixed="bottom"
+      className="pointer-events-auto visible fixed bottom-0 left-0 right-0 z-[1000] box-border min-h-[var(--gn-app-bottom-nav-offset,4.5rem)] w-full max-w-full min-w-0 overflow-x-clip overflow-y-visible opacity-100 max-lg:block lg:hidden"
+      style={{ transform: "translateZ(0)", zIndex: 1000 }}
+    >
+      <AppMobileBottomNav />
+    </div>,
     document.body,
   );
 }

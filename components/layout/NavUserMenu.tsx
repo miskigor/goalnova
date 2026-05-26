@@ -24,6 +24,10 @@ import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadCon
 import { countMyUnreadSupportReplies } from "@/lib/supabase/supportTickets";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { logAppShellPageOverflowOffenders } from "@/lib/layout/detectHorizontalOverflow";
+import {
+  APP_MOBILE_BOTTOM_NAV_PROFILE_AVATAR_CLASS,
+  APP_MOBILE_BOTTOM_NAV_PROFILE_TRIGGER_CLASS,
+} from "@/lib/layout/appShellClasses";
 
 function displayNameFromUser(user: User): string {
   return (
@@ -43,6 +47,8 @@ type NavUserMenuProps = {
   mobileMoreInMenu?: boolean;
   /** Mobile header: avatar-only trigger without chevron to save horizontal space. */
   compactTrigger?: boolean;
+  /** Mobile bottom nav: menu opens above tab bar with premium/benefits overflow. */
+  bottomNavTrigger?: boolean;
 };
 
 function newRealtimeChannelSuffix(): string {
@@ -64,8 +70,20 @@ const ACCOUNT_MENU_PANEL_MOBILE_CLASS = [
   "max-h-[min(calc(100dvh-var(--gn-app-header-offset,3.5rem)-var(--gn-app-bottom-nav-offset,4.25rem)-1rem),32rem)]",
 ].join(" ");
 
+/** Mobile bottom nav profile menu — anchored above the tab bar. */
+const ACCOUNT_MENU_PANEL_BOTTOM_NAV_CLASS = [
+  ACCOUNT_MENU_PANEL_BASE_CLASS,
+  "fixed z-[1201] w-[min(20rem,calc(100%-2rem))] max-w-[calc(100%-2rem)]",
+  "end-4 start-auto",
+  "bottom-[calc(var(--gn-app-bottom-nav-offset,4.5rem)+var(--gn-mobile-visual-bottom-inset,0px)+0.5rem)]",
+  "max-h-[min(calc(100dvh-var(--gn-app-bottom-nav-offset,4.5rem)-var(--gn-mobile-visual-bottom-inset,0px)-1.5rem),28rem)]",
+].join(" ");
+
 const ACCOUNT_MENU_BACKDROP_CLASS =
   "fixed inset-0 z-[115] box-border max-w-full overflow-x-hidden bg-black/55";
+
+const ACCOUNT_MENU_BACKDROP_BOTTOM_NAV_CLASS =
+  "fixed inset-0 z-[1195] box-border max-w-full overflow-x-hidden bg-black/55";
 
 export function NavUserMenu({
   user,
@@ -73,9 +91,10 @@ export function NavUserMenu({
   menuPlacement = "below",
   mobileMoreInMenu = false,
   compactTrigger = false,
+  bottomNavTrigger = false,
 }: NavUserMenuProps) {
   const menuId = useId();
-  const useMobileFixedMenu = mobileMoreInMenu;
+  const useMobileFixedMenu = mobileMoreInMenu || bottomNavTrigger;
   /** AppSidebar + AppMobileHeader both mount NavUserMenu; `supabase.channel(name)` reuses one RealtimeChannel per name, so a second mount cannot chain `.on()` after the first `.subscribe()`. */
   const supportUnreadChannelSuffixRef = useRef<string>("");
   if (!supportUnreadChannelSuffixRef.current) {
@@ -240,24 +259,84 @@ export function NavUserMenu({
 
   const showUploadInMenu =
     uploadEligibility !== "non_player" && uploadEligibility !== "signed_out";
-  const uploadMenuPrimary = uploadEligibility === "player";
+  const uploadMenuPrimary = uploadEligibility === "player" && !bottomNavTrigger;
   const uploadPathActive = navItemActive(pathname, "/upload");
 
-  const desktopMenuClass = [
-    ACCOUNT_MENU_PANEL_BASE_CLASS,
-    "absolute end-0 z-[120] min-w-[13.5rem] w-[min(20rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)]",
-    menuPlacement === "above"
-      ? "bottom-[calc(100%+0.5rem)]"
-      : "top-[calc(100%+0.5rem)]",
-  ].join(" ");
+  const menuPanelPositionClass = bottomNavTrigger
+    ? ACCOUNT_MENU_PANEL_BOTTOM_NAV_CLASS
+    : useMobileFixedMenu
+      ? ACCOUNT_MENU_PANEL_MOBILE_CLASS
+      : [
+          ACCOUNT_MENU_PANEL_BASE_CLASS,
+          "absolute end-0 z-[120] min-w-[13.5rem] w-[min(20rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)]",
+          menuPlacement === "above"
+            ? "bottom-[calc(100%+0.5rem)]"
+            : "top-[calc(100%+0.5rem)]",
+        ].join(" ");
 
   const menuPanel = (
     <div
       id={menuId}
       data-account-menu
       role="menu"
-      className={useMobileFixedMenu ? ACCOUNT_MENU_PANEL_MOBILE_CLASS : desktopMenuClass}
+      className={menuPanelPositionClass}
     >
+      {bottomNavTrigger ? (
+        <div className="flex min-w-0 items-center gap-3 border-b border-gn-border-subtle px-3 py-3">
+          <ProfileAvatar
+            name={displayNameFromUser(user)}
+            imageUrl={avatarUrl}
+            sizeClassName="size-10 min-h-10 min-w-10 max-h-10 max-w-10"
+            className="!rounded-full ring-2 ring-gn-accent/45"
+          />
+          <p className="min-w-0 truncate text-sm font-semibold text-gn-text">
+            {displayNameFromUser(user)}
+          </p>
+        </div>
+      ) : null}
+
+      {bottomNavTrigger ? (
+        <>
+          <Link
+            href="/premium"
+            role="menuitem"
+            className={linkClass}
+            onClick={() => {
+              setOpen(false);
+              onNavigate?.();
+            }}
+          >
+            <NavIcon name="premium" className="size-4 shrink-0 opacity-90" />
+            {tNav("premium")}
+          </Link>
+          <Link
+            href="/benefits"
+            role="menuitem"
+            className={linkClass}
+            onClick={() => {
+              setOpen(false);
+              onNavigate?.();
+            }}
+          >
+            <NavIcon name="benefits" className="size-4 shrink-0 opacity-90" />
+            {tNav("myBenefits")}
+          </Link>
+          <Link
+            href="/discover"
+            role="menuitem"
+            className={linkClass}
+            onClick={() => {
+              setOpen(false);
+              onNavigate?.();
+            }}
+          >
+            <NavIcon name="discover" className="size-4 shrink-0 opacity-90" />
+            {tNav("discover")}
+          </Link>
+          <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
+        </>
+      ) : null}
+
       {uploadMenuPrimary ? (
         <Link
           href="/upload"
@@ -359,22 +438,28 @@ export function NavUserMenu({
 
       {mobileMoreInMenu ? (
         <>
-          <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
-          <p className="min-w-0 truncate px-3 pt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-gn-text-tertiary">
-            {tNav("moreInMenu")}
-          </p>
-          <Link
-            href="/explore"
-            role="menuitem"
-            className={linkClass}
-            onClick={() => {
-              setOpen(false);
-              onNavigate?.();
-            }}
-          >
-            <NavIcon name="explore" className="size-4 shrink-0 opacity-90" />
-            {tNav("explore")}
-          </Link>
+          {!bottomNavTrigger ? (
+            <>
+              <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
+              <p className="min-w-0 truncate px-3 pt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-gn-text-tertiary">
+                {tNav("moreInMenu")}
+              </p>
+              <Link
+                href="/explore"
+                role="menuitem"
+                className={linkClass}
+                onClick={() => {
+                  setOpen(false);
+                  onNavigate?.();
+                }}
+              >
+                <NavIcon name="explore" className="size-4 shrink-0 opacity-90" />
+                {tNav("explore")}
+              </Link>
+            </>
+          ) : (
+            <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
+          )}
           <Link
             href="/rankings"
             role="menuitem"
@@ -432,19 +517,29 @@ export function NavUserMenu({
         aria-label={tA11y("accountMenu")}
         onClick={() => setOpen((v) => !v)}
         className={
-          "flex items-center rounded-full transition-all duration-200 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg " +
-          (compactTrigger
-            ? "h-9 w-9 min-w-9 max-w-9 shrink-0 gap-0 overflow-hidden rounded-full p-0"
-            : "gap-2 p-0.5")
+          "flex items-center transition-all duration-200 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg " +
+          (bottomNavTrigger
+            ? APP_MOBILE_BOTTOM_NAV_PROFILE_TRIGGER_CLASS
+            : compactTrigger
+              ? "h-9 w-9 min-w-9 max-w-9 shrink-0 gap-0 overflow-hidden rounded-full p-0"
+              : "gap-2 rounded-full p-0.5")
         }
       >
         <ProfileAvatar
           name={displayNameFromUser(user)}
           imageUrl={avatarUrl}
           sizeClassName={
-            compactTrigger ? "size-9 text-xs font-semibold" : "size-9 text-xs font-semibold"
+            bottomNavTrigger
+              ? APP_MOBILE_BOTTOM_NAV_PROFILE_AVATAR_CLASS
+              : compactTrigger
+                ? "size-9 text-xs font-semibold"
+                : "size-9 text-xs font-semibold"
           }
-          className="ring-2 ring-gn-border-subtle"
+          className={
+            bottomNavTrigger
+              ? "!rounded-full ring-2 ring-white/30"
+              : "ring-2 ring-gn-border-subtle"
+          }
         />
         {compactTrigger ? null : (
           <svg
@@ -466,7 +561,11 @@ export function NavUserMenu({
               <button
                 type="button"
                 data-account-menu-backdrop
-                className={ACCOUNT_MENU_BACKDROP_CLASS}
+                className={
+                  bottomNavTrigger
+                    ? ACCOUNT_MENU_BACKDROP_BOTTOM_NAV_CLASS
+                    : ACCOUNT_MENU_BACKDROP_CLASS
+                }
                 aria-hidden
                 tabIndex={-1}
                 onClick={() => setOpen(false)}

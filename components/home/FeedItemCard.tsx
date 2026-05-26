@@ -35,6 +35,13 @@ const DASHBOARD_SLIDE =
 const HOME_FEED_MOBILE_FRAME =
   "relative isolate mx-auto box-border flex h-[65dvh] max-h-[65dvh] w-[92%] max-w-[360px] min-h-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black lg:contents";
 
+/**
+ * Profile + caption below video (mobile home). Not `data-pitchrusch-feed-meta` — globals
+ * would pin it to the viewport bottom and cover the portaled bottom nav.
+ */
+const HOME_FEED_MOBILE_META_BELOW =
+  "pointer-events-none relative z-[1] mx-auto mt-1 box-border w-[92%] max-w-[360px] shrink-0 px-1.5 pb-1 pt-0 lg:hidden";
+
 type Props = {
   item: AugmentedHomeFeedItem;
   slideClassName?: string;
@@ -146,9 +153,165 @@ export function FeedItemCard({
     ) : null;
 
   const isHomeSnapSlide = feedIndex !== undefined;
-  const slideBody = (
+
+  const feedMetaBlockBelow = (
     <>
-      {/* Fullscreen video — non-interactive so rail controls receive taps */}
+      {loadFailed && hasUrl ? (
+        <p className="pointer-events-auto mb-1 text-[10px] font-medium text-gn-accent" role="alert">
+          {t("videoLoadFailed")}
+        </p>
+      ) : null}
+
+      <div className="pointer-events-auto space-y-0.5">
+        <div className="flex min-w-0 items-center gap-1.5">
+          {profilePath ? (
+            <Link
+              href={profilePath}
+              className="flex h-7 w-7 min-h-7 min-w-7 max-h-7 max-w-7 shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-gn-border-subtle"
+              aria-label={t("viewPlayerProfileAria", { name: displayName })}
+            >
+              <ProfileAvatar
+                name={displayName}
+                imageUrl={userAvatarUrl?.trim() || undefined}
+                sizeClassName="h-7 w-7 min-h-7 min-w-7 max-h-7 max-w-7 shrink-0 text-[10px] font-semibold"
+                className="overflow-hidden rounded-full ring-0"
+              />
+            </Link>
+          ) : (
+            <ProfileAvatar
+              name={displayName}
+              imageUrl={userAvatarUrl?.trim() || undefined}
+              sizeClassName="h-7 w-7 min-h-7 min-w-7 max-h-7 max-w-7 shrink-0 text-[10px] font-semibold"
+              className="overflow-hidden rounded-full ring-1 ring-gn-border-subtle"
+            />
+          )}
+
+          <div className="min-w-0 flex-1">
+            {profilePath ? (
+              <Link
+                href={profilePath}
+                className="block min-w-0"
+                aria-label={t("viewPlayerProfileAria", { name: displayName })}
+              >
+                <p className="truncate text-[12px] font-semibold leading-tight text-gn-text">
+                  {displayName}
+                </p>
+                <p className="truncate text-[10px] font-medium leading-tight text-gn-text-secondary">
+                  @{displayUsername}
+                </p>
+              </Link>
+            ) : (
+              <>
+                <p className="truncate text-[12px] font-semibold leading-tight text-gn-text">
+                  {displayName}
+                </p>
+                <p className="truncate text-[10px] font-medium leading-tight text-gn-text-secondary">
+                  @{displayUsername}
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+
+        {captionText ? (
+          <p className="line-clamp-2 min-w-0 break-words text-[11px] leading-snug text-gn-text-secondary">
+            {captionText}
+          </p>
+        ) : null}
+
+        {item.musicTrack && hasProcessedAsset ? (
+          <VideoMusicCredit
+            track={item.musicTrack}
+            compact
+            className="!text-[10px] !leading-snug !text-gn-text-tertiary"
+          />
+        ) : null}
+      </div>
+    </>
+  );
+
+  const feedMetaBlockOverlay = (
+    <>
+      {loadFailed && hasUrl ? (
+        <p
+          className="pointer-events-auto mb-1.5 text-[11px] font-medium text-gn-accent"
+          role="alert"
+        >
+          {t("videoLoadFailed")}
+        </p>
+      ) : null}
+
+      <div className="pointer-events-auto space-y-1">
+        <div className="flex min-w-0 items-center gap-2">
+          {profilePath ? (
+            <Link
+              href={profilePath}
+              className="flex h-9 w-9 min-h-9 min-w-9 max-h-9 max-w-9 shrink-0 flex-none items-center justify-center overflow-hidden rounded-full ring-2 ring-white/40 shadow-[0_2px_12px_rgba(0,0,0,0.55)] transition hover:ring-gn-accent/55"
+              aria-label={t("viewPlayerProfileAria", { name: displayName })}
+            >
+              <ProfileAvatar
+                name={displayName}
+                imageUrl={userAvatarUrl?.trim() || undefined}
+                sizeClassName="h-9 w-9 min-h-9 min-w-9 max-h-9 max-w-9 shrink-0 flex-none text-xs font-semibold"
+                className="overflow-hidden rounded-full ring-0"
+              />
+            </Link>
+          ) : (
+            <ProfileAvatar
+              name={displayName}
+              imageUrl={userAvatarUrl?.trim() || undefined}
+              sizeClassName="h-9 w-9 min-h-9 min-w-9 max-h-9 max-w-9 shrink-0 flex-none text-xs font-semibold"
+              className="overflow-hidden rounded-full ring-2 ring-white/40"
+            />
+          )}
+
+          <div className="min-w-0 flex-1">
+            {profilePath ? (
+              <Link
+                href={profilePath}
+                className="block min-w-0"
+                aria-label={t("viewPlayerProfileAria", { name: displayName })}
+              >
+                <p className="truncate text-[13px] font-semibold leading-tight text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
+                  {displayName}
+                </p>
+                <p className="truncate text-[11px] font-medium leading-tight text-white/75 [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
+                  @{displayUsername}
+                </p>
+              </Link>
+            ) : (
+              <>
+                <p className="truncate text-[13px] font-semibold text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
+                  {displayName}
+                </p>
+                <p className="truncate text-[11px] font-medium text-white/75 [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
+                  @{displayUsername}
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+
+        {captionText ? (
+          <p className="line-clamp-2 min-w-0 break-words text-[12px] leading-snug text-white/88 [text-shadow:0_1px_6px_rgba(0,0,0,0.88)]">
+            {captionText}
+          </p>
+        ) : null}
+
+        {item.musicTrack && hasProcessedAsset ? (
+          <VideoMusicCredit
+            track={item.musicTrack}
+            compact
+            className="!text-[10px] !leading-snug text-white/55"
+          />
+        ) : null}
+      </div>
+    </>
+  );
+
+  const videoAndRail = (
+    <>
+      {/* Video — non-interactive so rail controls receive taps */}
       <div
         {...feedVideoProps}
         className="pointer-events-none absolute inset-0 z-0 max-w-full overflow-hidden bg-black"
@@ -188,15 +351,15 @@ export function FeedItemCard({
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-black/85 via-black/35 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[28%] bg-gradient-to-t from-black/55 via-transparent to-transparent max-lg:h-[22%] max-lg:from-black/40"
           aria-hidden
         />
       </div>
 
-      {/* Floating action rail — above bottom nav inset */}
+      {/* Floating action rail — on video (mobile: inside frame, not over meta strip) */}
       <div
         data-pitchrusch-feed-rail
-        className="pointer-events-auto absolute end-[max(0.75rem,env(safe-area-inset-right,0px))] z-50 flex w-11 max-w-11 flex-col items-center justify-center gap-1 max-lg:bottom-[max(calc(5rem+0.75rem),calc(5rem+0.75rem+var(--gn-mobile-visual-bottom-inset,0px)))] max-lg:top-auto max-lg:max-h-[12rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:justify-end"
+        className="pointer-events-auto absolute end-[max(0.75rem,env(safe-area-inset-right,0px))] z-50 flex w-11 max-w-11 flex-col items-center justify-center gap-1 max-lg:end-2 max-lg:bottom-3 max-lg:top-auto max-lg:max-h-[12rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:justify-end"
       >
         <FeedVideoEngagement
           videoId={video.id}
@@ -209,86 +372,17 @@ export function FeedItemCard({
           }
         />
       </div>
+    </>
+  );
 
-      {/* Bottom-left: avatar + identity + caption (over video) */}
+  const slideBody = (
+    <>
+      {videoAndRail}
       <div
         {...feedMetaProps}
         className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border min-w-0 max-w-[calc(100%-5.5rem)] pb-0 pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-0 max-lg:bottom-[max(calc(0.75rem+0.625rem),calc(0.75rem+0.625rem+var(--gn-mobile-visual-bottom-inset,0px)))] lg:inset-x-0 lg:bottom-0 lg:max-w-[calc(100%-4rem)] lg:px-3.5 lg:pt-6 lg:pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
-        {loadFailed && hasUrl ? (
-          <p
-            className="pointer-events-auto mb-1.5 text-[11px] font-medium text-gn-accent"
-            role="alert"
-          >
-            {t("videoLoadFailed")}
-          </p>
-        ) : null}
-
-        <div className="pointer-events-auto space-y-1 max-lg:space-y-1">
-          <div className="flex min-w-0 items-center gap-2 max-lg:gap-2.5">
-            {profilePath ? (
-              <Link
-                href={profilePath}
-                className="flex h-9 w-9 min-h-9 min-w-9 max-h-9 max-w-9 shrink-0 flex-none items-center justify-center overflow-hidden rounded-full ring-2 ring-white/40 shadow-[0_2px_12px_rgba(0,0,0,0.55)] transition hover:ring-gn-accent/55 max-lg:h-10 max-lg:w-10 max-lg:min-h-10 max-lg:min-w-10 max-lg:max-h-10 max-lg:max-w-10 max-lg:ring-white/45"
-                aria-label={t("viewPlayerProfileAria", { name: displayName })}
-              >
-                <ProfileAvatar
-                  name={displayName}
-                  imageUrl={userAvatarUrl?.trim() || undefined}
-                  sizeClassName="h-9 w-9 min-h-9 min-w-9 max-h-9 max-w-9 shrink-0 flex-none text-xs font-semibold max-lg:h-10 max-lg:w-10 max-lg:min-h-10 max-lg:min-w-10 max-lg:max-h-10 max-lg:max-w-10"
-                  className="overflow-hidden rounded-full ring-0"
-                />
-              </Link>
-            ) : (
-              <ProfileAvatar
-                name={displayName}
-                imageUrl={userAvatarUrl?.trim() || undefined}
-                sizeClassName="h-9 w-9 min-h-9 min-w-9 max-h-9 max-w-9 shrink-0 flex-none text-xs font-semibold max-lg:h-10 max-lg:w-10 max-lg:min-h-10 max-lg:min-w-10 max-lg:max-h-10 max-lg:max-w-10"
-                className="overflow-hidden rounded-full ring-2 ring-white/40 max-lg:ring-white/45 max-lg:shadow-[0_2px_12px_rgba(0,0,0,0.55)]"
-              />
-            )}
-
-            <div className="min-w-0 flex-1">
-              {profilePath ? (
-                <Link
-                  href={profilePath}
-                  className="block min-w-0"
-                  aria-label={t("viewPlayerProfileAria", { name: displayName })}
-                >
-                  <p className="truncate text-[13px] font-semibold leading-tight text-white max-lg:text-[18px] max-lg:font-bold max-lg:leading-tight [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
-                    {displayName}
-                  </p>
-                  <p className="truncate text-[11px] font-medium leading-tight text-white/75 max-lg:text-[14px] max-lg:leading-tight [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
-                    @{displayUsername}
-                  </p>
-                </Link>
-              ) : (
-                <>
-                  <p className="truncate text-[13px] font-semibold text-white max-lg:text-[18px] max-lg:font-bold max-lg:leading-tight [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
-                    {displayName}
-                  </p>
-                  <p className="truncate text-[11px] font-medium text-white/75 max-lg:text-[14px] max-lg:leading-tight [text-shadow:0_1px_6px_rgba(0,0,0,0.85)]">
-                    @{displayUsername}
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-
-          {captionText ? (
-            <p className="line-clamp-2 min-w-0 break-words text-[12px] leading-snug text-white/88 max-lg:text-[14px] max-lg:leading-snug [text-shadow:0_1px_6px_rgba(0,0,0,0.88)]">
-              {captionText}
-            </p>
-          ) : null}
-
-          {item.musicTrack && hasProcessedAsset ? (
-            <VideoMusicCredit
-              track={item.musicTrack}
-              compact
-              className="!text-[10px] max-lg:!text-[14px] max-lg:!leading-snug text-white/55"
-            />
-          ) : null}
-        </div>
+        {feedMetaBlockOverlay}
       </div>
     </>
   );
@@ -296,10 +390,21 @@ export function FeedItemCard({
   return (
     <article
       {...feedCardProps}
-      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden ${slideClassName}`}
+      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden ${slideClassName} max-lg:!justify-end max-lg:!items-center`}
     >
       {isHomeSnapSlide ? (
-        <div className={HOME_FEED_MOBILE_FRAME}>{slideBody}</div>
+        <div className="flex w-full max-w-full flex-col items-center justify-end gap-1 pb-0.5 lg:contents">
+          <div className={HOME_FEED_MOBILE_FRAME}>{videoAndRail}</div>
+          <div data-pitchrusch-feed-meta-below className={HOME_FEED_MOBILE_META_BELOW}>
+            {feedMetaBlockBelow}
+          </div>
+          <div
+            {...feedMetaProps}
+            className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border hidden min-w-0 max-w-[calc(100%-4rem)] pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-6 pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:block lg:bottom-0 lg:px-3.5"
+          >
+            {feedMetaBlockOverlay}
+          </div>
+        </div>
       ) : (
         slideBody
       )}
