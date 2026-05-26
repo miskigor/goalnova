@@ -98,30 +98,6 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-async function LocaleIntlProvider({
-  locale,
-  children,
-}: {
-  locale: AppLocale;
-  children: React.ReactNode;
-}) {
-  let messages: AbstractIntlMessages;
-  try {
-    messages = await getMessages();
-  } catch (err) {
-    console.error("[locale layout] getMessages failed; using English messages fallback", err);
-    const mod = await import("../../messages/en.json");
-    messages = mod.default as unknown as AbstractIntlMessages;
-  }
-  return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      <LocalePreferenceSync />
-      <AppMobileBottomNavHost />
-      {children}
-    </NextIntlClientProvider>
-  );
-}
-
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
 
@@ -130,6 +106,15 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   setRequestLocale(locale);
+
+  let messages: AbstractIntlMessages;
+  try {
+    messages = await getMessages();
+  } catch (err) {
+    console.error("[locale layout] getMessages failed; using English messages fallback", err);
+    const mod = await import("../../messages/en.json");
+    messages = mod.default as unknown as AbstractIntlMessages;
+  }
 
   const dir = RTL_LOCALES.includes(locale as AppLocale) ? "rtl" : "ltr";
 
@@ -146,9 +131,12 @@ export default async function LocaleLayout({ children, params }: Props) {
         style={{ backgroundColor: "#000" }}
         className="flex min-h-dvh min-w-0 max-w-full flex-col overflow-x-hidden bg-gn-bg text-gn-text"
       >
-        <Suspense fallback={<LocaleRouteFallback />}>
-          <LocaleIntlProvider locale={locale as AppLocale}>{children}</LocaleIntlProvider>
-        </Suspense>
+        <NextIntlClientProvider locale={locale as AppLocale} messages={messages}>
+          <LocalePreferenceSync />
+          {/* Outside route Suspense — must not unmount on page navigations */}
+          <AppMobileBottomNavHost />
+          <Suspense fallback={<LocaleRouteFallback />}>{children}</Suspense>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

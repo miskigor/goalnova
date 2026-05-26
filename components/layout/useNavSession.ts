@@ -87,6 +87,12 @@ export function useNavSession(): {
     const apply = (session: Session | null, nextUser?: User | null) => {
       if (cancelled) return;
       const resolvedUser = nextUser ?? session?.user ?? null;
+      if (
+        !isAuthed(session, resolvedUser) &&
+        hasPersistedSupabaseSession()
+      ) {
+        return;
+      }
       initSettled = true;
       setAuthed(isAuthed(session, resolvedUser));
       setUser(resolvedUser);

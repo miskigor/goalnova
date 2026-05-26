@@ -87,9 +87,9 @@ function syncBottomChromeGeometry(bottomWrap: HTMLElement | null) {
     return;
   }
 
-  const layoutBottomGap = Math.max(
-    0,
-    window.innerHeight - (vv.offsetTop + vv.height),
+  const layoutBottomGap = Math.min(
+    120,
+    Math.max(0, window.innerHeight - (vv.offsetTop + vv.height)),
   );
   root.style.setProperty(
     GN_MOBILE_VISUAL_BOTTOM_INSET_VAR,
@@ -100,6 +100,9 @@ function syncBottomChromeGeometry(bottomWrap: HTMLElement | null) {
 
   bottomWrap.removeAttribute("data-vv-positioned");
   bottomWrap.style.removeProperty("top");
+  // globals.css sets bottom from --gn-mobile-visual-bottom-inset (!important) — that inset is
+  // for shell content padding only; pin the portaled tab bar to the viewport bottom.
+  bottomWrap.style.setProperty("bottom", "0", "important");
 }
 
 /**
@@ -162,11 +165,10 @@ export function AppMobileChromePortal() {
       ref={bottomWrapRef}
       data-app-mobile-chrome
       data-app-mobile-chrome-fixed="bottom"
-      className="pointer-events-auto visible fixed bottom-0 left-0 right-0 z-[1000] box-border min-h-[var(--gn-app-bottom-nav-offset,4.5rem)] w-full max-w-full min-w-0 overflow-x-clip overflow-y-visible opacity-100 max-lg:block lg:hidden"
+      className="pointer-events-auto visible fixed start-0 end-0 z-[1000] box-border min-h-[var(--gn-app-bottom-nav-offset,4.5rem)] w-full max-w-full min-w-0 overflow-x-clip overflow-y-visible opacity-100 !bottom-0 max-lg:block lg:hidden pb-[env(safe-area-inset-bottom,0px)]"
       style={{
         transform: "translateZ(0)",
         zIndex: 1000,
-        bottom: "max(env(safe-area-inset-bottom, 0px), var(--gn-mobile-visual-bottom-inset, 0px))",
       }}
     >
       <AppMobileBottomNav />
