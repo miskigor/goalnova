@@ -1,15 +1,12 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { usePathname } from "@/i18n/navigation";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
 import { devLog, devTable, isDev } from "@/lib/devLog";
 
 const GN_MOBILE_VISUAL_BOTTOM_INSET_VAR = "--gn-mobile-visual-bottom-inset";
-const GN_MOBILE_CHROME_BOTTOM_TOP_VAR = "--gn-mobile-chrome-bottom-top";
-
-/** Fallback nav band height until the bottom wrap is measured. */
-const BOTTOM_CHROME_FALLBACK_HEIGHT_PX = 56;
 
 type ChromeDiag = {
   route: string;
@@ -20,7 +17,6 @@ type ChromeDiag = {
   wrapZIndex: string;
   wrapBottom: string;
   wrapTop: string;
-  vvPositioned: boolean;
   navItemCount: number;
   visualBottomInset: string;
   innerHeight: number;
@@ -59,7 +55,6 @@ function collectChromeDiag(bottomWrap: HTMLElement | null): ChromeDiag {
     wrapZIndex: wrapCs?.zIndex ?? "—",
     wrapBottom: wrapCs?.bottom ?? "—",
     wrapTop: wrapCs?.top ?? "—",
-    vvPositioned: wrapEl?.getAttribute("data-vv-positioned") === "true",
     navItemCount: navEl?.querySelectorAll("a").length ?? 0,
     visualBottomInset: getComputedStyle(document.documentElement)
       .getPropertyValue(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR)
@@ -80,10 +75,7 @@ function logChromeDiag(bottomWrap: HTMLElement | null, reason: string) {
   devTable([diag]);
 }
 
-/**
- * Keep portaled bottom chrome inside the visual viewport (WhatsApp / iOS in-app browsers).
- * Uses bottom inset when reported; otherwise pins with top = visualViewport bottom − nav height.
- */
+/** Content inset only — nav stays `bottom: 0` (never `data-vv-positioned` top pin). */
 function syncBottomChromeGeometry(bottomWrap: HTMLElement | null) {
   if (typeof window === "undefined") return;
 
@@ -92,8 +84,6 @@ function syncBottomChromeGeometry(bottomWrap: HTMLElement | null) {
 
   if (!vv) {
     root.style.setProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR, "0px");
-    root.style.removeProperty(GN_MOBILE_CHROME_BOTTOM_TOP_VAR);
-    bottomWrap?.removeAttribute("data-vv-positioned");
     return;
   }
 
@@ -108,29 +98,8 @@ function syncBottomChromeGeometry(bottomWrap: HTMLElement | null) {
 
   if (!bottomWrap) return;
 
-  const measuredHeight = bottomWrap.getBoundingClientRect().height;
-  const navHeight = Math.max(measuredHeight, BOTTOM_CHROME_FALLBACK_HEIGHT_PX);
-  const visibleBottom = vv.offsetTop + vv.height;
-  const topPx = Math.max(0, visibleBottom - navHeight);
-  root.style.setProperty(GN_MOBILE_CHROME_BOTTOM_TOP_VAR, `${Math.ceil(topPx)}px`);
-
-  const visualSmallerThanLayout =
-    vv.height > 0 && vv.height < window.innerHeight - 8;
-  const insetUnreliable = layoutBottomGap < 8 && visualSmallerThanLayout;
-  const fitsInLayout = topPx + navHeight <= window.innerHeight + 1;
-
-  if (insetUnreliable && fitsInLayout) {
-    bottomWrap.setAttribute("data-vv-positioned", "true");
-  } else {
-    bottomWrap.removeAttribute("data-vv-positioned");
-  }
-}
-
-function clearBottomChromeGeometry() {
-  if (typeof document === "undefined") return;
-  const root = document.documentElement;
-  root.style.removeProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR);
-  root.style.removeProperty(GN_MOBILE_CHROME_BOTTOM_TOP_VAR);
+  bottomWrap.removeAttribute("data-vv-positioned");
+  bottomWrap.style.removeProperty("top");
 }
 
 /**
@@ -138,22 +107,15 @@ function clearBottomChromeGeometry() {
  * viewport (not `display:contents`, nested fixed shells, or `body { position: fixed }` on tab pages).
  */
 export function AppMobileChromePortal() {
-  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
   const bottomWrapRef = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useLayoutEffect(() => {
-    if (!mounted) return;
     syncBottomChromeGeometry(bottomWrapRef.current);
     logChromeDiag(bottomWrapRef.current, "layout");
-  }, [mounted]);
+  }, [pathname]);
 
   useEffect(() => {
-    if (!mounted) return;
-
     const bottomWrap = bottomWrapRef.current;
     if (!bottomWrap) return;
 
@@ -185,14 +147,13 @@ export function AppMobileChromePortal() {
       vv?.removeEventListener("resize", run);
       vv?.removeEventListener("scroll", run);
       window.removeEventListener("resize", run);
-      clearBottomChromeGeometry();
       if (isDev) {
         delete (window as Window & { __gnChromeDiag?: () => ChromeDiag }).__gnChromeDiag;
       }
     };
-  }, [mounted]);
+  }, [pathname]);
 
-  if (!mounted) {
+  if (typeof document === "undefined") {
     return null;
   }
 
@@ -202,7 +163,11 @@ export function AppMobileChromePortal() {
       data-app-mobile-chrome
       data-app-mobile-chrome-fixed="bottom"
       className="pointer-events-auto visible fixed bottom-0 left-0 right-0 z-[1000] box-border min-h-[var(--gn-app-bottom-nav-offset,4.5rem)] w-full max-w-full min-w-0 overflow-x-clip overflow-y-visible opacity-100 max-lg:block lg:hidden"
-      style={{ transform: "translateZ(0)", zIndex: 1000 }}
+      style={{
+        transform: "translateZ(0)",
+        zIndex: 1000,
+        bottom: "max(env(safe-area-inset-bottom, 0px), var(--gn-mobile-visual-bottom-inset, 0px))",
+      }}
     >
       <AppMobileBottomNav />
     </div>,

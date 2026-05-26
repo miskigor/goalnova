@@ -3,7 +3,6 @@
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
 import { AdminSupportUnreadProvider } from "@/components/layout/AdminSupportUnreadContext";
 import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
-import { AppMobileChromePortal } from "@/components/layout/AppMobileChromePortal";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBanner";
@@ -37,7 +36,6 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
       <AdminSupportUnreadProvider>
         <AppLayoutDebugProbe />
         <AppShellDebugOverlay />
-        <AppMobileChromePortal />
         <div data-app-root className={APP_SHELL_ROOT_CLASS}>
           <AppSidebar />
           <AppMainColumn>{children}</AppMainColumn>
