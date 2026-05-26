@@ -192,6 +192,10 @@ export function NavUserMenu({
   }, []);
 
   useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
     if (!open) return;
     function onDoc(e: MouseEvent) {
       if (!wrapRef.current?.contains(e.target as Node)) {

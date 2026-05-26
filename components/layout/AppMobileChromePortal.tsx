@@ -140,6 +140,17 @@ export function AppMobileChromePortal() {
     vv?.addEventListener("scroll", run);
     window.addEventListener("resize", run, { passive: true });
 
+    // Home feed remounts after /benefits, /premium, etc. — re-pin bottom nav once feed is in DOM.
+    const mo =
+      typeof MutationObserver !== "undefined"
+        ? new MutationObserver(() => {
+            if (document.querySelector("[data-pitchrusch-home-feed]")) {
+              run();
+            }
+          })
+        : null;
+    mo?.observe(document.body, { childList: true, subtree: true });
+
     if (isDev) {
       (window as Window & { __gnChromeDiag?: () => ChromeDiag }).__gnChromeDiag =
         () => collectChromeDiag(bottomWrap);
@@ -147,6 +158,7 @@ export function AppMobileChromePortal() {
 
     return () => {
       ro?.disconnect();
+      mo?.disconnect();
       vv?.removeEventListener("resize", run);
       vv?.removeEventListener("scroll", run);
       window.removeEventListener("resize", run);

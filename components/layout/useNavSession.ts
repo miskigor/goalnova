@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import { hasPersistedSupabaseSession } from "@/lib/auth/hasPersistedSupabaseSession";
 import { supabase } from "@/lib/supabase/client";
 
 /**
@@ -18,21 +19,19 @@ let navAuthResolveInFlight: Promise<{
   user: User | null;
 }> | null = null;
 
-function hasPersistedSupabaseSession(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (!url) return false;
-    const ref = new URL(url).hostname.split(".")[0];
-    const raw = window.localStorage.getItem(`sb-${ref}-auth-token`);
-    if (!raw) return false;
-    const parsed = JSON.parse(raw) as { access_token?: string };
-    return (
-      typeof parsed?.access_token === "string" && parsed.access_token.length > 0
-    );
-  } catch {
-    return false;
-  }
+type NavSessionSnapshot = {
+  authed: boolean | null;
+  user: User | null;
+};
+
+let navSessionSnapshot: NavSessionSnapshot = { authed: null, user: null };
+let navSessionSyncStarted = false;
+let navSessionInitSettled = false;
+const navSessionSubscribers = new Set<() => void>();
+
+function publishNavSession(next: NavSessionSnapshot) {
+  navSessionSnapshot = next;
+  navSessionSubscribers.forEach((notify) => notify());
 }
 
 function isAuthed(session: Session | null, user: User | null): boolean {
@@ -73,104 +72,95 @@ function resolveNavAuthOnce() {
   return navAuthResolveInFlight;
 }
 
+function applyNavSession(session: Session | null, nextUser?: User | null) {
+  const resolvedUser = nextUser ?? session?.user ?? null;
+  if (!isAuthed(session, resolvedUser) && hasPersistedSupabaseSession()) {
+    return;
+  }
+  navSessionInitSettled = true;
+  publishNavSession({
+    authed: isAuthed(session, resolvedUser),
+    user: resolvedUser,
+  });
+}
+
+function applyNavGuest(force = false) {
+  if (navSessionInitSettled && !force) return;
+  if (!force && hasPersistedSupabaseSession()) return;
+  navSessionInitSettled = true;
+  publishNavSession({ authed: false, user: null });
+}
+
+function startNavSessionSync() {
+  if (navSessionSyncStarted || typeof window === "undefined") return;
+  navSessionSyncStarted = true;
+
+  void (async () => {
+    try {
+      const { session, user: resolvedUser } = await resolveNavAuthOnce();
+      if (isAuthed(session, resolvedUser)) {
+        applyNavSession(session, resolvedUser);
+        return;
+      }
+      if (!hasPersistedSupabaseSession()) {
+        applyNavGuest();
+      }
+    } catch {
+      if (!hasPersistedSupabaseSession()) {
+        applyNavGuest();
+      }
+    }
+  })();
+
+  supabase.auth.onAuthStateChange((_event, session) => {
+    applyNavSession(session, session?.user ?? null);
+  });
+
+  window.setTimeout(async () => {
+    if (navSessionInitSettled) return;
+
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (userData.user?.id) {
+        applyNavSession(null, userData.user);
+        return;
+      }
+    } catch {
+      /* try getSession below */
+    }
+
+    if (navSessionInitSettled) return;
+
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        applyNavSession(data.session);
+        return;
+      }
+    } catch {
+      /* fall through */
+    }
+
+    if (!navSessionInitSettled && !hasPersistedSupabaseSession()) {
+      applyNavGuest(true);
+    }
+  }, NAV_SESSION_FAILSAFE_MS);
+}
+
 export function useNavSession(): {
   authed: boolean | null;
   user: User | null;
 } {
-  const [authed, setAuthed] = useState<boolean | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [, bump] = useState(0);
 
   useEffect(() => {
-    let cancelled = false;
-    let initSettled = false;
-
-    const apply = (session: Session | null, nextUser?: User | null) => {
-      if (cancelled) return;
-      const resolvedUser = nextUser ?? session?.user ?? null;
-      if (
-        !isAuthed(session, resolvedUser) &&
-        hasPersistedSupabaseSession()
-      ) {
-        return;
-      }
-      initSettled = true;
-      setAuthed(isAuthed(session, resolvedUser));
-      setUser(resolvedUser);
-    };
-
-    const applyGuest = (force = false) => {
-      if (cancelled) return;
-      if (initSettled && !force) return;
-      if (!force && hasPersistedSupabaseSession()) {
-        return;
-      }
-      initSettled = true;
-      setAuthed(false);
-      setUser(null);
-    };
-
-    const init = async () => {
-      try {
-        const { session, user: resolvedUser } = await resolveNavAuthOnce();
-        if (cancelled) return;
-        if (isAuthed(session, resolvedUser)) {
-          apply(session, resolvedUser);
-          return;
-        }
-        if (!hasPersistedSupabaseSession()) {
-          applyGuest();
-        }
-      } catch {
-        if (!cancelled && !hasPersistedSupabaseSession()) {
-          applyGuest();
-        }
-      }
-    };
-
-    void init();
-
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      apply(session, session?.user ?? null);
-    });
-
-    const failsafeId = window.setTimeout(async () => {
-      if (cancelled || initSettled) return;
-
-      try {
-        const { data: userData } = await supabase.auth.getUser();
-        if (cancelled) return;
-        if (userData.user?.id) {
-          apply(null, userData.user);
-          return;
-        }
-      } catch {
-        /* try getSession below */
-      }
-
-      if (cancelled || initSettled) return;
-
-      try {
-        const { data } = await supabase.auth.getSession();
-        if (cancelled) return;
-        if (data.session) {
-          apply(data.session);
-          return;
-        }
-      } catch {
-        /* fall through */
-      }
-
-      if (!cancelled && !initSettled) {
-        applyGuest(true);
-      }
-    }, NAV_SESSION_FAILSAFE_MS);
-
+    startNavSessionSync();
+    const notify = () => bump((n) => n + 1);
+    navSessionSubscribers.add(notify);
     return () => {
-      cancelled = true;
-      window.clearTimeout(failsafeId);
-      sub.subscription.unsubscribe();
+      navSessionSubscribers.delete(notify);
     };
   }, []);
 
-  return { authed, user };
+  return navSessionSnapshot;
 }
