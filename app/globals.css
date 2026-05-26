@@ -141,11 +141,10 @@ html {
   }
 
   [data-app-mobile-chrome-fixed="bottom"] {
-    bottom: max(
-      env(safe-area-inset-bottom, 0px),
-      var(--gn-mobile-visual-bottom-inset, 0px)
-    ) !important;
+    /* Tab bar is portaled — pin to viewport; visual inset is for shell content only */
+    bottom: 0 !important;
     top: auto !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     width: 100% !important;
     max-width: 100% !important;
     overflow-x: clip !important;
@@ -465,9 +464,13 @@ html {
     max-width: 100% !important;
     margin-inline: 0 !important;
     padding-top: 0 !important;
-    padding-bottom: 0 !important;
+    padding-bottom: max(
+      0.75rem,
+      env(safe-area-inset-bottom, 0px)
+    ) !important;
     padding-left: max(0.75rem, env(safe-area-inset-left, 0px)) !important;
     padding-right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
+    scroll-padding-bottom: var(--gn-app-bottom-nav-offset, 4.5rem);
     overflow-y: auto !important;
     overflow-x: clip !important;
     overscroll-behavior: none;

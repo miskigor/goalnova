@@ -2,6 +2,7 @@
 
 import { usePathname } from "@/i18n/navigation";
 import { hasPersistedSupabaseSession } from "@/lib/auth/hasPersistedSupabaseSession";
+import { normalizeAppPathname } from "@/lib/layout/normalizeAppPathname";
 import { shouldRenderMobileBottomNav } from "@/lib/layout/mobileBottomNavVisibility";
 import { AppMobileChromePortal } from "@/components/layout/AppMobileChromePortal";
 import { useNavSession } from "@/components/layout/useNavSession";
@@ -12,7 +13,7 @@ import { useNavSession } from "@/components/layout/useNavSession";
  */
 export function AppMobileBottomNavHost() {
   const { authed } = useNavSession();
-  const pathname = usePathname();
+  const pathname = normalizeAppPathname(usePathname());
 
   const persistedSession =
     typeof window !== "undefined" && hasPersistedSupabaseSession();

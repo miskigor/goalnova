@@ -38,12 +38,12 @@ const PLAYER_TAB_EMOJI: Partial<Record<ShellMobileNavItem["href"], string>> = {
 
 const PLAYER_TAB_EMOJI_CLASS = `${APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS} text-[1.25rem] min-[360px]:text-[1.375rem]`;
 
-/** Player mobile tabs: Home · Explore · Upload (orange) · Challenges · Profile (menu). */
+/** Player mobile tabs: Home · Explore · Challenges · Upload (orange) · Profile (menu). */
 const PLAYER_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
   { href: "/home", labelKey: "home", icon: "home" },
   { href: "/explore", labelKey: "explore", icon: "explore" },
-  { href: "/upload", labelKey: "upload", icon: "upload" },
   { href: "/challenges", labelKey: "challenges", icon: "challenges" },
+  { href: "/upload", labelKey: "upload", icon: "upload" },
   { href: "/profile", labelKey: "profile", icon: "profile" },
 ];
 
@@ -84,10 +84,11 @@ function centerFabLinkClass() {
   return APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_LINK_CLASS;
 }
 
-function uploadEmojiButtonClass(pathname: string) {
+function uploadFabButtonClass(pathname: string) {
   const active = navItemActive(pathname, "/upload");
   return [
     APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_BUTTON_CLASS,
+    APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS,
     active ? "ring-2 ring-inset ring-orange-200/90" : "",
   ].join(" ");
 }
@@ -171,10 +172,8 @@ export function AppMobileBottomNav() {
                 aria-current={active ? "page" : undefined}
                 aria-label={title}
               >
-                <span className={uploadEmojiButtonClass(pathname)}>
-                  <span className={APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS} aria-hidden>
-                    {BOTTOM_NAV_UPLOAD_EMOJI}
-                  </span>
+                <span className={uploadFabButtonClass(pathname)} aria-hidden>
+                  {BOTTOM_NAV_UPLOAD_EMOJI}
                 </span>
                 <span
                   className="w-full min-w-0 max-w-full truncate px-0.5 text-center text-[9px] font-medium leading-none min-[360px]:text-[10px]"

@@ -1,3 +1,5 @@
+import { normalizeAppPathname } from "@/lib/layout/normalizeAppPathname";
+
 /** Guest auth screens — no bottom tab bar. */
 export const MOBILE_BOTTOM_NAV_HIDE_PREFIXES = [
   "/login",
@@ -8,7 +10,10 @@ export const MOBILE_BOTTOM_NAV_HIDE_PREFIXES = [
   "/auth/",
 ] as const;
 
-/** Logged-in app routes — bottom nav must stay mounted (incl. overflow menu targets). */
+/**
+ * Logged-in routes (main tabs + profile overflow menu).
+ * Keep in sync with {@link NavUserMenu} bottom-nav overflow links.
+ */
 export const MOBILE_BOTTOM_NAV_APP_PREFIXES = [
   "/home",
   "/profile",
@@ -18,26 +23,32 @@ export const MOBILE_BOTTOM_NAV_APP_PREFIXES = [
   "/explore",
   "/challenges",
   "/messages",
-  "/settings",
   "/notifications",
+  "/settings",
+  "/support",
   "/discover",
   "/search",
   "/rankings",
   "/scout-dashboard",
   "/scout-apply",
   "/player",
+  "/admin",
+  "/payment",
+  "/debug",
 ] as const;
 
 export function shouldHideMobileBottomNav(pathname: string): boolean {
-  if (pathname === "/role" || pathname.startsWith("/role/")) return true;
+  const path = normalizeAppPathname(pathname);
+  if (path === "/role" || path.startsWith("/role/")) return true;
   return MOBILE_BOTTOM_NAV_HIDE_PREFIXES.some(
-    (p) => pathname === p || pathname.startsWith(p),
+    (p) => path === p || path.startsWith(p),
   );
 }
 
 export function isMobileBottomNavAppRoute(pathname: string): boolean {
+  const path = normalizeAppPathname(pathname);
   return MOBILE_BOTTOM_NAV_APP_PREFIXES.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`),
+    (p) => path === p || path.startsWith(`${p}/`),
   );
 }
 
