@@ -1,9 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { NavIcon } from "@/components/icons/NavIcons";
+import { NavUserMenu } from "@/components/layout/NavUserMenu";
+import { useNavSession } from "@/components/layout/useNavSession";
+import { supabase } from "@/lib/supabase/client";
 import {
   APP_SHELL_ADMIN_MOBILE_BOTTOM_NAV,
   APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV,
@@ -19,6 +22,7 @@ import {
   APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS,
   APP_MOBILE_BOTTOM_NAV_INNER_CLASS,
   APP_MOBILE_BOTTOM_NAV_ITEM_CLASS,
+  APP_MOBILE_BOTTOM_NAV_PROFILE_CELL_CLASS,
   APP_MOBILE_BOTTOM_NAV_UPLOAD_BUTTON_CLASS,
   APP_MOBILE_BOTTOM_NAV_UPLOAD_LINK_CLASS,
 } from "@/lib/layout/appShellClasses";
@@ -70,20 +74,35 @@ function playerTabEmoji(href: ShellMobileNavItem["href"]): string | null {
   return PLAYER_TAB_EMOJI[href] ?? null;
 }
 
+function profileMenuPathActive(pathname: string): boolean {
+  return (
+    navItemActive(pathname, "/profile") ||
+    navItemActive(pathname, "/premium") ||
+    navItemActive(pathname, "/benefits") ||
+    navItemActive(pathname, "/notifications") ||
+    navItemActive(pathname, "/messages") ||
+    navItemActive(pathname, "/settings") ||
+    pathname.startsWith("/settings/") ||
+    pathname.startsWith("/messages/")
+  );
+}
+
 export function AppMobileBottomNav() {
   const pathname = usePathname();
   const tNav = useTranslations("nav");
+  const { user } = useNavSession();
   const { loaded: adminLoaded, isAdmin } = useAdminAccess();
   const { loaded, row, isApprovedScout } = useScoutVerification();
+  const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
 
   const items = useMemo(() => {
-    if (adminLoaded && isAdmin) {
-      return APP_SHELL_ADMIN_MOBILE_BOTTOM_NAV;
-    }
     const isScout = loaded && row?.role === "scout";
     if (isScout) {
       if (isApprovedScout) return APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV;
       return APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED;
+    }
+    if (adminLoaded && isAdmin && loaded && row?.role !== "player") {
+      return APP_SHELL_ADMIN_MOBILE_BOTTOM_NAV;
     }
     if (isScoutAppPath(pathname)) {
       if (pathname === "/scout-apply" || pathname.startsWith("/scout-apply/")) {
@@ -95,6 +114,28 @@ export function AppMobileBottomNav() {
   }, [adminLoaded, isAdmin, loaded, row?.role, isApprovedScout, pathname]);
 
   const usePlayerEmojis = items === APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV;
+  const usePlayerProfileMenu = usePlayerEmojis;
+
+  useEffect(() => {
+    if (!usePlayerProfileMenu || !user?.id) {
+      setProfileAvatarUrl(null);
+      return;
+    }
+    let cancelled = false;
+    void supabase
+      .from("users")
+      .select("avatar_url")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (cancelled) return;
+        const url = typeof data?.avatar_url === "string" ? data.avatar_url.trim() : "";
+        setProfileAvatarUrl(url || null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [usePlayerProfileMenu, user?.id]);
 
   return (
     <nav
@@ -124,6 +165,72 @@ export function AppMobileBottomNav() {
                 </span>
                 <span
                   className="w-full min-w-0 max-w-full truncate px-0.5 text-center text-[9px] font-medium leading-none min-[360px]:text-[10px]"
+                  title={title}
+                >
+                  {label}
+                </span>
+              </Link>
+            );
+          }
+
+          if (item.href === "/profile" && usePlayerProfileMenu && user) {
+            const profileActive = profileMenuPathActive(pathname);
+            const hasAvatar = Boolean(profileAvatarUrl?.trim());
+            return (
+              <div
+                key={`${item.href}-${item.labelKey}`}
+                className={[
+                  APP_MOBILE_BOTTOM_NAV_PROFILE_CELL_CLASS,
+                  profileActive ? "text-gn-accent" : "text-gn-text-secondary",
+                ].join(" ")}
+              >
+                <div
+                  className={
+                    hasAvatar
+                      ? "relative shrink-0 overflow-visible"
+                      : "relative shrink-0 overflow-visible [&_button_span.relative]:opacity-0"
+                  }
+                >
+                  <NavUserMenu user={user} bottomNavTrigger mobileMoreInMenu />
+                  {!hasAvatar ? (
+                    <span
+                      className="pointer-events-none absolute inset-0 flex items-center justify-center"
+                      aria-hidden
+                    >
+                      <NavIcon
+                        name="profile"
+                        variant="tabBar"
+                        className="size-5 shrink-0 min-[360px]:size-[22px]"
+                      />
+                    </span>
+                  ) : null}
+                </div>
+                <span
+                  className="w-full min-w-0 max-w-full truncate px-0.5 text-center"
+                  title={title}
+                >
+                  {label}
+                </span>
+              </div>
+            );
+          }
+
+          if (item.href === "/profile" && usePlayerProfileMenu && !user) {
+            return (
+              <Link
+                key={`${item.href}-${item.labelKey}`}
+                href={item.href}
+                className={bottomItemClass(pathname, item.href)}
+                aria-current={active ? "page" : undefined}
+                aria-label={title}
+              >
+                <NavIcon
+                  name="profile"
+                  variant="tabBar"
+                  className="size-5 shrink-0 min-[360px]:size-[22px]"
+                />
+                <span
+                  className="w-full min-w-0 max-w-full truncate px-0.5 text-center"
                   title={title}
                 >
                   {label}

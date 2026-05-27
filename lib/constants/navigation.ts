@@ -157,8 +157,8 @@ export const APP_SHELL_ADMIN_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
 export const APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
   { href: "/home", labelKey: "home", icon: "home" },
   { href: "/explore", labelKey: "explore", icon: "explore" },
-  { href: "/challenges", labelKey: "challenges", icon: "challenges" },
   { href: "/upload", labelKey: "upload", icon: "upload" },
+  { href: "/challenges", labelKey: "challenges", icon: "challenges" },
   { href: "/profile", labelKey: "profile", icon: "profile" },
 ];
 
