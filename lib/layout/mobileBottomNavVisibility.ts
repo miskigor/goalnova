@@ -1,3 +1,5 @@
+import { normalizeAppPathname } from "@/lib/layout/normalizeAppPathname";
+
 /** Guest auth screens — no bottom tab bar. */
 export const MOBILE_BOTTOM_NAV_HIDE_PREFIXES = [
   "/login",
@@ -8,20 +10,21 @@ export const MOBILE_BOTTOM_NAV_HIDE_PREFIXES = [
   "/auth/",
 ] as const;
 
-/** Logged-in app routes — bottom nav must stay mounted (incl. overflow menu targets). */
+/** Player / logged-in app routes — bottom nav stays mounted. */
 export const MOBILE_BOTTOM_NAV_APP_PREFIXES = [
   "/home",
-  "/profile",
-  "/upload",
-  "/benefits",
-  "/premium",
   "/explore",
   "/challenges",
+  "/upload",
+  "/profile",
+  "/premium",
+  "/benefits",
+  "/notifications",
   "/messages",
   "/settings",
-  "/notifications",
   "/discover",
   "/search",
+  "/support",
   "/rankings",
   "/scout-dashboard",
   "/scout-apply",
@@ -29,15 +32,17 @@ export const MOBILE_BOTTOM_NAV_APP_PREFIXES = [
 ] as const;
 
 export function shouldHideMobileBottomNav(pathname: string): boolean {
-  if (pathname === "/role" || pathname.startsWith("/role/")) return true;
+  const path = normalizeAppPathname(pathname);
+  if (path === "/role" || path.startsWith("/role/")) return true;
   return MOBILE_BOTTOM_NAV_HIDE_PREFIXES.some(
-    (p) => pathname === p || pathname.startsWith(p),
+    (p) => path === p || path.startsWith(p),
   );
 }
 
 export function isMobileBottomNavAppRoute(pathname: string): boolean {
+  const path = normalizeAppPathname(pathname);
   return MOBILE_BOTTOM_NAV_APP_PREFIXES.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`),
+    (p) => path === p || path.startsWith(`${p}/`),
   );
 }
 
@@ -46,8 +51,9 @@ export function shouldRenderMobileBottomNav(
   authed: boolean | null,
   hasPersistedSession: boolean,
 ): boolean {
-  if (shouldHideMobileBottomNav(pathname)) return false;
-  if (isMobileBottomNavAppRoute(pathname)) return true;
+  const path = normalizeAppPathname(pathname);
+  if (shouldHideMobileBottomNav(path)) return false;
+  if (isMobileBottomNavAppRoute(path)) return true;
   if (authed === false && !hasPersistedSession) return false;
   return true;
 }
