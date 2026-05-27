@@ -64,7 +64,7 @@ const HOME_FEED_MOBILE_SCROLLPORT_HEIGHT =
 const FEED_SCROLLPORT =
   "touch-pan-y snap-y snap-mandatory overflow-y-auto overflow-x-hidden scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
   "[container-type:size] min-h-0 min-w-0 " +
-  "max-lg:flex-1 max-lg:min-h-0 " +
+  "max-lg:flex-1 max-lg:min-h-0 max-lg:overflow-x-hidden max-lg:overflow-y-scroll max-lg:overscroll-y-none " +
   HOME_FEED_MOBILE_SCROLLPORT_HEIGHT +
   " lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
@@ -74,7 +74,7 @@ const FEED_SCROLLPORT =
  */
 const FEED_SLIDE =
   "box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden rounded-none border-0 bg-transparent " +
-  "max-lg:items-center max-lg:justify-start max-lg:overflow-x-clip max-lg:overflow-y-visible max-lg:pt-1 " +
+  "max-lg:items-center max-lg:justify-center max-lg:overflow-x-clip max-lg:overflow-y-hidden max-lg:pt-0 " +
   "lg:h-[100cqh] lg:max-h-[100cqh] lg:rounded-2xl lg:border lg:border-white/[0.06] lg:bg-black";
 
 type MyVideosStatus =
@@ -139,7 +139,7 @@ function HomeFeedSnapList({
               `${item.video.user_id}-${item.video.created_at ?? ""}-${index}`
             }
             className={
-              "min-h-0 min-w-0 w-full shrink-0 grow-0 basis-full snap-start snap-always overflow-x-clip max-lg:bg-black " +
+              "min-h-0 min-w-0 w-full shrink-0 grow-0 basis-full snap-start snap-always overflow-hidden max-lg:bg-black " +
               HOME_FEED_MOBILE_SCROLLPORT_HEIGHT
             }
           >

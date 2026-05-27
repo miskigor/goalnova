@@ -31,16 +31,17 @@ import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 const DASHBOARD_SLIDE =
   "min-h-[26rem] w-full overflow-hidden rounded-2xl border border-white/[0.06] bg-black sm:min-h-[28rem] lg:min-h-[30rem]";
 
-/** Mobile home feed: bounded tile near top (not `data-pitchrusch-feed-card` — vv CSS targets that). */
+/** Mobile home feed tile — fixed dvh size, centered (not `data-pitchrusch-feed-card`). */
 const HOME_FEED_MOBILE_FRAME =
-  "relative isolate mx-auto mt-2 box-border flex h-[58dvh] max-h-[58dvh] w-[92%] max-w-[360px] min-h-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black lg:contents";
+  "relative isolate mx-auto mt-5 box-border flex h-[70dvh] max-h-[70dvh] w-[96%] max-w-[380px] min-h-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
 
-/**
- * Profile + caption below video (mobile home). Not `data-pitchrusch-feed-meta` — globals
- * would pin it to the viewport bottom and cover the portaled bottom nav.
- */
+/** Profile + caption — aligned with video width, safe gap above bottom nav. */
 const HOME_FEED_MOBILE_META_BELOW =
-  "pointer-events-none relative z-[1] mx-auto mt-1 box-border w-[92%] max-w-[360px] shrink-0 px-1.5 pb-2 pt-0 max-lg:max-h-[28dvh] max-lg:overflow-y-auto lg:hidden";
+  "pointer-events-none relative z-[1] mx-auto box-border w-[96%] max-w-[380px] shrink-0 px-1.5 pb-0 pt-0 max-lg:max-h-[28dvh] max-lg:overflow-y-auto lg:hidden";
+
+/** Mobile home snap column — centered stack, meta band above bottom nav. */
+const HOME_FEED_MOBILE_SLIDE_STACK =
+  "mx-auto flex h-full max-h-full min-h-0 w-full max-w-full flex-col items-center justify-between overflow-hidden max-lg:gap-1.5 max-lg:pt-1 max-lg:pb-1 lg:contents";
 
 type Props = {
   item: AugmentedHomeFeedItem;
@@ -360,7 +361,7 @@ export function FeedItemCard({
       {/* Floating action rail — on video (mobile: inside frame, not over meta strip) */}
       <div
         data-pitchrusch-feed-rail
-        className="pointer-events-auto absolute end-[max(0.75rem,env(safe-area-inset-right,0px))] z-50 flex w-11 max-w-11 flex-col items-center justify-center gap-1 max-lg:end-2 max-lg:bottom-3 max-lg:top-auto max-lg:max-h-[12rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:justify-end"
+        className="pointer-events-auto absolute end-[max(0.75rem,env(safe-area-inset-right,0px))] z-50 flex w-11 max-w-11 flex-col items-center justify-center gap-1 max-lg:end-2 max-lg:bottom-4 max-lg:top-auto max-lg:max-h-[12rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:justify-end"
       >
         <FeedVideoEngagement
           videoId={video.id}
@@ -391,10 +392,10 @@ export function FeedItemCard({
   return (
     <article
       {...feedCardProps}
-      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden ${slideClassName} max-lg:!items-center max-lg:!justify-start`}
+      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden ${slideClassName} max-lg:!items-center max-lg:!justify-center`}
     >
       {isHomeSnapSlide ? (
-        <div className="flex w-full max-w-full flex-col items-center justify-start gap-1 pt-0 pb-1 lg:contents">
+        <div className={HOME_FEED_MOBILE_SLIDE_STACK}>
           <div className={HOME_FEED_MOBILE_FRAME}>{videoAndRail}</div>
           <div data-pitchrusch-feed-meta-below className={HOME_FEED_MOBILE_META_BELOW}>
             {feedMetaBlockBelow}
