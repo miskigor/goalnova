@@ -133,7 +133,7 @@ export const APP_PROFILE_SHELL_CLASS = [
  * Horizontal padding comes from `[data-app-main]`; no extra `px-*` on this shell.
  */
 export const APP_MOBILE_TAB_PAGE_SHELL_CLASS =
-  "box-border w-full min-w-0 max-w-full space-y-6 overflow-x-clip max-lg:pt-4 max-lg:pb-6 lg:pb-8 sm:mx-auto sm:max-w-2xl";
+  "box-border w-full min-w-0 max-w-full space-y-6 overflow-x-clip max-lg:pt-4 max-lg:pb-[calc(var(--gn-app-bottom-nav-offset,4.5rem)+2rem)] lg:pb-8 sm:mx-auto sm:max-w-2xl";
 
 export const APP_PROFILE_LOADING_INNER_CLASS =
   "flex min-h-[35vh] w-full min-w-0 max-w-full flex-col items-center justify-center gap-2 text-sm text-gn-text-secondary";
