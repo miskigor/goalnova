@@ -4,12 +4,12 @@ import { usePathname } from "@/i18n/navigation";
 import { hasPersistedSupabaseSession } from "@/lib/auth/hasPersistedSupabaseSession";
 import { normalizeAppPathname } from "@/lib/layout/normalizeAppPathname";
 import { shouldRenderMobileBottomNav } from "@/lib/layout/mobileBottomNavVisibility";
-import { AppMobileChromePortal } from "@/components/layout/AppMobileChromePortal";
+import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
 import { useNavSession } from "@/components/layout/useNavSession";
+import { APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS } from "@/lib/layout/appShellClasses";
 
 /**
- * Keeps mobile bottom nav mounted across (app) / (public) layout switches.
- * Rendered from `[locale]/layout` outside route `Suspense` so navigations do not tear it down.
+ * In-layout mobile bottom tab bar (fixed to viewport). Rendered from {@link AppChromeLayout}.
  */
 export function AppMobileBottomNavHost() {
   const { authed } = useNavSession();
@@ -22,5 +22,9 @@ export function AppMobileBottomNavHost() {
     return null;
   }
 
-  return <AppMobileChromePortal />;
+  return (
+    <div data-app-mobile-bottom-nav-mount className={APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS}>
+      <AppMobileBottomNav />
+    </div>
+  );
 }

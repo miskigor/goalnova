@@ -39,7 +39,7 @@ export const MOBILE_BOTTOM_TABS_V2_UPLOAD_FAB_CLASS =
   "pointer-events-auto -mt-4 flex w-full min-w-0 max-w-full flex-col items-center justify-end gap-0.5";
 
 export const APP_SHELL_ROOT_CLASS =
-  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-0 max-lg:h-auto max-lg:max-h-none max-lg:min-h-0 max-lg:bottom-[calc(var(--gn-app-bottom-nav-offset,4.5rem)+var(--gn-mobile-visual-bottom-inset,0px))] max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden max-lg:[--gn-app-header-offset:env(safe-area-inset-top,0px)] lg:flex-row";
+  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:bottom-0 max-lg:z-0 max-lg:h-auto max-lg:max-h-none max-lg:min-h-0 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden max-lg:[--gn-app-header-offset:env(safe-area-inset-top,0px)] lg:flex-row";
 
 export const APP_SHELL_COLUMN_CLASS =
   "relative mx-auto flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col ps-0 max-lg:min-h-0 lg:min-h-dvh lg:overflow-x-hidden lg:ps-[15.5rem]";
@@ -47,7 +47,7 @@ export const APP_SHELL_COLUMN_CLASS =
 export const APP_SHELL_MAIN_CLASS = [
   "mx-auto box-border flex w-full min-w-0 max-w-full flex-1 flex-col items-stretch overflow-x-hidden px-4",
   "min-h-0 max-lg:min-h-0",
-  "max-lg:pt-0 max-lg:pb-[calc(var(--gn-app-bottom-nav-offset,4.5rem)+var(--gn-mobile-visual-bottom-inset,0px))]",
+  "max-lg:pt-0 max-lg:pb-[var(--gn-app-bottom-nav-offset,4.5rem)]",
   "lg:max-w-4xl lg:px-6 lg:pt-8 lg:pb-12",
 ].join(" ");
 
@@ -64,6 +64,13 @@ export const APP_MOBILE_HEADER_CLASS = [
 
 export const APP_MOBILE_HEADER_INNER_CLASS =
   "mx-auto flex h-14 w-full max-w-full min-w-0 items-center gap-2 overflow-visible box-border px-3";
+
+/** Fixed mount wrapper — sibling of {@link APP_SHELL_ROOT_CLASS}, not portaled. */
+export const APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS = [
+  "pointer-events-auto visible fixed inset-x-0 bottom-0 z-[1000] box-border w-full max-w-full min-w-0",
+  "overflow-x-clip overflow-y-visible opacity-100 max-lg:block lg:hidden",
+  "pb-[env(safe-area-inset-bottom,0px)]",
+].join(" ");
 
 export const APP_MOBILE_BOTTOM_NAV_CLASS = [
   "pointer-events-auto visible relative z-[1] box-border w-full max-w-full min-w-0 shrink-0 overflow-x-clip overflow-y-visible opacity-100 bg-gn-bg",

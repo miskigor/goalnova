@@ -6,6 +6,7 @@ import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBanner";
+import { AppMobileBottomNavHost } from "@/components/layout/AppMobileBottomNavHost";
 import {
   APP_SHELL_COLUMN_CLASS,
   APP_SHELL_MAIN_CLASS,
@@ -27,8 +28,7 @@ function AppMainColumn({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * Logged-in shell: desktop sidebar + portaled mobile header/bottom nav (V1).
- * Content band sits between fixed chrome; home feed and tab pages share this shell.
+ * Logged-in shell: desktop sidebar + fixed mobile bottom nav in-layout.
  */
 export function AppChromeLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -40,6 +40,7 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
           <AppSidebar />
           <AppMainColumn>{children}</AppMainColumn>
         </div>
+        <AppMobileBottomNavHost />
       </AdminSupportUnreadProvider>
     </FeedbackProvider>
   );
