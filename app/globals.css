@@ -308,6 +308,23 @@ html {
     max-height: 100%;
     overflow: hidden;
     overflow-x: clip;
+    box-sizing: border-box;
+  }
+
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root] {
+    max-height: calc(
+      100dvh - var(--gn-app-header-offset, 0px) - var(--gn-app-bottom-nav-offset, 4.5rem) -
+        0.5rem
+    );
+    height: calc(
+      100dvh - var(--gn-app-header-offset, 0px) - var(--gn-app-bottom-nav-offset, 4.5rem) -
+        0.5rem
+    );
+  }
+
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-meta-below] {
+    pointer-events: auto;
+    max-width: min(360px, 92vw);
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root],
@@ -331,6 +348,10 @@ html {
     max-width: 100% !important;
     object-fit: contain !important;
     object-position: center !important;
+  }
+
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] video {
+    object-position: top center !important;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-meta] {

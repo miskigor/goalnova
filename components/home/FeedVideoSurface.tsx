@@ -31,6 +31,8 @@ type Props = {
   className?: string;
   /** Home immersive slides: letterbox inside the card; dashboard embed keeps cover. */
   mediaFit?: "cover" | "contain";
+  /** Letterbox alignment when `mediaFit` is `contain` (mobile home: top). */
+  mediaObjectPosition?: "center" | "top";
   preload?: "none" | "metadata" | "auto";
   /** Prefer network / decode for the visible or first slide. */
   fetchPriority?: "high" | "low" | "auto";
@@ -62,6 +64,7 @@ export function FeedVideoSurface({
   videoId,
   className,
   mediaFit = "contain",
+  mediaObjectPosition = "center",
   preload = "metadata",
   fetchPriority = "auto",
   onLoadOk,
@@ -422,8 +425,12 @@ export function FeedVideoSurface({
   const mediaStageClass = containMedia
     ? `pointer-events-none absolute inset-0 z-[2] ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`
     : "pointer-events-none absolute inset-0 z-[2]";
+  const objectPositionClass =
+    containMedia && mediaObjectPosition === "top"
+      ? "object-top"
+      : "object-center";
   const defaultVideoClass = containMedia
-    ? GN_VIDEO_MEDIA_ELEMENT_CLASS
+    ? `${GN_VIDEO_MEDIA_ELEMENT_CLASS} ${objectPositionClass}`
     : "h-full w-full max-w-full object-cover [color-scheme:dark]";
   const videoClassName = [className ?? defaultVideoClass, "pointer-events-none"]
     .filter(Boolean)

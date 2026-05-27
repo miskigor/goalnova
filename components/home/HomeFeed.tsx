@@ -53,6 +53,10 @@ const FEED_BLEED = "w-full min-w-0 max-w-full overflow-x-clip";
 const HOME_FEED_MOBILE_STAGE =
   "max-lg:relative max-lg:box-border max-lg:flex max-lg:min-h-0 max-lg:w-full max-lg:max-w-full max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden";
 
+/** Snap scrollport height — reserves bottom nav band (in-layout, not full 100dvh video). */
+const HOME_FEED_MOBILE_SCROLLPORT_HEIGHT =
+  "max-lg:h-[calc(100dvh-var(--gn-app-header-offset,0px)-var(--gn-app-bottom-nav-offset,4.5rem)-0.5rem)] max-lg:max-h-[calc(100dvh-var(--gn-app-header-offset,0px)-var(--gn-app-bottom-nav-offset,4.5rem)-0.5rem)]";
+
 /**
  * Scrollport: one slide per visual page. Each `li` uses `flex-[0_0_100%]` (`grow-0 shrink-0 basis-full`)
  * so slide height matches the scrollport (avoids `100cqh` resolving to 0 in some WebKit layouts).
@@ -60,8 +64,9 @@ const HOME_FEED_MOBILE_STAGE =
 const FEED_SCROLLPORT =
   "touch-pan-y snap-y snap-mandatory overflow-y-auto overflow-x-hidden scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
   "[container-type:size] min-h-0 min-w-0 " +
-  "max-lg:flex-1 max-lg:h-full max-lg:min-h-0 max-lg:max-h-full " +
-  "lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
+  "max-lg:flex-1 max-lg:min-h-0 " +
+  HOME_FEED_MOBILE_SCROLLPORT_HEIGHT +
+  " lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
 /**
  * Desktop: card fills snap `li` (cqh tile). Mobile: outer slide is a centering shell;
@@ -69,7 +74,7 @@ const FEED_SCROLLPORT =
  */
 const FEED_SLIDE =
   "box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden rounded-none border-0 bg-transparent " +
-  "max-lg:items-center max-lg:justify-center max-lg:overflow-visible " +
+  "max-lg:items-center max-lg:justify-start max-lg:overflow-x-clip max-lg:overflow-y-visible max-lg:pt-1 " +
   "lg:h-[100cqh] lg:max-h-[100cqh] lg:rounded-2xl lg:border lg:border-white/[0.06] lg:bg-black";
 
 type MyVideosStatus =
@@ -133,7 +138,10 @@ function HomeFeedSnapList({
               item.video.id ??
               `${item.video.user_id}-${item.video.created_at ?? ""}-${index}`
             }
-            className="min-h-0 min-w-0 w-full shrink-0 grow-0 basis-full snap-start snap-always overflow-x-clip max-lg:bg-black"
+            className={
+              "min-h-0 min-w-0 w-full shrink-0 grow-0 basis-full snap-start snap-always overflow-x-clip max-lg:bg-black " +
+              HOME_FEED_MOBILE_SCROLLPORT_HEIGHT
+            }
           >
             <FeedItemCard
               item={item}
@@ -553,7 +561,7 @@ export function HomeFeed() {
   return (
     <div
       data-pitchrusch-home-feed
-      className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:mx-0 max-lg:w-full max-lg:max-w-full max-lg:overflow-x-clip max-lg:h-full max-lg:pb-0 lg:max-w-2xl lg:flex-none"
+      className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-lg flex-1 flex-col gap-3 pb-3 max-lg:mx-0 max-lg:w-full max-lg:max-w-full max-lg:overflow-x-clip max-lg:h-full max-lg:gap-0 max-lg:pb-0 lg:max-w-2xl lg:flex-none"
     >
       <ReferralConsumeOnMount />
       <header
