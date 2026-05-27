@@ -12,28 +12,23 @@ const GN_MOBILE_VISUAL_BOTTOM_INSET_VAR = "--gn-mobile-visual-bottom-inset";
 type ChromeDiag = {
   route: string;
   pathnameNormalized: string;
-  bottomWrapInDom: boolean;
   bottomNavInDom: boolean;
-  isVisible: boolean;
-  wrapDisplay: string;
-  wrapOpacity: string;
-  wrapZIndex: string;
-  wrapBottom: string;
-  wrapTop: string;
-  navItemCount: number;
-  visualBottomInset: string;
+  bottomNavRectTop: number;
+  bottomNavRectBottom: number;
   innerHeight: number;
   vvHeight: number;
   vvOffsetTop: number;
-  wrapRect: string;
-  navRect: string;
+  wrapComputedBottom: string;
+  wrapComputedZIndex: string;
+  navComputedBottom: string;
+  navComputedZIndex: string;
   belowVisualViewport: boolean;
 };
 
-function formatRect(el: HTMLElement | null): string {
-  if (!el) return "—";
+function rectOf(el: HTMLElement | null): { top: number; bottom: number } {
+  if (!el) return { top: -1, bottom: -1 };
   const r = el.getBoundingClientRect();
-  return `t${Math.round(r.top)} b${Math.round(r.bottom)} h${Math.round(r.height)}`;
+  return { top: Math.round(r.top), bottom: Math.round(r.bottom) };
 }
 
 function collectChromeDiag(
@@ -46,49 +41,36 @@ function collectChromeDiag(
   const visibleBottom = vvt + vvh;
   const bottomNav = document.querySelector("[data-app-bottom-nav]");
   const navEl = bottomNav instanceof HTMLElement ? bottomNav : null;
-  const wrapEl = bottomWrap;
-  const navRect = navEl?.getBoundingClientRect();
-  const belowVisualViewport = navRect ? navRect.top >= visibleBottom - 1 : true;
-  const wrapCs = wrapEl ? getComputedStyle(wrapEl) : null;
-  const wrapDisplay = wrapCs?.display ?? "—";
-  const wrapOpacity = wrapCs?.opacity ?? "—";
+  const navRect = rectOf(navEl);
+  const belowVisualViewport = navEl ? navRect.top >= visibleBottom - 1 : true;
+  const wrapCs = bottomWrap ? getComputedStyle(bottomWrap) : null;
+  const navCs = navEl ? getComputedStyle(navEl) : null;
 
   return {
-    route: typeof window !== "undefined" ? window.location.pathname : "",
+    route: window.location.pathname,
     pathnameNormalized,
-    bottomWrapInDom: Boolean(wrapEl),
     bottomNavInDom: Boolean(navEl),
-    isVisible:
-      Boolean(navEl) &&
-      wrapDisplay !== "none" &&
-      wrapOpacity !== "0" &&
-      !belowVisualViewport,
-    wrapDisplay,
-    wrapOpacity,
-    wrapZIndex: wrapCs?.zIndex ?? "—",
-    wrapBottom: wrapCs?.bottom ?? "—",
-    wrapTop: wrapCs?.top ?? "—",
-    navItemCount: navEl?.querySelectorAll("a").length ?? 0,
-    visualBottomInset: getComputedStyle(document.documentElement)
-      .getPropertyValue(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR)
-      .trim(),
+    bottomNavRectTop: navRect.top,
+    bottomNavRectBottom: navRect.bottom,
     innerHeight: window.innerHeight,
     vvHeight: Math.round(vvh),
     vvOffsetTop: Math.round(vvt),
-    wrapRect: formatRect(wrapEl),
-    navRect: formatRect(navEl),
+    wrapComputedBottom: wrapCs?.bottom ?? "—",
+    wrapComputedZIndex: wrapCs?.zIndex ?? "—",
+    navComputedBottom: navCs?.bottom ?? "—",
+    navComputedZIndex: navCs?.zIndex ?? "—",
     belowVisualViewport,
   };
 }
 
-function logChromeDiag(
+function logHomeChromeDiag(
   bottomWrap: HTMLElement | null,
   pathnameNormalized: string,
   reason: string,
 ) {
-  if (!isDev) return;
+  if (!isDev || pathnameNormalized !== "/home") return;
   const diag = collectChromeDiag(bottomWrap, pathnameNormalized);
-  devLog(`[gn-chrome] ${reason}`, diag);
+  devLog(`[gn-chrome/home] ${reason}`, diag);
   devTable([diag]);
 }
 
@@ -114,20 +96,22 @@ function syncContentVisualBottomInset() {
   );
 }
 
-/** Pin portaled tab bar to layout viewport bottom — never use visual inset for nav position. */
+/** Pin portaled tab bar to layout viewport bottom — independent of home feed state. */
 function pinBottomNavToViewport(bottomWrap: HTMLElement | null) {
   if (!bottomWrap) return;
 
   bottomWrap.removeAttribute("data-vv-positioned");
   bottomWrap.style.removeProperty("top");
+  bottomWrap.style.setProperty("position", "fixed", "important");
   bottomWrap.style.setProperty("bottom", "0", "important");
   bottomWrap.style.setProperty("left", "0", "important");
   bottomWrap.style.setProperty("right", "0", "important");
+  bottomWrap.style.setProperty("z-index", "1000", "important");
+  bottomWrap.style.setProperty("width", "100%", "important");
 }
 
-function syncBottomChromeGeometry(bottomWrap: HTMLElement | null) {
+function syncContentChromeOnly() {
   syncContentVisualBottomInset();
-  pinBottomNavToViewport(bottomWrap);
 }
 
 /**
@@ -137,28 +121,29 @@ function syncBottomChromeGeometry(bottomWrap: HTMLElement | null) {
 export function AppMobileChromePortal() {
   const pathname = normalizeAppPathname(usePathname());
   const bottomWrapRef = useRef<HTMLDivElement | null>(null);
+  const isHome = pathname === "/home";
 
-  const syncChrome = () => {
-    syncBottomChromeGeometry(bottomWrapRef.current);
+  const pinNav = () => {
+    pinBottomNavToViewport(bottomWrapRef.current);
   };
 
   useLayoutEffect(() => {
-    syncChrome();
-    logChromeDiag(bottomWrapRef.current, pathname, "layout");
+    pinNav();
+    syncContentChromeOnly();
+    logHomeChromeDiag(bottomWrapRef.current, pathname, "layout");
+
     const raf1 = window.requestAnimationFrame(() => {
-      syncChrome();
-      logChromeDiag(bottomWrapRef.current, pathname, "layout-raf");
+      pinNav();
+      logHomeChromeDiag(bottomWrapRef.current, pathname, "layout-raf");
     });
 
     const homeBurstIds: number[] = [];
-    if (pathname === "/home") {
-      for (const delay of [0, 50, 250]) {
+    if (isHome) {
+      for (const delay of [0, 50, 100, 250, 500]) {
         homeBurstIds.push(
           window.setTimeout(() => {
-            syncChrome();
-            if (document.querySelector("[data-pitchrusch-home-feed]")) {
-              logChromeDiag(bottomWrapRef.current, pathname, "home-feed-ready");
-            }
+            pinNav();
+            logHomeChromeDiag(bottomWrapRef.current, pathname, `home-pin-${delay}ms`);
           }, delay),
         );
       }
@@ -170,44 +155,40 @@ export function AppMobileChromePortal() {
         window.clearTimeout(id);
       }
     };
-  }, [pathname]);
+  }, [pathname, isHome]);
 
   useEffect(() => {
     const bottomWrap = bottomWrapRef.current;
     if (!bottomWrap) return;
 
-    const run = (reason: string) => {
-      syncBottomChromeGeometry(bottomWrap);
-      if (reason === "pathname" || reason === "home-feed") {
-        logChromeDiag(bottomWrap, pathname, reason);
-      }
+    pinNav();
+    syncContentChromeOnly();
+    logHomeChromeDiag(bottomWrap, pathname, "mount");
+
+    const onViewportChange = () => {
+      syncContentChromeOnly();
+      pinNav();
     };
-
-    run("pathname");
-
-    if (document.querySelector("[data-pitchrusch-home-feed]")) {
-      run("home-feed");
-    }
-
-    const ro =
-      typeof ResizeObserver !== "undefined"
-        ? new ResizeObserver(() => syncBottomChromeGeometry(bottomWrap))
-        : null;
-    ro?.observe(bottomWrap);
-
-    const onViewportChange = () => syncBottomChromeGeometry(bottomWrap);
     const vv = window.visualViewport;
     vv?.addEventListener("resize", onViewportChange);
     vv?.addEventListener("scroll", onViewportChange);
     window.addEventListener("resize", onViewportChange, { passive: true });
 
-    const mo =
-      typeof MutationObserver !== "undefined"
-        ? new MutationObserver(() => {
-            run("home-feed");
-          })
-        : null;
-    mo?.observe(document.body, { childList: true, subtree: true });
+    let mo: MutationObserver | null = null;
+    const mainEl = document.querySelector("[data-app-main]");
+    if (mainEl && typeof MutationObserver !== "undefined") {
+      mo = new MutationObserver(() => {
+        pinNav();
+      });
+      mo.observe(mainEl, { childList: true, subtree: true });
+    }
+
+    let homeLogIntervalId = 0;
+    if (isDev && isHome) {
+      homeLogIntervalId = window.setInterval(() => {
+        logHomeChromeDiag(bottomWrap, pathname, "home-interval");
+      }, 2000);
+    }
 
     if (isDev) {
       (window as Window & { __gnChromeDiag?: () => ChromeDiag }).__gnChromeDiag =
@@ -215,16 +196,16 @@ export function AppMobileChromePortal() {
     }
 
     return () => {
-      ro?.disconnect();
       mo?.disconnect();
       vv?.removeEventListener("resize", onViewportChange);
       vv?.removeEventListener("scroll", onViewportChange);
       window.removeEventListener("resize", onViewportChange);
+      if (homeLogIntervalId) window.clearInterval(homeLogIntervalId);
       if (isDev) {
         delete (window as Window & { __gnChromeDiag?: () => ChromeDiag }).__gnChromeDiag;
       }
     };
-  }, [pathname]);
+  }, [pathname, isHome]);
 
   if (typeof document === "undefined") {
     return null;
@@ -237,8 +218,12 @@ export function AppMobileChromePortal() {
       data-app-mobile-chrome-fixed="bottom"
       className="pointer-events-auto visible fixed inset-x-0 bottom-0 z-[1000] box-border min-h-[var(--gn-app-bottom-nav-offset,4.5rem)] w-full max-w-full min-w-0 overflow-x-clip overflow-y-visible opacity-100 max-lg:block lg:hidden pb-[env(safe-area-inset-bottom,0px)]"
       style={{
-        transform: "translateZ(0)",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
         zIndex: 1000,
+        transform: "translateZ(0)",
       }}
     >
       <AppMobileBottomNav />
