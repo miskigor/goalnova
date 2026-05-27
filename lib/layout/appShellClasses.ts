@@ -67,7 +67,7 @@ export const APP_MOBILE_HEADER_INNER_CLASS =
 
 /** Fixed mount wrapper — sibling of {@link APP_SHELL_ROOT_CLASS}, not portaled. */
 export const APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS = [
-  "pointer-events-auto visible fixed inset-x-0 bottom-0 z-[1000] box-border w-full max-w-full min-w-0",
+  "pointer-events-auto visible fixed inset-x-0 bottom-0 left-0 right-0 z-[9999] box-border w-full max-w-full min-w-0",
   "overflow-x-clip overflow-y-visible opacity-100 max-lg:block lg:hidden",
   "pb-[env(safe-area-inset-bottom,0px)]",
 ].join(" ");
@@ -88,15 +88,11 @@ export const APP_MOBILE_BOTTOM_NAV_INNER_CLASS =
 export const APP_MOBILE_BOTTOM_NAV_ITEM_CLASS =
   "flex h-10 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-visible rounded-md border border-transparent px-0 py-0 text-[9px] font-medium leading-none tracking-tight min-[360px]:text-[10px]";
 
-/** Player bottom nav — center FAB (Challenges) in the row. */
-export const APP_MOBILE_BOTTOM_NAV_INNER_WITH_UPLOAD_FAB_CLASS =
-  "pointer-events-auto box-border grid h-10 w-full min-w-0 max-w-full grid-cols-5 items-center justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+export const APP_MOBILE_BOTTOM_NAV_UPLOAD_LINK_CLASS =
+  "pointer-events-auto flex h-10 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 border-0 bg-transparent p-0 shadow-none";
 
-export const APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_LINK_CLASS =
-  "pointer-events-auto flex w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 border-0 bg-transparent p-0 shadow-none";
-
-export const APP_MOBILE_BOTTOM_NAV_UPLOAD_FAB_BUTTON_CLASS =
-  "relative box-border flex h-9 w-9 min-h-9 min-w-9 max-h-9 max-w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-orange-500 p-0 shadow-md ring-1 ring-inset ring-orange-300/60 transition [border-radius:9999px] active:scale-[0.96] hover:bg-orange-400";
+export const APP_MOBILE_BOTTOM_NAV_UPLOAD_BUTTON_CLASS =
+  "relative box-border flex h-9 w-9 min-h-9 min-w-9 max-h-9 max-w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-orange-500 p-0 shadow-md ring-1 ring-inset ring-orange-300/60 transition active:scale-[0.96] hover:bg-orange-400";
 
 /** Colored emoji on standard bottom-nav tabs (native color, not muted by tab text). */
 export const APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS =

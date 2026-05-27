@@ -99,7 +99,9 @@ export type ShellMobileNavItem = {
     | "/scout-dashboard"
     | "/scout-apply"
     | "/discover"
-    | "/rankings";
+    | "/rankings"
+    | "/messages"
+    | "/admin";
   labelKey:
     | "home"
     | "challenges"
@@ -110,7 +112,9 @@ export type ShellMobileNavItem = {
     | "dashboard"
     | "scoutVerification"
     | "discover"
-    | "rankings";
+    | "rankings"
+    | "messages"
+    | "adminPanel";
   icon: NavIconName;
 };
 
@@ -122,11 +126,11 @@ export const APP_SHELL_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
   { href: "/profile", labelKey: "profile", icon: "profile" },
 ];
 
-/** Mobile bottom nav for verified scouts (no Upload / player-centric tabs). */
+/** Mobile bottom nav for verified scouts. */
 export const APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
   { href: "/scout-dashboard", labelKey: "dashboard", icon: "scoutDashboard" },
   { href: "/discover", labelKey: "discover", icon: "discover" },
-  { href: "/rankings", labelKey: "rankings", icon: "rankings" },
+  { href: "/messages", labelKey: "messages", icon: "messages" },
   { href: "/premium", labelKey: "premium", icon: "premium" },
   { href: "/profile", labelKey: "profile", icon: "profile" },
 ];
@@ -135,8 +139,26 @@ export const APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
 export const APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED: ShellMobileNavItem[] = [
   { href: "/scout-apply", labelKey: "scoutVerification", icon: "scoutDashboard" },
   { href: "/discover", labelKey: "discover", icon: "discover" },
-  { href: "/rankings", labelKey: "rankings", icon: "rankings" },
+  { href: "/messages", labelKey: "messages", icon: "messages" },
   { href: "/premium", labelKey: "premium", icon: "premium" },
+  { href: "/profile", labelKey: "profile", icon: "profile" },
+];
+
+/** Mobile bottom nav for staff admins. */
+export const APP_SHELL_ADMIN_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
+  { href: "/home", labelKey: "home", icon: "home" },
+  { href: "/explore", labelKey: "explore", icon: "explore" },
+  { href: "/upload", labelKey: "upload", icon: "upload" },
+  { href: "/admin", labelKey: "adminPanel", icon: "settings" },
+  { href: "/profile", labelKey: "profile", icon: "profile" },
+];
+
+/** Player mobile bottom nav — plain links only. */
+export const APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
+  { href: "/home", labelKey: "home", icon: "home" },
+  { href: "/explore", labelKey: "explore", icon: "explore" },
+  { href: "/challenges", labelKey: "challenges", icon: "challenges" },
+  { href: "/upload", labelKey: "upload", icon: "upload" },
   { href: "/profile", labelKey: "profile", icon: "profile" },
 ];
 
