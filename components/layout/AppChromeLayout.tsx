@@ -6,12 +6,13 @@ import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBanner";
-import { AppMobileBottomNavHost } from "@/components/layout/AppMobileBottomNavHost";
+import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
 import {
   APP_SHELL_COLUMN_CLASS,
   APP_SHELL_MAIN_CLASS,
   APP_SHELL_MAIN_INNER_CLASS,
   APP_SHELL_ROOT_CLASS,
+  APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS,
 } from "@/lib/layout/appShellClasses";
 
 function AppMainColumn({ children }: { children: React.ReactNode }) {
@@ -28,7 +29,7 @@ function AppMainColumn({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * Logged-in shell: desktop sidebar + fixed mobile bottom nav in-layout.
+ * Logged-in shell: desktop sidebar + mobile bottom nav always mounted in-layout.
  */
 export function AppChromeLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -40,7 +41,12 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
           <AppSidebar />
           <AppMainColumn>{children}</AppMainColumn>
         </div>
-        <AppMobileBottomNavHost />
+        <div
+          data-app-mobile-bottom-nav-mount
+          className={APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS}
+        >
+          <AppMobileBottomNav />
+        </div>
       </AdminSupportUnreadProvider>
     </FeedbackProvider>
   );
