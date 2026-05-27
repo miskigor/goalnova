@@ -71,9 +71,11 @@ function BenefitsPageShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-w-0 w-full max-w-full space-y-6">
+    <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-4">
       <header>
-        <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">{title}</h1>
+        <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
+          {title}
+        </h1>
       </header>
       {children}
     </div>
@@ -84,7 +86,7 @@ const cardClass =
   "rounded-xl border border-orange-500/60 bg-gn-surface/20 p-4 shadow-sm sm:p-5";
 
 const linkBoxClass =
-  "rounded-lg border border-gn-border-subtle bg-gn-surface/30 px-3 py-2.5 font-mono text-xs leading-relaxed text-gn-text break-all sm:text-sm";
+  "box-border w-full min-w-0 max-w-full overflow-hidden rounded-lg border border-gn-border-subtle bg-gn-surface/30 px-3 py-2.5 font-mono text-xs leading-relaxed text-gn-text break-all sm:text-sm";
 
 function isShareCancelled(err: unknown): boolean {
   return err instanceof DOMException && err.name === "AbortError";
@@ -94,9 +96,9 @@ function BenefitsScoutInfo() {
   const t = useTranslations("benefits");
 
   return (
-    <div className="min-w-0 w-full max-w-full space-y-6">
+    <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-4">
       <header>
-        <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">
+        <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
           {t("scoutBenefitsTitle")}
         </h1>
       </header>
@@ -104,7 +106,7 @@ function BenefitsScoutInfo() {
         <p className="text-sm leading-relaxed text-gn-text-secondary">{t("scoutBenefitsBody")}</p>
         <Link
           href="/premium"
-          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-4 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg sm:w-auto sm:min-w-[12rem]"
+          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-4 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg max-lg:mt-4 max-lg:py-3 sm:w-auto sm:min-w-[12rem]"
         >
           {t("scoutBenefitsCta")}
         </Link>
@@ -315,13 +317,15 @@ function BenefitsPlayerReferralContent() {
   }
 
   return (
-    <div className="min-w-0 w-full max-w-full space-y-8 sm:space-y-10">
+    <div className="box-border min-w-0 w-full max-w-full space-y-8 overflow-x-clip max-lg:space-y-6 sm:space-y-10">
       <header>
-        <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">{t("benefitsTitle")}</h1>
+        <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
+          {t("benefitsTitle")}
+        </h1>
       </header>
 
-      <section className="space-y-5" aria-labelledby="benefits-invite-heading">
-        <h2 id="benefits-invite-heading" className="text-lg font-semibold text-gn-text">
+      <section className="space-y-5 max-lg:space-y-4" aria-labelledby="benefits-invite-heading">
+        <h2 id="benefits-invite-heading" className="text-lg font-semibold text-gn-text max-lg:text-sm">
           {t("inviteFriends")}
         </h2>
         <p className="text-sm leading-relaxed text-gn-text-secondary">{t("inviteFriendsCta")}</p>
@@ -330,7 +334,7 @@ function BenefitsPlayerReferralContent() {
           type="button"
           onClick={onInvitePrimary}
           disabled={!hasLink}
-          className="w-full rounded-xl bg-orange-500 px-4 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:min-w-[12rem]"
+          className="w-full rounded-xl bg-orange-500 px-4 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40 max-lg:py-3 sm:w-auto sm:min-w-[12rem]"
         >
           {t("inviteFriendButton")}
         </button>

@@ -98,9 +98,9 @@ export function PricingView() {
       : CARDS;
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-gn-text">{t("title")}</h1>
+    <div className="box-border w-full min-w-0 max-w-full space-y-5 overflow-x-clip max-lg:space-y-4">
+      <div className="min-w-0 max-w-full">
+        <h1 className="break-words text-2xl font-bold text-gn-text max-lg:text-base">{t("title")}</h1>
         <p className="mt-2 text-sm text-gn-text-secondary">{t("subtitle")}</p>
       </div>
 
@@ -111,18 +111,20 @@ export function PricingView() {
       ) : null}
 
       {shouldHoldCards ? (
-        <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/35 p-5 text-sm text-gn-text-secondary">
+        <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/35 p-5 text-sm text-gn-text-secondary max-lg:p-4">
           {t("loadingCheckout")}
         </div>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid w-full min-w-0 max-w-full gap-4 overflow-x-clip md:grid-cols-2 xl:grid-cols-3">
         {visibleCards.map((card) => (
           <article
             key={card.key}
-            className="rounded-2xl border border-gn-border-subtle bg-gn-surface/35 p-5"
+            className="box-border min-w-0 max-w-full overflow-hidden rounded-2xl border border-gn-border-subtle bg-gn-surface/35 p-5 max-lg:p-4"
           >
-            <h2 className="text-lg font-semibold text-gn-text">{t(`${card.key}.title`)}</h2>
+            <h2 className="break-words text-lg font-semibold text-gn-text max-lg:text-sm">
+              {t(`${card.key}.title`)}
+            </h2>
             {card.key === "playerPremium" || card.key === "scoutPro" ? (
               <p className="mt-2 text-sm text-gn-text-secondary">{t(`${card.key}.description`)}</p>
             ) : null}
