@@ -9,6 +9,7 @@ import { tryConsumePendingReferralWithRetry } from "@/lib/supabase/referrals";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { DeleteAccountSection } from "@/components/profile/DeleteAccountSection";
 import {
+  APP_PROFILE_CONTENT_CLASS,
   APP_PROFILE_LOADING_INNER_CLASS,
 } from "@/lib/layout/appShellClasses";
 import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
@@ -41,7 +42,11 @@ function ProfilePageShell({ children }: { children: React.ReactNode }) {
   return (
     <div
       data-profile-shell
-      className="box-border w-full min-w-0 max-w-full space-y-4 overflow-x-clip max-lg:space-y-2 max-lg:pt-2 max-lg:pb-[var(--gn-app-bottom-nav-offset,4.5rem)] lg:pb-8 sm:mx-auto sm:max-w-2xl"
+      className={[
+        APP_PROFILE_CONTENT_CLASS,
+        "space-y-4 overflow-x-clip max-lg:space-y-3 max-lg:pt-2",
+        "max-lg:pb-[calc(var(--gn-app-bottom-nav-offset,4.5rem)+1rem)] lg:max-w-2xl lg:pb-8",
+      ].join(" ")}
     >
       {children}
     </div>
