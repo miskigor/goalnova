@@ -374,7 +374,8 @@ export function ExploreVideoCard({
   const hasAnySource = exploreTileHasVisualMedia(videoRow, avatarUrl);
 
   const playerHref = `/player/${encodeURIComponent(slug)}` as const;
-  const videoPageHref = `/video/${encodeURIComponent(video.id)}` as const;
+  const videoPageHref =
+    `/video/${encodeURIComponent(video.id)}?from=explore` as const;
 
   return (
     <div className="box-border flex w-full min-w-0 max-w-full flex-col overflow-hidden">
@@ -497,9 +498,6 @@ export function ExploreView() {
         className="box-border w-full min-w-0 max-w-full space-y-4 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-3 sm:p-5"
         aria-label={t("filtersAria")}
       >
-        <h2 className="text-sm font-semibold tracking-tight text-gn-text">
-          {t("filters")}
-        </h2>
         <label htmlFor="explore-player-name" className="block text-sm font-medium text-gn-text">
           {ts("nameLabel")}
         </label>

@@ -20,6 +20,7 @@ import { PublicVideoWatchPlayer } from "@/components/video/PublicVideoWatchPlaye
 
 type Props = {
   params: Promise<{ locale: string; videoId: string }>;
+  searchParams: Promise<{ from?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -56,9 +57,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-export default async function PublicVideoPage({ params }: Props) {
+export default async function PublicVideoPage({ params, searchParams }: Props) {
   const { locale, videoId } = await params;
+  const { from } = await searchParams;
   setRequestLocale(locale);
+  const profileVideoLayout = from === "explore";
 
   const data = await getPublicVideoPageData(videoId);
   if (!data) notFound();
@@ -120,6 +123,7 @@ export default async function PublicVideoPage({ params }: Props) {
         sources={playbackSources}
         playerDisplayName={displayName}
         caption={data.video.caption}
+        layout={profileVideoLayout ? "profile" : "default"}
       />
 
       {data.challenge ? (

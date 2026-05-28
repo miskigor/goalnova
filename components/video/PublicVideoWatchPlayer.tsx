@@ -14,6 +14,8 @@ type Props = {
   sources: string[];
   playerDisplayName: string;
   caption: string | null;
+  /** Same aspect band as {@link ProfileVideoTile} (explore → watch). */
+  layout?: "default" | "profile";
 };
 
 const SHARE_RAIL_CLASS =
@@ -24,17 +26,22 @@ export function PublicVideoWatchPlayer({
   sources,
   playerDisplayName,
   caption,
+  layout = "default",
 }: Props) {
   const captionText = caption?.trim() ?? "";
+  const profileLayout = layout === "profile";
+  const stageClass = profileLayout
+    ? `relative aspect-[1/1] w-full min-w-0 max-w-full sm:aspect-[9/16] ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`
+    : `relative aspect-[9/16] max-h-[min(82dvh,720px)] w-full min-w-0 max-w-full sm:aspect-auto sm:max-h-[min(75vh,640px)] ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`;
+  const videoClass = profileLayout
+    ? `relative z-0 ${GN_VIDEO_MEDIA_ELEMENT_CLASS}`
+    : `relative z-0 sm:max-h-[min(75vh,640px)] ${GN_VIDEO_MEDIA_ELEMENT_CLASS}`;
 
   return (
     <div className="relative isolate mx-auto w-full min-w-0 max-w-full overflow-hidden bg-black sm:rounded-2xl sm:border sm:border-gn-border-subtle sm:shadow-lg">
-      <div
-        {...gnVideoMediaDataProps}
-        className={`relative aspect-[9/16] max-h-[min(82dvh,720px)] w-full min-w-0 max-w-full sm:aspect-auto sm:max-h-[min(75vh,640px)] ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`}
-      >
+      <div {...gnVideoMediaDataProps} className={stageClass}>
         <PlaybackVideo
-          className={`relative z-0 sm:max-h-[min(75vh,640px)] ${GN_VIDEO_MEDIA_ELEMENT_CLASS}`}
+          className={videoClass}
           sources={sources}
           preload="auto"
           fetchPriority="high"
