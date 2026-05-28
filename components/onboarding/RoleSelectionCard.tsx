@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { markPostAuthProfileLandingComplete } from "@/lib/auth/postAuthLanding";
 import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
 import { signOut } from "@/lib/supabase/auth";
@@ -250,6 +251,9 @@ export function RoleSelectionCard() {
 
       void ensureOnboardingNotificationsForRole(supabase, userId, role);
 
+      if (role === "player") {
+        markPostAuthProfileLandingComplete(userId);
+      }
       router.replace(role === "scout" ? "/scout-apply" : "/profile");
 
       if (role === "player") {

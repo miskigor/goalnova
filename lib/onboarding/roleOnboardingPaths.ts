@@ -1,3 +1,7 @@
+import {
+  hasCompletedPostAuthProfileLanding,
+  markPostAuthProfileLandingComplete,
+} from "@/lib/auth/postAuthLanding";
 import { isRoleOnboardingExempt } from "@/lib/onboarding/roleOnboarding";
 import { supabase } from "@/lib/supabase/client";
 import { resolvePendingReferralCode } from "@/lib/supabase/referrals";
@@ -22,6 +26,12 @@ export async function resolvePostOnboardingHomePath(): Promise<string> {
 
   if (isRoleOnboardingExempt(userRow)) return "/admin";
   if (userRow?.role === "scout") return "/scout-dashboard";
-  if (userRow?.role === "player") return "/profile";
+  if (userRow?.role === "player") {
+    if (!hasCompletedPostAuthProfileLanding(userId)) {
+      markPostAuthProfileLandingComplete(userId);
+      return "/profile";
+    }
+    return "/home";
+  }
   return "/home";
 }
