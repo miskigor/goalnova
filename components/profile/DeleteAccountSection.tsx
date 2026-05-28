@@ -35,17 +35,17 @@ export function DeleteAccountSection() {
 
   return (
     <section
-      className="mt-10 box-border w-full min-w-0 max-w-full overflow-x-clip border-t border-gn-border-subtle pt-8"
+      className="mt-10 box-border w-full min-w-0 max-w-full overflow-x-clip border-t border-gn-border-subtle pt-8 max-lg:mt-5 max-lg:pt-4"
       aria-labelledby="delete-account-heading"
     >
       <h2 id="delete-account-heading" className="text-sm font-semibold text-gn-text">
         {t("deleteAccountTitle")}
       </h2>
-      <p className="mt-2 break-words text-sm leading-relaxed text-gn-text-secondary">
+      <p className="mt-2 break-words text-sm leading-relaxed text-gn-text-secondary max-lg:text-xs">
         {t("deleteAccountDescription")}
       </p>
       {error ? (
-        <p role="alert" className="mt-3 text-sm text-red-400">
+        <p role="alert" className="mt-3 text-sm text-red-400 max-lg:text-xs">
           {error}
         </p>
       ) : null}
@@ -53,7 +53,7 @@ export function DeleteAccountSection() {
         type="button"
         disabled={deleting}
         onClick={() => void onDelete()}
-        className="mt-4 w-full max-w-full rounded-xl border border-red-500/40 bg-red-950/20 px-4 py-3 text-sm font-semibold text-red-300 transition hover:border-red-500/60 hover:bg-red-950/35 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+        className="mt-4 w-full max-w-full rounded-xl border border-red-500/40 bg-red-950/20 px-4 py-3 text-sm font-semibold text-red-300 transition hover:border-red-500/60 hover:bg-red-950/35 disabled:cursor-not-allowed disabled:opacity-50 max-lg:rounded-lg max-lg:py-1.5 max-lg:text-xs sm:w-auto"
       >
         {deleting ? tCommon("loadingEllipsis") : t("deleteAccountButton")}
       </button>

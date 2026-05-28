@@ -36,7 +36,7 @@ function DetailRow({ label, value }: { label: string; value: string | null | und
       <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary sm:text-xs">
         {label}
       </p>
-      <p className="mt-1 break-words text-sm text-gn-text">{v}</p>
+      <p className="mt-1 break-words text-sm text-gn-text max-lg:mt-0.5 max-lg:text-xs">{v}</p>
     </div>
   );
 }
@@ -151,7 +151,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
   }, [playerSlug]);
 
   const profileSectionClass = PUBLIC_PLAYER_PROFILE_SECTION_CLASS;
-  const profileInnerClass = `${profileSectionClass} space-y-6`;
+  const profileInnerClass = `${profileSectionClass} space-y-6 max-lg:space-y-2.5`;
 
   function wrapInProfileShell(node: ReactNode) {
     if (embedded) return node;
@@ -268,20 +268,20 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
 
   return wrapInProfileShell(
     <div className={profileInnerClass}>
-      <header className={`${profileSectionClass} space-y-3`}>
-        <div className="flex min-w-0 items-center gap-3">
+      <header className={`${profileSectionClass} space-y-3 max-lg:space-y-2`}>
+        <div className="flex min-w-0 items-center gap-3 max-lg:gap-2">
           <ProfileAvatar
             name={displayName}
             imageUrl={userAvatarUrl?.trim() || undefined}
             className="shrink-0"
           />
           <div className="min-w-0 flex-1 overflow-hidden">
-            <h1 className="truncate text-xl font-semibold tracking-tight text-gn-text-primary sm:text-2xl">
+            <h1 className="truncate text-xl font-semibold tracking-tight text-gn-text-primary max-lg:text-base sm:text-2xl">
               {displayName}
             </h1>
-            <p className="truncate text-sm text-gn-text-secondary">@{displayUsername}</p>
+            <p className="truncate text-sm text-gn-text-secondary max-lg:text-xs">@{displayUsername}</p>
             {profile.founding_player === true || isPlayerPremium(profile) ? (
-              <div className="mt-1.5 flex min-w-0 max-w-full flex-wrap items-center gap-1.5">
+              <div className="mt-1.5 flex min-w-0 max-w-full flex-wrap items-center gap-1.5 max-lg:mt-1 max-lg:gap-1">
                 {profile.founding_player === true ? <FoundingPlayerBadge /> : null}
                 {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
               </div>
@@ -290,20 +290,20 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
         </div>
         {userId && profile.id === userId ? (
           <div
-            className="profile-actions box-border grid w-full max-w-full min-w-0 grid-cols-1 gap-3 overflow-x-clip max-sm:grid-cols-1 sm:grid-cols-2"
+            className="profile-actions box-border grid w-full max-w-full min-w-0 grid-cols-1 gap-3 overflow-x-clip max-lg:gap-1.5 max-sm:grid-cols-1 sm:grid-cols-2"
             data-profile-actions
           >
             <Link
               href="/settings/profile"
-              className="box-border flex min-h-11 w-full max-w-full min-w-0 items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-3 py-2.5 text-center text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
+              className="box-border flex min-h-11 w-full max-w-full min-w-0 items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-3 py-2.5 text-center text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated max-lg:min-h-9 max-lg:rounded-lg max-lg:py-1.5 max-lg:text-xs"
             >
               <span className="min-w-0 truncate">{tProfile("editProfile")}</span>
             </Link>
-            <ProfileUploadLink className="min-h-11 w-full max-w-full min-w-0" />
+            <ProfileUploadLink className="min-h-11 w-full max-w-full min-w-0 max-lg:min-h-9" />
           </div>
         ) : null}
         {userId && profile.id !== userId ? (
-          <div className="mt-3 flex w-full min-w-0 max-w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-stretch">
+          <div className="mt-3 flex w-full min-w-0 max-w-full flex-col gap-3 max-lg:gap-2.5 sm:flex-row sm:flex-wrap sm:items-stretch">
             {canUseScoutMessaging ? (
               <Link
                 href={`/messages/${profile.id}`}
@@ -337,9 +337,9 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
       {hasPlayerDetails ? (
         <section
           aria-label={t("detailsSectionAria")}
-          className={`${profileSectionClass} box-border w-full min-w-0 max-w-full space-y-4 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4 sm:p-5`}
+          className={`${profileSectionClass} box-border w-full min-w-0 max-w-full space-y-4 max-lg:space-y-2 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4 max-lg:rounded-lg max-lg:p-2 sm:p-5`}
         >
-          <div className="grid min-w-0 gap-4 sm:grid-cols-2">
+          <div className="grid min-w-0 gap-4 max-lg:gap-2 sm:grid-cols-2">
             <DetailRow label={t("age")} value={formatPlayerAge(profile.age)} />
             <DetailRow label={tFields("position")} value={profile.position} />
             <DetailRow label={t("city")} value={profile.city} />
@@ -354,7 +354,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
               <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary sm:text-xs">
                 {t("bio")}
               </p>
-              <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gn-text">
+              <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gn-text max-lg:text-xs">
                 {playerBio}
               </p>
             </div>
@@ -371,7 +371,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
       ) : null}
 
       <section className={profileSectionClass} aria-label={t("videosSectionAria")}>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gn-text-tertiary">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gn-text-tertiary max-lg:mb-2">
           {t("videosHeading")}
         </h2>
         {deleteError ? (
@@ -386,7 +386,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
         ) : null}
         {videos.length === 0 ? (
           <div className="rounded-2xl border border-white/[0.1] bg-gradient-to-b from-gn-surface/45 to-gn-bg/40 px-5 py-10 text-center">
-            <p className="text-base font-semibold text-gn-text">
+            <p className="text-base font-semibold text-gn-text max-lg:text-sm">
               {tProfile("noVideosTitle")}
             </p>
             <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-gn-text-secondary">
