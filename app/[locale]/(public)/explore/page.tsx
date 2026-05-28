@@ -17,7 +17,7 @@ export default async function ExplorePage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <AppMobileTabPageShell className="touch-pan-y">
+    <AppMobileTabPageShell>
       <GuestPublicCallout />
       <ExploreView />
     </AppMobileTabPageShell>

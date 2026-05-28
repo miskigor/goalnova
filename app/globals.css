@@ -393,6 +393,27 @@ html {
     touch-action: manipulation;
   }
 
+  /* Tab pages (not home): pin bottom nav to visual viewport — same idea as /premium. */
+  body:has([data-app-root]):not(:has([data-pitchrusch-home-feed]))
+    [data-app-mobile-bottom-nav-mount] {
+    position: fixed !important;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: max(env(safe-area-inset-bottom, 0px), var(--gn-mobile-visual-bottom-inset, 0px)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    z-index: 10001 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
   [data-app-mobile-chrome-fixed="top"] [data-app-mobile-header],
   [data-app-mobile-bottom-nav-mount] [data-app-bottom-nav] {
     visibility: visible;
@@ -618,7 +639,6 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   overscroll-behavior-x: none;
-  touch-action: pan-y;
   background-color: var(--gn-bg);
   color: var(--gn-text);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
@@ -638,6 +658,11 @@ body {
 @media (max-width: 1023px) {
   body {
     background-attachment: scroll;
+  }
+
+  /* Landing/auth only — app shell uses touch-action: manipulation on tab pages. */
+  body:not(:has([data-app-root])) {
+    touch-action: pan-y;
   }
 }
 
