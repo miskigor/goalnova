@@ -359,10 +359,7 @@ html {
     right: auto !important;
     inset-inline-start: 0 !important;
     inset-inline-end: auto !important;
-    bottom: max(
-      calc(0.75rem + 0.625rem),
-      calc(0.75rem + 0.625rem + var(--gn-mobile-visual-bottom-inset, 0px))
-    ) !important;
+    bottom: calc(0.75rem + 0.625rem) !important;
     max-width: calc(var(--gn-home-feed-vv-width, 100%) - 5.5rem);
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px));
     padding-bottom: 0.125rem;
@@ -370,10 +367,7 @@ html {
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-rail] {
     z-index: 50;
-    bottom: max(
-      calc(5rem + 0.75rem),
-      calc(5rem + 0.75rem + var(--gn-mobile-visual-bottom-inset, 0px))
-    ) !important;
+    bottom: calc(5rem + 0.75rem) !important;
     top: auto !important;
     right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
     left: auto !important;
