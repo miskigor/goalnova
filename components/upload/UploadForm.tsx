@@ -109,6 +109,10 @@ function isVideoFile(file: File): boolean {
 
 const UPLOAD_CAPTION_MAX_LENGTH = 160;
 
+/** Caption field + step-1 continue — inset from screen edges on narrow viewports. */
+const UPLOAD_FORM_INSET_BLOCK_CLASS =
+  "mx-auto box-border w-full min-w-0 max-w-[calc(100%-1.5rem)] sm:max-w-xl";
+
 type UploadCaptionFieldProps = {
   id: string;
   value: string;
@@ -132,7 +136,7 @@ function UploadCaptionField({
   const tooLong = length > UPLOAD_CAPTION_MAX_LENGTH;
 
   return (
-    <div className="box-border w-full min-w-0 max-w-full space-y-1.5">
+    <div className={`${UPLOAD_FORM_INSET_BLOCK_CLASS} space-y-1.5`}>
       <label htmlFor={id} className="block text-sm font-medium text-gn-text">
         {label}
       </label>
@@ -1503,7 +1507,7 @@ export function UploadForm() {
                 type="button"
                 onClick={continueToPreviewStep}
                 disabled={!canContinueToPreview}
-                className={`${GN_PRIMARY_BUTTON_CLASS} flex min-h-[3rem] w-full justify-center px-8 py-3 text-base disabled:cursor-not-allowed`}
+                className={`${GN_PRIMARY_BUTTON_CLASS} ${UPLOAD_FORM_INSET_BLOCK_CLASS} flex min-h-[3rem] justify-center px-8 py-3 text-base disabled:cursor-not-allowed`}
               >
                 {t("uploadContinue")}
               </button>
