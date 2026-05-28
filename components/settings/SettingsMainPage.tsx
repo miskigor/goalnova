@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { PremiumSettingsSection } from "@/components/settings/PremiumSettingsSection";
-import { SettingsInviteFriendsSection } from "@/components/settings/SettingsInviteFriendsSection";
 import { AppAccountQuickLinks } from "@/components/layout/AppAccountQuickLinks";
 
 const rowClass =
@@ -24,8 +23,6 @@ export async function SettingsMainPage() {
       <AppAccountQuickLinks />
 
       <PremiumSettingsSection />
-
-      <SettingsInviteFriendsSection />
 
       <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4 max-lg:p-2">
         <p className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">

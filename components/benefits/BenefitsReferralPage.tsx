@@ -115,7 +115,20 @@ function BenefitsScoutInfo() {
   );
 }
 
-export function BenefitsReferralPage() {
+export type BenefitsReferralPageVariant = "invite-only" | "settings-extras";
+
+type BenefitsReferralPageProps = {
+  variant?: BenefitsReferralPageVariant;
+};
+
+export function BenefitsReferralPage({ variant = "settings-extras" }: BenefitsReferralPageProps) {
+  if (variant === "invite-only") {
+    return <BenefitsPlayerReferralContent mode="invite" />;
+  }
+  return <BenefitsReferralExtrasPage />;
+}
+
+function BenefitsReferralExtrasPage() {
   const tCommon = useTranslations("common");
   const t = useTranslations("benefits");
   const [snapshot, setSnapshot] = useState<BenefitsAudienceSnapshot | null>(null);
@@ -176,10 +189,10 @@ export function BenefitsReferralPage() {
     return <BenefitsScoutInfo />;
   }
 
-  return <BenefitsPlayerReferralContent />;
+  return null;
 }
 
-function BenefitsPlayerReferralContent() {
+function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" }) {
   const t = useTranslations("benefits");
   const tCommon = useTranslations("common");
   const locale = useLocale();
@@ -316,141 +329,177 @@ function BenefitsPlayerReferralContent() {
     );
   }
 
-  return (
-    <div className="box-border min-w-0 w-full max-w-full space-y-8 overflow-x-clip max-lg:space-y-2 sm:space-y-10">
-      <header>
-        <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
-          {t("benefitsTitle")}
-        </h1>
-      </header>
+  const inviteFields = (
+    <>
+      <p className="text-sm leading-relaxed text-gn-text-secondary">{t("inviteFriendsCta")}</p>
 
-      <section className="space-y-5 max-lg:space-y-2" aria-labelledby="benefits-invite-heading">
-        <h2 id="benefits-invite-heading" className="text-lg font-semibold text-gn-text max-lg:text-sm">
-          {t("inviteFriends")}
-        </h2>
-        <p className="text-sm leading-relaxed text-gn-text-secondary">{t("inviteFriendsCta")}</p>
+      <button
+        type="button"
+        onClick={onInvitePrimary}
+        disabled={!hasLink}
+        className="w-full rounded-xl bg-orange-500 px-4 py-3.5 text-xs font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5 sm:w-auto sm:min-w-[12rem]"
+      >
+        {t("inviteFriendButton")}
+      </button>
 
-        <button
-          type="button"
-          onClick={onInvitePrimary}
-          disabled={!hasLink}
-          className="w-full rounded-xl bg-orange-500 px-4 py-3.5 text-xs font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5 sm:w-auto sm:min-w-[12rem]"
-        >
-          {t("inviteFriendButton")}
-        </button>
-
-        <div className="space-y-2">
-          <p className="text-xs font-medium tracking-wide text-gn-text-tertiary">
-            {t("yourInviteLink")}
-          </p>
-          <div className={linkBoxClass}>
-            {hasLink ? (
-              inviteUrl
-            ) : (
-              <span className="font-sans text-sm text-gn-text-secondary">
-                {linkErrorMessage ?? t("referralLinkUnavailable")}
-              </span>
-            )}
-          </div>
-          {!hasLink && loadError ? (
-            <button
-              type="button"
-              onClick={() => {
-                setLoading(true);
-                void load();
-              }}
-              className="text-sm font-medium text-orange-300 underline-offset-2 hover:underline"
-            >
-              {t("referralRetry")}
-            </button>
-          ) : null}
-          <div className="flex flex-col gap-2 max-lg:gap-1.5 sm:flex-row sm:flex-wrap">
-            <button
-              type="button"
-              onClick={() => void copyInviteUrl()}
-              disabled={!hasLink}
-              className="rounded-xl border border-gn-border bg-gn-surface px-4 py-2.5 text-xs font-medium text-gn-text transition hover:border-orange-500/50 hover:bg-gn-surface-elevated disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5"
-            >
-              {t("copyLink")}
-            </button>
-            <button
-              type="button"
-              onClick={onShareSecondary}
-              disabled={!hasLink}
-              className="rounded-xl border border-orange-500/50 bg-orange-500/10 px-4 py-2.5 text-xs font-semibold text-orange-200 transition hover:bg-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5"
-            >
-              {t("shareLink")}
-            </button>
-          </div>
+      <div className="space-y-2">
+        <p className="text-xs font-medium tracking-wide text-gn-text-tertiary">
+          {t("yourInviteLink")}
+        </p>
+        <div className={linkBoxClass}>
+          {hasLink ? (
+            inviteUrl
+          ) : (
+            <span className="font-sans text-sm text-gn-text-secondary">
+              {linkErrorMessage ?? t("referralLinkUnavailable")}
+            </span>
+          )}
         </div>
-
-        {copied ? (
-          <p className="text-sm font-medium text-orange-400" role="status">
-            {t("inviteLinkCopied")}
-          </p>
+        {!hasLink && loadError ? (
+          <button
+            type="button"
+            onClick={() => {
+              setLoading(true);
+              void load();
+            }}
+            className="text-sm font-medium text-orange-300 underline-offset-2 hover:underline"
+          >
+            {t("referralRetry")}
+          </button>
         ) : null}
+        <div className="flex flex-col gap-2 max-lg:gap-1.5 sm:flex-row sm:flex-wrap">
+          <button
+            type="button"
+            onClick={() => void copyInviteUrl()}
+            disabled={!hasLink}
+            className="rounded-xl border border-gn-border bg-gn-surface px-4 py-2.5 text-xs font-medium text-gn-text transition hover:border-orange-500/50 hover:bg-gn-surface-elevated disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5"
+          >
+            {t("copyLink")}
+          </button>
+          <button
+            type="button"
+            onClick={onShareSecondary}
+            disabled={!hasLink}
+            className="rounded-xl border border-orange-500/50 bg-orange-500/10 px-4 py-2.5 text-xs font-semibold text-orange-200 transition hover:bg-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5"
+          >
+            {t("shareLink")}
+          </button>
+        </div>
+      </div>
 
-        <div
-          className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4 max-lg:p-2"
-          aria-labelledby="benefits-invite-rules-heading"
+      {copied ? (
+        <p className="text-sm font-medium text-orange-400" role="status">
+          {t("inviteLinkCopied")}
+        </p>
+      ) : null}
+
+      <div
+        className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4 max-lg:p-2"
+        aria-labelledby="benefits-invite-rules-heading"
+      >
+        <h3 id="benefits-invite-rules-heading" className="text-sm font-semibold text-gn-text">
+          {t("inviteRulesTitle")}
+        </h3>
+        <ol className="mt-2 list-decimal space-y-1.5 ps-4 text-sm leading-relaxed text-gn-text-secondary">
+          <li>{t("inviteRulesStep1")}</li>
+          <li>{t("inviteRulesStep2")}</li>
+          <li>{t("inviteRulesStep3")}</li>
+        </ol>
+      </div>
+    </>
+  );
+
+  const rewardsFields = (
+    <>
+      <p className="text-sm font-medium text-gn-text">{t("invitedPlayers", { count: n })}</p>
+
+      <div className="space-y-2 text-sm text-gn-text-secondary">
+        <p>{t("invite3Progress", { count: n })}</p>
+        <p>{t("invite10Progress", { count: n })}</p>
+      </div>
+
+      <ul className="flex flex-col gap-4 max-lg:gap-3">
+        <li className={cardClass}>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0 space-y-1">
+              <p className="font-semibold text-gn-text">{t("invite3RewardTitle")}</p>
+              <p className="text-sm text-gn-text-secondary">{t("invite3RewardDescription")}</p>
+            </div>
+            <span
+              className={
+                "shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold " +
+                (has3
+                  ? "border-orange-500/50 bg-orange-500/15 text-orange-300"
+                  : "border-orange-500/40 bg-gn-surface/40 text-gn-text-tertiary")
+              }
+            >
+              {has3 ? t("unlocked") : t("locked")}
+            </span>
+          </div>
+        </li>
+        <li className={cardClass}>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0 space-y-1">
+              <p className="font-semibold text-gn-text">{t("invite10RewardTitle")}</p>
+              <p className="text-sm text-gn-text-secondary">{t("invite10RewardDescription")}</p>
+            </div>
+            <span
+              className={
+                "shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold " +
+                (has10
+                  ? "border-orange-500/50 bg-orange-500/15 text-orange-300"
+                  : "border-orange-500/40 bg-gn-surface/40 text-gn-text-tertiary")
+              }
+            >
+              {has10 ? t("unlocked") : t("locked")}
+            </span>
+          </div>
+        </li>
+      </ul>
+
+      <p className="text-xs leading-relaxed text-gn-text-tertiary">{t("referralTermsShort")}</p>
+    </>
+  );
+
+  if (mode === "invite") {
+    return (
+      <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-2">
+        <header>
+          <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
+            {t("benefitsTitle")}
+          </h1>
+        </header>
+
+        <section className="space-y-5 max-lg:space-y-2" aria-labelledby="benefits-invite-heading">
+          <h2
+            id="benefits-invite-heading"
+            className="text-lg font-semibold text-gn-text max-lg:text-sm"
+          >
+            {t("inviteFriends")}
+          </h2>
+          {inviteFields}
+        </section>
+
+        <section
+          className="space-y-5 max-lg:space-y-2"
+          aria-labelledby="benefits-invite-progress-heading"
         >
-          <h3 id="benefits-invite-rules-heading" className="text-sm font-semibold text-gn-text">
-            {t("inviteRulesTitle")}
-          </h3>
-          <ol className="mt-2 list-decimal space-y-1.5 ps-4 text-sm leading-relaxed text-gn-text-secondary">
-            <li>{t("inviteRulesStep1")}</li>
-            <li>{t("inviteRulesStep2")}</li>
-            <li>{t("inviteRulesStep3")}</li>
-          </ol>
-        </div>
+          {rewardsFields}
+        </section>
+      </div>
+    );
+  }
 
-        <p className="text-sm font-medium text-gn-text">{t("invitedPlayers", { count: n })}</p>
-
-        <div className="space-y-2 text-sm text-gn-text-secondary">
-          <p>{t("invite3Progress", { count: n })}</p>
-          <p>{t("invite10Progress", { count: n })}</p>
-        </div>
-
-        <ul className="flex flex-col gap-4 max-lg:gap-3">
-          <li className={cardClass}>
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="min-w-0 space-y-1">
-                <p className="font-semibold text-gn-text">{t("invite3RewardTitle")}</p>
-                <p className="text-sm text-gn-text-secondary">{t("invite3RewardDescription")}</p>
-              </div>
-              <span
-                className={
-                  "shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold " +
-                  (has3
-                    ? "border-orange-500/50 bg-orange-500/15 text-orange-300"
-                    : "border-orange-500/40 bg-gn-surface/40 text-gn-text-tertiary")
-                }
-              >
-                {has3 ? t("unlocked") : t("locked")}
-              </span>
-            </div>
-          </li>
-          <li className={cardClass}>
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="min-w-0 space-y-1">
-                <p className="font-semibold text-gn-text">{t("invite10RewardTitle")}</p>
-                <p className="text-sm text-gn-text-secondary">{t("invite10RewardDescription")}</p>
-              </div>
-              <span
-                className={
-                  "shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold " +
-                  (has10
-                    ? "border-orange-500/50 bg-orange-500/15 text-orange-300"
-                    : "border-orange-500/40 bg-gn-surface/40 text-gn-text-tertiary")
-                }
-              >
-                {has10 ? t("unlocked") : t("locked")}
-              </span>
-            </div>
-          </li>
-        </ul>
-
-        <p className="text-xs leading-relaxed text-gn-text-tertiary">{t("referralTermsShort")}</p>
+  return (
+    <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-2 sm:space-y-8">
+      <section className="space-y-5 max-lg:space-y-2" aria-labelledby="benefits-rewards-heading">
+        <h2
+          id="benefits-rewards-heading"
+          className="text-lg font-semibold text-gn-text max-lg:text-sm"
+        >
+          {t("benefitsTitle")}
+        </h2>
+        {rewardsFields}
       </section>
     </div>
   );
