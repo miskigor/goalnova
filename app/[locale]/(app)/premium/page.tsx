@@ -3,14 +3,17 @@ import dynamic from "next/dynamic";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
 
+const PREMIUM_MOBILE_SHELL_CLASS =
+  "max-lg:flex max-lg:h-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:justify-start max-lg:overflow-x-visible max-lg:overflow-y-hidden max-lg:!space-y-2 max-lg:!pb-0 max-lg:!pt-1.5 max-lg:!px-1";
+
 const PricingView = dynamic(
   () =>
     import("@/components/premium/PricingView").then((m) => ({ default: m.PricingView })),
   {
     loading: () => (
-      <AppMobileTabPageShell>
+      <AppMobileTabPageShell data-premium-fit-viewport className={PREMIUM_MOBILE_SHELL_CLASS}>
         <div
-          className="flex min-h-[16rem] w-full items-center justify-center rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-16"
+          className="flex min-h-0 flex-1 w-full items-center justify-center rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-8"
           role="status"
           aria-busy
         >
@@ -37,7 +40,7 @@ export default async function PremiumPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <AppMobileTabPageShell>
+    <AppMobileTabPageShell data-premium-fit-viewport className={PREMIUM_MOBILE_SHELL_CLASS}>
       <PricingView />
     </AppMobileTabPageShell>
   );

@@ -45,7 +45,7 @@ function ProfilePageShell({ children }: { children: React.ReactNode }) {
       className={[
         APP_PROFILE_CONTENT_CLASS,
         "space-y-4 overflow-x-clip max-lg:space-y-3 max-lg:pt-2",
-        "max-lg:pb-[calc(var(--gn-app-bottom-nav-offset,4.5rem)+1rem)] lg:max-w-2xl lg:pb-8",
+        "max-lg:pb-4 lg:max-w-2xl lg:pb-8",
       ].join(" ")}
     >
       {children}

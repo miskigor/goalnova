@@ -7,6 +7,7 @@ import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBanner";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
+import { AppMobileChromeMetrics } from "@/components/layout/AppMobileChromeMetrics";
 import {
   APP_SHELL_COLUMN_CLASS,
   APP_SHELL_MAIN_CLASS,
@@ -37,6 +38,7 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
       <AdminSupportUnreadProvider>
         <AppLayoutDebugProbe />
         <AppShellDebugOverlay />
+        <AppMobileChromeMetrics />
         <div data-app-root className={APP_SHELL_ROOT_CLASS}>
           <AppSidebar />
           <AppMainColumn>{children}</AppMainColumn>

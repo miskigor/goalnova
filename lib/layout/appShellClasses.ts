@@ -39,7 +39,7 @@ export const MOBILE_BOTTOM_TABS_V2_UPLOAD_FAB_CLASS =
   "pointer-events-auto -mt-4 flex w-full min-w-0 max-w-full flex-col items-center justify-end gap-0.5";
 
 export const APP_SHELL_ROOT_CLASS =
-  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:bottom-0 max-lg:z-0 max-lg:h-auto max-lg:max-h-none max-lg:min-h-0 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden max-lg:[--gn-app-header-offset:env(safe-area-inset-top,0px)] lg:flex-row";
+  "relative mx-auto flex min-h-dvh min-w-0 w-full max-w-full overflow-x-clip bg-gn-bg text-gn-text max-lg:fixed max-lg:inset-x-0 max-lg:z-0 max-lg:min-h-0 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden max-lg:[--gn-app-header-offset:env(safe-area-inset-top,0px)] lg:flex-row";
 
 export const APP_SHELL_COLUMN_CLASS =
   "relative mx-auto flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col ps-0 max-lg:min-h-0 lg:min-h-dvh lg:overflow-x-hidden lg:ps-[15.5rem]";
@@ -47,7 +47,7 @@ export const APP_SHELL_COLUMN_CLASS =
 export const APP_SHELL_MAIN_CLASS = [
   "mx-auto box-border flex w-full min-w-0 max-w-full flex-1 flex-col items-stretch overflow-x-hidden px-4",
   "min-h-0 max-lg:min-h-0",
-  "max-lg:pt-0 max-lg:pb-[var(--gn-app-bottom-nav-offset,4.5rem)]",
+  "max-lg:pt-0 max-lg:pb-0",
   "lg:max-w-4xl lg:px-6 lg:pt-8 lg:pb-12",
 ].join(" ");
 
@@ -133,7 +133,7 @@ export const APP_PROFILE_SHELL_CLASS = [
  * Horizontal padding comes from `[data-app-main]`; no extra `px-*` on this shell.
  */
 export const APP_MOBILE_TAB_PAGE_SHELL_CLASS =
-  "box-border w-full min-w-0 max-w-full space-y-6 overflow-x-clip max-lg:pt-4 max-lg:pb-[calc(var(--gn-app-bottom-nav-offset,4.5rem)+2rem)] lg:pb-8 sm:mx-auto sm:max-w-2xl";
+  "box-border w-full min-w-0 max-w-full space-y-6 overflow-x-clip max-lg:pt-2 max-lg:pb-4 lg:pb-8 sm:mx-auto sm:max-w-2xl";
 
 export const APP_PROFILE_LOADING_INNER_CLASS =
   "flex min-h-[35vh] w-full min-w-0 max-w-full flex-col items-center justify-center gap-2 text-sm text-gn-text-secondary";

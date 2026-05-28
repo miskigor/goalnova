@@ -1939,7 +1939,10 @@
       "title": "Free Player",
       "f1": "Basic profile",
       "f2": "3 videos",
-      "f3": "Basic visibility"
+      "f3": "Basic visibility",
+      "f1Short": "Basic profile",
+      "f2Short": "3 videos",
+      "f3Short": "Basic visibility"
     },
     "playerPremium": {
       "title": "Player Premium",
@@ -1948,13 +1951,21 @@
       "f2": "Get featured player opportunities",
       "f3": "Unlock advanced profile statistics",
       "f4": "Stand out in challenges and discovery",
-      "f5": "Up to 20 videos"
+      "f5": "Up to 20 videos",
+      "f1Short": "More visibility",
+      "f2Short": "Featured player",
+      "f3Short": "Advanced stats",
+      "f4Short": "Stand out in discovery",
+      "f5Short": "Up to 20 videos"
     },
     "freeScout": {
       "title": "Free Scout",
       "f1": "10 profiles/day",
       "f2": "Basic search",
-      "f3": "Limited video access"
+      "f3": "Limited video access",
+      "f1Short": "10 profiles/day",
+      "f2Short": "Basic search",
+      "f3Short": "Limited videos"
     },
     "scoutPro": {
       "title": "Scout Pro",
@@ -1963,7 +1974,12 @@
       "f2": "Early access to upcoming workflow upgrades",
       "f3": "Help shape the scout experience on PitchRush",
       "f4": "Priority consideration for new scout betas",
-      "f5": "Support continued scout tooling improvements"
+      "f5": "Support continued scout tooling improvements",
+      "f1Short": "Growing scout tools",
+      "f2Short": "Early access",
+      "f3Short": "Shape the product",
+      "f4Short": "Beta priority",
+      "f5Short": "Tooling support"
     },
     "club": {
       "title": "Club / Academy",
@@ -1971,7 +1987,12 @@
       "f2": "Multiple scouts",
       "f3": "Shared shortlists",
       "f4": "Club dashboard",
-      "f5": "PDF reports"
+      "f5": "PDF reports",
+      "f1Short": "All Scout Pro",
+      "f2Short": "Multiple scouts",
+      "f3Short": "Shared shortlists",
+      "f4Short": "Club dashboard",
+      "f5Short": "PDF reports"
     }
   },
   "payment": {

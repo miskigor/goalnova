@@ -1939,7 +1939,10 @@
       "title": "Besplatni igrač",
       "f1": "Osnovni profil",
       "f2": "3 videa",
-      "f3": "Osnovna vidljivost"
+      "f3": "Osnovna vidljivost",
+      "f1Short": "Osnovni profil",
+      "f2Short": "3 videa",
+      "f3Short": "Osnovna vidljivost"
     },
     "playerPremium": {
       "title": "Player Premium",
@@ -1948,13 +1951,21 @@
       "f2": "Dobij priliku biti istaknuti igrač",
       "f3": "Otključaj naprednu statistiku profila",
       "f4": "Istakni se u izazovima i otkrivanju talenata",
-      "f5": "Do 20 videa"
+      "f5": "Do 20 videa",
+      "f1Short": "Veća vidljivost",
+      "f2Short": "Istaknuti igrač",
+      "f3Short": "Napredna statistika",
+      "f4Short": "Istakni se u discoveryju",
+      "f5Short": "Do 20 videa"
     },
     "freeScout": {
       "title": "Besplatni skaut",
       "f1": "10 profila/dan",
       "f2": "Osnovna pretraga",
-      "f3": "Ograničen pristup videima"
+      "f3": "Ograničen pristup videima",
+      "f1Short": "10 profila/dan",
+      "f2Short": "Osnovna pretraga",
+      "f3Short": "Ograničeni video"
     },
     "scoutPro": {
       "title": "Scout Pro",
@@ -1963,7 +1974,12 @@
       "f2": "Rani pristup nadolazećim nadogradnjama",
       "f3": "Pomozi oblikovati skaut iskustvo na PitchRushu",
       "f4": "Prioritet za nove skaut beta značajke",
-      "f5": "Podrška daljnjem razvoju skaut alata"
+      "f5": "Podrška daljnjem razvoju skaut alata",
+      "f1Short": "Više skaut alata",
+      "f2Short": "Rani pristup",
+      "f3Short": "Oblikuj proizvod",
+      "f4Short": "Prioritet za bete",
+      "f5Short": "Podrška alatima"
     },
     "club": {
       "title": "Klub / Akademija",
@@ -1971,7 +1987,12 @@
       "f2": "Više skauta",
       "f3": "Dijeljene shortliste",
       "f4": "Klupski dashboard",
-      "f5": "PDF izvještaji"
+      "f5": "PDF izvještaji",
+      "f1Short": "Sve iz Scout Pro",
+      "f2Short": "Više skauta",
+      "f3Short": "Dijeljene liste",
+      "f4Short": "Klupski dashboard",
+      "f5Short": "PDF izvještaji"
     },
     "scoutProDescription": "Za skaute koji žele brži radni tijek kako PitchRush raste.",
     "scoutPlans": {

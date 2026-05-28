@@ -1937,7 +1937,10 @@
       "title": "Free Player",
       "f1": "Basic profile",
       "f2": "3 videos",
-      "f3": "Basic visibility"
+      "f3": "Basic visibility",
+      "f1Short": "Basic profile",
+      "f2Short": "3 videos",
+      "f3Short": "Basic visibility"
     },
     "playerPremium": {
       "title": "Player Premium",
@@ -1946,13 +1949,21 @@
       "f3": "Sblocca statistiche avanzate del profilo",
       "f4": "Distinguiti in sfide e scouting",
       "f5": "Fino a 20 video",
-      "description": "Per i giocatori che vogliono più visibilità e un profilo più forte."
+      "description": "Per i giocatori che vogliono più visibilità e un profilo più forte.",
+      "f1Short": "More visibility",
+      "f2Short": "Featured player",
+      "f3Short": "Advanced stats",
+      "f4Short": "Stand out in discovery",
+      "f5Short": "Up to 20 videos"
     },
     "freeScout": {
       "title": "Free Scout",
       "f1": "10 profiles/day",
       "f2": "Basic search",
-      "f3": "Limited video access"
+      "f3": "Limited video access",
+      "f1Short": "10 profiles/day",
+      "f2Short": "Basic search",
+      "f3Short": "Limited videos"
     },
     "scoutPro": {
       "title": "Scout Pro",
@@ -1961,7 +1972,12 @@
       "f3": "Help shape the scout experience on PitchRush",
       "f4": "Priority consideration for new scout betas",
       "f5": "Support continued scout tooling improvements",
-      "description": "Built for scouts who want a faster talent workflow as PitchRush grows."
+      "description": "Built for scouts who want a faster talent workflow as PitchRush grows.",
+      "f1Short": "Growing scout tools",
+      "f2Short": "Early access",
+      "f3Short": "Shape the product",
+      "f4Short": "Beta priority",
+      "f5Short": "Tooling support"
     },
     "club": {
       "title": "Club / Academy",
@@ -1969,7 +1985,12 @@
       "f2": "Multiple scouts",
       "f3": "Shared shortlists",
       "f4": "Club dashboard",
-      "f5": "PDF reports"
+      "f5": "PDF reports",
+      "f1Short": "All Scout Pro",
+      "f2Short": "Multiple scouts",
+      "f3Short": "Shared shortlists",
+      "f4Short": "Club dashboard",
+      "f5Short": "PDF reports"
     },
     "upgradePlayerPremium": "Passa a Player Premium",
     "upgradeScoutPro": "Passa a Scout Pro",
