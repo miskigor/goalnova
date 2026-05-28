@@ -31,17 +31,17 @@ import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 const DASHBOARD_SLIDE =
   "min-h-[26rem] w-full overflow-hidden rounded-2xl border border-white/[0.06] bg-black sm:min-h-[28rem] lg:min-h-[30rem]";
 
-/** Mobile home feed tile — fixed dvh size, centered (not `data-pitchrusch-feed-card`). */
+/** Mobile home feed tile — bounded frame, sits just above meta strip (not `data-pitchrusch-feed-card`). */
 const HOME_FEED_MOBILE_FRAME =
-  "relative isolate mx-auto mt-5 box-border flex h-[70dvh] max-h-[70dvh] w-[96%] max-w-[380px] min-h-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
+  "relative isolate mx-auto box-border flex h-[min(62dvh,520px)] max-h-[min(62dvh,520px)] w-[93%] max-w-[360px] min-h-0 shrink-0 flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
 
 /** Profile + caption — aligned with video width, safe gap above bottom nav. */
 const HOME_FEED_MOBILE_META_BELOW =
-  "pointer-events-none relative z-[1] mx-auto box-border w-[96%] max-w-[380px] shrink-0 px-1.5 pb-0 pt-0 max-lg:max-h-[28dvh] max-lg:overflow-y-auto lg:hidden";
+  "pointer-events-none relative z-[1] mx-auto box-border w-[93%] max-w-[360px] shrink-0 px-1.5 pb-0 pt-0 max-lg:max-h-[28dvh] max-lg:overflow-y-auto lg:hidden";
 
-/** Mobile home snap column — centered stack, meta band above bottom nav. */
+/** Mobile home snap column — video + meta grouped toward bottom nav. */
 const HOME_FEED_MOBILE_SLIDE_STACK =
-  "mx-auto flex h-full max-h-full min-h-0 w-full max-w-full flex-col items-center justify-between overflow-hidden max-lg:gap-1.5 max-lg:pt-1 max-lg:pb-1 lg:contents";
+  "mx-auto flex h-full max-h-full min-h-0 w-full max-w-full flex-col items-center justify-between overflow-hidden max-lg:justify-end max-lg:gap-2 max-lg:pt-2 max-lg:pb-1 lg:contents";
 
 type Props = {
   item: AugmentedHomeFeedItem;
@@ -335,7 +335,7 @@ export function FeedItemCard({
             renderedPrimarySrc={renderedPrimarySrc}
             videoId={feedVideoKey}
             mediaFit="contain"
-            mediaObjectPosition="top"
+            mediaObjectPosition="center"
             preload={videoPreload}
             fetchPriority={videoFetchPriority}
             debugMeta={feedVideoDebugMeta}

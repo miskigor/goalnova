@@ -351,7 +351,7 @@ html {
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] video {
-    object-position: top center !important;
+    object-position: center center !important;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-meta] {
