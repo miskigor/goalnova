@@ -485,7 +485,7 @@ export function ExploreView() {
   }, [load]);
 
   return (
-    <div className="box-border w-full min-w-0 max-w-full touch-pan-y space-y-5 overflow-x-clip sm:space-y-6">
+    <div className="box-border w-full min-w-0 max-w-full space-y-5 overflow-x-clip sm:space-y-6">
       <header className="box-border min-w-0 max-w-full space-y-1 overflow-x-clip">
         <h1 className="break-words text-xl font-bold tracking-tight text-gn-text sm:text-2xl lg:text-3xl">
           {t("title")}

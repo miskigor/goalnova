@@ -17,7 +17,7 @@ export default async function ExplorePage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <AppMobileTabPageShell>
+    <AppMobileTabPageShell data-pitchrusch-explore-page>
       <GuestPublicCallout />
       <ExploreView />
     </AppMobileTabPageShell>
