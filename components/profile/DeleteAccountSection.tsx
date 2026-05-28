@@ -35,7 +35,7 @@ export function DeleteAccountSection() {
 
   return (
     <section
-      className="mt-10 box-border w-full min-w-0 max-w-full overflow-x-clip border-t border-gn-border-subtle pt-8 max-lg:mt-5 max-lg:pt-4"
+      className="mt-10 box-border w-full min-w-0 max-w-full overflow-x-clip border-t border-gn-border-subtle pt-8 max-lg:mt-3 max-lg:pt-2"
       aria-labelledby="delete-account-heading"
     >
       <h2 id="delete-account-heading" className="text-sm font-semibold text-gn-text">
@@ -53,7 +53,7 @@ export function DeleteAccountSection() {
         type="button"
         disabled={deleting}
         onClick={() => void onDelete()}
-        className="mt-4 w-full max-w-full rounded-xl border border-red-500/40 bg-red-950/20 px-4 py-3 text-sm font-semibold text-red-300 transition hover:border-red-500/60 hover:bg-red-950/35 disabled:cursor-not-allowed disabled:opacity-50 max-lg:rounded-lg max-lg:py-1.5 max-lg:text-xs sm:w-auto"
+        className="mt-4 w-full max-w-full rounded-xl border border-red-500/40 bg-red-950/20 px-4 py-3 text-sm font-semibold text-red-300 transition hover:border-red-500/60 hover:bg-red-950/35 disabled:cursor-not-allowed disabled:opacity-50 max-lg:rounded-lg max-lg:py-1 max-lg:text-xs sm:w-auto"
       >
         {deleting ? tCommon("loadingEllipsis") : t("deleteAccountButton")}
       </button>

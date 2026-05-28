@@ -59,7 +59,7 @@ export function ProfileVideoTile({
     <div
       ref={containerRef}
       {...gnVideoMediaDataProps}
-      className={`${GN_VIDEO_MEDIA_STAGE_CLASS} aspect-[4/5] rounded-[0.85rem] border border-white/[0.08] sm:aspect-[9/16]`}
+      className={`${GN_VIDEO_MEDIA_STAGE_CLASS} aspect-[1/1] rounded-[0.85rem] border border-white/[0.08] sm:aspect-[9/16]`}
     >
       {src && loadMedia ? (
         <video
