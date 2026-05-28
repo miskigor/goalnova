@@ -16,8 +16,14 @@ type PremiumPlanCardProps = {
   compact?: boolean;
   /** Slightly larger compact card (mobile stacked player plans). */
   enlarged?: boolean;
+  /** Tighter mobile premium sizing. */
+  dense?: boolean;
+  /** Mobile premium: no card border/frame. */
+  borderless?: boolean;
   highlighted?: boolean;
   hideActions?: boolean;
+  /** Mobile player cards: button label = plan title (e.g. Besplatni igrač). */
+  actionUsePlanTitle?: boolean;
   busyPlan: PaidSubscriptionPlan | null;
   onCheckout: (plan: PaidSubscriptionPlan) => void;
 };
@@ -45,37 +51,64 @@ function FeatureCheckIcon({ large = false }: { large?: boolean }) {
 }
 
 const COMPACT_ACTION_BTN =
-  "w-full shrink-0 rounded-xl px-2 py-2 text-[11px] font-semibold leading-tight";
+  "w-full shrink-0 touch-manipulation rounded-xl px-2 py-2 text-[11px] font-semibold leading-tight";
+const COMPACT_ACTION_BTN_ENLARGED =
+  "w-full shrink-0 touch-manipulation rounded-xl px-3 py-2.5 text-xs font-semibold leading-tight";
 
 export function PremiumPlanCard({
   card,
   compact = false,
   enlarged = false,
+  dense = false,
+  borderless = false,
   highlighted = false,
   hideActions = false,
+  actionUsePlanTitle = false,
   busyPlan,
   onCheckout,
 }: PremiumPlanCardProps) {
   const t = useTranslations("billing");
   const showDescription =
     !compact && (card.key === "playerPremium" || card.key === "scoutPro");
+  const compactBtnClass = dense
+    ? "w-full shrink-0 touch-manipulation rounded-lg px-2 py-1.5 text-[10px] font-semibold leading-tight"
+    : enlarged
+      ? COMPACT_ACTION_BTN_ENLARGED
+      : COMPACT_ACTION_BTN;
 
   return (
     <article
+      data-premium-plan-card
       className={[
-        "box-border flex min-w-0 max-w-full flex-col rounded-2xl border bg-gn-surface/35 p-5",
-        compact ? (enlarged ? "rounded-xl p-3.5" : "rounded-xl p-2.5") : "min-h-0 overflow-hidden",
-        highlighted
-          ? compact
-            ? "border-gn-accent/55 shadow-[inset_0_0_0_1px_rgba(249,115,22,0.35)]"
-            : "border-gn-accent/50 ring-1 ring-gn-accent/35 shadow-[0_0_24px_rgba(249,115,22,0.12)]"
-          : "border-gn-border-subtle",
+        "box-border flex w-full min-w-0 max-w-full flex-col",
+        compact
+          ? dense
+            ? "rounded-lg p-2.5"
+            : enlarged
+              ? "rounded-xl p-3.5"
+              : "rounded-xl p-2.5"
+          : "min-h-0 overflow-hidden rounded-2xl p-5",
+        borderless
+          ? "border-0 bg-transparent shadow-none"
+          : [
+              "rounded-2xl border bg-gn-surface/35 p-5",
+              highlighted
+                ? "border-gn-accent/50 ring-1 ring-gn-accent/35 shadow-[0_0_24px_rgba(249,115,22,0.12)]"
+                : "border-gn-border-subtle",
+            ].join(" "),
       ].join(" ")}
     >
       <h2
         className={[
-          "break-words font-semibold text-gn-text",
-          compact ? (enlarged ? "text-base leading-tight" : "text-sm leading-tight") : "text-lg",
+          "break-words font-semibold",
+          borderless && highlighted ? "text-gn-accent" : "text-gn-text",
+          compact
+            ? dense
+              ? "text-sm leading-tight"
+              : enlarged
+                ? "text-base leading-tight"
+                : "text-sm leading-tight"
+            : "text-lg",
         ].join(" ")}
       >
         {t(`${card.key}.title`)}
@@ -86,7 +119,13 @@ export function PremiumPlanCard({
       <p
         className={[
           "font-medium text-gn-text",
-          compact ? (enlarged ? "mt-1.5 text-sm" : "mt-1 text-xs") : "mt-1 text-sm",
+          compact
+            ? dense
+              ? "mt-0.5 text-[11px]"
+              : enlarged
+                ? "mt-1.5 text-sm"
+                : "mt-1 text-xs"
+            : "mt-1 text-sm",
           highlighted ? "text-gn-accent" : "",
         ].join(" ")}
       >
@@ -96,9 +135,11 @@ export function PremiumPlanCard({
         className={[
           "text-gn-text-secondary",
           compact
-            ? enlarged
-              ? "mt-2 space-y-1.5"
-              : "mt-1.5 space-y-1"
+            ? dense
+              ? "mt-1 space-y-0.5"
+              : enlarged
+                ? "mt-2 space-y-1.5"
+                : "mt-1.5 space-y-1"
             : "mt-4 min-h-0 flex-1 list-disc space-y-1.5 ps-5 text-sm",
         ].join(" ")}
       >
@@ -107,13 +148,15 @@ export function PremiumPlanCard({
             key={f}
             className={
               compact
-                ? enlarged
-                  ? "flex items-start gap-2.5 text-sm leading-snug"
-                  : "flex items-start gap-2 text-xs leading-snug"
+                ? dense
+                  ? "flex items-start gap-1.5 text-[11px] leading-snug"
+                  : enlarged
+                    ? "flex items-start gap-2.5 text-sm leading-snug"
+                    : "flex items-start gap-2 text-xs leading-snug"
                 : "break-words"
             }
           >
-            {compact ? <FeatureCheckIcon large={enlarged} /> : null}
+            {compact ? <FeatureCheckIcon large={enlarged && !dense} /> : null}
             <span className="min-w-0 flex-1 break-words">
               {compact ? t(`${card.key}.${f}Short`) : t(`${card.key}.${f}`)}
             </span>
@@ -128,26 +171,30 @@ export function PremiumPlanCard({
             disabled={busyPlan === card.paidPlan}
             className={[
               "mt-4 bg-gn-accent text-black disabled:opacity-55",
-              compact ? `mt-2 ${COMPACT_ACTION_BTN}` : "w-full shrink-0 rounded-xl px-4 py-2.5 text-xs font-semibold",
+              compact
+                ? `mt-1.5 ${compactBtnClass}`
+                : "w-full shrink-0 touch-manipulation rounded-xl px-4 py-2.5 text-xs font-semibold",
             ].join(" ")}
           >
             {busyPlan === card.paidPlan
               ? t("loadingCheckout")
-              : card.paidPlan === "player_premium"
-                ? t("upgradePlayerPremium")
-                : card.paidPlan === "scout_pro"
-                  ? t("upgradeScoutPro")
-                  : t("subscribe")}
+              : actionUsePlanTitle
+                ? t(`${card.key}.title`)
+                : card.paidPlan === "player_premium"
+                  ? t("upgradePlayerPremium")
+                  : card.paidPlan === "scout_pro"
+                    ? t("upgradeScoutPro")
+                    : t("subscribe")}
           </button>
         ) : (
           <button
             type="button"
             className={[
               "mt-4 border border-gn-border-subtle bg-gn-surface/50 font-semibold text-gn-text-secondary",
-              compact ? `mt-2 ${COMPACT_ACTION_BTN}` : "w-full shrink-0 rounded-xl px-4 py-2.5 text-xs",
+              compact ? `mt-1.5 ${compactBtnClass}` : "w-full shrink-0 rounded-xl px-4 py-2.5 text-xs",
             ].join(" ")}
           >
-            {t("currentFree")}
+            {actionUsePlanTitle ? t(`${card.key}.title`) : t("currentFree")}
           </button>
         )
       ) : null}

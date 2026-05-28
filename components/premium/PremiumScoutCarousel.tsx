@@ -39,8 +39,9 @@ export function PremiumScoutCarousel({ cards, busyPlan, onCheckout }: PremiumSco
     <div className="flex min-h-0 flex-1 flex-col">
       <div
         ref={scrollerRef}
+        data-premium-scout-carousel
         onScroll={syncActiveIndex}
-        className="flex min-h-0 flex-1 snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-hidden overscroll-x-contain pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex min-h-0 flex-1 snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-hidden overscroll-x-contain overscroll-y-none pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden"
         aria-roledescription="carousel"
       >
         {cards.map((card, index) => (
@@ -53,6 +54,9 @@ export function PremiumScoutCarousel({ cards, busyPlan, onCheckout }: PremiumSco
             <PremiumPlanCard
               card={card}
               compact
+              enlarged
+              borderless
+              actionUsePlanTitle
               highlighted={Boolean(card.paidPlan)}
               busyPlan={busyPlan}
               onCheckout={onCheckout}

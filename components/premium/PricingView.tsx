@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { PremiumPlanCard, type PremiumPlanCardModel } from "@/components/premium/PremiumPlanCard";
+import { PremiumMobileScrollLock } from "@/components/premium/PremiumMobileScrollLock";
 import { PremiumScoutCarousel } from "@/components/premium/PremiumScoutCarousel";
 import { usePremium } from "@/components/premium/PremiumProvider";
 import { createStripeCheckout } from "@/lib/stripe/client";
@@ -91,19 +92,19 @@ export function PricingView() {
       : CARDS;
 
   const mobileUseCarousel = visibleCards.length >= 3;
-  const mobileUseTwoColumns = visibleCards.length === 2;
-  const mobilePaidCard = visibleCards.find((card) => card.paidPlan);
+  const mobileUseStackedPlayer = visibleCards.length === 2;
 
   return (
-    <div className="box-border flex w-full min-w-0 max-w-full min-h-0 flex-1 flex-col overflow-x-clip max-lg:overflow-x-visible max-lg:overflow-y-hidden max-lg:px-3 lg:space-y-5">
-      <div className="min-w-0 max-w-full shrink-0 lg:space-y-2">
+    <div className="box-border flex h-full min-h-0 w-full min-w-0 max-w-full flex-1 flex-col overflow-hidden max-lg:px-0 lg:space-y-5">
+      <PremiumMobileScrollLock />
+      <header className="min-w-0 max-w-full shrink-0 lg:space-y-2">
         <h1 className="break-words text-2xl font-bold text-gn-text max-lg:text-base max-lg:leading-tight">
           {t("title")}
         </h1>
         <p className="mt-2 text-sm text-gn-text-secondary max-lg:mt-1 max-lg:text-xs max-lg:leading-snug">
           {t("subtitle")}
         </p>
-      </div>
+      </header>
 
       {error ? (
         <p className="shrink-0 rounded-xl border border-red-500/35 bg-red-950/30 px-4 py-3 text-sm text-red-100 max-lg:px-3 max-lg:py-2 max-lg:text-xs">
@@ -118,49 +119,30 @@ export function PricingView() {
       ) : null}
 
       {!shouldHoldCards && mobileUseCarousel ? (
-        <div className="hidden min-h-0 flex-1 max-lg:flex">
+        <div className="hidden min-h-0 flex-1 flex-col max-lg:mt-4 max-lg:flex">
           <PremiumScoutCarousel cards={visibleCards} busyPlan={busyPlan} onCheckout={startCheckout} />
         </div>
       ) : null}
 
-      {!shouldHoldCards && mobileUseTwoColumns ? (
-        <div className="hidden w-full min-w-0 shrink-0 flex-col gap-3 max-lg:flex max-lg:overflow-visible">
-          <div className="flex w-full min-w-0 flex-col gap-3 max-lg:overflow-visible">
-            {visibleCards.map((card) => (
-              <PremiumPlanCard
-                key={card.key}
-                card={card}
-                compact
-                enlarged
-                hideActions
-                highlighted={Boolean(card.paidPlan)}
-                busyPlan={busyPlan}
-                onCheckout={startCheckout}
-              />
-            ))}
-          </div>
-          <div className="grid w-full min-w-0 shrink-0 grid-cols-2 gap-2">
-            <button
-              type="button"
-              className="rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-3 py-2.5 text-xs font-semibold leading-tight text-gn-text-secondary"
-            >
-              {t("freePlayer.title")}
-            </button>
-            <button
-              type="button"
-              onClick={() => mobilePaidCard?.paidPlan && void startCheckout(mobilePaidCard.paidPlan)}
-              disabled={!mobilePaidCard?.paidPlan || busyPlan === mobilePaidCard.paidPlan}
-              className="rounded-xl bg-gn-accent px-3 py-2.5 text-xs font-semibold leading-tight text-black disabled:opacity-55"
-            >
-              {mobilePaidCard?.paidPlan && busyPlan === mobilePaidCard.paidPlan
-                ? t("loadingCheckout")
-                : t("playerPremium.title")}
-            </button>
-          </div>
+      {!shouldHoldCards && mobileUseStackedPlayer ? (
+        <div className="hidden w-full min-w-0 shrink-0 flex-col gap-2.5 max-lg:mt-4 max-lg:flex max-lg:pb-0">
+          {visibleCards.map((card) => (
+            <PremiumPlanCard
+              key={card.key}
+              card={card}
+              compact
+              enlarged
+              borderless
+              actionUsePlanTitle
+              highlighted={Boolean(card.paidPlan)}
+              busyPlan={busyPlan}
+              onCheckout={startCheckout}
+            />
+          ))}
         </div>
       ) : null}
 
-      {!shouldHoldCards && !mobileUseCarousel && !mobileUseTwoColumns ? (
+      {!shouldHoldCards && !mobileUseCarousel && !mobileUseStackedPlayer ? (
         <div className="hidden min-h-0 flex-1 max-lg:block">
           {visibleCards[0] ? (
             <PremiumPlanCard

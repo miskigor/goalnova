@@ -39,7 +39,7 @@ const PLAYER_TAB_EMOJI: Partial<Record<ShellMobileNavItem["href"], string>> = {
   "/challenges": BOTTOM_NAV_CHALLENGES_EMOJI,
 };
 
-const PLAYER_TAB_EMOJI_CLASS = `${APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS} text-[1.25rem] min-[360px]:text-[1.375rem]`;
+const PLAYER_TAB_EMOJI_CLASS = `${APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS} text-[1.3125rem] min-[360px]:text-[1.4375rem]`;
 
 /** Scout app routes: show scout tab bar before async role verification finishes. */
 function isScoutAppPath(pathname: string): boolean {

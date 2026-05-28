@@ -507,11 +507,67 @@ html {
     overflow-x: clip;
   }
 
-  /* /premium — fit in shell band; no page scroll (tab bar stays visible). */
+  /* /premium — fixed band; no pull-to-shift; bottom tab bar must stay visible (no body overflow clip). */
+  html:has([data-premium-fit-viewport]) {
+    overscroll-behavior: none !important;
+  }
+
+  body:has([data-premium-fit-viewport]) {
+    overscroll-behavior: none !important;
+    touch-action: manipulation;
+  }
+
+  body:has([data-premium-fit-viewport]) [data-app-mobile-bottom-nav-mount] {
+    position: fixed !important;
+    bottom: max(env(safe-area-inset-bottom, 0px), var(--gn-mobile-visual-bottom-inset, 0px)) !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 10000 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    touch-action: manipulation;
+    overflow: visible !important;
+    padding-bottom: max(0.375rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  body:has([data-premium-fit-viewport]) [data-app-bottom-nav] {
+    overflow: visible !important;
+    min-height: 5.25rem !important;
+    padding-bottom: max(0.375rem, env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  body:has([data-premium-fit-viewport]) [data-app-bottom-nav] > div {
+    min-height: 2.75rem !important;
+    height: auto !important;
+    align-items: flex-end !important;
+    padding-bottom: 0.125rem;
+  }
+
+  body:has([data-premium-fit-viewport]) [data-app-bottom-nav] a span,
+  body:has([data-premium-fit-viewport]) [data-app-bottom-nav] button span {
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: inherit;
+  }
+
+  [data-app-root]:has([data-premium-fit-viewport]) {
+    top: max(env(safe-area-inset-top, 0px), var(--gn-premium-safe-top, 0px)) !important;
+    bottom: var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 5.25rem)) !important;
+    z-index: 0 !important;
+  }
+
   [data-app-main]:has([data-premium-fit-viewport]) {
+    overflow: hidden !important;
+    overflow-x: clip !important;
     overflow-y: hidden !important;
-    overscroll-behavior: none;
-    padding-bottom: 0.5rem !important;
+    overscroll-behavior: none !important;
+    touch-action: none;
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.25rem !important;
+    padding-left: max(1rem, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(1rem, env(safe-area-inset-right, 0px)) !important;
   }
 
   [data-app-main-inner]:has([data-premium-fit-viewport]) {
@@ -520,11 +576,37 @@ html {
     flex: 1 1 auto;
     min-height: 0;
     height: 100%;
-    overflow-x: visible;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
   }
 
   [data-app-main-inner]:has([data-premium-fit-viewport]) > * {
-    overflow-x: visible;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  [data-premium-fit-viewport] {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+  }
+
+  [data-premium-fit-viewport] [data-premium-scout-carousel] {
+    touch-action: pan-x;
   }
 }
 

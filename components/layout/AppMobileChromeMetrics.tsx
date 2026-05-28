@@ -5,6 +5,7 @@ import { useLayoutEffect } from "react";
 const GN_HEADER_OFFSET_MEASURED = "--gn-app-header-offset-measured";
 const GN_BOTTOM_NAV_OFFSET_MEASURED = "--gn-app-bottom-nav-offset-measured";
 const GN_MOBILE_VISUAL_BOTTOM_INSET_VAR = "--gn-mobile-visual-bottom-inset";
+const GN_PREMIUM_SAFE_TOP_VAR = "--gn-premium-safe-top";
 
 function measureTopChromeInsetPx(): number {
   const headerEl =
@@ -17,20 +18,47 @@ function measureTopChromeInsetPx(): number {
   return 0;
 }
 
-/** Distance from layout viewport bottom to the top edge of the fixed tab bar. */
+/** Space to reserve above the fixed tab bar (full mount band in the visual viewport). */
 function measureBottomChromeInsetPx(): number {
+  const mount = document.querySelector("[data-app-mobile-bottom-nav-mount]");
   const nav = document.querySelector("[data-app-bottom-nav]");
-  if (nav instanceof HTMLElement) {
-    const top = nav.getBoundingClientRect().top;
-    if (Number.isFinite(top)) {
-      return Math.max(0, Math.ceil(window.innerHeight - top));
+  const vv = window.visualViewport;
+  const viewportBottom = vv ? vv.offsetTop + vv.height : window.innerHeight;
+
+  let reservePx = 0;
+
+  if (mount instanceof HTMLElement) {
+    const rect = mount.getBoundingClientRect();
+    if (Number.isFinite(rect.top)) {
+      reservePx = Math.max(reservePx, Math.ceil(viewportBottom - rect.top));
+    }
+    if (Number.isFinite(rect.height)) {
+      reservePx = Math.max(reservePx, Math.ceil(rect.height));
     }
   }
-  const mount = document.querySelector("[data-app-mobile-bottom-nav-mount]");
-  if (!(mount instanceof HTMLElement)) return 0;
-  const top = mount.getBoundingClientRect().top;
-  if (!Number.isFinite(top)) return 0;
-  return Math.max(0, Math.ceil(window.innerHeight - top));
+
+  if (nav instanceof HTMLElement) {
+    const navRect = nav.getBoundingClientRect();
+    if (Number.isFinite(navRect.top)) {
+      reservePx = Math.max(
+        reservePx,
+        Math.ceil(viewportBottom - navRect.top),
+        Math.ceil(window.innerHeight - navRect.top),
+      );
+    }
+  }
+
+  return reservePx;
+}
+
+function measureVisualBottomInsetPx(): number {
+  const vv = window.visualViewport;
+  if (!vv) return 0;
+  return Math.max(0, Math.ceil(window.innerHeight - (vv.offsetTop + vv.height)));
+}
+
+function isPremiumFitPage(): boolean {
+  return Boolean(document.querySelector("[data-premium-fit-viewport]"));
 }
 
 function syncMobileChromeMetrics() {
@@ -38,20 +66,31 @@ function syncMobileChromeMetrics() {
 
   const root = document.documentElement;
   const isHomeFeed = Boolean(document.querySelector("[data-pitchrusch-home-feed]"));
+  const isPremium = isPremiumFitPage();
   if (isHomeFeed) {
     root.style.removeProperty(GN_HEADER_OFFSET_MEASURED);
     root.style.removeProperty(GN_BOTTOM_NAV_OFFSET_MEASURED);
     root.style.removeProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR);
+    root.style.removeProperty(GN_PREMIUM_SAFE_TOP_VAR);
     return;
   }
 
   const headerPx = measureTopChromeInsetPx();
-  const bottomPx = measureBottomChromeInsetPx();
-
   const vv = window.visualViewport;
-  const layoutBottomGap = vv
-    ? Math.max(0, window.innerHeight - (vv.offsetTop + vv.height))
-    : 0;
+  let layoutBottomGap = measureVisualBottomInsetPx();
+  const premiumSafeTopPx = isPremium && vv ? Math.max(0, Math.ceil(vv.offsetTop)) : 0;
+
+  if (isPremium) {
+    layoutBottomGap = Math.max(layoutBottomGap, 8);
+  }
+
+  root.style.setProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR, `${Math.ceil(layoutBottomGap)}px`);
+
+  let bottomPx = measureBottomChromeInsetPx();
+  if (isPremium) {
+    const premiumBottomMinPx = 84;
+    bottomPx = Math.max(bottomPx, premiumBottomMinPx + layoutBottomGap);
+  }
 
   if (headerPx > 0) {
     root.style.setProperty(GN_HEADER_OFFSET_MEASURED, `${headerPx}px`);
@@ -65,7 +104,11 @@ function syncMobileChromeMetrics() {
     root.style.removeProperty(GN_BOTTOM_NAV_OFFSET_MEASURED);
   }
 
-  root.style.setProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR, `${Math.ceil(layoutBottomGap)}px`);
+  if (isPremium) {
+    root.style.setProperty(GN_PREMIUM_SAFE_TOP_VAR, `${premiumSafeTopPx}px`);
+  } else {
+    root.style.removeProperty(GN_PREMIUM_SAFE_TOP_VAR);
+  }
 }
 
 function clearMobileChromeMetrics() {
@@ -74,6 +117,7 @@ function clearMobileChromeMetrics() {
   root.style.removeProperty(GN_HEADER_OFFSET_MEASURED);
   root.style.removeProperty(GN_BOTTOM_NAV_OFFSET_MEASURED);
   root.style.removeProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR);
+  root.style.removeProperty(GN_PREMIUM_SAFE_TOP_VAR);
 }
 
 /**
@@ -104,11 +148,14 @@ export function AppMobileChromeMetrics() {
       }
     }
 
-    const onViewportChange = () => syncMobileChromeMetrics();
+    const onViewportResize = () => syncMobileChromeMetrics();
+    const onViewportScroll = () => {
+      if (!isPremiumFitPage()) syncMobileChromeMetrics();
+    };
     const vv = window.visualViewport;
-    vv?.addEventListener("resize", onViewportChange);
-    vv?.addEventListener("scroll", onViewportChange);
-    window.addEventListener("resize", onViewportChange, { passive: true });
+    vv?.addEventListener("resize", onViewportResize);
+    vv?.addEventListener("scroll", onViewportScroll);
+    window.addEventListener("resize", onViewportResize, { passive: true });
 
     const mo = new MutationObserver(() => {
       syncMobileChromeMetrics();
@@ -126,9 +173,9 @@ export function AppMobileChromeMetrics() {
     return () => {
       ro?.disconnect();
       mo.disconnect();
-      vv?.removeEventListener("resize", onViewportChange);
-      vv?.removeEventListener("scroll", onViewportChange);
-      window.removeEventListener("resize", onViewportChange);
+      vv?.removeEventListener("resize", onViewportResize);
+      vv?.removeEventListener("scroll", onViewportScroll);
+      window.removeEventListener("resize", onViewportResize);
       clearMobileChromeMetrics();
     };
   }, []);

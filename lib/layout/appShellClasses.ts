@@ -96,7 +96,7 @@ export const APP_MOBILE_BOTTOM_NAV_UPLOAD_BUTTON_CLASS =
 
 /** Colored emoji on standard bottom-nav tabs (native color, not muted by tab text). */
 export const APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS =
-  "pointer-events-none block select-none text-[1.0625rem] leading-none opacity-100 grayscale-0";
+  "pointer-events-none block shrink-0 select-none text-[1.125rem] leading-none opacity-100 grayscale-0";
 
 /** Profile tab — opens account overflow menu (far right). */
 export const APP_MOBILE_BOTTOM_NAV_PROFILE_CELL_CLASS =
