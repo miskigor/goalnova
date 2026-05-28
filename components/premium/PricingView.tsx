@@ -98,29 +98,29 @@ export function PricingView() {
       : CARDS;
 
   return (
-    <div className="box-border w-full min-w-0 max-w-full space-y-5 overflow-x-clip max-lg:space-y-4">
+    <div className="box-border w-full min-w-0 max-w-full space-y-5 overflow-x-clip max-lg:space-y-2">
       <div className="min-w-0 max-w-full">
         <h1 className="break-words text-2xl font-bold text-gn-text max-lg:text-base">{t("title")}</h1>
         <p className="mt-2 text-sm text-gn-text-secondary">{t("subtitle")}</p>
       </div>
 
       {error ? (
-        <p className="rounded-xl border border-red-500/35 bg-red-950/30 px-4 py-3 text-sm text-red-100">
+        <p className="rounded-xl border border-red-500/35 bg-red-950/30 px-4 py-3 text-sm text-red-100 max-lg:px-2 max-lg:py-1.5">
           {error}
         </p>
       ) : null}
 
       {shouldHoldCards ? (
-        <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/35 p-5 text-sm text-gn-text-secondary max-lg:p-4">
+        <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/35 p-5 text-sm text-gn-text-secondary max-lg:rounded-xl max-lg:p-2">
           {t("loadingCheckout")}
         </div>
       ) : null}
 
-      <div className="grid w-full min-w-0 max-w-full gap-4 overflow-x-clip md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid w-full min-w-0 max-w-full gap-4 overflow-x-clip max-lg:gap-2 md:grid-cols-2 xl:grid-cols-3">
         {visibleCards.map((card) => (
           <article
             key={card.key}
-            className="box-border min-w-0 max-w-full overflow-hidden rounded-2xl border border-gn-border-subtle bg-gn-surface/35 p-5 max-lg:p-4"
+            className="box-border min-w-0 max-w-full overflow-hidden rounded-2xl border border-gn-border-subtle bg-gn-surface/35 p-5 max-lg:rounded-xl max-lg:p-2"
           >
             <h2 className="break-words text-lg font-semibold text-gn-text max-lg:text-sm">
               {t(`${card.key}.title`)}
@@ -129,7 +129,7 @@ export function PricingView() {
               <p className="mt-2 text-sm text-gn-text-secondary">{t(`${card.key}.description`)}</p>
             ) : null}
             <p className="mt-1 text-sm font-medium text-gn-text">{t(card.priceKey)}</p>
-            <ul className="mt-4 list-disc space-y-1.5 ps-5 text-sm text-gn-text-secondary">
+            <ul className="mt-4 list-disc space-y-1.5 ps-5 text-sm text-gn-text-secondary max-lg:mt-3 max-lg:space-y-1">
               {card.featureKeys.map((f) => (
                 <li key={f}>{t(`${card.key}.${f}`)}</li>
               ))}
@@ -139,7 +139,7 @@ export function PricingView() {
                 type="button"
                 onClick={() => void startCheckout(card.paidPlan!)}
                 disabled={busyPlan === card.paidPlan}
-                className="mt-4 w-full rounded-xl bg-gn-accent px-4 py-2.5 text-sm font-semibold text-black disabled:opacity-55"
+                className="mt-4 w-full rounded-xl bg-gn-accent px-4 py-2.5 text-xs font-semibold text-black disabled:opacity-55 max-lg:mt-3 max-lg:px-2 max-lg:py-1.5"
               >
                 {busyPlan === card.paidPlan
                   ? t("loadingCheckout")
@@ -152,7 +152,7 @@ export function PricingView() {
             ) : (
               <button
                 type="button"
-                className="mt-4 w-full rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2.5 text-sm font-semibold text-gn-text-secondary"
+                className="mt-4 w-full rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-4 py-2.5 text-xs font-semibold text-gn-text-secondary max-lg:mt-3 max-lg:px-2 max-lg:py-1.5"
               >
                 {t("currentFree")}
               </button>

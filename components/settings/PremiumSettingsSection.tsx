@@ -27,7 +27,7 @@ export function PremiumSettingsSection() {
   }
 
   return (
-    <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4">
+    <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4 max-lg:p-2">
       <p className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
         {t("premiumTitle")}
       </p>
@@ -36,7 +36,7 @@ export function PremiumSettingsSection() {
           {isPremium ? t("premiumBodyActive") : t("premiumBodyUpgrade")}
         </p>
       ) : null}
-      <p className="mt-3 rounded-lg border border-white/10 bg-gn-bg/40 px-3 py-2 text-xs text-gn-text-tertiary">
+      <p className="mt-3 rounded-lg border border-white/10 bg-gn-bg/40 px-3 py-2 text-xs text-gn-text-tertiary max-lg:mt-2.5">
         {!premiumLoaded
           ? t("premiumChecking")
           : isPremium
@@ -46,7 +46,7 @@ export function PremiumSettingsSection() {
       {!isPremium && premiumLoaded ? (
         <Link
           href="/premium"
-          className="mt-3 inline-flex rounded-xl bg-gn-accent px-4 py-2.5 text-sm font-semibold text-black"
+          className="mt-3 inline-flex rounded-xl bg-gn-accent px-4 py-2.5 text-xs font-semibold text-black max-lg:px-2 max-lg:py-1.5"
         >
           {tp("cta")}
         </Link>
@@ -56,7 +56,7 @@ export function PremiumSettingsSection() {
           type="button"
           onClick={() => void onManageSubscription()}
           disabled={portalBusy}
-          className="mt-3 inline-flex rounded-xl border border-gn-border-subtle bg-gn-surface/60 px-4 py-2.5 text-sm font-semibold text-gn-text disabled:opacity-60"
+          className="mt-3 inline-flex rounded-xl border border-gn-border-subtle bg-gn-surface/60 px-4 py-2.5 text-xs font-semibold text-gn-text disabled:opacity-60 max-lg:px-2 max-lg:py-1.5"
         >
           {portalBusy ? tb("loadingPortal") : tb("manageSubscription")}
         </button>

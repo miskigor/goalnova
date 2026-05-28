@@ -27,7 +27,7 @@ function ScoutInboxNotice() {
   return (
     <div
       role="status"
-      className="mb-4 rounded-xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3 text-sm text-gn-text-secondary"
+      className="mb-4 rounded-xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3 text-sm text-gn-text-secondary max-lg:px-2 max-lg:py-1.5"
     >
       {tSv("inboxScoutNotice")}
       <Link
@@ -127,14 +127,14 @@ export function MessagesInboxView() {
 
   if (error) {
     return (
-      <div className="min-w-0 max-w-full space-y-4">
+      <div className="min-w-0 max-w-full space-y-4 max-lg:space-y-2">
         <ScoutInboxNotice />
-        <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-8 text-center">
+        <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-8 text-center max-lg:rounded-xl max-lg:px-2 max-lg:py-4">
         <p className="text-sm text-gn-text-secondary">{t("loadInboxError")}</p>
         <button
           type="button"
           onClick={() => void load()}
-          className="mt-4 rounded-xl bg-gn-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-gn-accent-hover"
+          className="mt-4 rounded-xl bg-gn-accent px-4 py-2.5 text-xs font-semibold text-black hover:bg-gn-accent-hover max-lg:px-2 max-lg:py-1.5"
         >
           {t("retry")}
         </button>
@@ -145,16 +145,16 @@ export function MessagesInboxView() {
 
   if (conversations.length === 0) {
     return (
-      <div className="min-w-0 max-w-full space-y-4">
+      <div className="min-w-0 max-w-full space-y-4 max-lg:space-y-2">
         <ScoutInboxNotice />
-        <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-14 text-center">
+        <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-14 text-center max-lg:rounded-xl max-lg:px-2 max-lg:py-6">
         <p className="text-sm font-medium text-gn-text">{t("emptyTitle")}</p>
         <p className="mt-2 text-sm text-gn-text-secondary">
           {t("emptySubtitle")}
         </p>
         <Link
           href="/discover"
-          className={`${GN_PRIMARY_BUTTON_CLASS} mt-6 inline-flex w-full max-w-xs justify-center`}
+          className={`${GN_PRIMARY_BUTTON_CLASS} mt-6 inline-flex w-full max-w-xs justify-center text-xs max-lg:mt-4 max-lg:py-1.5`}
         >
           {t("explorePlayersCta")}
         </Link>
@@ -164,16 +164,16 @@ export function MessagesInboxView() {
   }
 
   return (
-    <div className="min-w-0 max-w-full space-y-4">
+    <div className="min-w-0 max-w-full space-y-4 max-lg:space-y-2">
       <ScoutInboxNotice />
       <ul className="flex min-w-0 flex-col gap-1">
       {conversations.map((c) => (
         <li key={c.otherUserId}>
           <Link
             href={`/messages/${c.otherUserId}`}
-            className="block min-w-0 max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3 transition-[border-color,background-color,box-shadow] duration-300 ease-gn-smooth motion-reduce:transition-colors hover:border-white/[0.1] hover:bg-gn-surface-elevated/60 hover:shadow-[0_10px_36px_-16px_rgba(0,0,0,0.45)]"
+            className="block min-w-0 max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3 transition-[border-color,background-color,box-shadow] duration-300 ease-gn-smooth motion-reduce:transition-colors hover:border-white/[0.1] hover:bg-gn-surface-elevated/60 hover:shadow-[0_10px_36px_-16px_rgba(0,0,0,0.45)] max-lg:px-2 max-lg:py-1.5"
           >
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start justify-between gap-3 max-lg:gap-2">
               <div className="min-w-0 flex-1">
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
                   <p className="truncate font-medium text-gn-text">

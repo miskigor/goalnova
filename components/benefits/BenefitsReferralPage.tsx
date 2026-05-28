@@ -54,7 +54,7 @@ function BenefitsInfoCard({
         <p className="text-sm leading-relaxed text-gn-text-secondary">{body}</p>
         <Link
           href={ctaHref}
-          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-4 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg sm:w-auto sm:min-w-[12rem]"
+          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-4 py-3.5 text-xs font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg max-lg:px-2 max-lg:py-1.5 sm:w-auto sm:min-w-[12rem]"
         >
           {ctaLabel}
         </Link>
@@ -71,7 +71,7 @@ function BenefitsPageShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-4">
+    <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-2">
       <header>
         <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
           {title}
@@ -83,7 +83,7 @@ function BenefitsPageShell({
 }
 
 const cardClass =
-  "rounded-xl border border-orange-500/60 bg-gn-surface/20 p-4 shadow-sm sm:p-5";
+  "rounded-xl border border-orange-500/60 bg-gn-surface/20 p-4 shadow-sm max-lg:p-2 sm:p-5";
 
 const linkBoxClass =
   "box-border w-full min-w-0 max-w-full overflow-hidden rounded-lg border border-gn-border-subtle bg-gn-surface/30 px-3 py-2.5 font-mono text-xs leading-relaxed text-gn-text break-all sm:text-sm";
@@ -96,7 +96,7 @@ function BenefitsScoutInfo() {
   const t = useTranslations("benefits");
 
   return (
-    <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-4">
+    <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-2">
       <header>
         <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
           {t("scoutBenefitsTitle")}
@@ -106,7 +106,7 @@ function BenefitsScoutInfo() {
         <p className="text-sm leading-relaxed text-gn-text-secondary">{t("scoutBenefitsBody")}</p>
         <Link
           href="/premium"
-          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-4 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg max-lg:mt-4 max-lg:py-3 sm:w-auto sm:min-w-[12rem]"
+          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-4 py-3.5 text-xs font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg max-lg:mt-4 max-lg:px-2 max-lg:py-1.5 sm:w-auto sm:min-w-[12rem]"
         >
           {t("scoutBenefitsCta")}
         </Link>
@@ -317,14 +317,14 @@ function BenefitsPlayerReferralContent() {
   }
 
   return (
-    <div className="box-border min-w-0 w-full max-w-full space-y-8 overflow-x-clip max-lg:space-y-6 sm:space-y-10">
+    <div className="box-border min-w-0 w-full max-w-full space-y-8 overflow-x-clip max-lg:space-y-2 sm:space-y-10">
       <header>
         <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
           {t("benefitsTitle")}
         </h1>
       </header>
 
-      <section className="space-y-5 max-lg:space-y-4" aria-labelledby="benefits-invite-heading">
+      <section className="space-y-5 max-lg:space-y-2" aria-labelledby="benefits-invite-heading">
         <h2 id="benefits-invite-heading" className="text-lg font-semibold text-gn-text max-lg:text-sm">
           {t("inviteFriends")}
         </h2>
@@ -334,7 +334,7 @@ function BenefitsPlayerReferralContent() {
           type="button"
           onClick={onInvitePrimary}
           disabled={!hasLink}
-          className="w-full rounded-xl bg-orange-500 px-4 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40 max-lg:py-3 sm:w-auto sm:min-w-[12rem]"
+          className="w-full rounded-xl bg-orange-500 px-4 py-3.5 text-xs font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5 sm:w-auto sm:min-w-[12rem]"
         >
           {t("inviteFriendButton")}
         </button>
@@ -364,12 +364,12 @@ function BenefitsPlayerReferralContent() {
               {t("referralRetry")}
             </button>
           ) : null}
-          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+          <div className="flex flex-col gap-2 max-lg:gap-1.5 sm:flex-row sm:flex-wrap">
             <button
               type="button"
               onClick={() => void copyInviteUrl()}
               disabled={!hasLink}
-              className="rounded-xl border border-gn-border bg-gn-surface px-4 py-2.5 text-sm font-medium text-gn-text transition hover:border-orange-500/50 hover:bg-gn-surface-elevated disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-xl border border-gn-border bg-gn-surface px-4 py-2.5 text-xs font-medium text-gn-text transition hover:border-orange-500/50 hover:bg-gn-surface-elevated disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5"
             >
               {t("copyLink")}
             </button>
@@ -377,7 +377,7 @@ function BenefitsPlayerReferralContent() {
               type="button"
               onClick={onShareSecondary}
               disabled={!hasLink}
-              className="rounded-xl border border-orange-500/50 bg-orange-500/10 px-4 py-2.5 text-sm font-semibold text-orange-200 transition hover:bg-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-xl border border-orange-500/50 bg-orange-500/10 px-4 py-2.5 text-xs font-semibold text-orange-200 transition hover:bg-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5"
             >
               {t("shareLink")}
             </button>
@@ -391,7 +391,7 @@ function BenefitsPlayerReferralContent() {
         ) : null}
 
         <div
-          className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4"
+          className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4 max-lg:p-2"
           aria-labelledby="benefits-invite-rules-heading"
         >
           <h3 id="benefits-invite-rules-heading" className="text-sm font-semibold text-gn-text">
@@ -411,7 +411,7 @@ function BenefitsPlayerReferralContent() {
           <p>{t("invite10Progress", { count: n })}</p>
         </div>
 
-        <ul className="flex flex-col gap-4">
+        <ul className="flex flex-col gap-4 max-lg:gap-3">
           <li className={cardClass}>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0 space-y-1">

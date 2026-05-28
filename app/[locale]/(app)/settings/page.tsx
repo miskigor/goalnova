@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const rowClass =
-  "flex w-full items-center justify-between rounded-xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3.5 text-left text-sm text-gn-text transition-colors hover:border-gn-border hover:bg-gn-surface/60";
+  "flex w-full items-center justify-between rounded-xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3.5 text-left text-xs text-gn-text transition-colors hover:border-gn-border hover:bg-gn-surface/60 max-lg:px-2 max-lg:py-1.5";
 
 export default async function SettingsPage({ params }: Props) {
   const { locale } = await params;
@@ -25,9 +25,9 @@ export default async function SettingsPage({ params }: Props) {
   const tProfile = await getTranslations("profile");
 
   return (
-    <div className="min-w-0 max-w-full space-y-5 sm:space-y-6">
+    <div className="min-w-0 max-w-full space-y-5 max-lg:space-y-2 sm:space-y-6">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">
+        <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
           {t("title")}
         </h1>
         <p className="mt-1 text-xs text-gn-text-secondary sm:text-sm">{t("subtitle")}</p>
@@ -39,17 +39,17 @@ export default async function SettingsPage({ params }: Props) {
 
       <SettingsInviteFriendsSection />
 
-      <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4">
+      <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4 max-lg:p-2">
         <p className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
           {t("language")}
         </p>
         <p className="mt-1 text-sm text-gn-text-secondary">{t("languageHint")}</p>
         <div className="mt-3">
-          <LanguageSwitcher selectClassName="w-full max-w-none cursor-pointer rounded-xl border border-gn-border bg-gn-surface px-3 py-2.5 text-sm font-medium text-gn-text outline-none transition-colors focus-visible:ring-2 focus-visible:ring-gn-accent/40" />
+          <LanguageSwitcher selectClassName="w-full max-w-none cursor-pointer rounded-xl border border-gn-border bg-gn-surface px-3 py-2.5 text-sm font-medium text-gn-text outline-none transition-colors focus-visible:ring-2 focus-visible:ring-gn-accent/40 max-lg:px-2 max-lg:py-1.5" />
         </div>
       </div>
 
-      <ul className="space-y-2">
+      <ul className="space-y-2 max-lg:space-y-1.5">
         <li>
           <Link href="/settings/profile" className={rowClass}>
             <span>{tProfile("title")}</span>
