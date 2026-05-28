@@ -52,7 +52,7 @@ export function PlayerProfileFiltersModal({
     labelKey: string,
     placeholderKey: string,
   ) => (
-    <label className="block">
+    <label className="block min-w-0">
       <span className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
         {t(labelKey)}
       </span>
@@ -70,7 +70,7 @@ export function PlayerProfileFiltersModal({
 
   const modal = (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/75 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      className="fixed inset-0 z-[100] box-border flex items-end justify-center overflow-x-clip bg-black/75 px-[max(1rem,env(safe-area-inset-left,0px))] pb-[max(1rem,env(safe-area-inset-bottom,0px))] pe-[max(1rem,env(safe-area-inset-right,0px))] pt-[max(0.75rem,env(safe-area-inset-top,0px))] backdrop-blur-sm sm:items-center sm:p-4"
       role="presentation"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -80,7 +80,7 @@ export function PlayerProfileFiltersModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="box-border max-h-[min(92dvh,40rem)] w-full max-w-lg overflow-y-auto rounded-t-2xl border border-gn-border-subtle bg-gn-surface p-4 shadow-2xl sm:rounded-2xl sm:p-6"
+        className="box-border max-h-[min(88dvh,40rem)] w-full min-w-0 max-w-lg overflow-x-clip overflow-y-auto overscroll-y-contain rounded-t-2xl border border-gn-border-subtle bg-gn-surface p-4 shadow-2xl sm:rounded-2xl sm:p-6"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <h2 id={titleId} className="text-lg font-semibold text-gn-text">
@@ -88,13 +88,13 @@ export function PlayerProfileFiltersModal({
         </h2>
         <p className="mt-1 text-sm text-gn-text-secondary">{t("detailedSubtitle")}</p>
 
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        <div className="mt-5 grid min-w-0 gap-4 sm:grid-cols-2">
           {field("position", "fieldPosition", "positionPlaceholder")}
           {field("country", "fieldCountry", "countryPlaceholder")}
           {field("city", "fieldCity", "cityPlaceholder")}
           {field("preferredFoot", "fieldPreferredFoot", "preferredFootPlaceholder")}
           {field("club", "fieldClub", "clubPlaceholder")}
-          <label className="block sm:col-span-1">
+          <label className="block min-w-0 sm:col-span-1">
             <span className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
               {t("fieldAgeMin")}
             </span>
@@ -111,7 +111,7 @@ export function PlayerProfileFiltersModal({
               autoComplete="off"
             />
           </label>
-          <label className="block sm:col-span-1">
+          <label className="block min-w-0 sm:col-span-1">
             <span className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
               {t("fieldAgeMax")}
             </span>
