@@ -33,10 +33,20 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
 
   if (authed === null) {
     return (
-      <AppChromeLayout>
+      <>
         <AppShellDebugOverlay />
-        {children}
-      </AppChromeLayout>
+        <div
+          className="flex min-h-dvh min-w-0 w-full items-center justify-center overflow-x-clip bg-gn-bg text-gn-text"
+          role="status"
+          aria-busy
+          aria-live="polite"
+        >
+          <div
+            className="h-8 w-8 animate-spin rounded-full border-2 border-gn-accent border-t-transparent"
+            aria-hidden
+          />
+        </div>
+      </>
     );
   }
 

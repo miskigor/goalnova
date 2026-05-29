@@ -7,6 +7,7 @@ import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import {
   clearFreshLogin,
   hasFreshLogin,
+  setFreshLogin,
 } from "@/lib/auth/freshLogin";
 import {
   consumeAuthRedirectFromUrl,
@@ -194,7 +195,10 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     init();
 
     const { data: subscription } = supabase.auth.onAuthStateChange(
-      (_event, nextSession) => {
+      (event, nextSession) => {
+        if (event === "SIGNED_IN") {
+          setFreshLogin();
+        }
         setSession(nextSession);
         setIsAuthenticated(Boolean(nextSession));
         setEmailConfirmed(
@@ -300,11 +304,18 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     !hasFreshLogin() &&
     !oauthReturnLikely();
 
-  if (
-    (mode === "protected" && !isLoggedIn) ||
-    blockedUnconfirmed ||
-    staleSessionWithoutFreshLogin
-  ) {
+  if (staleSessionWithoutFreshLogin) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center bg-gn-bg">
+        <div className="flex items-center gap-2 text-sm text-gn-text-secondary">
+          <InlineSpinner />
+          {tCommon("loading")}
+        </div>
+      </div>
+    );
+  }
+
+  if ((mode === "protected" && !isLoggedIn) || blockedUnconfirmed) {
     return protectedChromeLoading(
       mode,
       <div className="flex min-h-[50vh] items-center justify-center">
