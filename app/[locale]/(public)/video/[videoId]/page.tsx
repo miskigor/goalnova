@@ -150,16 +150,10 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
 
       <PublicVideoDetailPanel videoId={videoId} ownerUserId={data.video.user_id} />
 
-      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Link
-          href="/signup"
-          className="inline-flex items-center justify-center rounded-xl bg-gn-accent px-5 py-3 text-center text-sm font-semibold text-black transition-opacity hover:opacity-90"
-        >
-          {t("joinCta")}
-        </Link>
+      <div className="flex min-w-0">
         <Link
           href="/explore"
-          className="text-center text-sm font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline sm:text-end"
+          className="text-sm font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
         >
           {t("moreHighlights")}
         </Link>
