@@ -579,17 +579,17 @@
     "messages": "Messages",
     "admin": "Admin",
     "scoutDashboard": "Scout dashboard",
-    "dashboard": "Dashboard",
-    "scoutVerification": "Verification",
-    "scoutVerificationCta": "Complete verification",
-    "scoutVerificationBanner": "Verify your scout account to unlock the dashboard, Discover, and messaging.",
     "adminScoutVerifications": "Scout verifications",
     "adminPanel": "Admin",
     "adminUnreadShort": "{count, plural, one {# message} other {# messages}}",
     "myBenefits": "مزاياي",
     "support": "الدعم",
     "quickLinksSection": "الحساب والمزايا",
-    "moreInMenu": "المزيد في التطبيق"
+    "moreInMenu": "المزيد في التطبيق",
+    "dashboard": "Dashboard",
+    "scoutVerification": "Verification",
+    "scoutVerificationCta": "Complete verification",
+    "scoutVerificationBanner": "Verify your scout account to unlock the dashboard, Discover, and messaging."
   },
   "music": {
     "addMusic": "Add music",
@@ -1085,8 +1085,6 @@
     "bio": "نبذة",
     "bioEmpty": "لا توجد نبذة بعد.",
     "detailsSectionAria": "تفاصيل اللاعب",
-    "detailsShowAll": "Show all",
-    "detailsHide": "Hide",
     "videosHeading": "الفيديوهات المرفوعة",
     "videosSectionAria": "فيديوهات اللاعب",
     "noVideos": "لا توجد فيديوهات مرفوعة بعد.",
@@ -1363,9 +1361,6 @@
     "freePlayer": "لاعب مجاني",
     "upgradeToPlayerPremium": "الترقية إلى Player Premium",
     "playerPremiumDescription": "للاعبين الذين يريدون مزيدًا من الظهور وملفًا أقوى.",
-    "scoutPro": "Scout Pro",
-    "scoutProDescription": "للكشافة الذين يريدون اكتشاف المواهب أسرع واستخدام أدوات بحث متقدمة.",
-    "upgradeToScoutPro": "الترقية إلى Scout Pro",
     "moreVideoUploads": "تحميل فيديوهات أكثر",
     "priorityScoutVisibility": "أولوية الظهور للكشافين",
     "premiumBadge": "شارة Premium",
@@ -1448,14 +1443,15 @@
         "upgrading": "جارٍ الترقية…"
       },
       "contactMailSubject": "ترقية باقة النادي"
-    }
+    },
+    "scoutPro": "Scout Pro",
+    "scoutProDescription": "للكشافة الذين يريدون اكتشاف المواهب أسرع واستخدام أدوات بحث متقدمة.",
+    "upgradeToScoutPro": "الترقية إلى Scout Pro"
   },
   "settings": {
     "title": "الإعدادات",
     "subtitle": "التفضيلات وضبط الحساب.",
     "premiumTitle": "PitchRusch Premium",
-    "premiumBodyUpgrade": "قم بترقية خطتك للحصول على مزيد من الظهور والأدوات المتقدمة.",
-    "premiumBodyActive": "خطة Premium الخاصة بك نشطة.",
     "premiumBadgeActive": "خطة Premium الخاصة بك نشطة.",
     "premiumBadgeLocked": "لا يوجد اشتراك نشط",
     "premiumChecking": "Checking…",
@@ -1465,7 +1461,9 @@
     "appearance": "المظهر",
     "soon": "قريبًا",
     "language": "اللغة",
-    "languageHint": "تُطبَّق على PitchRusch على هذا الجهاز."
+    "languageHint": "تُطبَّق على PitchRusch على هذا الجهاز.",
+    "premiumBodyUpgrade": "قم بترقية خطتك للحصول على مزيد من الظهور والأدوات المتقدمة.",
+    "premiumBodyActive": "خطة Premium الخاصة بك نشطة."
   },
   "a11y": {
     "accountMenu": "Account menu",
@@ -1929,8 +1927,6 @@
     "scoutProPrice": "9.99 EUR / month",
     "clubPrice": "29.99 EUR / month",
     "subscribe": "Subscribe",
-    "upgradePlayerPremium": "الترقية إلى Player Premium",
-    "upgradeScoutPro": "الترقية إلى Scout Pro",
     "currentFree": "Current free plan",
     "loadingCheckout": "Opening checkout…",
     "checkoutError": "Could not start checkout. Please try again.",
@@ -1948,12 +1944,12 @@
     },
     "playerPremium": {
       "title": "Player Premium",
-      "description": "للاعبين الذين يريدون مزيدًا من الظهور وملفًا أقوى.",
       "f1": "عزّز ظهور ملفك",
       "f2": "فرص اللاعب المميز",
       "f3": "افتح إحصائيات الملف المتقدمة",
       "f4": "تميّز في التحديات واكتشاف المواهب",
       "f5": "حتى 20 فيديو",
+      "description": "للاعبين الذين يريدون مزيدًا من الظهور وملفًا أقوى.",
       "f1Short": "More visibility",
       "f2Short": "Featured player",
       "f3Short": "Advanced stats",
@@ -1971,12 +1967,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
-      "description": "Built for scouts who want a faster talent workflow as PitchRush grows.",
       "f1": "More scout tools as PitchRush grows",
       "f2": "Early access to upcoming workflow upgrades",
       "f3": "Help shape the scout experience on PitchRush",
       "f4": "Priority consideration for new scout betas",
       "f5": "Support continued scout tooling improvements",
+      "description": "Built for scouts who want a faster talent workflow as PitchRush grows.",
       "f1Short": "Growing scout tools",
       "f2Short": "Early access",
       "f3Short": "Shape the product",
@@ -1995,6 +1991,21 @@
       "f3Short": "Shared shortlists",
       "f4Short": "Club dashboard",
       "f5Short": "PDF reports"
+    },
+    "upgradePlayerPremium": "الترقية إلى Player Premium",
+    "upgradeScoutPro": "الترقية إلى Scout Pro",
+    "scoutProDescription": "Built for scouts who want a faster talent workflow as PitchRush grows.",
+    "scoutPlans": {
+      "pro": {
+        "f1": "More scout tools as PitchRush grows",
+        "f2": "Workflow upgrades over time",
+        "f3": "Early access to new scout features",
+        "f4": "Expanded limits when enforcement goes live",
+        "f5": "Shortlists and comparison (planned)",
+        "f6": "AI-assisted scouting (planned)",
+        "f7": "Messaging upgrades (planned)",
+        "f8": "Talent discovery improvements (planned)"
+      }
     }
   },
   "payment": {
@@ -2058,6 +2069,13 @@
     "shareLink": "مشاركة",
     "inviteLinkCopied": "تم نسخ رابط الدعوة.",
     "referralLinkUnavailable": "رابط الدعوة غير متاح حالياً. يرجى تحديث الصفحة.",
+    "inviteRulesTitle": "كيف تُحسب الدعوات:",
+    "inviteRulesStep1": "أرسل رابطك إلى صديق.",
+    "inviteRulesStep2": "يجب على صديقك إنشاء حساب جديد.",
+    "inviteRulesStep3": "تُحسب الدعوة عندما يختار دور اللاعب.",
+    "scoutBenefitsTitle": "مزايا الكشّاف قريبًا",
+    "scoutBenefitsBody": "مكافآت دعوة اللاعبين متاحة حاليًا للاعبين فقط. أدوات الكشّاف ومزايا Pro تُدار من Premium.",
+    "scoutBenefitsCta": "عرض Premium",
     "referralRetry": "Try again",
     "referralLinkErrorGeneric": "Could not load invite link ({reason}). Please try again.",
     "referralErrorNotPlayer": "Referral rewards are only available for player accounts.",
@@ -2072,13 +2090,6 @@
     "needsRoleBenefitsCta": "Choose role",
     "playerSetupBenefitsTitle": "Finish player setup",
     "playerSetupBenefitsBody": "Complete role onboarding to generate your personal invite link.",
-    "playerSetupBenefitsCta": "Complete setup",
-    "inviteRulesTitle": "كيف تُحسب الدعوات:",
-    "inviteRulesStep1": "أرسل رابطك إلى صديق.",
-    "inviteRulesStep2": "يجب على صديقك إنشاء حساب جديد.",
-    "inviteRulesStep3": "تُحسب الدعوة عندما يختار دور اللاعب.",
-    "scoutBenefitsTitle": "مزايا الكشّاف قريبًا",
-    "scoutBenefitsBody": "مكافآت دعوة اللاعبين متاحة حاليًا للاعبين فقط. أدوات الكشّاف ومزايا Pro تُدار من Premium.",
-    "scoutBenefitsCta": "عرض Premium"
+    "playerSetupBenefitsCta": "Complete setup"
   }
 }

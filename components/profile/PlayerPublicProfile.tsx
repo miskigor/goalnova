@@ -46,14 +46,6 @@ function formatPlayerAge(age: number | null | undefined): string | null {
   return null;
 }
 
-const MOBILE_DETAILS_PREVIEW_COUNT = 4;
-
-type PlayerDetailField = {
-  key: string;
-  label: string;
-  value: string;
-};
-
 function Spinner({ className = "h-5 w-5" }: { className?: string }) {
   return (
     <svg
@@ -109,11 +101,6 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
   const [deletingVideoId, setDeletingVideoId] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [userAvatarUrl, setUserAvatarUrl] = useState<string | null>(null);
-  const [mobileDetailsExpanded, setMobileDetailsExpanded] = useState(false);
-
-  useEffect(() => {
-    setMobileDetailsExpanded(false);
-  }, [playerSlug]);
 
   useEffect(() => {
     let cancelled = false;
@@ -245,41 +232,18 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
       ? tFields("weightKgOption", { n: profile.weight })
       : null;
   const playerBio = profile.bio?.trim() || null;
-
-  const playerDetailFields: PlayerDetailField[] = [];
-  const ageVal = formatPlayerAge(profile.age);
-  if (ageVal) playerDetailFields.push({ key: "age", label: t("age"), value: ageVal });
-  const position = profile.position?.trim();
-  if (position) {
-    playerDetailFields.push({ key: "position", label: tFields("position"), value: position });
-  }
-  const city = profile.city?.trim();
-  if (city) playerDetailFields.push({ key: "city", label: t("city"), value: city });
-  const country = profile.country?.trim();
-  if (country) playerDetailFields.push({ key: "country", label: t("country"), value: country });
-  if (playerHeight) {
-    playerDetailFields.push({ key: "height", label: tFields("height"), value: playerHeight });
-  }
-  if (playerWeight) {
-    playerDetailFields.push({ key: "weight", label: tFields("weight"), value: playerWeight });
-  }
-  const club = profile.club?.trim();
-  if (club) playerDetailFields.push({ key: "club", label: tFields("club"), value: club });
-  const foot = profile.preferred_foot?.trim();
-  if (foot) {
-    playerDetailFields.push({
-      key: "preferredFoot",
-      label: tFields("preferredFoot"),
-      value: foot,
-    });
-  }
-
-  const hasPlayerDetails = playerDetailFields.length > 0 || Boolean(playerBio);
-  const mobileDetailsHasMore =
-    playerDetailFields.length > MOBILE_DETAILS_PREVIEW_COUNT || Boolean(playerBio);
-  const mobileDetailFields = mobileDetailsExpanded
-    ? playerDetailFields
-    : playerDetailFields.slice(0, MOBILE_DETAILS_PREVIEW_COUNT);
+  const hasPlayerDetails =
+    Boolean(
+      formatPlayerAge(profile.age) ||
+        profile.position?.trim() ||
+        profile.city?.trim() ||
+        profile.country?.trim() ||
+        playerHeight ||
+        playerWeight ||
+        profile.club?.trim() ||
+        profile.preferred_foot?.trim() ||
+        playerBio,
+    );
 
   const showUploadFirstBanner =
     isOwnProfile &&
@@ -375,13 +339,18 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
           aria-label={t("detailsSectionAria")}
           className={`${profileSectionClass} box-border w-full min-w-0 max-w-full space-y-4 max-lg:space-y-1 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4 max-lg:rounded-lg max-lg:p-2 sm:p-5`}
         >
-          <div className="hidden min-w-0 grid-cols-2 gap-4 lg:grid">
-            {playerDetailFields.map((field) => (
-              <DetailRow key={field.key} label={field.label} value={field.value} />
-            ))}
+          <div className="grid min-w-0 grid-cols-2 gap-4 max-lg:gap-1">
+            <DetailRow label={t("age")} value={formatPlayerAge(profile.age)} />
+            <DetailRow label={tFields("position")} value={profile.position} />
+            <DetailRow label={t("city")} value={profile.city} />
+            <DetailRow label={t("country")} value={profile.country} />
+            <DetailRow label={tFields("height")} value={playerHeight} />
+            <DetailRow label={tFields("weight")} value={playerWeight} />
+            <DetailRow label={tFields("club")} value={profile.club} />
+            <DetailRow label={tFields("preferredFoot")} value={profile.preferred_foot} />
           </div>
           {playerBio ? (
-            <div className="hidden min-w-0 lg:block">
+            <div className="min-w-0">
               <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary sm:text-xs">
                 {t("bio")}
               </p>
@@ -390,34 +359,6 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
               </p>
             </div>
           ) : null}
-
-          <div className="min-w-0 space-y-1 lg:hidden">
-            <div className="grid min-w-0 grid-cols-2 gap-1">
-              {mobileDetailFields.map((field) => (
-                <DetailRow key={field.key} label={field.label} value={field.value} />
-              ))}
-            </div>
-            {mobileDetailsExpanded && playerBio ? (
-              <div className="min-w-0 pt-1">
-                <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary max-lg:text-[10px]">
-                  {t("bio")}
-                </p>
-                <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gn-text max-lg:mt-0.5 max-lg:text-xs">
-                  {playerBio}
-                </p>
-              </div>
-            ) : null}
-            {mobileDetailsHasMore ? (
-              <button
-                type="button"
-                className="mt-1 w-full rounded-lg border border-gn-border-subtle bg-gn-surface/50 px-3 py-2 text-center text-xs font-medium text-gn-accent transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated"
-                aria-expanded={mobileDetailsExpanded}
-                onClick={() => setMobileDetailsExpanded((open) => !open)}
-              >
-                {mobileDetailsExpanded ? t("detailsHide") : t("detailsShowAll")}
-              </button>
-            ) : null}
-          </div>
         </section>
       ) : null}
 

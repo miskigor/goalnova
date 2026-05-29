@@ -579,17 +579,17 @@
     "messages": "Messages",
     "admin": "Admin",
     "scoutDashboard": "Scout dashboard",
-    "dashboard": "Dashboard",
-    "scoutVerification": "Verificatie",
-    "scoutVerificationCta": "Verificatie afronden",
-    "scoutVerificationBanner": "Verifieer je scout-account voor dashboard, Discover en berichten.",
     "adminScoutVerifications": "Scout verifications",
     "adminPanel": "Admin",
     "adminUnreadShort": "{count, plural, one {# message} other {# messages}}",
     "myBenefits": "Mijn voordelen",
     "support": "Support",
     "quickLinksSection": "Account & voordelen",
-    "moreInMenu": "Meer in de app"
+    "moreInMenu": "Meer in de app",
+    "dashboard": "Dashboard",
+    "scoutVerification": "Verificatie",
+    "scoutVerificationCta": "Verificatie afronden",
+    "scoutVerificationBanner": "Verifieer je scout-account voor dashboard, Discover en berichten."
   },
   "music": {
     "addMusic": "Add music",
@@ -1085,8 +1085,6 @@
     "bio": "Bio",
     "bioEmpty": "No bio yet.",
     "detailsSectionAria": "Player details",
-    "detailsShowAll": "Show all",
-    "detailsHide": "Hide",
     "videosHeading": "Uploaded videos",
     "videosSectionAria": "Player videos",
     "noVideos": "No videos uploaded yet.",
@@ -1363,9 +1361,6 @@
     "freePlayer": "Free Player",
     "upgradeToPlayerPremium": "Upgrade to Player Premium",
     "playerPremiumDescription": "Voor spelers die meer zichtbaarheid en een sterker profiel willen.",
-    "scoutPro": "Scout Pro",
-    "scoutProDescription": "Voor scouts die sneller talent willen vinden en geavanceerd zoeken willen gebruiken.",
-    "upgradeToScoutPro": "Upgrade naar Scout Pro",
     "moreVideoUploads": "More video uploads",
     "priorityScoutVisibility": "Priority scout visibility",
     "premiumBadge": "Premium badge",
@@ -1448,14 +1443,15 @@
         "upgrading": "Upgrading…"
       },
       "contactMailSubject": "Club plan upgrade"
-    }
+    },
+    "scoutPro": "Scout Pro",
+    "scoutProDescription": "Voor scouts die sneller talent willen vinden en geavanceerd zoeken willen gebruiken.",
+    "upgradeToScoutPro": "Upgrade naar Scout Pro"
   },
   "settings": {
     "title": "Settings",
     "subtitle": "Preferences and account controls.",
     "premiumTitle": "PitchRusch Premium",
-    "premiumBodyUpgrade": "Upgrade je plan voor meer zichtbaarheid en geavanceerde tools.",
-    "premiumBodyActive": "Je Premium-plan is actief.",
     "premiumBadgeActive": "Je Premium-plan is actief.",
     "premiumBadgeLocked": "Geen actief abonnement",
     "premiumChecking": "Checking…",
@@ -1465,7 +1461,9 @@
     "appearance": "Appearance",
     "soon": "Soon",
     "language": "Language",
-    "languageHint": "Applies across PitchRusch on this device."
+    "languageHint": "Applies across PitchRusch on this device.",
+    "premiumBodyUpgrade": "Upgrade je plan voor meer zichtbaarheid en geavanceerde tools.",
+    "premiumBodyActive": "Je Premium-plan is actief."
   },
   "a11y": {
     "accountMenu": "Account menu",
@@ -1929,8 +1927,6 @@
     "scoutProPrice": "9.99 EUR / maand",
     "clubPrice": "29.99 EUR / maand",
     "subscribe": "Abonneren",
-    "upgradePlayerPremium": "Upgrade naar Player Premium",
-    "upgradeScoutPro": "Upgrade naar Scout Pro",
     "currentFree": "Huidig gratis plan",
     "loadingCheckout": "Checkout openen…",
     "checkoutError": "Checkout kon niet worden gestart. Probeer opnieuw.",
@@ -1948,12 +1944,12 @@
     },
     "playerPremium": {
       "title": "Player Premium",
-      "description": "Voor spelers die meer zichtbaarheid en een sterker profiel willen.",
       "f1": "Verhoog de zichtbaarheid van je profiel",
       "f2": "Kansen als uitgelichte speler",
       "f3": "Ontgrendel geavanceerde profielstatistieken",
       "f4": "Val op in challenges en talentontdekking",
       "f5": "Tot 20 video’s",
+      "description": "Voor spelers die meer zichtbaarheid en een sterker profiel willen.",
       "f1Short": "More visibility",
       "f2Short": "Featured player",
       "f3Short": "Advanced stats",
@@ -1971,12 +1967,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
-      "description": "Built for scouts who want a faster talent workflow as PitchRush grows.",
       "f1": "More scout tools as PitchRush grows",
       "f2": "Early access to upcoming workflow upgrades",
       "f3": "Help shape the scout experience on PitchRush",
       "f4": "Priority consideration for new scout betas",
       "f5": "Support continued scout tooling improvements",
+      "description": "Built for scouts who want a faster talent workflow as PitchRush grows.",
       "f1Short": "Growing scout tools",
       "f2Short": "Early access",
       "f3Short": "Shape the product",
@@ -1995,6 +1991,21 @@
       "f3Short": "Shared shortlists",
       "f4Short": "Club dashboard",
       "f5Short": "PDF reports"
+    },
+    "upgradePlayerPremium": "Upgrade naar Player Premium",
+    "upgradeScoutPro": "Upgrade naar Scout Pro",
+    "scoutProDescription": "Built for scouts who want a faster talent workflow as PitchRush grows.",
+    "scoutPlans": {
+      "pro": {
+        "f1": "More scout tools as PitchRush grows",
+        "f2": "Workflow upgrades over time",
+        "f3": "Early access to new scout features",
+        "f4": "Expanded limits when enforcement goes live",
+        "f5": "Shortlists and comparison (planned)",
+        "f6": "AI-assisted scouting (planned)",
+        "f7": "Messaging upgrades (planned)",
+        "f8": "Talent discovery improvements (planned)"
+      }
     }
   },
   "payment": {
@@ -2058,6 +2069,13 @@
     "shareLink": "Delen",
     "inviteLinkCopied": "Uitnodigingslink gekopieerd.",
     "referralLinkUnavailable": "Uitnodigingslink is momenteel niet beschikbaar. Vernieuw de pagina.",
+    "inviteRulesTitle": "Hoe uitnodigingen worden geteld:",
+    "inviteRulesStep1": "Stuur je link naar een vriend.",
+    "inviteRulesStep2": "Je vriend moet een nieuw account aanmaken.",
+    "inviteRulesStep3": "De uitnodiging telt wanneer hij de spelersrol kiest.",
+    "scoutBenefitsTitle": "Scoutvoordelen komen binnenkort",
+    "scoutBenefitsBody": "Spelers-verwijzingsbeloningen zijn nu alleen voor spelers. Scouttools en Pro-voordelen beheer je via Premium.",
+    "scoutBenefitsCta": "Premium bekijken",
     "referralRetry": "Try again",
     "referralLinkErrorGeneric": "Could not load invite link ({reason}). Please try again.",
     "referralErrorNotPlayer": "Referral rewards are only available for player accounts.",
@@ -2072,13 +2090,6 @@
     "needsRoleBenefitsCta": "Choose role",
     "playerSetupBenefitsTitle": "Finish player setup",
     "playerSetupBenefitsBody": "Complete role onboarding to generate your personal invite link.",
-    "playerSetupBenefitsCta": "Complete setup",
-    "inviteRulesTitle": "Hoe uitnodigingen worden geteld:",
-    "inviteRulesStep1": "Stuur je link naar een vriend.",
-    "inviteRulesStep2": "Je vriend moet een nieuw account aanmaken.",
-    "inviteRulesStep3": "De uitnodiging telt wanneer hij de spelersrol kiest.",
-    "scoutBenefitsTitle": "Scoutvoordelen komen binnenkort",
-    "scoutBenefitsBody": "Spelers-verwijzingsbeloningen zijn nu alleen voor spelers. Scouttools en Pro-voordelen beheer je via Premium.",
-    "scoutBenefitsCta": "Premium bekijken"
+    "playerSetupBenefitsCta": "Complete setup"
   }
 }
