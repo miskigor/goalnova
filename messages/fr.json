@@ -579,17 +579,17 @@
     "messages": "Messages",
     "admin": "Admin",
     "scoutDashboard": "Scout dashboard",
+    "dashboard": "Tableau de bord",
+    "scoutVerification": "Vérification",
+    "scoutVerificationCta": "Terminer la vérification",
+    "scoutVerificationBanner": "Vérifiez votre compte scout pour débloquer le tableau de bord, Discover et la messagerie.",
     "adminScoutVerifications": "Scout verifications",
     "adminPanel": "Admin",
     "adminUnreadShort": "{count, plural, one {# message} other {# messages}}",
     "myBenefits": "Mes avantages",
     "support": "Assistance",
     "quickLinksSection": "Compte et avantages",
-    "moreInMenu": "Plus dans l’app",
-    "dashboard": "Tableau de bord",
-    "scoutVerification": "Vérification",
-    "scoutVerificationCta": "Terminer la vérification",
-    "scoutVerificationBanner": "Vérifiez votre compte scout pour débloquer le tableau de bord, Discover et la messagerie."
+    "moreInMenu": "Plus dans l’app"
   },
   "music": {
     "addMusic": "Ajouter de la musique",
@@ -1085,6 +1085,8 @@
     "bio": "Bio",
     "bioEmpty": "Pas encore de bio.",
     "detailsSectionAria": "Détails du joueur",
+    "detailsShowAll": "Show all",
+    "detailsHide": "Hide",
     "videosHeading": "Vidéos publiées",
     "videosSectionAria": "Vidéos du joueur",
     "noVideos": "Aucune vidéo publiée pour le moment.",
@@ -1361,6 +1363,9 @@
     "freePlayer": "Joueur gratuit",
     "upgradeToPlayerPremium": "Passer a Player Premium",
     "playerPremiumDescription": "Pour les joueurs qui veulent plus de visibilité et un profil plus fort.",
+    "scoutPro": "Scout Pro",
+    "scoutProDescription": "Pour les scouts qui veulent découvrir les talents plus vite et utiliser une recherche avancée.",
+    "upgradeToScoutPro": "Passer à Scout Pro",
     "moreVideoUploads": "Plus de videos publiees",
     "priorityScoutVisibility": "Visibilite prioritaire aupres des scouts",
     "premiumBadge": "Badge Premium",
@@ -1443,15 +1448,14 @@
         "upgrading": "Mise à niveau…"
       },
       "contactMailSubject": "Mise à niveau offre Club"
-    },
-    "scoutPro": "Scout Pro",
-    "scoutProDescription": "Pour les scouts qui veulent découvrir les talents plus vite et utiliser une recherche avancée.",
-    "upgradeToScoutPro": "Passer à Scout Pro"
+    }
   },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Préférences et contrôle du compte.",
     "premiumTitle": "PitchRusch Premium",
+    "premiumBodyUpgrade": "Passez à un forfait supérieur pour plus de visibilité et d’outils avancés.",
+    "premiumBodyActive": "Votre forfait Premium est actif.",
     "premiumBadgeActive": "Votre forfait Premium est actif.",
     "premiumBadgeLocked": "Aucun abonnement actif",
     "premiumChecking": "Checking…",
@@ -1461,9 +1465,7 @@
     "appearance": "Apparence",
     "soon": "Bientôt",
     "language": "Langue",
-    "languageHint": "S’applique à PitchRusch sur cet appareil.",
-    "premiumBodyUpgrade": "Passez à un forfait supérieur pour plus de visibilité et d’outils avancés.",
-    "premiumBodyActive": "Votre forfait Premium est actif."
+    "languageHint": "S’applique à PitchRusch sur cet appareil."
   },
   "a11y": {
     "accountMenu": "Account menu",
@@ -1927,6 +1929,8 @@
     "scoutProPrice": "9.99 EUR / month",
     "clubPrice": "29.99 EUR / month",
     "subscribe": "Subscribe",
+    "upgradePlayerPremium": "Passer à Player Premium",
+    "upgradeScoutPro": "Passer à Scout Pro",
     "currentFree": "Current free plan",
     "loadingCheckout": "Opening checkout…",
     "checkoutError": "Could not start checkout. Please try again.",
@@ -1944,12 +1948,12 @@
     },
     "playerPremium": {
       "title": "Player Premium",
+      "description": "Pour les joueurs qui veulent plus de visibilité et un profil plus fort.",
       "f1": "Augmentez la visibilité de votre profil",
       "f2": "Opportunités de joueur mis en avant",
       "f3": "Statistiques de profil avancées",
       "f4": "Démarquez-vous dans les défis et la découverte",
       "f5": "Jusqu’à 20 vidéos",
-      "description": "Pour les joueurs qui veulent plus de visibilité et un profil plus fort.",
       "f1Short": "More visibility",
       "f2Short": "Featured player",
       "f3Short": "Advanced stats",
@@ -1967,12 +1971,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
+      "description": "Para scouts que quieren un flujo de trabajo más rápido mientras PitchRush crece.",
       "f1": "Más herramientas de scout a medida que crece PitchRush",
       "f2": "Acceso anticipado a mejoras del flujo de trabajo",
       "f3": "Ayuda a dar forma a la experiencia scout en PitchRush",
       "f4": "Prioridad en nuevas betas scout",
       "f5": "Apoya la mejora continua de herramientas scout",
-      "description": "Para scouts que quieren un flujo de trabajo más rápido mientras PitchRush crece.",
       "f1Short": "Growing scout tools",
       "f2Short": "Early access",
       "f3Short": "Shape the product",
@@ -1991,21 +1995,6 @@
       "f3Short": "Shared shortlists",
       "f4Short": "Club dashboard",
       "f5Short": "PDF reports"
-    },
-    "upgradePlayerPremium": "Passer à Player Premium",
-    "upgradeScoutPro": "Passer à Scout Pro",
-    "scoutProDescription": "Para scouts que quieren un flujo de trabajo más rápido mientras PitchRush crece.",
-    "scoutPlans": {
-      "pro": {
-        "f1": "More scout tools as PitchRush grows",
-        "f2": "Workflow upgrades over time",
-        "f3": "Early access to new scout features",
-        "f4": "Expanded limits when enforcement goes live",
-        "f5": "Shortlists and comparison (planned)",
-        "f6": "AI-assisted scouting (planned)",
-        "f7": "Messaging upgrades (planned)",
-        "f8": "Talent discovery improvements (planned)"
-      }
     }
   },
   "payment": {
@@ -2069,13 +2058,6 @@
     "shareLink": "Partager",
     "inviteLinkCopied": "Lien d’invitation copié.",
     "referralLinkUnavailable": "Le lien d’invitation est actuellement indisponible. Veuillez actualiser la page.",
-    "inviteRulesTitle": "Comment les invitations sont comptées :",
-    "inviteRulesStep1": "Envoie ton lien à un ami.",
-    "inviteRulesStep2": "Ton ami doit créer un nouveau compte.",
-    "inviteRulesStep3": "L’invitation compte lorsqu’il choisit le rôle Joueur.",
-    "scoutBenefitsTitle": "Les avantages scout arrivent bientôt",
-    "scoutBenefitsBody": "Les récompenses de parrainage joueur sont réservées aux joueurs. Les outils scout et les avantages Pro se gèrent depuis Premium.",
-    "scoutBenefitsCta": "Voir Premium",
     "referralRetry": "Try again",
     "referralLinkErrorGeneric": "Could not load invite link ({reason}). Please try again.",
     "referralErrorNotPlayer": "Referral rewards are only available for player accounts.",
@@ -2090,6 +2072,13 @@
     "needsRoleBenefitsCta": "Choose role",
     "playerSetupBenefitsTitle": "Finish player setup",
     "playerSetupBenefitsBody": "Complete role onboarding to generate your personal invite link.",
-    "playerSetupBenefitsCta": "Complete setup"
+    "playerSetupBenefitsCta": "Complete setup",
+    "inviteRulesTitle": "Comment les invitations sont comptées :",
+    "inviteRulesStep1": "Envoie ton lien à un ami.",
+    "inviteRulesStep2": "Ton ami doit créer un nouveau compte.",
+    "inviteRulesStep3": "L’invitation compte lorsqu’il choisit le rôle Joueur.",
+    "scoutBenefitsTitle": "Les avantages scout arrivent bientôt",
+    "scoutBenefitsBody": "Les récompenses de parrainage joueur sont réservées aux joueurs. Les outils scout et les avantages Pro se gèrent depuis Premium.",
+    "scoutBenefitsCta": "Voir Premium"
   }
 }

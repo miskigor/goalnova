@@ -579,17 +579,17 @@
     "messages": "Messages",
     "admin": "Admin",
     "scoutDashboard": "Scout dashboard",
+    "dashboard": "Dashboard",
+    "scoutVerification": "Verifikacija",
+    "scoutVerificationCta": "Završi verifikaciju",
+    "scoutVerificationBanner": "Verifikuj skaut nalog za dashboard, Discover i poruke.",
     "adminScoutVerifications": "Scout verifications",
     "adminPanel": "Admin",
     "adminUnreadShort": "{count, plural, one {# message} other {# messages}}",
     "myBenefits": "Moje mogućnosti",
     "support": "Podrška",
     "quickLinksSection": "Nalog i mogućnosti",
-    "moreInMenu": "Više u aplikaciji",
-    "dashboard": "Dashboard",
-    "scoutVerification": "Verifikacija",
-    "scoutVerificationCta": "Završi verifikaciju",
-    "scoutVerificationBanner": "Verifikuj skaut nalog za dashboard, Discover i poruke."
+    "moreInMenu": "Više u aplikaciji"
   },
   "music": {
     "addMusic": "Add music",
@@ -1085,6 +1085,8 @@
     "bio": "Bio",
     "bioEmpty": "No bio yet.",
     "detailsSectionAria": "Player details",
+    "detailsShowAll": "Show all",
+    "detailsHide": "Hide",
     "videosHeading": "Uploaded videos",
     "videosSectionAria": "Player videos",
     "noVideos": "No videos uploaded yet.",
@@ -1361,6 +1363,9 @@
     "freePlayer": "Free Player",
     "upgradeToPlayerPremium": "Upgrade to Player Premium",
     "playerPremiumDescription": "Za igrače koji žele veću vidljivost i jači profil.",
+    "scoutPro": "Scout Pro",
+    "scoutProDescription": "Za skaute koji žele brže otkrivati talente i koristiti napredne alate pretrage.",
+    "upgradeToScoutPro": "Nadogradi na Scout Pro",
     "moreVideoUploads": "More video uploads",
     "priorityScoutVisibility": "Priority scout visibility",
     "premiumBadge": "Premium badge",
@@ -1443,15 +1448,14 @@
         "upgrading": "Upgrading…"
       },
       "contactMailSubject": "Club plan upgrade"
-    },
-    "scoutPro": "Scout Pro",
-    "scoutProDescription": "Za skaute koji žele brže otkrivati talente i koristiti napredne alate pretrage.",
-    "upgradeToScoutPro": "Nadogradi na Scout Pro"
+    }
   },
   "settings": {
     "title": "Settings",
     "subtitle": "Preferences and account controls.",
     "premiumTitle": "PitchRusch Premium",
+    "premiumBodyUpgrade": "Nadogradi svoj plan i otključaj veću vidljivost i napredne alate.",
+    "premiumBodyActive": "Tvoj Premium plan je aktivan.",
     "premiumBadgeActive": "Tvoj Premium plan je aktivan.",
     "premiumBadgeLocked": "Nema aktivne pretplate",
     "premiumChecking": "Checking…",
@@ -1461,9 +1465,7 @@
     "appearance": "Appearance",
     "soon": "Soon",
     "language": "Language",
-    "languageHint": "Applies across PitchRusch on this device.",
-    "premiumBodyUpgrade": "Nadogradi svoj plan i otključaj veću vidljivost i napredne alate.",
-    "premiumBodyActive": "Tvoj Premium plan je aktivan."
+    "languageHint": "Applies across PitchRusch on this device."
   },
   "a11y": {
     "accountMenu": "Account menu",
@@ -1927,6 +1929,8 @@
     "scoutProPrice": "9.99 EUR / mesec",
     "clubPrice": "29.99 EUR / mesec",
     "subscribe": "Pretplati se",
+    "upgradePlayerPremium": "Nadogradi na Player Premium",
+    "upgradeScoutPro": "Nadogradi na Scout Pro",
     "currentFree": "Trenutni besplatni plan",
     "loadingCheckout": "Otvaranje naplate…",
     "checkoutError": "Nije moguće pokrenuti naplatu. Pokušajte ponovo.",
@@ -1944,12 +1948,12 @@
     },
     "playerPremium": {
       "title": "Player Premium",
+      "description": "Za igrače koji žele veću vidljivost i jači profil.",
       "f1": "Povećaj vidljivost svog profila",
       "f2": "Dobij priliku biti istaknuti igrač",
       "f3": "Otključaj naprednu statistiku profila",
       "f4": "Istakni se u izazovima i otkrivanju talenata",
       "f5": "Do 20 videa",
-      "description": "Za igrače koji žele veću vidljivost i jači profil.",
       "f1Short": "More visibility",
       "f2Short": "Featured player",
       "f3Short": "Advanced stats",
@@ -1967,12 +1971,12 @@
     },
     "scoutPro": {
       "title": "Scout Pro",
+      "description": "Za skaute koji žele brži radni tok kako PitchRush raste.",
       "f1": "Više skaut alata kako PitchRush raste",
       "f2": "Rani pristup nadolazećim nadogradnjama",
       "f3": "Pomozi oblikovati skaut iskustvo na PitchRushu",
       "f4": "Prioritet za nove skaut beta funkcije",
       "f5": "Podrška daljnjem razvoju skaut alata",
-      "description": "Za skaute koji žele brži radni tok kako PitchRush raste.",
       "f1Short": "Growing scout tools",
       "f2Short": "Early access",
       "f3Short": "Shape the product",
@@ -1991,21 +1995,6 @@
       "f3Short": "Shared shortlists",
       "f4Short": "Club dashboard",
       "f5Short": "PDF reports"
-    },
-    "upgradePlayerPremium": "Nadogradi na Player Premium",
-    "upgradeScoutPro": "Nadogradi na Scout Pro",
-    "scoutProDescription": "Za skaute koji žele brži radni tok kako PitchRush raste.",
-    "scoutPlans": {
-      "pro": {
-        "f1": "Više skaut alata kako PitchRush raste",
-        "f2": "Nadogradnje radnog toka s vremenom",
-        "f3": "Rani pristup novim skaut funkcijama",
-        "f4": "Prošireni limiti kad krene primena",
-        "f5": "Shortliste i poređenja (planirano)",
-        "f6": "AI skautiranje (planirano)",
-        "f7": "Nadogradnje poruka (planirano)",
-        "f8": "Poboljšanja otkrivanja talenata (planirano)"
-      }
     }
   },
   "payment": {
@@ -2069,13 +2058,6 @@
     "shareLink": "Podeli",
     "inviteLinkCopied": "Pozivni link je kopiran.",
     "referralLinkUnavailable": "Pozivni link trenutno nije dostupan. Pokušajte osvežiti stranicu.",
-    "inviteRulesTitle": "Kako se broji poziv:",
-    "inviteRulesStep1": "Pošalji svoj link prijatelju.",
-    "inviteRulesStep2": "Prijatelj mora napraviti novi nalog.",
-    "inviteRulesStep3": "Poziv se broji kada odabere ulogu Igrač.",
-    "scoutBenefitsTitle": "Scout pogodnosti uskoro stižu",
-    "scoutBenefitsBody": "Nagrade za pozivanje trenutno su dostupne igračima. Scout alati i Pro pogodnosti dostupni su kroz Premium.",
-    "scoutBenefitsCta": "Pogledaj Premium",
     "referralRetry": "Try again",
     "referralLinkErrorGeneric": "Could not load invite link ({reason}). Please try again.",
     "referralErrorNotPlayer": "Referral rewards are only available for player accounts.",
@@ -2090,6 +2072,13 @@
     "needsRoleBenefitsCta": "Choose role",
     "playerSetupBenefitsTitle": "Finish player setup",
     "playerSetupBenefitsBody": "Complete role onboarding to generate your personal invite link.",
-    "playerSetupBenefitsCta": "Complete setup"
+    "playerSetupBenefitsCta": "Complete setup",
+    "inviteRulesTitle": "Kako se broji poziv:",
+    "inviteRulesStep1": "Pošalji svoj link prijatelju.",
+    "inviteRulesStep2": "Prijatelj mora napraviti novi nalog.",
+    "inviteRulesStep3": "Poziv se broji kada odabere ulogu Igrač.",
+    "scoutBenefitsTitle": "Scout pogodnosti uskoro stižu",
+    "scoutBenefitsBody": "Nagrade za pozivanje trenutno su dostupne igračima. Scout alati i Pro pogodnosti dostupni su kroz Premium.",
+    "scoutBenefitsCta": "Pogledaj Premium"
   }
 }

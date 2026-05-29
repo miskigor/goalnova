@@ -579,17 +579,17 @@
     "messages": "Poruke",
     "admin": "Admin",
     "scoutDashboard": "Scout dashboard",
+    "dashboard": "Dashboard",
+    "scoutVerification": "Verifikacija",
+    "scoutVerificationCta": "Dovrši verifikaciju",
+    "scoutVerificationBanner": "Verificiraj skaut račun za dashboard, Discover i poruke.",
     "adminScoutVerifications": "Verifikacije skauta",
     "adminPanel": "Admin",
     "adminUnreadShort": "{count, plural, one {# poruka} few {# poruke} other {# poruka}}",
     "myBenefits": "Moje mogućnosti",
     "support": "Podrška",
     "quickLinksSection": "Račun i mogućnosti",
-    "moreInMenu": "Više u aplikaciji",
-    "dashboard": "Dashboard",
-    "scoutVerification": "Verifikacija",
-    "scoutVerificationCta": "Dovrši verifikaciju",
-    "scoutVerificationBanner": "Verificiraj skaut račun za dashboard, Discover i poruke."
+    "moreInMenu": "Više u aplikaciji"
   },
   "music": {
     "addMusic": "Dodaj muziku",
@@ -1085,6 +1085,8 @@
     "bio": "Bio",
     "bioEmpty": "Još nema biografije.",
     "detailsSectionAria": "Podaci o igraču",
+    "detailsShowAll": "Prikaži sve",
+    "detailsHide": "Sakrij",
     "videosHeading": "Učitani videozapisi",
     "videosSectionAria": "Videozapisi igrača",
     "noVideos": "Još nema učitanih videozapisa.",
@@ -1993,19 +1995,6 @@
       "f3Short": "Dijeljene liste",
       "f4Short": "Klupski dashboard",
       "f5Short": "PDF izvještaji"
-    },
-    "scoutProDescription": "Za skaute koji žele brži radni tijek kako PitchRush raste.",
-    "scoutPlans": {
-      "pro": {
-        "f1": "Više skaut alata kako PitchRush raste",
-        "f2": "Nadogradnje radnog tijeka s vremenom",
-        "f3": "Rani pristup novim skaut značajkama",
-        "f4": "Prošireni limiti kad krene primjena",
-        "f5": "Shortliste i usporedbe (planirano)",
-        "f6": "AI skautiranje (planirano)",
-        "f7": "Nadogradnje poruka (planirano)",
-        "f8": "Poboljšanja otkrivanja talenata (planirano)"
-      }
     }
   },
   "payment": {
