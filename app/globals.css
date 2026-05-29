@@ -74,6 +74,32 @@ html {
   overflow-x: clip;
 }
 
+/* Profile video grid — fixed 9:16 cells; clip fills the cell (all breakpoints). */
+[data-profile-shell] [data-profile-video-cell] {
+  contain: layout style;
+}
+
+[data-profile-shell] [data-profile-video-tile] {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  min-height: 0;
+  aspect-ratio: auto;
+}
+
+[data-profile-shell] [data-profile-video-tile] video {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+}
+
 /* Mobile: fixed inset shell (Safari URL bar — avoid 100dvh pushing chrome off-screen). */
 @media (max-width: 1023px) {
   :root {
@@ -348,13 +374,6 @@ html {
     max-width: 100% !important;
     object-fit: contain !important;
     object-position: center !important;
-  }
-
-  /* Profile grid — fixed 9:16 tile; height from aspect-ratio, not shrinking h-full chain. */
-  [data-profile-shell] [data-gn-video-media] {
-    height: auto;
-    max-height: none;
-    min-height: 0;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] video {

@@ -30,3 +30,7 @@ export const GN_VIDEO_MEDIA_POSTER_CLASS =
 
 export const GN_VIDEO_MEDIA_POSTER_ABSOLUTE_CLASS =
   `pointer-events-none absolute inset-0 z-0 ${GN_VIDEO_MEDIA_POSTER_CLASS}`;
+
+/** Profile 3-column grid — fills fixed 9:16 cell (no letterbox shrink as metadata loads). */
+export const PROFILE_GRID_VIDEO_TILE_CLASS =
+  "pointer-events-none absolute inset-0 z-0 size-full object-cover object-center [color-scheme:dark]";

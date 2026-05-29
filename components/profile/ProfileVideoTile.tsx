@@ -8,7 +8,7 @@ import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
 import {
-  GN_VIDEO_MEDIA_ELEMENT_ABSOLUTE_CLASS,
+  PROFILE_GRID_VIDEO_TILE_CLASS,
   gnVideoMediaDataProps,
 } from "@/lib/video/videoMediaDisplayClasses";
 
@@ -57,13 +57,14 @@ export function ProfileVideoTile({
   const tile = (
     <div
       ref={containerRef}
+      data-profile-video-tile
       {...gnVideoMediaDataProps}
-      className="relative box-border w-full min-w-0 max-w-full shrink-0 overflow-hidden rounded-[0.85rem] border border-white/[0.08] bg-black aspect-[9/16]"
+      className="absolute inset-0 box-border overflow-hidden rounded-[0.85rem] border border-white/[0.08] bg-black"
     >
       {src && loadMedia ? (
         <video
           ref={videoRef}
-          className={GN_VIDEO_MEDIA_ELEMENT_ABSOLUTE_CLASS}
+          className={PROFILE_GRID_VIDEO_TILE_CLASS}
           muted
           playsInline
           preload="metadata"
@@ -114,17 +115,17 @@ export function ProfileVideoTile({
 
   if (!href) {
     return (
-      <div className="relative">
+      <div className="relative size-full">
         {tile}
         {deleteButton}
       </div>
     );
   }
   return (
-    <div className="relative box-border w-full min-w-0 max-w-full overflow-hidden">
+    <div className="relative size-full">
       <Link
         href={href}
-        className="block box-border w-full min-w-0 max-w-full overflow-hidden outline-none ring-offset-2 ring-offset-gn-bg focus-visible:ring-2 focus-visible:ring-gn-accent/50"
+        className="absolute inset-0 block overflow-hidden outline-none ring-offset-2 ring-offset-gn-bg focus-visible:ring-2 focus-visible:ring-gn-accent/50"
       >
         {tile}
       </Link>
