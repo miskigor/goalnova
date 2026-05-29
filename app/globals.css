@@ -238,7 +238,7 @@ html {
     max-width: 100%;
   }
 
-  /* Home feed: visual viewport width + offset (vars set in HomeFeed while mounted). */
+  /* Home feed: full shell column width (no visualViewport translate/width vars). */
   [data-app-main]:has([data-pitchrusch-home-feed]),
   [data-app-main-inner]:has([data-pitchrusch-home-feed]),
   [data-pitchrusch-home-feed],
@@ -247,8 +247,8 @@ html {
   [data-pitchrusch-feed-item],
   [data-pitchrusch-feed-card] {
     box-sizing: border-box;
-    width: var(--gn-home-feed-vv-width, 100%);
-    max-width: var(--gn-home-feed-vv-width, 100%);
+    width: 100%;
+    max-width: 100%;
     min-width: 0;
     margin-left: 0 !important;
     margin-right: 0 !important;
@@ -311,7 +311,7 @@ html {
     overflow: hidden !important;
     overflow-x: clip;
     overscroll-behavior: none;
-    transform: translateX(var(--gn-home-feed-vv-left, 0px));
+    transform: none !important;
   }
 
   [data-app-main-inner]:has([data-pitchrusch-home-feed]) {
@@ -339,11 +339,11 @@ html {
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root] {
     max-height: calc(
-      100dvh - var(--gn-app-header-offset, 0px) - var(--gn-app-bottom-nav-offset, 4.5rem) -
+      100svh - var(--gn-app-header-offset, 0px) - var(--gn-app-bottom-nav-offset, 4.5rem) -
         0.5rem
     );
     height: calc(
-      100dvh - var(--gn-app-header-offset, 0px) - var(--gn-app-bottom-nav-offset, 4.5rem) -
+      100svh - var(--gn-app-header-offset, 0px) - var(--gn-app-bottom-nav-offset, 4.5rem) -
         0.5rem
     );
   }
@@ -405,7 +405,7 @@ html {
     inset-inline-start: 0 !important;
     inset-inline-end: auto !important;
     bottom: calc(0.75rem + 0.625rem) !important;
-    max-width: calc(var(--gn-home-feed-vv-width, 100%) - 5.5rem);
+    max-width: calc(100% - 5.5rem);
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px));
     padding-bottom: 0.125rem;
   }

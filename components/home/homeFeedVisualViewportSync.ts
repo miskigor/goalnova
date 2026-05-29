@@ -1,48 +1,12 @@
-import { isHomeFeedMobileViewport } from "@/components/home/homeFeedMobileScrollReset";
+/**
+ * Home feed layout uses shell `overflow-x: clip` and full-width columns (RC-2).
+ * visualViewport width/translate sync was removed — it caused horizontal drift on iOS.
+ */
 
-export const GN_HOME_FEED_VV_LEFT_VAR = "--gn-home-feed-vv-left";
-export const GN_HOME_FEED_VV_WIDTH_VAR = "--gn-home-feed-vv-width";
-
-const HOME_FEED_VV_SYNC_SELECTORS = [
-  "[data-app-main]",
-  "[data-app-main-inner]",
-  "[data-pitchrusch-home-feed]",
-  "[data-pitchrusch-feed-panel]",
-  "[data-pitchrusch-feed-scroll-root]",
-] as const;
-
-function homeFeedVisualViewportMetrics(): { left: string; width: string } {
-  const vv = typeof window !== "undefined" ? window.visualViewport : null;
-  const offsetLeft = Math.max(0, vv?.offsetLeft ?? 0);
-  const widthPx = vv?.width ?? window.innerWidth;
-  return {
-    left: `${offsetLeft}px`,
-    width: `${widthPx}px`,
-  };
-}
-
-/** Apply visual viewport CSS vars while {@link HomeFeed} is mounted (iOS / in-app browsers). */
 export function syncHomeFeedVisualViewportVars(): void {
-  if (typeof document === "undefined" || !isHomeFeedMobileViewport()) return;
-
-  const { left, width } = homeFeedVisualViewportMetrics();
-
-  for (const selector of HOME_FEED_VV_SYNC_SELECTORS) {
-    const el = document.querySelector(selector);
-    if (!(el instanceof HTMLElement)) continue;
-    el.style.setProperty(GN_HOME_FEED_VV_LEFT_VAR, left);
-    el.style.setProperty(GN_HOME_FEED_VV_WIDTH_VAR, width);
-  }
+  /* no-op */
 }
 
-/** Remove inline viewport vars on unmount. */
 export function clearHomeFeedVisualViewportVars(): void {
-  if (typeof document === "undefined") return;
-
-  for (const selector of HOME_FEED_VV_SYNC_SELECTORS) {
-    const el = document.querySelector(selector);
-    if (!(el instanceof HTMLElement)) continue;
-    el.style.removeProperty(GN_HOME_FEED_VV_LEFT_VAR);
-    el.style.removeProperty(GN_HOME_FEED_VV_WIDTH_VAR);
-  }
+  /* no-op */
 }

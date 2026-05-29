@@ -35,10 +35,6 @@ import {
   feedScrollRootProps,
 } from "@/lib/feed/feedScrollContract";
 import { runHomeFeedMountedScrollReset } from "@/components/home/homeFeedMobileScrollReset";
-import {
-  clearHomeFeedVisualViewportVars,
-  syncHomeFeedVisualViewportVars,
-} from "@/components/home/homeFeedVisualViewportSync";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
@@ -53,9 +49,9 @@ const FEED_BLEED = "w-full min-w-0 max-w-full overflow-x-clip";
 const HOME_FEED_MOBILE_STAGE =
   "max-lg:relative max-lg:box-border max-lg:flex max-lg:min-h-0 max-lg:w-full max-lg:max-w-full max-lg:flex-1 max-lg:flex-col max-lg:overflow-x-clip max-lg:overflow-y-hidden";
 
-/** Snap scrollport height — reserves bottom nav band (in-layout, not full 100dvh video). */
+/** Snap scrollport height — svh band between header offset and bottom nav (stable vs dvh). */
 const HOME_FEED_MOBILE_SCROLLPORT_HEIGHT =
-  "max-lg:h-[calc(100dvh-var(--gn-app-header-offset,0px)-var(--gn-app-bottom-nav-offset,4.5rem)-0.5rem)] max-lg:max-h-[calc(100dvh-var(--gn-app-header-offset,0px)-var(--gn-app-bottom-nav-offset,4.5rem)-0.5rem)]";
+  "max-lg:h-[calc(100svh-var(--gn-app-header-offset,0px)-var(--gn-app-bottom-nav-offset,4.5rem)-0.5rem)] max-lg:max-h-[calc(100svh-var(--gn-app-header-offset,0px)-var(--gn-app-bottom-nav-offset,4.5rem)-0.5rem)]";
 
 /**
  * Scrollport: one slide per visual page. Each `li` uses `flex-[0_0_100%]` (`grow-0 shrink-0 basis-full`)
@@ -431,33 +427,17 @@ export function HomeFeed() {
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [refreshMyVideosCount]);
 
-  /** Mobile-only viewport sync + horizontal scroll reset while HomeFeed is mounted. */
+  /** Mobile-only: clear horizontal scroll offsets on mount and rotation (no visualViewport sync). */
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const sync = () => {
-      syncHomeFeedVisualViewportVars();
-      runHomeFeedMountedScrollReset();
-    };
-
-    sync();
-    const t50 = window.setTimeout(sync, 50);
-    const t250 = window.setTimeout(sync, 250);
-
-    const vv = window.visualViewport;
-    vv?.addEventListener("resize", sync);
-    vv?.addEventListener("scroll", sync);
-    window.addEventListener("resize", sync, { passive: true });
-    window.addEventListener("orientationchange", sync, { passive: true });
+    runHomeFeedMountedScrollReset();
+    window.addEventListener("orientationchange", runHomeFeedMountedScrollReset, {
+      passive: true,
+    });
 
     return () => {
-      window.clearTimeout(t50);
-      window.clearTimeout(t250);
-      vv?.removeEventListener("resize", sync);
-      vv?.removeEventListener("scroll", sync);
-      window.removeEventListener("resize", sync);
-      window.removeEventListener("orientationchange", sync);
-      clearHomeFeedVisualViewportVars();
+      window.removeEventListener("orientationchange", runHomeFeedMountedScrollReset);
     };
   }, []);
 
