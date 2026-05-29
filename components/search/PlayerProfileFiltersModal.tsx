@@ -70,7 +70,7 @@ export function PlayerProfileFiltersModal({
 
   const modal = (
     <div
-      className="fixed inset-0 z-[100] box-border flex items-end justify-center overflow-x-clip bg-black/75 px-[max(1rem,env(safe-area-inset-left,0px))] pb-[max(1rem,env(safe-area-inset-bottom,0px))] pe-[max(1rem,env(safe-area-inset-right,0px))] pt-[max(0.75rem,env(safe-area-inset-top,0px))] backdrop-blur-sm sm:items-center sm:p-4"
+      className="fixed inset-0 z-[10100] box-border flex items-end justify-center overflow-x-clip bg-black/75 px-[max(1rem,env(safe-area-inset-left,0px))] pb-[max(1rem,env(safe-area-inset-bottom,0px))] pe-[max(1rem,env(safe-area-inset-right,0px))] pt-[max(0.75rem,env(safe-area-inset-top,0px))] backdrop-blur-sm sm:items-center sm:p-4"
       role="presentation"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -80,15 +80,18 @@ export function PlayerProfileFiltersModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="box-border max-h-[min(88dvh,40rem)] w-full min-w-0 max-w-lg overflow-x-clip overflow-y-auto overscroll-y-contain rounded-t-2xl border border-gn-border-subtle bg-gn-surface p-4 shadow-2xl sm:rounded-2xl sm:p-6"
+        className="box-border flex max-h-[min(88dvh,40rem)] w-full min-w-0 max-w-lg flex-col overflow-hidden rounded-t-2xl border border-gn-border-subtle bg-gn-surface shadow-2xl sm:max-h-[min(90dvh,40rem)] sm:rounded-2xl"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <h2 id={titleId} className="text-lg font-semibold text-gn-text">
-          {t("detailedTitle")}
-        </h2>
-        <p className="mt-1 text-sm text-gn-text-secondary">{t("detailedSubtitle")}</p>
+        <div className="shrink-0 px-4 pb-3 pt-4 sm:px-6 sm:pt-6">
+          <h2 id={titleId} className="text-lg font-semibold text-gn-text">
+            {t("detailedTitle")}
+          </h2>
+          <p className="mt-1 text-sm text-gn-text-secondary">{t("detailedSubtitle")}</p>
+        </div>
 
-        <div className="mt-5 grid min-w-0 gap-4 sm:grid-cols-2">
+        <div className="min-h-0 flex-1 overflow-x-clip overflow-y-auto overscroll-y-contain px-4 pb-4 [scroll-padding-bottom:1rem] sm:px-6 [-webkit-overflow-scrolling:touch]">
+        <div className="grid min-w-0 gap-4 sm:grid-cols-2">
           {field("position", "fieldPosition", "positionPlaceholder")}
           {field("country", "fieldCountry", "countryPlaceholder")}
           {field("city", "fieldCity", "cityPlaceholder")}
@@ -175,8 +178,10 @@ export function PlayerProfileFiltersModal({
             </div>
           </fieldset>
         ) : null}
+        </div>
 
-        <div className="mt-6 flex flex-wrap gap-2 border-t border-gn-border-subtle pt-4">
+        <div className="shrink-0 border-t border-gn-border-subtle bg-gn-surface px-4 pb-[max(1rem,env(safe-area-inset-bottom,0px))] pt-4 sm:px-6">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             className={`${GN_PRIMARY_BUTTON_CLASS} min-h-[2.75rem] px-5`}
@@ -206,6 +211,7 @@ export function PlayerProfileFiltersModal({
           >
             {t("cancelDetailed")}
           </button>
+        </div>
         </div>
       </div>
     </div>
