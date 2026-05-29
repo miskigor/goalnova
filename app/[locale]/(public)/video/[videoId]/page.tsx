@@ -84,8 +84,16 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
   const seoDescription =
     data.video.caption?.trim() || t("metaDescriptionFallback");
 
+  const exploreWatch = profileVideoLayout;
+
   return (
-    <div className="mx-auto w-full min-w-0 max-w-lg space-y-6 overflow-x-hidden px-4 py-8 pb-16 sm:px-6 lg:max-w-2xl">
+    <div
+      className={
+        exploreWatch
+          ? "mx-auto flex w-full min-w-0 max-w-lg flex-1 flex-col justify-end gap-2 overflow-x-hidden px-3 py-2 max-lg:min-h-0 max-lg:pb-3 sm:px-4 lg:max-w-2xl lg:space-y-6 lg:px-6 lg:py-8 lg:pb-16"
+          : "mx-auto w-full min-w-0 max-w-lg space-y-6 overflow-x-hidden px-4 py-8 pb-16 sm:px-6 lg:max-w-2xl"
+      }
+    >
       <PublicVideoJsonLd
         locale={locale}
         videoId={videoId}
@@ -94,29 +102,6 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
         videoContentUrl={videoUrl}
         uploadDateIso={data.video.created_at ?? null}
       />
-      <header className="min-w-0 space-y-3 pb-2">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gn-accent">
-          {t("branding")}
-        </p>
-        <div className="flex min-w-0 items-center gap-3">
-          <ProfileAvatar
-            name={displayName}
-            imageUrl={data.userAvatarUrl?.trim() || undefined}
-          />
-          <div className="min-w-0 flex-1 space-y-1">
-            <h1 className="truncate text-2xl font-semibold tracking-tight text-gn-text">
-              {displayName}
-            </h1>
-            <p className="text-sm text-gn-text-secondary">{t("highlightSubtitle")}</p>
-            <Link
-              href={profileHref}
-              className="inline-flex max-w-full truncate text-sm font-medium text-gn-accent hover:underline"
-            >
-              @{data.profile?.username?.trim() || displayName}
-            </Link>
-          </div>
-        </div>
-      </header>
 
       <PublicVideoWatchPlayer
         videoId={videoId}
@@ -124,39 +109,123 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
         playerDisplayName={displayName}
         caption={data.video.caption}
         layout={profileVideoLayout ? "profile" : "default"}
+        showCaptionOverlay={!exploreWatch}
       />
 
-      {data.challenge ? (
-        <div className="flex min-w-0 max-w-full flex-wrap gap-2">
-          <ChallengeTagPill
-            routeSegment={challengeLinkSegment(data.challenge)}
-            displayTitle={challengeDisplayTitle(data.challenge)}
-          />
-        </div>
-      ) : null}
-
-      <section className="min-w-0 space-y-2 rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4">
-        <h2 className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
-          {t("captionLabel")}
-        </h2>
-        <p className="break-words text-sm leading-relaxed text-gn-text">{caption}</p>
-      </section>
-
-      {data.musicTrack ? (
-        <section className="min-w-0 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3">
-          <VideoMusicCredit track={data.musicTrack} />
-        </section>
-      ) : null}
-
-      <PublicVideoDetailPanel videoId={videoId} ownerUserId={data.video.user_id} />
-
-      <div className="flex min-w-0">
-        <Link
-          href="/explore"
-          className="text-sm font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
+      <div
+        className={
+          exploreWatch
+            ? "flex min-w-0 flex-col gap-2 max-lg:shrink-0"
+            : "contents"
+        }
+      >
+        <header
+          className={
+            exploreWatch
+              ? "min-w-0 space-y-1"
+              : "min-w-0 space-y-3 pb-2"
+          }
         >
-          {t("moreHighlights")}
-        </Link>
+          {!exploreWatch ? (
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gn-accent">
+              {t("branding")}
+            </p>
+          ) : null}
+          <div className="flex min-w-0 items-center gap-2.5 max-lg:gap-2">
+            <ProfileAvatar
+              name={displayName}
+              imageUrl={data.userAvatarUrl?.trim() || undefined}
+              sizeClassName={exploreWatch ? "h-9 w-9 max-lg:h-9 max-lg:w-9 lg:h-14 lg:w-14" : undefined}
+            />
+            <div className="min-w-0 flex-1 space-y-0.5">
+              <h1
+                className={
+                  exploreWatch
+                    ? "truncate text-base font-semibold tracking-tight text-gn-text max-lg:text-[0.9375rem]"
+                    : "truncate text-2xl font-semibold tracking-tight text-gn-text"
+                }
+              >
+                {displayName}
+              </h1>
+              {!exploreWatch ? (
+                <p className="text-sm text-gn-text-secondary">{t("highlightSubtitle")}</p>
+              ) : null}
+              <Link
+                href={profileHref}
+                className={
+                  exploreWatch
+                    ? "inline-flex max-w-full truncate text-xs font-medium text-gn-accent hover:underline"
+                    : "inline-flex max-w-full truncate text-sm font-medium text-gn-accent hover:underline"
+                }
+              >
+                @{data.profile?.username?.trim() || displayName}
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {data.challenge ? (
+          <div className="flex min-w-0 max-w-full flex-wrap gap-2">
+            <ChallengeTagPill
+              routeSegment={challengeLinkSegment(data.challenge)}
+              displayTitle={challengeDisplayTitle(data.challenge)}
+            />
+          </div>
+        ) : null}
+
+        <section
+          className={
+            exploreWatch
+              ? "min-w-0 space-y-1 rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-3"
+              : "min-w-0 space-y-2 rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4"
+          }
+        >
+          <h2
+            className={
+              exploreWatch
+                ? "text-[10px] font-medium uppercase tracking-wider text-gn-text-tertiary"
+                : "text-xs font-medium uppercase tracking-wider text-gn-text-tertiary"
+            }
+          >
+            {t("captionLabel")}
+          </h2>
+          <p
+            className={
+              exploreWatch
+                ? "line-clamp-4 break-words text-xs leading-relaxed text-gn-text"
+                : "break-words text-sm leading-relaxed text-gn-text"
+            }
+          >
+            {caption}
+          </p>
+        </section>
+
+        {data.musicTrack ? (
+          <section
+            className={
+              exploreWatch
+                ? "min-w-0 rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-3 py-2"
+                : "min-w-0 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3"
+            }
+          >
+            <VideoMusicCredit track={data.musicTrack} />
+          </section>
+        ) : null}
+
+        <PublicVideoDetailPanel videoId={videoId} ownerUserId={data.video.user_id} />
+
+        <div className="flex min-w-0 pb-0.5">
+          <Link
+            href="/explore"
+            className={
+              exploreWatch
+                ? "text-xs font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
+                : "text-sm font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
+            }
+          >
+            {t("moreHighlights")}
+          </Link>
+        </div>
       </div>
     </div>
   );

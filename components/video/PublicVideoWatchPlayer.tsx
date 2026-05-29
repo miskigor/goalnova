@@ -14,8 +14,10 @@ type Props = {
   sources: string[];
   playerDisplayName: string;
   caption: string | null;
-  /** Same aspect band as {@link ProfileVideoTile} (explore → watch). */
+  /** Same aspect band as explore tiles (explore → watch). */
   layout?: "default" | "profile";
+  /** When false, caption is shown only in the page body (explore watch). */
+  showCaptionOverlay?: boolean;
 };
 
 const SHARE_RAIL_CLASS =
@@ -27,11 +29,12 @@ export function PublicVideoWatchPlayer({
   playerDisplayName,
   caption,
   layout = "default",
+  showCaptionOverlay = true,
 }: Props) {
   const captionText = caption?.trim() ?? "";
   const profileLayout = layout === "profile";
   const stageClass = profileLayout
-    ? `relative aspect-[1/1] w-full min-w-0 max-w-full sm:aspect-[9/16] ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`
+    ? `relative mx-auto aspect-[3/4] h-[min(42dvh,360px)] w-[min(88vw,320px)] max-w-full shrink-0 ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`
     : `relative aspect-[9/16] max-h-[min(82dvh,720px)] w-full min-w-0 max-w-full sm:aspect-auto sm:max-h-[min(75vh,640px)] ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`;
   const videoClass = profileLayout
     ? `relative z-0 ${GN_VIDEO_MEDIA_ELEMENT_CLASS}`
@@ -66,7 +69,7 @@ export function PublicVideoWatchPlayer({
             }
           />
         </div>
-        {captionText ? (
+        {showCaptionOverlay && captionText ? (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 max-w-[calc(100%-3.5rem)] px-3 pb-3 pt-10 sm:max-w-[calc(100%-4rem)]">
             <p className="line-clamp-3 break-words text-sm leading-snug text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
               {captionText}
