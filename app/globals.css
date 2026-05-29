@@ -365,8 +365,8 @@ html {
     transform: none !important;
   }
 
-  [data-gn-video-media] video,
-  [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] video {
+  /* Letterbox outside home feed — home uses cover in its own rules below. */
+  [data-gn-video-media]:not([data-pitchrusch-feed-video]) video {
     box-sizing: border-box;
     width: 100% !important;
     height: 100% !important;
@@ -376,7 +376,26 @@ html {
     object-position: center !important;
   }
 
+  /* Početna: fill the fixed mobile frame; do not letterbox-shrink as metadata loads. */
+  [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-video-frame] {
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] [data-gn-video-media],
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] [data-gn-video-media] > div {
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0;
+  }
+
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] video {
+    box-sizing: border-box;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    max-width: 100% !important;
+    object-fit: cover !important;
     object-position: center center !important;
   }
 
