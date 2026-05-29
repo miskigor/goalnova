@@ -124,7 +124,7 @@ function RankingCard({
   t: ReturnType<typeof useTranslations<"rankings">>;
 }) {
   const profileHref = `/player/${encodeURIComponent(item.playerSlug)}`;
-  const videoHref = `/video/${encodeURIComponent(item.videoId)}`;
+  const videoHref = `/video/${encodeURIComponent(item.videoId)}?from=rankings` as const;
 
   const metaParts: string[] = [];
   if (item.position?.trim()) {

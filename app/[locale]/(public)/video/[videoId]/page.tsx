@@ -61,12 +61,17 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
   const { locale, videoId } = await params;
   const { from } = await searchParams;
   setRequestLocale(locale);
-  const profileVideoLayout = from === "explore";
+  const compactWatch = from === "explore" || from === "rankings";
+  const profileVideoLayout = compactWatch;
 
   const data = await getPublicVideoPageData(videoId);
   if (!data) notFound();
 
   const t = await getTranslations({ locale, namespace: "publicVideo" });
+  const tRankings =
+    from === "rankings"
+      ? await getTranslations({ locale, namespace: "rankings" })
+      : null;
 
   const displayName =
     data.profile?.full_name?.trim() ||
@@ -84,12 +89,10 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
   const seoDescription =
     data.video.caption?.trim() || t("metaDescriptionFallback");
 
-  const exploreWatch = profileVideoLayout;
-
   return (
     <div
       className={
-        exploreWatch
+        compactWatch
           ? "mx-auto flex w-full min-w-0 max-w-lg flex-1 flex-col justify-end gap-2 overflow-x-hidden px-3 py-2 max-lg:min-h-0 max-lg:pb-3 sm:px-4 lg:max-w-2xl lg:space-y-6 lg:px-6 lg:py-8 lg:pb-16"
           : "mx-auto w-full min-w-0 max-w-lg space-y-6 overflow-x-hidden px-4 py-8 pb-16 sm:px-6 lg:max-w-2xl"
       }
@@ -109,24 +112,24 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
         playerDisplayName={displayName}
         caption={data.video.caption}
         layout={profileVideoLayout ? "profile" : "default"}
-        showCaptionOverlay={!exploreWatch}
+        showCaptionOverlay={!compactWatch}
       />
 
       <div
         className={
-          exploreWatch
+          compactWatch
             ? "flex min-w-0 flex-col gap-2 max-lg:shrink-0"
             : "contents"
         }
       >
         <header
           className={
-            exploreWatch
+            compactWatch
               ? "min-w-0 space-y-1"
               : "min-w-0 space-y-3 pb-2"
           }
         >
-          {!exploreWatch ? (
+          {!compactWatch ? (
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gn-accent">
               {t("branding")}
             </p>
@@ -135,25 +138,25 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
             <ProfileAvatar
               name={displayName}
               imageUrl={data.userAvatarUrl?.trim() || undefined}
-              sizeClassName={exploreWatch ? "h-9 w-9 max-lg:h-9 max-lg:w-9 lg:h-14 lg:w-14" : undefined}
+              sizeClassName={compactWatch ? "h-9 w-9 max-lg:h-9 max-lg:w-9 lg:h-14 lg:w-14" : undefined}
             />
             <div className="min-w-0 flex-1 space-y-0.5">
               <h1
                 className={
-                  exploreWatch
+                  compactWatch
                     ? "truncate text-base font-semibold tracking-tight text-gn-text max-lg:text-[0.9375rem]"
                     : "truncate text-2xl font-semibold tracking-tight text-gn-text"
                 }
               >
                 {displayName}
               </h1>
-              {!exploreWatch ? (
+              {!compactWatch ? (
                 <p className="text-sm text-gn-text-secondary">{t("highlightSubtitle")}</p>
               ) : null}
               <Link
                 href={profileHref}
                 className={
-                  exploreWatch
+                  compactWatch
                     ? "inline-flex max-w-full truncate text-xs font-medium text-gn-accent hover:underline"
                     : "inline-flex max-w-full truncate text-sm font-medium text-gn-accent hover:underline"
                 }
@@ -175,14 +178,14 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
 
         <section
           className={
-            exploreWatch
+            compactWatch
               ? "min-w-0 space-y-1 rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-3"
               : "min-w-0 space-y-2 rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-4"
           }
         >
           <h2
             className={
-              exploreWatch
+              compactWatch
                 ? "text-[10px] font-medium uppercase tracking-wider text-gn-text-tertiary"
                 : "text-xs font-medium uppercase tracking-wider text-gn-text-tertiary"
             }
@@ -191,7 +194,7 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
           </h2>
           <p
             className={
-              exploreWatch
+              compactWatch
                 ? "line-clamp-4 break-words text-xs leading-relaxed text-gn-text"
                 : "break-words text-sm leading-relaxed text-gn-text"
             }
@@ -203,7 +206,7 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
         {data.musicTrack ? (
           <section
             className={
-              exploreWatch
+              compactWatch
                 ? "min-w-0 rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-3 py-2"
                 : "min-w-0 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3"
             }
@@ -216,14 +219,14 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
 
         <div className="flex min-w-0 pb-0.5">
           <Link
-            href="/explore"
+            href={from === "rankings" ? "/rankings" : "/explore"}
             className={
-              exploreWatch
+              compactWatch
                 ? "text-xs font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
                 : "text-sm font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
             }
           >
-            {t("moreHighlights")}
+            {from === "rankings" && tRankings ? tRankings("title") : t("moreHighlights")}
           </Link>
         </div>
       </div>
