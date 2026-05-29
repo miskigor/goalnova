@@ -9,7 +9,6 @@ import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFi
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
 import {
   GN_VIDEO_MEDIA_ELEMENT_ABSOLUTE_CLASS,
-  GN_VIDEO_MEDIA_STAGE_CLASS,
   gnVideoMediaDataProps,
 } from "@/lib/video/videoMediaDisplayClasses";
 
@@ -59,7 +58,7 @@ export function ProfileVideoTile({
     <div
       ref={containerRef}
       {...gnVideoMediaDataProps}
-      className={`${GN_VIDEO_MEDIA_STAGE_CLASS} aspect-[1/1] rounded-[0.85rem] border border-white/[0.08] sm:aspect-[9/16]`}
+      className="relative box-border w-full min-w-0 max-w-full shrink-0 overflow-hidden rounded-[0.85rem] border border-white/[0.08] bg-black aspect-[9/16]"
     >
       {src && loadMedia ? (
         <video
@@ -122,10 +121,10 @@ export function ProfileVideoTile({
     );
   }
   return (
-    <div className="relative box-border h-full w-full min-w-0 max-w-full overflow-hidden">
+    <div className="relative box-border w-full min-w-0 max-w-full overflow-hidden">
       <Link
         href={href}
-        className="block box-border h-full w-full min-w-0 max-w-full overflow-hidden outline-none ring-offset-2 ring-offset-gn-bg focus-visible:ring-2 focus-visible:ring-gn-accent/50"
+        className="block box-border w-full min-w-0 max-w-full overflow-hidden outline-none ring-offset-2 ring-offset-gn-bg focus-visible:ring-2 focus-visible:ring-gn-accent/50"
       >
         {tile}
       </Link>

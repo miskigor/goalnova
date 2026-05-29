@@ -350,6 +350,13 @@ html {
     object-position: center !important;
   }
 
+  /* Profile grid — fixed 9:16 tile; height from aspect-ratio, not shrinking h-full chain. */
+  [data-profile-shell] [data-gn-video-media] {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+  }
+
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] video {
     object-position: center center !important;
   }
