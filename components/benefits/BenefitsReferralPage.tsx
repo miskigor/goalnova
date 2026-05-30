@@ -1,10 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { hrefWithLocale } from "@/i18n/routing";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
+import { resetAppShellHorizontalScroll } from "@/lib/feed/feedScrollContract";
+import {
+  APP_MOBILE_PAGE_INSET_CLASS,
+  BENEFITS_PAGE_SHELL_CLASS,
+} from "@/lib/layout/appShellClasses";
+import { copyTextToClipboard } from "@/lib/share/copyToClipboard";
 import {
   resolveBenefitsAudience,
   type BenefitsAudienceSnapshot,
@@ -52,14 +58,35 @@ function BenefitsInfoCard({
     <BenefitsPageShell title={title}>
       <section className={cardClass}>
         <p className="text-sm leading-relaxed text-gn-text-secondary">{body}</p>
-        <Link
-          href={ctaHref}
-          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-4 py-3.5 text-xs font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg max-lg:px-2 max-lg:py-1.5 sm:w-auto sm:min-w-[12rem]"
-        >
+        <Link href={ctaHref} className={`${primaryButtonClass} mt-5 inline-flex items-center justify-center`}>
           {ctaLabel}
         </Link>
       </section>
     </BenefitsPageShell>
+  );
+}
+
+function runBenefitsMountedScrollReset() {
+  if (typeof window === "undefined") return;
+  if (!window.matchMedia("(max-width: 1023px)").matches) return;
+  resetAppShellHorizontalScroll();
+  if (typeof window.scrollTo === "function") {
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll("[data-app-main], [data-app-main-inner]").forEach((node) => {
+    if (node instanceof HTMLElement) {
+      node.scrollTop = 0;
+      node.scrollLeft = 0;
+    }
+  });
+}
+
+function BenefitsScrollEndSpacer() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none shrink-0 max-lg:block max-lg:h-[calc(var(--gn-app-bottom-nav-offset-measured,var(--gn-app-bottom-nav-offset,4.5rem))+2rem)] lg:hidden"
+    />
   );
 }
 
@@ -71,22 +98,57 @@ function BenefitsPageShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-2">
+    <BenefitsMobileShell>
       <header>
         <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
           {title}
         </h1>
       </header>
       {children}
+      <BenefitsScrollEndSpacer />
+    </BenefitsMobileShell>
+  );
+}
+
+function BenefitsMobileShell({ children }: { children: React.ReactNode }) {
+  useLayoutEffect(() => {
+    runBenefitsMountedScrollReset();
+    const frame = requestAnimationFrame(runBenefitsMountedScrollReset);
+    const t0 = window.setTimeout(runBenefitsMountedScrollReset, 0);
+    const t100 = window.setTimeout(runBenefitsMountedScrollReset, 100);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(t0);
+      window.clearTimeout(t100);
+    };
+  }, []);
+
+  return (
+    <div data-benefits-page className={BENEFITS_PAGE_SHELL_CLASS}>
+      <div
+        data-benefits-inset
+        className={`${APP_MOBILE_PAGE_INSET_CLASS} space-y-6 max-lg:space-y-3 sm:space-y-6`}
+      >
+        {children}
+      </div>
     </div>
   );
 }
 
 const cardClass =
-  "rounded-xl border border-orange-500/60 bg-gn-surface/20 p-4 shadow-sm max-lg:p-2 sm:p-5";
+  "box-border w-full min-w-0 max-w-full overflow-x-clip rounded-xl border border-orange-500/60 bg-gn-surface/20 p-4 shadow-sm max-lg:p-2.5 sm:p-5";
+
+const primaryButtonClass =
+  "box-border w-full max-w-full min-w-0 rounded-lg bg-orange-500 px-3 py-2.5 text-xs font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40 max-lg:py-2 sm:w-auto sm:min-w-[12rem] sm:rounded-xl sm:px-4 sm:py-3";
+
+const secondaryButtonClass =
+  "box-border w-full max-w-full min-w-0 rounded-lg border border-gn-border bg-gn-surface px-3 py-2 text-xs font-medium text-gn-text transition hover:border-orange-500/50 hover:bg-gn-surface-elevated disabled:cursor-not-allowed disabled:opacity-40 max-lg:py-1.5 sm:py-2.5";
+
+const accentOutlineButtonClass =
+  "box-border w-full max-w-full min-w-0 rounded-lg border border-orange-500/50 bg-orange-500/10 px-3 py-2 text-xs font-semibold text-orange-200 transition hover:bg-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40 max-lg:py-1.5 sm:py-2.5";
 
 const linkBoxClass =
-  "box-border w-full min-w-0 max-w-full overflow-hidden rounded-lg border border-gn-border-subtle bg-gn-surface/30 px-3 py-2.5 font-mono text-xs leading-relaxed text-gn-text break-all sm:text-sm";
+  "box-border w-full min-w-0 max-w-full overflow-x-auto rounded-lg border border-gn-border-subtle bg-gn-surface/30 px-2.5 py-2 font-mono text-[10px] leading-snug text-gn-text break-all max-lg:max-h-16 sm:px-3 sm:py-2.5 sm:text-xs";
 
 function isShareCancelled(err: unknown): boolean {
   return err instanceof DOMException && err.name === "AbortError";
@@ -96,22 +158,14 @@ function BenefitsScoutInfo() {
   const t = useTranslations("benefits");
 
   return (
-    <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-2">
-      <header>
-        <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
-          {t("scoutBenefitsTitle")}
-        </h1>
-      </header>
+    <BenefitsPageShell title={t("scoutBenefitsTitle")}>
       <section className={cardClass}>
         <p className="text-sm leading-relaxed text-gn-text-secondary">{t("scoutBenefitsBody")}</p>
-        <Link
-          href="/premium"
-          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-4 py-3.5 text-xs font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg max-lg:mt-4 max-lg:px-2 max-lg:py-1.5 sm:w-auto sm:min-w-[12rem]"
-        >
+        <Link href="/premium" className={`${primaryButtonClass} mt-5 inline-flex items-center justify-center`}>
           {t("scoutBenefitsCta")}
         </Link>
       </section>
-    </div>
+    </BenefitsPageShell>
   );
 }
 
@@ -146,9 +200,9 @@ function BenefitsReferralExtrasPage() {
 
   if (!snapshot) {
     return (
-      <div className="min-w-0 max-w-full py-6">
+      <BenefitsMobileShell>
         <p className="text-sm text-gn-text-secondary">{tCommon("loadingEllipsis")}</p>
-      </div>
+      </BenefitsMobileShell>
     );
   }
 
@@ -189,12 +243,17 @@ function BenefitsReferralExtrasPage() {
     return <BenefitsScoutInfo />;
   }
 
+  if (snapshot.audience === "player") {
+    return <BenefitsPlayerReferralContent mode="invite" />;
+  }
+
   return null;
 }
 
 function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" }) {
   const t = useTranslations("benefits");
   const tCommon = useTranslations("common");
+  const tShare = useTranslations("share");
   const locale = useLocale();
   const [loading, setLoading] = useState(true);
   const [dash, setDash] = useState<ReferralDashboard | null>(null);
@@ -202,6 +261,7 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
     null,
   );
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
 
   const load = useCallback(async () => {
     const { data, errorMessage, failureReason } = await fetchReferralDashboard();
@@ -274,12 +334,15 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
 
   const copyInviteUrl = useCallback(async () => {
     if (!inviteUrl) return;
-    try {
-      await navigator.clipboard.writeText(inviteUrl);
+    setCopyFailed(false);
+    const ok = await copyTextToClipboard(inviteUrl);
+    if (ok) {
       showCopiedToast();
-    } catch {
-      setCopied(false);
+      return;
     }
+    setCopied(false);
+    setCopyFailed(true);
+    window.setTimeout(() => setCopyFailed(false), 5000);
   }, [inviteUrl, showCopiedToast]);
 
   const shareData = useMemo(
@@ -323,9 +386,9 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
 
   if (loading) {
     return (
-      <div className="min-w-0 max-w-full py-6">
+      <BenefitsMobileShell>
         <p className="text-sm text-gn-text-secondary">{tCommon("loadingEllipsis")}</p>
-      </div>
+      </BenefitsMobileShell>
     );
   }
 
@@ -337,7 +400,7 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
         type="button"
         onClick={onInvitePrimary}
         disabled={!hasLink}
-        className="w-full rounded-xl bg-orange-500 px-4 py-3.5 text-xs font-semibold text-black shadow-sm transition hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5 sm:w-auto sm:min-w-[12rem]"
+        className={primaryButtonClass}
       >
         {t("inviteFriendButton")}
       </button>
@@ -372,7 +435,7 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
             type="button"
             onClick={() => void copyInviteUrl()}
             disabled={!hasLink}
-            className="rounded-xl border border-gn-border bg-gn-surface px-4 py-2.5 text-xs font-medium text-gn-text transition hover:border-orange-500/50 hover:bg-gn-surface-elevated disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5"
+            className={secondaryButtonClass}
           >
             {t("copyLink")}
           </button>
@@ -380,7 +443,7 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
             type="button"
             onClick={onShareSecondary}
             disabled={!hasLink}
-            className="rounded-xl border border-orange-500/50 bg-orange-500/10 px-4 py-2.5 text-xs font-semibold text-orange-200 transition hover:bg-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40 max-lg:px-2 max-lg:py-1.5"
+            className={accentOutlineButtonClass}
           >
             {t("shareLink")}
           </button>
@@ -390,6 +453,11 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
       {copied ? (
         <p className="text-sm font-medium text-orange-400" role="status">
           {t("inviteLinkCopied")}
+        </p>
+      ) : null}
+      {copyFailed ? (
+        <p className="text-sm font-medium text-red-300/90" role="alert">
+          {tShare("copyFailed")}
         </p>
       ) : null}
 
@@ -463,14 +531,14 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
 
   if (mode === "invite") {
     return (
-      <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-2">
+      <BenefitsMobileShell>
         <header>
           <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
             {t("benefitsTitle")}
           </h1>
         </header>
 
-        <section className="space-y-5 max-lg:space-y-2" aria-labelledby="benefits-invite-heading">
+        <section className="space-y-4 max-lg:space-y-2.5" aria-labelledby="benefits-invite-heading">
           <h2
             id="benefits-invite-heading"
             className="text-lg font-semibold text-gn-text max-lg:text-sm"
@@ -481,18 +549,20 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
         </section>
 
         <section
-          className="space-y-5 max-lg:space-y-2"
+          className="space-y-4 max-lg:space-y-2.5"
           aria-labelledby="benefits-invite-progress-heading"
         >
           {rewardsFields}
         </section>
-      </div>
+
+        <BenefitsScrollEndSpacer />
+      </BenefitsMobileShell>
     );
   }
 
   return (
-    <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip max-lg:space-y-2 sm:space-y-8">
-      <section className="space-y-5 max-lg:space-y-2" aria-labelledby="benefits-rewards-heading">
+    <BenefitsMobileShell>
+      <section className="space-y-4 max-lg:space-y-2.5" aria-labelledby="benefits-rewards-heading">
         <h2
           id="benefits-rewards-heading"
           className="text-lg font-semibold text-gn-text max-lg:text-sm"
@@ -501,6 +571,7 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
         </h2>
         {rewardsFields}
       </section>
-    </div>
+      <BenefitsScrollEndSpacer />
+    </BenefitsMobileShell>
   );
 }

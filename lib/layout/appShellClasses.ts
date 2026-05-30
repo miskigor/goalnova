@@ -155,14 +155,21 @@ export const SETTINGS_PROFILE_PAGE_SHELL_CLASS =
   "mx-auto box-border w-full min-w-0 max-w-full overflow-x-clip sm:max-w-2xl lg:max-w-2xl";
 
 /**
- * Mobile-only column inset — keeps inputs/buttons off the app chrome edges.
+ * Mobile-only column inset — keeps content off the app chrome edges.
  * `calc(100% - 2.5rem)` ≈ 1.25rem margin each side inside the scrollport.
  */
-export const SETTINGS_PROFILE_MOBILE_INSET_CLASS = [
+export const APP_MOBILE_PAGE_INSET_CLASS = [
   "box-border w-full min-w-0 overflow-x-clip",
   "max-lg:mx-auto max-lg:max-w-[calc(100%-2.5rem)] max-lg:px-1",
   "lg:max-w-full lg:px-0",
 ].join(" ");
+
+/** @deprecated Use {@link APP_MOBILE_PAGE_INSET_CLASS} */
+export const SETTINGS_PROFILE_MOBILE_INSET_CLASS = APP_MOBILE_PAGE_INSET_CLASS;
+
+/** `/benefits` — outer shell (inset on {@link APP_MOBILE_PAGE_INSET_CLASS}). */
+export const BENEFITS_PAGE_SHELL_CLASS =
+  "mx-auto box-border w-full min-w-0 max-w-full overflow-x-clip sm:max-w-2xl lg:max-w-2xl";
 
 /** Scout verification form and status cards. */
 export const SCOUT_APPLY_SECTION_CLASS =

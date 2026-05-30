@@ -671,6 +671,63 @@ html {
     min-width: 0;
   }
 
+  /*
+   * /benefits — same inset column + scroll band as settings/profile.
+   */
+  [data-app-root]:not(:has([data-pitchrusch-home-feed])):has([data-benefits-page]) {
+    bottom: calc(
+      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem))
+      + var(--gn-mobile-visual-bottom-inset, 0px)
+    ) !important;
+  }
+
+  [data-app-main]:not(:has([data-pitchrusch-home-feed])):has([data-benefits-page]) {
+    overflow-x: hidden !important;
+    padding-left: max(0.625rem, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(0.625rem, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: calc(
+      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem)) + 2.75rem
+      + var(--gn-mobile-visual-bottom-inset, 0px)
+    ) !important;
+    scroll-padding-top: var(--gn-page-content-scroll-padding-top);
+    scroll-padding-bottom: calc(
+      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem)) + 2.75rem
+      + var(--gn-mobile-visual-bottom-inset, 0px)
+    );
+  }
+
+  [data-app-main-inner]:has([data-benefits-page]) {
+    flex: 0 1 auto;
+    height: auto;
+    min-height: min-content;
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  [data-benefits-page],
+  [data-benefits-inset] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  [data-benefits-inset] {
+    margin-inline: auto;
+    max-width: calc(100% - 2.5rem);
+    padding-inline: 0.25rem;
+  }
+
+  [data-benefits-inset] button,
+  [data-benefits-inset] a,
+  [data-benefits-inset] section,
+  [data-benefits-inset] .rounded-xl {
+    box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
+  }
+
   /* /premium — fixed band; no pull-to-shift; bottom tab bar must stay visible (no body overflow clip). */
   html:has([data-premium-fit-viewport]) {
     overscroll-behavior: none !important;

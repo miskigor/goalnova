@@ -47,7 +47,7 @@ import { fetchMyPlayerPremiumProfile, setFeaturedVideo } from "@/lib/supabase/pl
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
 import { resetAppShellHorizontalScroll } from "@/lib/feed/feedScrollContract";
 import {
-  SETTINGS_PROFILE_MOBILE_INSET_CLASS,
+  APP_MOBILE_PAGE_INSET_CLASS,
   SETTINGS_PROFILE_PAGE_SHELL_CLASS,
 } from "@/lib/layout/appShellClasses";
 import { supabase } from "@/lib/supabase/client";
@@ -152,7 +152,7 @@ function ProfileEditorShell({ children }: { children: React.ReactNode }) {
     >
       <div
         data-settings-profile-inset
-        className={`${SETTINGS_PROFILE_MOBILE_INSET_CLASS} space-y-3 max-lg:space-y-2.5 sm:space-y-6`}
+        className={`${APP_MOBILE_PAGE_INSET_CLASS} space-y-3 max-lg:space-y-2.5 sm:space-y-6`}
       >
         {children}
       </div>
