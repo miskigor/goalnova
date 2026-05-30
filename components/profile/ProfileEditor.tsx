@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import {
   isApprovedScoutUser,
   parseScoutVerificationStatus,
@@ -27,7 +27,6 @@ import { DeleteAccountSection } from "@/components/profile/DeleteAccountSection"
 import { ProfileAvatarEditor } from "@/components/profile/ProfileAvatarEditor";
 import { PlayerFollowSection } from "@/components/profile/PlayerFollowSection";
 import { ProfilePremiumBanner } from "@/components/premium/ProfilePremiumBanner";
-import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { VerifiedScoutBadge } from "@/components/scout/VerifiedScoutBadge";
 import { dispatchAvatarUrlUpdated } from "@/lib/avatar/avatarClientEvents";
 import {
@@ -46,6 +45,11 @@ import {
 } from "@/lib/profile/playerFormOptions";
 import { fetchMyPlayerPremiumProfile, setFeaturedVideo } from "@/lib/supabase/playerPremium";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
+import { resetAppShellHorizontalScroll } from "@/lib/feed/feedScrollContract";
+import {
+  SETTINGS_PROFILE_MOBILE_INSET_CLASS,
+  SETTINGS_PROFILE_PAGE_SHELL_CLASS,
+} from "@/lib/layout/appShellClasses";
 import { supabase } from "@/lib/supabase/client";
 
 function Spinner({ className = "h-4 w-4 text-black" }: { className?: string }) {
@@ -78,20 +82,83 @@ const fieldBlockClass = "min-w-0 max-w-full";
 
 const inputClass = [
   fieldBlockClass,
-  "mt-1 w-full rounded-xl border border-gn-border bg-gn-surface px-3 py-2.5 text-sm text-gn-text",
+  "mt-0.5 w-full max-w-full rounded-xl border border-gn-border bg-gn-surface text-sm text-gn-text",
+  "max-lg:mt-0 max-lg:h-8 max-lg:min-h-8 max-lg:rounded-lg max-lg:px-2.5 max-lg:py-1 max-lg:text-xs max-lg:leading-snug",
+  "lg:px-3 lg:py-2.5",
   "placeholder:text-gn-text-tertiary outline-none transition-[border-color,box-shadow]",
-  "focus:border-gn-accent/60 focus:ring-2 focus:ring-gn-accent/25 sm:px-3.5 sm:py-3",
+  "focus:border-gn-accent/60 focus:ring-2 focus:ring-gn-accent/25 max-lg:focus:ring-1 max-lg:focus:ring-inset",
+  "lg:focus:ring-2",
 ].join(" ");
 
-/** Native select: tall tap target, no horizontal overflow. */
 const selectClass = [
   inputClass,
-  "min-h-[44px] cursor-pointer appearance-none bg-[length:1.125rem] bg-[right_0.65rem_center] bg-no-repeat pr-9",
+  "cursor-pointer appearance-none bg-no-repeat",
+  "max-lg:pr-7 max-lg:bg-[length:0.75rem] max-lg:bg-[right_0.4rem_center]",
+  "lg:min-h-[44px] lg:bg-[length:1.125rem] lg:bg-[right_0.65rem_center] lg:pr-9",
   "bg-[url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E\")]",
 ].join(" ");
 
+const saveButtonClass = [
+  "inline-flex w-full max-w-full min-w-0 items-center justify-center gap-1.5 font-semibold text-black",
+  "rounded-lg bg-gn-accent ring-1 ring-white/10 transition-colors",
+  "hover:bg-gn-accent-hover disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-45",
+  "max-lg:h-9 max-lg:rounded-lg max-lg:px-3 max-lg:py-1.5 max-lg:text-xs max-lg:shadow-none",
+  "lg:rounded-xl lg:px-4 lg:py-3 lg:text-sm lg:shadow-[0_8px_28px_-6px_rgba(249,115,22,0.45)]",
+].join(" ");
+
 const labelClass =
-  "block text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary sm:text-xs";
+  "block text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary max-lg:text-[10px] sm:text-xs";
+
+const editorStatusBoxClass =
+  "min-w-0 max-w-full overflow-x-clip rounded-2xl px-3 py-3 text-xs sm:px-4 sm:py-4 sm:text-sm";
+
+function runProfileEditorMountedScrollReset(titleEl: HTMLElement | null) {
+  if (typeof window === "undefined") return;
+  if (!window.matchMedia("(max-width: 1023px)").matches) return;
+  resetAppShellHorizontalScroll();
+  if (typeof window.scrollTo === "function") {
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll("[data-app-main], [data-app-main-inner]").forEach((node) => {
+    if (node instanceof HTMLElement) {
+      node.scrollTop = 0;
+      node.scrollLeft = 0;
+    }
+  });
+  const main = document.querySelector("[data-app-main]");
+  if (!(titleEl && main instanceof HTMLElement)) return;
+  const delta = titleEl.getBoundingClientRect().top - main.getBoundingClientRect().top;
+  if (delta < -1) {
+    main.scrollTop = Math.max(0, main.scrollTop + delta);
+  }
+}
+
+/** Clears tab-bar overlap at the end of the long settings form (mobile only). */
+function SettingsProfileScrollEndSpacer() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none shrink-0 max-lg:block max-lg:h-[calc(var(--gn-app-bottom-nav-offset-measured,var(--gn-app-bottom-nav-offset,4.5rem))+3rem)] lg:hidden"
+    />
+  );
+}
+
+function ProfileEditorShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      data-settings-profile-editor
+      data-settings-profile-page
+      className={SETTINGS_PROFILE_PAGE_SHELL_CLASS}
+    >
+      <div
+        data-settings-profile-inset
+        className={`${SETTINGS_PROFILE_MOBILE_INSET_CLASS} space-y-3 max-lg:space-y-2.5 sm:space-y-6`}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
 
 const SCOUT_ROLE_OPTIONS = [
   "Head Scout",
@@ -109,11 +176,40 @@ export function ProfileEditor() {
   const tCommon = useTranslations("authCommon");
   const tErr = useTranslations("errors");
   const router = useRouter();
+  const pathname = usePathname();
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pasteHint, setPasteHint] = useState<string | null>(null);
   const pasteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (typeof history === "undefined" || !("scrollRestoration" in history)) return;
+    const prev = history.scrollRestoration;
+    history.scrollRestoration = "manual";
+    return () => {
+      history.scrollRestoration = prev;
+    };
+  }, []);
+
+  /** Tab shell can keep scroll offsets from feed/explore — reset when form is shown. */
+  useLayoutEffect(() => {
+    if (loading) return;
+    const titleEl = titleRef.current;
+    const run = () => runProfileEditorMountedScrollReset(titleEl);
+    run();
+    const frame = requestAnimationFrame(run);
+    const t0 = window.setTimeout(run, 0);
+    const t100 = window.setTimeout(run, 100);
+    const t300 = window.setTimeout(run, 300);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(t0);
+      window.clearTimeout(t100);
+      window.clearTimeout(t300);
+    };
+  }, [loading, pathname]);
 
   const flashPasteBlocked = useCallback(() => {
     setPasteHint(t("pasteBlockedSql"));
@@ -378,20 +474,26 @@ export function ProfileEditor() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[40vh] items-center justify-center">
-        <div className="flex items-center gap-2 text-sm text-gn-text-secondary">
-          <Spinner className="h-4 w-4 text-gn-accent" />
-          {tCommon("loading")}
+      <ProfileEditorShell>
+        <div className="flex min-h-[40vh] items-center justify-center">
+          <div className="flex items-center gap-2 text-sm text-gn-text-secondary">
+            <Spinner className="h-4 w-4 text-gn-accent" />
+            {tCommon("loading")}
+          </div>
         </div>
-      </div>
+      </ProfileEditorShell>
     );
   }
 
   return (
-    <div className="w-full min-w-0 max-w-full space-y-4 sm:space-y-6">
+    <ProfileEditorShell>
       <div className="min-w-0 max-w-full">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
-          <h1 className="min-w-0 max-w-full shrink break-words text-xl font-semibold tracking-tight text-gn-text sm:text-2xl">
+          <h1
+            ref={titleRef}
+            id="settings-profile-title"
+            className="min-w-0 max-w-full shrink scroll-mt-[var(--gn-page-content-scroll-padding-top,1rem)] break-words text-lg font-semibold tracking-tight text-gn-text sm:text-2xl"
+          >
             {t("title")}
           </h1>
           {isApprovedScoutUser({
@@ -413,7 +515,7 @@ export function ProfileEditor() {
 
       {role === "scout" && scoutVerificationStatus === "none" ? (
         <div
-          className="min-w-0 max-w-full rounded-2xl border border-gn-accent/30 bg-gn-accent/10 px-4 py-4 text-sm"
+          className={`${editorStatusBoxClass} border border-gn-accent/30 bg-gn-accent/10`}
           role="status"
         >
           <p className="break-words font-medium text-gn-text">
@@ -424,7 +526,7 @@ export function ProfileEditor() {
           </p>
           <Link
             href="/scout-apply"
-            className="mt-3 inline-flex h-10 items-center justify-center rounded-full bg-gn-accent px-5 text-sm font-semibold text-black hover:bg-gn-accent-hover"
+            className="mt-3 inline-flex min-h-9 items-center justify-center rounded-full bg-gn-accent px-4 text-xs font-semibold text-black hover:bg-gn-accent-hover sm:h-10 sm:px-5 sm:text-sm"
           >
             {tSv("applyCta")}
           </Link>
@@ -433,7 +535,7 @@ export function ProfileEditor() {
 
       {role === "scout" && scoutVerificationStatus === "pending" ? (
         <div
-          className="min-w-0 max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-3 py-3 text-xs leading-relaxed text-gn-text-secondary sm:px-4 sm:py-4 sm:text-sm"
+          className={`${editorStatusBoxClass} border border-gn-border-subtle bg-gn-surface/40 leading-relaxed text-gn-text-secondary`}
           role="status"
         >
           <p className="break-words font-semibold leading-snug text-gn-text">
@@ -446,7 +548,7 @@ export function ProfileEditor() {
 
       {role === "scout" && scoutVerificationStatus === "rejected" ? (
         <div
-          className="min-w-0 max-w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-4 text-sm"
+          className={`${editorStatusBoxClass} border border-gn-border-subtle bg-gn-surface/40`}
           role="status"
         >
           <p className="break-words font-semibold text-gn-text">
@@ -457,7 +559,7 @@ export function ProfileEditor() {
           </p>
           <Link
             href="/scout-apply"
-            className="mt-3 inline-block text-sm font-medium text-gn-accent hover:underline"
+            className="mt-3 inline-block text-xs font-medium text-gn-accent hover:underline sm:text-sm"
           >
             {tSv("reapplyLink")}
           </Link>
@@ -470,15 +572,18 @@ export function ProfileEditor() {
 
       {showIncompleteHint ? (
         <p
-          className="max-w-full break-words rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3 text-sm text-gn-text-secondary"
+          className="max-w-full break-words rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-3 py-2.5 text-xs text-gn-text-secondary sm:px-4 sm:py-3 sm:text-sm"
           role="status"
         >
           {t("incompleteHint")}
         </p>
       ) : null}
 
-      <div className="min-w-0 max-w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-3 sm:p-4">
-        <div className="grid min-w-0 max-w-full gap-3 sm:gap-4">
+      <div
+        data-settings-profile-form-card
+        className="min-w-0 max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-2 max-lg:rounded-lg max-lg:p-2 lg:p-4"
+      >
+        <div className="grid min-w-0 max-w-full gap-2 max-lg:gap-1 lg:gap-4">
           {selfUserId ? (
             <ProfileAvatarEditor
               userId={selfUserId}
@@ -789,7 +894,7 @@ export function ProfileEditor() {
             <label className={labelClass}>{t("bio")}</label>
             <textarea
               suppressHydrationWarning
-              className={`${inputClass} min-h-[96px] resize-none break-words sm:min-h-[110px]`}
+              className={`${inputClass} resize-none break-words max-lg:min-h-[3.25rem] max-lg:h-auto lg:min-h-[110px]`}
               value={bio}
               onChange={(e) => setBio(sanitizeBio(e.target.value))}
               onPaste={(e) =>
@@ -830,11 +935,11 @@ export function ProfileEditor() {
                 placeholder={t("clubPlaceholder")}
               />
             </div>
-            <label className="flex items-center gap-2 text-sm text-gn-text-secondary">
+            <label className="flex items-center gap-2 text-xs text-gn-text-secondary sm:text-sm">
               <input type="checkbox" checked={isAvailableForTrials} onChange={(e) => setIsAvailableForTrials(e.target.checked)} />
               {t("availableForTrials")}
             </label>
-            <label className="flex items-center gap-2 text-sm text-gn-text-secondary">
+            <label className="flex items-center gap-2 text-xs text-gn-text-secondary sm:text-sm">
               <input type="checkbox" checked={isLookingForClub} onChange={(e) => setIsLookingForClub(e.target.checked)} />
               {t("lookingForClub")}
             </label>
@@ -848,7 +953,11 @@ export function ProfileEditor() {
             </div>
             <div className={fieldBlockClass}>
               <label className={labelClass}>{t("careerHistory")}</label>
-              <textarea className={`${inputClass} min-h-[88px]`} value={careerHistory} onChange={(e) => setCareerHistory(e.target.value)} />
+              <textarea
+                className={`${inputClass} resize-none max-lg:min-h-[2.75rem] max-lg:h-auto lg:min-h-[88px]`}
+                value={careerHistory}
+                onChange={(e) => setCareerHistory(e.target.value)}
+              />
             </div>
             {playerPremiumActive ? (
               <div className={fieldBlockClass}>
@@ -888,17 +997,19 @@ export function ProfileEditor() {
 
       <button
         type="button"
+        data-settings-profile-save
         disabled={!canSave}
         aria-busy={saving}
         onClick={() => void onSave()}
-        className={`${GN_PRIMARY_BUTTON_CLASS} box-border w-full max-w-full min-w-0 py-3.5`}
+        className={saveButtonClass}
       >
         {saving ? <Spinner /> : null}
         {saving ? t("saving") : t("save")}
       </button>
 
       <DeleteAccountSection />
-    </div>
+      <SettingsProfileScrollEndSpacer />
+    </ProfileEditorShell>
   );
 }
 

@@ -608,6 +608,69 @@ html {
     overflow-y: visible;
   }
 
+  /*
+   * /settings/profile — match tab pages; root band ends above measured tab bar (in-app browser).
+   */
+  [data-app-root]:not(:has([data-pitchrusch-home-feed])):has([data-settings-profile-page]) {
+    bottom: calc(
+      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem))
+      + var(--gn-mobile-visual-bottom-inset, 0px)
+    ) !important;
+  }
+
+  /*
+   * Long form scrollport — end padding lifts fields above fixed tab bar + center FAB (-mt-4).
+   */
+  [data-app-main]:not(:has([data-pitchrusch-home-feed])):has([data-settings-profile-page]) {
+    overflow-x: hidden !important;
+    padding-left: max(0.625rem, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(0.625rem, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: calc(
+      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem)) + 2.75rem
+      + var(--gn-mobile-visual-bottom-inset, 0px)
+    ) !important;
+    scroll-padding-top: var(--gn-page-content-scroll-padding-top);
+    scroll-padding-bottom: calc(
+      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem)) + 2.75rem
+      + var(--gn-mobile-visual-bottom-inset, 0px)
+    );
+  }
+
+  [data-app-main-inner]:has([data-settings-profile-page]) {
+    flex: 0 1 auto;
+    height: auto;
+    min-height: min-content;
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  [data-settings-profile-page],
+  [data-settings-profile-inset] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  /* Inset column — fields/buttons stay inside, never edge-to-edge on the viewport. */
+  [data-settings-profile-inset] {
+    margin-inline: auto;
+    max-width: calc(100% - 2.5rem);
+    padding-inline: 0.25rem;
+  }
+
+  [data-settings-profile-inset] input:not([type="checkbox"]):not([type="file"]):not(.sr-only),
+  [data-settings-profile-inset] select,
+  [data-settings-profile-inset] textarea,
+  [data-settings-profile-inset] [data-settings-profile-save],
+  [data-settings-profile-inset] [data-settings-profile-form-card] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
   /* /premium — fixed band; no pull-to-shift; bottom tab bar must stay visible (no body overflow clip). */
   html:has([data-premium-fit-viewport]) {
     overscroll-behavior: none !important;

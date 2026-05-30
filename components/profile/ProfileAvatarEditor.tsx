@@ -194,7 +194,7 @@ export function ProfileAvatarEditor({
   }
 
   return (
-    <div className="min-w-0 max-w-full rounded-xl border border-white/[0.08] bg-black/20 p-4">
+    <div className="box-border min-w-0 max-w-full rounded-xl border border-white/[0.08] bg-black/20 p-4 max-lg:p-2.5">
       <label className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
         {t("avatarLabel")}
       </label>
@@ -202,13 +202,13 @@ export function ProfileAvatarEditor({
         {t("avatarHint", { maxMb: PROFILE_AVATAR_MAX_MB })}
       </p>
 
-      <div className="mt-4 flex min-w-0 max-w-full flex-wrap items-center gap-4">
+      <div className="mt-4 flex min-w-0 max-w-full flex-col items-stretch gap-3 max-lg:gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
         <ProfileAvatar
           name={displayName}
           imageUrl={previewUrl || avatarUrl}
           sizeClassName="h-20 w-20 shrink-0 text-lg"
         />
-        <div className="flex min-w-0 max-w-full flex-1 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="flex min-w-0 max-w-full w-full flex-col gap-2 sm:w-auto sm:flex-1 sm:flex-row sm:flex-wrap sm:items-center">
           <input
             suppressHydrationWarning
             ref={inputRef}
@@ -224,7 +224,7 @@ export function ProfileAvatarEditor({
             onClick={() => {
               inputRef.current?.click();
             }}
-            className="inline-flex min-h-10 items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/60 px-4 text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex min-h-9 w-full min-w-0 max-w-full items-center justify-center rounded-lg border border-gn-border-subtle bg-gn-surface/60 px-3 text-xs font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated disabled:cursor-not-allowed disabled:opacity-50 sm:min-h-10 sm:w-auto sm:rounded-xl sm:px-4 sm:text-sm"
           >
             {busy ? t("avatarUploading") : t("avatarChoose")}
           </button>
@@ -233,7 +233,7 @@ export function ProfileAvatarEditor({
               type="button"
               disabled={busy}
               onClick={() => void onRemove()}
-              className="inline-flex min-h-10 items-center justify-center rounded-xl border border-white/10 bg-transparent px-4 text-sm font-medium text-gn-text-secondary transition-colors hover:border-gn-accent/30 hover:text-gn-text disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-9 w-full min-w-0 max-w-full items-center justify-center rounded-lg border border-white/10 bg-transparent px-3 text-xs font-medium text-gn-text-secondary transition-colors hover:border-gn-accent/30 hover:text-gn-text disabled:cursor-not-allowed disabled:opacity-50 sm:min-h-10 sm:w-auto sm:rounded-xl sm:px-4 sm:text-sm"
             >
               {t("avatarRemove")}
             </button>

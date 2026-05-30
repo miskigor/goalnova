@@ -50,8 +50,8 @@ const APP_SHELL_SCROLL_RESET_SELECTORS = [
   "[data-app-main-inner]",
 ] as const;
 
-/** Zero horizontal scroll on window, shell, and feed scrollport (iOS Safari / input zoom). */
-export function resetHomeFeedHorizontalScroll(): void {
+/** Zero horizontal scroll on app shell scrollport (tab pages, settings, etc.). */
+export function resetAppShellHorizontalScroll(): void {
   if (typeof document === "undefined") return;
 
   if (typeof window !== "undefined") {
@@ -65,15 +65,22 @@ export function resetHomeFeedHorizontalScroll(): void {
   document.documentElement.scrollLeft = 0;
   document.body.scrollLeft = 0;
 
-  const scrollRoot = document.querySelector("[data-pitchrusch-feed-scroll-root]");
-  if (scrollRoot instanceof HTMLElement) {
-    scrollRoot.scrollLeft = 0;
-  }
-
   for (const selector of APP_SHELL_SCROLL_RESET_SELECTORS) {
     document.querySelectorAll(selector).forEach((node) => {
       if (node instanceof HTMLElement) node.scrollLeft = 0;
     });
+  }
+}
+
+/** Zero horizontal scroll on window, shell, and feed scrollport (iOS Safari / input zoom). */
+export function resetHomeFeedHorizontalScroll(): void {
+  if (typeof document === "undefined") return;
+
+  resetAppShellHorizontalScroll();
+
+  const scrollRoot = document.querySelector("[data-pitchrusch-feed-scroll-root]");
+  if (scrollRoot instanceof HTMLElement) {
+    scrollRoot.scrollLeft = 0;
   }
 
   for (const selector of HOME_FEED_SCROLL_RESET_SELECTORS) {
