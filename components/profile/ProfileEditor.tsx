@@ -138,7 +138,7 @@ function SettingsProfileScrollEndSpacer() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none shrink-0 max-lg:block max-lg:h-[calc(var(--gn-app-bottom-nav-offset,4.5rem)+5rem)] lg:hidden"
+      className="pointer-events-none shrink-0 max-lg:block max-lg:h-[calc(var(--gn-app-bottom-nav-offset-measured,var(--gn-app-bottom-nav-offset,4.5rem))+3rem)] lg:hidden"
     />
   );
 }

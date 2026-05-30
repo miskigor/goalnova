@@ -69,13 +69,22 @@ export function AppShellHorizontalScrollLock() {
     window.addEventListener("resize", reset, { passive: true });
     window.addEventListener("orientationchange", reset, { passive: true });
 
+    const vv = window.visualViewport;
+    vv?.addEventListener("scroll", reset);
+    vv?.addEventListener("resize", reset);
+
+    const intervalId = window.setInterval(reset, 400);
+
     return () => {
       cancelAnimationFrame(raf);
+      window.clearInterval(intervalId);
       document.removeEventListener("touchstart", onTouchStart, { capture: true });
       document.removeEventListener("touchmove", onTouchMove, { capture: true });
       document.removeEventListener("scroll", onScroll, { capture: true });
       window.removeEventListener("resize", reset);
       window.removeEventListener("orientationchange", reset);
+      vv?.removeEventListener("scroll", reset);
+      vv?.removeEventListener("resize", reset);
     };
   }, []);
 

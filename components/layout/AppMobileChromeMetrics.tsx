@@ -5,7 +5,11 @@ import { useLayoutEffect } from "react";
 const GN_HEADER_OFFSET_MEASURED = "--gn-app-header-offset-measured";
 const GN_BOTTOM_NAV_OFFSET_MEASURED = "--gn-app-bottom-nav-offset-measured";
 const GN_MOBILE_VISUAL_BOTTOM_INSET_VAR = "--gn-mobile-visual-bottom-inset";
+const GN_TAB_BAR_MOUNT_BOTTOM_VAR = "--gn-tab-bar-mount-bottom";
 const GN_PREMIUM_SAFE_TOP_VAR = "--gn-premium-safe-top";
+
+/** Padding below tab bar content — clears Safari/Chrome bottom toolbar (touch target band). */
+const TAB_BAR_MOUNT_PADDING_MIN_PX = 80;
 
 function measureTopChromeInsetPx(): number {
   const headerEl =
@@ -16,6 +20,22 @@ function measureTopChromeInsetPx(): number {
     if (bottom > 0) return bottom;
   }
   return 0;
+}
+
+/** Distance from layout viewport bottom to the top edge of the fixed tab bar. */
+function measureBottomChromeInsetPx(): number {
+  const nav = document.querySelector("[data-app-bottom-nav]");
+  if (nav instanceof HTMLElement) {
+    const top = nav.getBoundingClientRect().top;
+    if (Number.isFinite(top)) {
+      return Math.max(0, Math.ceil(window.innerHeight - top));
+    }
+  }
+  const mount = document.querySelector("[data-app-mobile-bottom-nav-mount]");
+  if (!(mount instanceof HTMLElement)) return 0;
+  const top = mount.getBoundingClientRect().top;
+  if (!Number.isFinite(top)) return 0;
+  return Math.max(0, Math.ceil(window.innerHeight - top));
 }
 
 function measureVisualBottomInsetPx(): number {
@@ -32,9 +52,6 @@ function isHomeFeedPage(): boolean {
   return Boolean(document.querySelector("[data-pitchrusch-home-feed]"));
 }
 
-/** Sticky max — never shrink when Safari hides the bottom toolbar while scrolling. */
-let stickyVisualBottomInsetPx = 0;
-
 function syncMobileChromeMetrics() {
   if (typeof window === "undefined") return;
 
@@ -43,19 +60,27 @@ function syncMobileChromeMetrics() {
     root.style.removeProperty(GN_HEADER_OFFSET_MEASURED);
     root.style.removeProperty(GN_BOTTOM_NAV_OFFSET_MEASURED);
     root.style.removeProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR);
+    root.style.removeProperty(GN_TAB_BAR_MOUNT_BOTTOM_VAR);
     root.style.removeProperty(GN_PREMIUM_SAFE_TOP_VAR);
-    stickyVisualBottomInsetPx = 0;
     return;
   }
 
   const isPremium = isPremiumFitPage();
   const vv = window.visualViewport;
-  const layoutBottomGap = measureVisualBottomInsetPx();
-  stickyVisualBottomInsetPx = Math.max(stickyVisualBottomInsetPx, layoutBottomGap);
-
+  let layoutBottomGap = measureVisualBottomInsetPx();
   const premiumSafeTopPx = isPremium && vv ? Math.max(0, Math.ceil(vv.offsetTop)) : 0;
 
+  if (isPremium) {
+    layoutBottomGap = Math.max(layoutBottomGap, 8);
+  }
+
   const headerPx = measureTopChromeInsetPx();
+  let bottomPx = measureBottomChromeInsetPx();
+
+  if (isPremium) {
+    const premiumBottomMinPx = 84;
+    bottomPx = Math.max(bottomPx, premiumBottomMinPx + layoutBottomGap);
+  }
 
   if (headerPx > 0) {
     root.style.setProperty(GN_HEADER_OFFSET_MEASURED, `${headerPx}px`);
@@ -63,20 +88,23 @@ function syncMobileChromeMetrics() {
     root.style.removeProperty(GN_HEADER_OFFSET_MEASURED);
   }
 
-  /*
-   * Tab bar position uses fixed CSS padding — do not measure [data-app-bottom-nav]
-   * (ResizeObserver + padding feedback caused the bar to wander while scrolling).
-   */
-  root.style.removeProperty(GN_BOTTOM_NAV_OFFSET_MEASURED);
+  if (bottomPx > 0) {
+    root.style.setProperty(GN_BOTTOM_NAV_OFFSET_MEASURED, `${bottomPx}px`);
+  } else {
+    root.style.removeProperty(GN_BOTTOM_NAV_OFFSET_MEASURED);
+  }
+
+  root.style.setProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR, `${Math.ceil(layoutBottomGap)}px`);
+
+  const tabBarMountPaddingPx = Math.max(
+    TAB_BAR_MOUNT_PADDING_MIN_PX,
+    Math.ceil(layoutBottomGap) + 16,
+  );
+  root.style.setProperty(GN_TAB_BAR_MOUNT_BOTTOM_VAR, `${tabBarMountPaddingPx}px`);
 
   if (isPremium) {
-    root.style.setProperty(
-      GN_MOBILE_VISUAL_BOTTOM_INSET_VAR,
-      `${Math.max(stickyVisualBottomInsetPx, 8)}px`,
-    );
     root.style.setProperty(GN_PREMIUM_SAFE_TOP_VAR, `${premiumSafeTopPx}px`);
   } else {
-    root.style.removeProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR);
     root.style.removeProperty(GN_PREMIUM_SAFE_TOP_VAR);
   }
 }
@@ -87,12 +115,12 @@ function clearMobileChromeMetrics() {
   root.style.removeProperty(GN_HEADER_OFFSET_MEASURED);
   root.style.removeProperty(GN_BOTTOM_NAV_OFFSET_MEASURED);
   root.style.removeProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR);
+  root.style.removeProperty(GN_TAB_BAR_MOUNT_BOTTOM_VAR);
   root.style.removeProperty(GN_PREMIUM_SAFE_TOP_VAR);
-  stickyVisualBottomInsetPx = 0;
 }
 
 /**
- * Header inset for tab pages. Bottom tab bar uses fixed CSS — no visualViewport scroll sync.
+ * Writes measured header / bottom-nav insets for tab-page scroll band (non–home feed only).
  */
 export function AppMobileChromeMetrics() {
   useLayoutEffect(() => {
@@ -104,12 +132,14 @@ export function AppMobileChromeMetrics() {
         ? new ResizeObserver(() => syncMobileChromeMetrics())
         : null;
 
-    const headerSelectors = [
+    const selectors = [
       '[data-app-mobile-chrome-fixed="top"]',
       "[data-app-mobile-header]",
-    ] as const;
+      "[data-app-mobile-bottom-nav-mount]",
+      "[data-app-bottom-nav]",
+    ];
 
-    for (const selector of headerSelectors) {
+    for (const selector of selectors) {
       const el = document.querySelector(selector);
       if (el) {
         observed.add(el);
@@ -117,17 +147,16 @@ export function AppMobileChromeMetrics() {
       }
     }
 
-    const onLayoutChange = () => syncMobileChromeMetrics();
+    const onViewportChange = () => syncMobileChromeMetrics();
     const vv = window.visualViewport;
-    vv?.addEventListener("resize", onLayoutChange);
-    window.addEventListener("resize", onLayoutChange, { passive: true });
-    window.addEventListener("orientationchange", onLayoutChange, { passive: true });
+    vv?.addEventListener("resize", onViewportChange);
+    vv?.addEventListener("scroll", onViewportChange);
+    window.addEventListener("resize", onViewportChange, { passive: true });
 
     const mo = new MutationObserver(() => {
-      if (!document.querySelector("[data-app-root]")) return;
       syncMobileChromeMetrics();
       if (!ro) return;
-      for (const selector of headerSelectors) {
+      for (const selector of selectors) {
         const el = document.querySelector(selector);
         if (el && !observed.has(el)) {
           observed.add(el);
@@ -140,9 +169,9 @@ export function AppMobileChromeMetrics() {
     return () => {
       ro?.disconnect();
       mo.disconnect();
-      vv?.removeEventListener("resize", onLayoutChange);
-      window.removeEventListener("resize", onLayoutChange);
-      window.removeEventListener("orientationchange", onLayoutChange);
+      vv?.removeEventListener("resize", onViewportChange);
+      vv?.removeEventListener("scroll", onViewportChange);
+      window.removeEventListener("resize", onViewportChange);
       clearMobileChromeMetrics();
     };
   }, []);
