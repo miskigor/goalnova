@@ -156,11 +156,11 @@ export const SETTINGS_PROFILE_PAGE_SHELL_CLASS =
 
 /**
  * Mobile-only column inset — keeps content off the app chrome edges.
- * `calc(100% - 2.5rem)` ≈ 1.25rem margin each side inside the scrollport.
+ * `calc(100% - 3.5rem)` ≈ 1.75rem margin each side inside the scrollport.
  */
 export const APP_MOBILE_PAGE_INSET_CLASS = [
   "box-border w-full min-w-0 overflow-x-clip",
-  "max-lg:mx-auto max-lg:max-w-[calc(100%-2.5rem)] max-lg:px-1",
+  "max-lg:mx-auto max-lg:max-w-[calc(100%-3.5rem)] max-lg:px-1",
   "lg:max-w-full lg:px-0",
 ].join(" ");
 

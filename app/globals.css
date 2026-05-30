@@ -449,14 +449,18 @@ html {
     touch-action: manipulation;
   }
 
-  /* Tab pages (not home): pin bottom nav to visual viewport — same idea as /premium. */
+  /* Tab pages (not home): pin bottom nav above Safari/Chrome toolbar (min 2.75rem). */
   body:has([data-app-root]):not(:has([data-pitchrusch-home-feed]))
     [data-app-mobile-bottom-nav-mount] {
     position: fixed !important;
     top: auto !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: max(env(safe-area-inset-bottom, 0px), var(--gn-mobile-visual-bottom-inset, 0px)) !important;
+    bottom: max(
+      2.75rem,
+      env(safe-area-inset-bottom, 0px),
+      var(--gn-mobile-visual-bottom-inset, 0px)
+    ) !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
@@ -646,7 +650,7 @@ html {
   /* Inset column — fields/buttons stay inside, never edge-to-edge on the viewport. */
   [data-settings-profile-inset] {
     margin-inline: auto;
-    max-width: calc(100% - 2.5rem);
+    max-width: calc(100% - 3.5rem);
     padding-inline: 0.25rem;
   }
 
@@ -693,6 +697,11 @@ html {
     opacity: 1 !important;
     pointer-events: auto !important;
     z-index: 10001 !important;
+    bottom: max(
+      2.75rem,
+      env(safe-area-inset-bottom, 0px),
+      var(--gn-mobile-visual-bottom-inset, 0px)
+    ) !important;
   }
 
   [data-benefits-route-page],
@@ -706,7 +715,7 @@ html {
 
   [data-benefits-inset] {
     margin-inline: auto;
-    max-width: calc(100% - 2.5rem);
+    max-width: calc(100% - 3.5rem);
     padding-inline: 0.25rem;
   }
 
