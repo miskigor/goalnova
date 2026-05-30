@@ -8,8 +8,8 @@ const GN_MOBILE_VISUAL_BOTTOM_INSET_VAR = "--gn-mobile-visual-bottom-inset";
 const GN_TAB_BAR_MOUNT_BOTTOM_VAR = "--gn-tab-bar-mount-bottom";
 const GN_PREMIUM_SAFE_TOP_VAR = "--gn-premium-safe-top";
 
-/** Padding below tab bar content — clears Safari/Chrome bottom toolbar (touch target band). */
-const TAB_BAR_MOUNT_PADDING_MIN_PX = 80;
+/** Minimum lift so labels are not clipped by Safari/Chrome bottom toolbar. */
+const TAB_BAR_MOUNT_BOTTOM_MIN_PX = 72;
 
 function measureTopChromeInsetPx(): number {
   const headerEl =
@@ -96,11 +96,8 @@ function syncMobileChromeMetrics() {
 
   root.style.setProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR, `${Math.ceil(layoutBottomGap)}px`);
 
-  const tabBarMountPaddingPx = Math.max(
-    TAB_BAR_MOUNT_PADDING_MIN_PX,
-    Math.ceil(layoutBottomGap) + 16,
-  );
-  root.style.setProperty(GN_TAB_BAR_MOUNT_BOTTOM_VAR, `${tabBarMountPaddingPx}px`);
+  const tabBarMountBottomPx = Math.max(TAB_BAR_MOUNT_BOTTOM_MIN_PX, Math.ceil(layoutBottomGap));
+  root.style.setProperty(GN_TAB_BAR_MOUNT_BOTTOM_VAR, `${tabBarMountBottomPx}px`);
 
   if (isPremium) {
     root.style.setProperty(GN_PREMIUM_SAFE_TOP_VAR, `${premiumSafeTopPx}px`);
