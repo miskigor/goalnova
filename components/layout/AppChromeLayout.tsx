@@ -6,14 +6,13 @@ import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBanner";
-import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
+import { AppMobileBottomNavPortal } from "@/components/layout/AppMobileBottomNavPortal";
 import { AppMobileChromeMetrics } from "@/components/layout/AppMobileChromeMetrics";
 import {
   APP_SHELL_COLUMN_CLASS,
   APP_SHELL_MAIN_CLASS,
   APP_SHELL_MAIN_INNER_CLASS,
   APP_SHELL_ROOT_CLASS,
-  APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS,
 } from "@/lib/layout/appShellClasses";
 
 function AppMainColumn({ children }: { children: React.ReactNode }) {
@@ -43,12 +42,7 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
           <AppSidebar />
           <AppMainColumn>{children}</AppMainColumn>
         </div>
-        <div
-          data-app-mobile-bottom-nav-mount
-          className={APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS}
-        >
-          <AppMobileBottomNav />
-        </div>
+        <AppMobileBottomNavPortal />
       </AdminSupportUnreadProvider>
     </FeedbackProvider>
   );

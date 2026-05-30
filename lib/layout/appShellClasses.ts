@@ -67,7 +67,7 @@ export const APP_MOBILE_HEADER_INNER_CLASS =
 
 /** Fixed mount wrapper — sibling of {@link APP_SHELL_ROOT_CLASS}, not portaled. */
 export const APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS = [
-  "pointer-events-auto visible fixed inset-x-0 left-0 right-0 z-[9999] box-border w-full max-w-full min-w-0",
+  "pointer-events-none visible fixed inset-x-0 left-0 right-0 bottom-0 z-[9999] box-border w-full max-w-full min-w-0",
   "overflow-x-clip overflow-y-visible opacity-100 max-lg:block lg:hidden",
 ].join(" ");
 
