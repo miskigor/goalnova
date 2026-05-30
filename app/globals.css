@@ -164,18 +164,18 @@ html {
     z-index: 1000;
   }
 
-  /* In-layout mobile tab bar (AppChromeLayout) — fixed viewport bottom, no visualViewport. */
+  /* In-layout mobile tab bar — bottom set per route (tab pages below browser chrome). */
   [data-app-mobile-bottom-nav-mount] {
     position: fixed !important;
-    bottom: 0 !important;
     top: auto !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-bottom: max(0.25rem, env(safe-area-inset-bottom, 0px));
     overflow-x: clip !important;
+    overflow-y: visible !important;
     z-index: 9999 !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -449,18 +449,14 @@ html {
     touch-action: manipulation;
   }
 
-  /* Tab pages (not home): pin bottom nav above Safari/Chrome toolbar (min 2.75rem). */
+  /* Tab pages (not home): full tab bar above Safari/Chrome toolbar. */
   body:has([data-app-root]):not(:has([data-pitchrusch-home-feed]))
     [data-app-mobile-bottom-nav-mount] {
     position: fixed !important;
     top: auto !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: max(
-      2.75rem,
-      env(safe-area-inset-bottom, 0px),
-      var(--gn-mobile-visual-bottom-inset, 0px)
-    ) !important;
+    bottom: var(--gn-tab-bar-mount-bottom, 4.5rem) !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
@@ -697,11 +693,7 @@ html {
     opacity: 1 !important;
     pointer-events: auto !important;
     z-index: 10001 !important;
-    bottom: max(
-      2.75rem,
-      env(safe-area-inset-bottom, 0px),
-      var(--gn-mobile-visual-bottom-inset, 0px)
-    ) !important;
+    bottom: var(--gn-tab-bar-mount-bottom, 4.5rem) !important;
   }
 
   [data-benefits-route-page],
