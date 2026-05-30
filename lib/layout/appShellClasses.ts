@@ -45,9 +45,9 @@ export const APP_SHELL_COLUMN_CLASS =
   "relative mx-auto flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col ps-0 max-lg:min-h-0 lg:min-h-dvh lg:overflow-x-hidden lg:ps-[15.5rem]";
 
 export const APP_SHELL_MAIN_CLASS = [
-  "mx-auto box-border flex w-full min-w-0 max-w-full flex-1 flex-col items-stretch overflow-x-hidden px-4",
+  "mx-auto box-border flex w-full min-w-0 max-w-full flex-1 flex-col items-stretch overflow-x-hidden",
   "min-h-0 max-lg:min-h-0",
-  "max-lg:pt-0 max-lg:pb-[var(--gn-app-bottom-nav-offset,4.5rem)]",
+  "max-lg:px-0 max-lg:pt-0 max-lg:pb-[var(--gn-app-bottom-nav-offset,4.5rem)]",
   "lg:max-w-4xl lg:px-6 lg:pt-8 lg:pb-12",
 ].join(" ");
 
@@ -154,13 +154,11 @@ export const SETTINGS_PROFILE_PAGE_SHELL_CLASS =
   "mx-auto box-border w-full min-w-0 max-w-full overflow-x-clip sm:max-w-2xl lg:max-w-2xl";
 
 /**
- * Mobile-only column inset — keeps content off the app chrome edges.
- * `calc(100% - 3.5rem)` ≈ 1.75rem margin each side inside the scrollport.
+ * Mobile-only column inset — horizontal padding inside [data-app-main] scrollport.
  */
 export const APP_MOBILE_PAGE_INSET_CLASS = [
-  "box-border w-full min-w-0 overflow-x-clip",
-  "max-lg:mx-auto max-lg:max-w-[calc(100%-3.5rem)] max-lg:px-1",
-  "lg:max-w-full lg:px-0",
+  "box-border w-full min-w-0 max-w-full overflow-x-clip",
+  "max-lg:px-4 lg:px-0",
 ].join(" ");
 
 /** @deprecated Use {@link APP_MOBILE_PAGE_INSET_CLASS} */

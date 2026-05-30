@@ -142,6 +142,19 @@ html {
     touch-action: manipulation;
   }
 
+  /* Tab pages: pin document — only [data-app-main] scrolls vertically (no sideways drift). */
+  html:has([data-app-root]):not(:has([data-pitchrusch-home-feed])),
+  body:has([data-app-root]):not(:has([data-pitchrusch-home-feed])) {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: none !important;
+    overscroll-behavior-x: none !important;
+  }
+
   body:has([data-app-root]):has([data-pitchrusch-home-feed]) {
     display: block;
     position: relative;
@@ -497,7 +510,8 @@ html {
   [data-app-bottom-nav] a {
     min-width: 0;
     max-width: 100%;
-    overflow: visible;
+    overflow-x: clip;
+    overflow-y: visible;
     justify-self: stretch;
   }
 
@@ -660,11 +674,11 @@ html {
     overflow-x: hidden;
   }
 
-  /* Inset column — fields/buttons stay inside, never edge-to-edge on the viewport. */
   [data-settings-profile-inset] {
-    margin-inline: auto;
-    max-width: calc(100% - 3.5rem);
-    padding-inline: 0.25rem;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   [data-settings-profile-inset] input:not([type="checkbox"]):not([type="file"]):not(.sr-only),
@@ -726,9 +740,10 @@ html {
   }
 
   [data-benefits-inset] {
-    margin-inline: auto;
-    max-width: calc(100% - 3.5rem);
-    padding-inline: 0.25rem;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   [data-benefits-inset] button,
