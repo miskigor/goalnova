@@ -42,13 +42,16 @@ function ProfilePageShell({ children }: { children: React.ReactNode }) {
   return (
     <div
       data-profile-shell
+      data-own-profile-page
       className={[
         APP_PROFILE_CONTENT_CLASS,
-        "space-y-4 overflow-x-clip max-lg:space-y-3 max-lg:pt-2",
-        "max-lg:pb-4 lg:max-w-2xl lg:pb-8",
+        "overflow-x-clip lg:max-w-2xl lg:pb-8",
       ].join(" ")}
     >
-      {children}
+      {/* Inner band — globals zero [data-profile-shell] pt; mobile insets for header + bottom nav */}
+      <div className="box-border flex w-full min-w-0 max-w-full flex-col space-y-4 max-lg:space-y-3 max-lg:pt-[calc(4rem+var(--gn-app-bottom-nav-offset,4.5rem))] max-lg:pb-0 lg:pt-0 lg:pb-0">
+        {children}
+      </div>
     </div>
   );
 }
