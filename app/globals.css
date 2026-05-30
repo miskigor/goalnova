@@ -111,6 +111,9 @@ html {
     --gn-app-bottom-nav-offset: calc(
       4.5rem + max(0.375rem, env(safe-area-inset-bottom, 0px))
     );
+    /* Fixed rem inset — not tied to svh/vv resize after load */
+    --gn-page-content-top-inset: 1rem;
+    --gn-page-content-scroll-padding-top: 1rem;
   }
 
   html:has([data-app-root]) {
@@ -338,14 +341,21 @@ html {
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root] {
-    max-height: calc(
-      100svh - var(--gn-app-header-offset, 0px) - var(--gn-app-bottom-nav-offset, 4.5rem) -
-        0.5rem
-    );
-    height: calc(
-      100svh - var(--gn-app-header-offset, 0px) - var(--gn-app-bottom-nav-offset, 4.5rem) -
-        0.5rem
-    );
+    container-type: size;
+    box-sizing: border-box;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    padding-top: var(--gn-page-content-top-inset);
+    scroll-padding-top: 0.75rem;
+  }
+
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-item] {
+    box-sizing: border-box;
+    flex: 0 0 100%;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-meta-below] {
@@ -376,10 +386,11 @@ html {
     object-position: center !important;
   }
 
-  /* Početna: fill the fixed mobile frame; do not letterbox-shrink as metadata loads. */
+  /* Početna: cap frame from scrollport (cqh), not svh — stable across browser chrome. */
   [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-video-frame] {
     flex: 0 0 auto !important;
     flex-shrink: 0 !important;
+    max-height: min(52cqh, 480px) !important;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] [data-gn-video-media],
@@ -486,11 +497,8 @@ html {
 
   [data-app-root]:not(:has([data-pitchrusch-home-feed])) {
     position: fixed !important;
-    top: var(--gn-app-header-offset-measured, env(safe-area-inset-top, 0px)) !important;
-    bottom: calc(
-      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem)) +
-        var(--gn-mobile-visual-bottom-inset, 0px)
-    ) !important;
+    top: var(--gn-app-header-offset) !important;
+    bottom: var(--gn-app-bottom-nav-offset, 4.5rem) !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
@@ -532,11 +540,11 @@ html {
     width: 100% !important;
     max-width: 100% !important;
     margin-inline: 0 !important;
-    padding-top: 0 !important;
+    padding-top: var(--gn-page-content-top-inset) !important;
     padding-bottom: 1.25rem !important;
     padding-left: max(0.75rem, env(safe-area-inset-left, 0px)) !important;
     padding-right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
-    scroll-padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+    scroll-padding-top: var(--gn-page-content-scroll-padding-top);
     scroll-padding-bottom: 1.25rem;
     overflow-y: auto !important;
     overflow-x: clip !important;
@@ -568,11 +576,21 @@ html {
   }
 
   /*
+   * One top inset from [data-app-main] — drop duplicate shell pt so every tab route aligns.
+   */
+  [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) > .space-y-6,
+  [data-app-main]:not(:has([data-pitchrusch-home-feed])) [data-profile-shell],
+  [data-app-main]:not(:has([data-pitchrusch-home-feed])) [data-challenges-page],
+  [data-app-main]:not(:has([data-pitchrusch-home-feed])) [data-pitchrusch-explore-page] {
+    padding-top: 0 !important;
+  }
+
+  /*
    * /explore — filters live above the grid; inner flex band must grow with content
    * so [data-app-main] can scroll all the way to the top (touch-pan-y removed on ExploreView).
    */
   [data-app-main]:has([data-pitchrusch-explore-page]) {
-    scroll-padding-top: 0.5rem;
+    scroll-padding-top: var(--gn-page-content-scroll-padding-top);
   }
 
   [data-app-main-inner]:has([data-pitchrusch-explore-page]) {
