@@ -67,8 +67,9 @@ export const APP_MOBILE_HEADER_INNER_CLASS =
 
 /** Fixed mount wrapper — sibling of {@link APP_SHELL_ROOT_CLASS}, not portaled. */
 export const APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS = [
-  "pointer-events-auto visible fixed inset-x-0 left-0 right-0 z-[9999] box-border w-full max-w-full min-w-0",
+  "pointer-events-auto visible fixed inset-x-0 bottom-0 left-0 right-0 z-[9999] box-border w-full max-w-full min-w-0",
   "overflow-x-clip overflow-y-visible opacity-100 max-lg:block lg:hidden",
+  "pb-[env(safe-area-inset-bottom,0px)]",
 ].join(" ");
 
 export const APP_MOBILE_BOTTOM_NAV_CLASS = [
@@ -154,21 +155,14 @@ export const SETTINGS_PROFILE_PAGE_SHELL_CLASS =
   "mx-auto box-border w-full min-w-0 max-w-full overflow-x-clip sm:max-w-2xl lg:max-w-2xl";
 
 /**
- * Mobile-only column inset — keeps content off the app chrome edges.
- * `calc(100% - 3.5rem)` ≈ 1.75rem margin each side inside the scrollport.
+ * Mobile-only column inset — keeps inputs/buttons off the app chrome edges.
+ * `calc(100% - 2.5rem)` ≈ 1.25rem margin each side inside the scrollport.
  */
-export const APP_MOBILE_PAGE_INSET_CLASS = [
+export const SETTINGS_PROFILE_MOBILE_INSET_CLASS = [
   "box-border w-full min-w-0 overflow-x-clip",
-  "max-lg:mx-auto max-lg:max-w-[calc(100%-3.5rem)] max-lg:px-1",
+  "max-lg:mx-auto max-lg:max-w-[calc(100%-2.5rem)] max-lg:px-1",
   "lg:max-w-full lg:px-0",
 ].join(" ");
-
-/** @deprecated Use {@link APP_MOBILE_PAGE_INSET_CLASS} */
-export const SETTINGS_PROFILE_MOBILE_INSET_CLASS = APP_MOBILE_PAGE_INSET_CLASS;
-
-/** `/benefits` — outer shell (inset on {@link APP_MOBILE_PAGE_INSET_CLASS}). */
-export const BENEFITS_PAGE_SHELL_CLASS =
-  "mx-auto box-border w-full min-w-0 max-w-full overflow-x-clip sm:max-w-2xl lg:max-w-2xl";
 
 /** Scout verification form and status cards. */
 export const SCOUT_APPLY_SECTION_CLASS =

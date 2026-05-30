@@ -5,11 +5,7 @@ import { useLayoutEffect } from "react";
 const GN_HEADER_OFFSET_MEASURED = "--gn-app-header-offset-measured";
 const GN_BOTTOM_NAV_OFFSET_MEASURED = "--gn-app-bottom-nav-offset-measured";
 const GN_MOBILE_VISUAL_BOTTOM_INSET_VAR = "--gn-mobile-visual-bottom-inset";
-const GN_TAB_BAR_MOUNT_BOTTOM_VAR = "--gn-tab-bar-mount-bottom";
 const GN_PREMIUM_SAFE_TOP_VAR = "--gn-premium-safe-top";
-
-/** Minimum lift so labels are not clipped by Safari/Chrome bottom toolbar. */
-const TAB_BAR_MOUNT_BOTTOM_MIN_PX = 72;
 
 function measureTopChromeInsetPx(): number {
   const headerEl =
@@ -60,7 +56,6 @@ function syncMobileChromeMetrics() {
     root.style.removeProperty(GN_HEADER_OFFSET_MEASURED);
     root.style.removeProperty(GN_BOTTOM_NAV_OFFSET_MEASURED);
     root.style.removeProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR);
-    root.style.removeProperty(GN_TAB_BAR_MOUNT_BOTTOM_VAR);
     root.style.removeProperty(GN_PREMIUM_SAFE_TOP_VAR);
     return;
   }
@@ -96,9 +91,6 @@ function syncMobileChromeMetrics() {
 
   root.style.setProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR, `${Math.ceil(layoutBottomGap)}px`);
 
-  const tabBarMountBottomPx = Math.max(TAB_BAR_MOUNT_BOTTOM_MIN_PX, Math.ceil(layoutBottomGap));
-  root.style.setProperty(GN_TAB_BAR_MOUNT_BOTTOM_VAR, `${tabBarMountBottomPx}px`);
-
   if (isPremium) {
     root.style.setProperty(GN_PREMIUM_SAFE_TOP_VAR, `${premiumSafeTopPx}px`);
   } else {
@@ -112,7 +104,6 @@ function clearMobileChromeMetrics() {
   root.style.removeProperty(GN_HEADER_OFFSET_MEASURED);
   root.style.removeProperty(GN_BOTTOM_NAV_OFFSET_MEASURED);
   root.style.removeProperty(GN_MOBILE_VISUAL_BOTTOM_INSET_VAR);
-  root.style.removeProperty(GN_TAB_BAR_MOUNT_BOTTOM_VAR);
   root.style.removeProperty(GN_PREMIUM_SAFE_TOP_VAR);
 }
 

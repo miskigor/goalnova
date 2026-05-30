@@ -164,18 +164,18 @@ html {
     z-index: 1000;
   }
 
-  /* In-layout mobile tab bar — bottom set per route (tab pages below browser chrome). */
+  /* In-layout mobile tab bar (AppChromeLayout) — fixed viewport bottom, no visualViewport. */
   [data-app-mobile-bottom-nav-mount] {
     position: fixed !important;
+    bottom: 0 !important;
     top: auto !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    padding-bottom: max(0.25rem, env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     overflow-x: clip !important;
-    overflow-y: visible !important;
     z-index: 9999 !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -449,14 +449,14 @@ html {
     touch-action: manipulation;
   }
 
-  /* Tab pages (not home): full tab bar above Safari/Chrome toolbar. */
+  /* Tab pages (not home): pin bottom nav to visual viewport — same idea as /premium. */
   body:has([data-app-root]):not(:has([data-pitchrusch-home-feed]))
     [data-app-mobile-bottom-nav-mount] {
     position: fixed !important;
     top: auto !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: var(--gn-tab-bar-mount-bottom, 4.5rem) !important;
+    bottom: max(env(safe-area-inset-bottom, 0px), var(--gn-mobile-visual-bottom-inset, 0px)) !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
@@ -609,6 +609,16 @@ html {
   }
 
   /*
+   * /settings/profile — match tab pages; root band ends above measured tab bar (in-app browser).
+   */
+  [data-app-root]:not(:has([data-pitchrusch-home-feed])):has([data-settings-profile-page]) {
+    bottom: calc(
+      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem))
+      + var(--gn-mobile-visual-bottom-inset, 0px)
+    ) !important;
+  }
+
+  /*
    * Long form scrollport — end padding lifts fields above fixed tab bar + center FAB (-mt-4).
    */
   [data-app-main]:not(:has([data-pitchrusch-home-feed])):has([data-settings-profile-page]) {
@@ -646,7 +656,7 @@ html {
   /* Inset column — fields/buttons stay inside, never edge-to-edge on the viewport. */
   [data-settings-profile-inset] {
     margin-inline: auto;
-    max-width: calc(100% - 3.5rem);
+    max-width: calc(100% - 2.5rem);
     padding-inline: 0.25rem;
   }
 
@@ -657,65 +667,6 @@ html {
   [data-settings-profile-inset] [data-settings-profile-form-card] {
     box-sizing: border-box;
     width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
-
-  /*
-   * /benefits — inset column + scroll end room (keep default app-root bottom so tab bar stays visible).
-   */
-  [data-app-main]:not(:has([data-pitchrusch-home-feed])):has([data-benefits-route-page]) {
-    overflow-x: hidden !important;
-    padding-left: max(0.625rem, env(safe-area-inset-left, 0px)) !important;
-    padding-right: max(0.625rem, env(safe-area-inset-right, 0px)) !important;
-    padding-bottom: calc(
-      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem)) + 2.75rem
-      + var(--gn-mobile-visual-bottom-inset, 0px)
-    ) !important;
-    scroll-padding-top: var(--gn-page-content-scroll-padding-top);
-    scroll-padding-bottom: calc(
-      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem)) + 2.75rem
-      + var(--gn-mobile-visual-bottom-inset, 0px)
-    );
-  }
-
-  [data-app-main-inner]:has([data-benefits-route-page]) {
-    flex: 0 1 auto;
-    height: auto;
-    min-height: min-content;
-    overflow-x: hidden;
-    overflow-y: visible;
-  }
-
-  body:has([data-benefits-route-page]) [data-app-mobile-bottom-nav-mount] {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    z-index: 10001 !important;
-    bottom: var(--gn-tab-bar-mount-bottom, 4.5rem) !important;
-  }
-
-  [data-benefits-route-page],
-  [data-benefits-inset] {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    overflow-x: hidden;
-  }
-
-  [data-benefits-inset] {
-    margin-inline: auto;
-    max-width: calc(100% - 3.5rem);
-    padding-inline: 0.25rem;
-  }
-
-  [data-benefits-inset] button,
-  [data-benefits-inset] a,
-  [data-benefits-inset] section,
-  [data-benefits-inset] .rounded-xl {
-    box-sizing: border-box;
     max-width: 100%;
     min-width: 0;
   }
