@@ -8,7 +8,6 @@ import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBanner";
 import { AppMobileBottomNavPortal } from "@/components/layout/AppMobileBottomNavPortal";
 import { AppMobileChromeMetrics } from "@/components/layout/AppMobileChromeMetrics";
-import { AppShellHorizontalScrollLock } from "@/components/layout/AppShellHorizontalScrollLock";
 import {
   APP_SHELL_COLUMN_CLASS,
   APP_SHELL_MAIN_CLASS,
@@ -39,7 +38,6 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
         <AppLayoutDebugProbe />
         <AppShellDebugOverlay />
         <AppMobileChromeMetrics />
-        <AppShellHorizontalScrollLock />
         <div data-app-root className={APP_SHELL_ROOT_CLASS}>
           <AppSidebar />
           <AppMainColumn>{children}</AppMainColumn>

@@ -48,11 +48,6 @@ const APP_SHELL_SCROLL_RESET_SELECTORS = [
   "[data-app-column]",
   "[data-app-main]",
   "[data-app-main-inner]",
-  "[data-app-mobile-bottom-nav-mount]",
-  "[data-benefits-route-page]",
-  "[data-benefits-inset]",
-  "[data-settings-profile-page]",
-  "[data-settings-profile-inset]",
 ] as const;
 
 /** Zero horizontal scroll on app shell scrollport (tab pages, settings, etc.). */
