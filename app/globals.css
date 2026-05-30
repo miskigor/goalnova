@@ -609,16 +609,6 @@ html {
   }
 
   /*
-   * /settings/profile — match tab pages; root band ends above measured tab bar (in-app browser).
-   */
-  [data-app-root]:not(:has([data-pitchrusch-home-feed])):has([data-settings-profile-page]) {
-    bottom: calc(
-      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem))
-      + var(--gn-mobile-visual-bottom-inset, 0px)
-    ) !important;
-  }
-
-  /*
    * Long form scrollport — end padding lifts fields above fixed tab bar + center FAB (-mt-4).
    */
   [data-app-main]:not(:has([data-pitchrusch-home-feed])):has([data-settings-profile-page]) {
@@ -672,16 +662,9 @@ html {
   }
 
   /*
-   * /benefits — same inset column + scroll band as settings/profile.
+   * /benefits — inset column + scroll end room (keep default app-root bottom so tab bar stays visible).
    */
-  [data-app-root]:not(:has([data-pitchrusch-home-feed])):has([data-benefits-page]) {
-    bottom: calc(
-      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem))
-      + var(--gn-mobile-visual-bottom-inset, 0px)
-    ) !important;
-  }
-
-  [data-app-main]:not(:has([data-pitchrusch-home-feed])):has([data-benefits-page]) {
+  [data-app-main]:not(:has([data-pitchrusch-home-feed])):has([data-benefits-route-page]) {
     overflow-x: hidden !important;
     padding-left: max(0.625rem, env(safe-area-inset-left, 0px)) !important;
     padding-right: max(0.625rem, env(safe-area-inset-right, 0px)) !important;
@@ -696,7 +679,7 @@ html {
     );
   }
 
-  [data-app-main-inner]:has([data-benefits-page]) {
+  [data-app-main-inner]:has([data-benefits-route-page]) {
     flex: 0 1 auto;
     height: auto;
     min-height: min-content;
@@ -704,7 +687,15 @@ html {
     overflow-y: visible;
   }
 
-  [data-benefits-page],
+  body:has([data-benefits-route-page]) [data-app-mobile-bottom-nav-mount] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 10001 !important;
+  }
+
+  [data-benefits-route-page],
   [data-benefits-inset] {
     box-sizing: border-box;
     width: 100%;

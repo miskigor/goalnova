@@ -93,25 +93,35 @@ function BenefitsScrollEndSpacer() {
 function BenefitsPageShell({
   title,
   children,
+  fullPageRoute = false,
 }: {
   title: string;
   children: React.ReactNode;
+  fullPageRoute?: boolean;
 }) {
   return (
-    <BenefitsMobileShell>
+    <BenefitsMobileShell fullPageRoute={fullPageRoute}>
       <header>
         <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
           {title}
         </h1>
       </header>
       {children}
-      <BenefitsScrollEndSpacer />
+      {fullPageRoute ? <BenefitsScrollEndSpacer /> : null}
     </BenefitsMobileShell>
   );
 }
 
-function BenefitsMobileShell({ children }: { children: React.ReactNode }) {
+function BenefitsMobileShell({
+  children,
+  fullPageRoute = false,
+}: {
+  children: React.ReactNode;
+  /** True only on `/benefits` — enables route scroll chrome without affecting `/settings`. */
+  fullPageRoute?: boolean;
+}) {
   useLayoutEffect(() => {
+    if (!fullPageRoute) return;
     runBenefitsMountedScrollReset();
     const frame = requestAnimationFrame(runBenefitsMountedScrollReset);
     const t0 = window.setTimeout(runBenefitsMountedScrollReset, 0);
@@ -121,18 +131,22 @@ function BenefitsMobileShell({ children }: { children: React.ReactNode }) {
       window.clearTimeout(t0);
       window.clearTimeout(t100);
     };
-  }, []);
+  }, [fullPageRoute]);
 
-  return (
-    <div data-benefits-page className={BENEFITS_PAGE_SHELL_CLASS}>
-      <div
-        data-benefits-inset
-        className={`${APP_MOBILE_PAGE_INSET_CLASS} space-y-6 max-lg:space-y-3 sm:space-y-6`}
-      >
-        {children}
-      </div>
+  const inset = (
+    <div
+      data-benefits-inset
+      className={`${APP_MOBILE_PAGE_INSET_CLASS} space-y-6 max-lg:space-y-3 sm:space-y-6`}
+    >
+      {children}
     </div>
   );
+
+  if (fullPageRoute) {
+    return <div className={BENEFITS_PAGE_SHELL_CLASS}>{inset}</div>;
+  }
+
+  return <div className="min-w-0 max-w-full">{inset}</div>;
 }
 
 const cardClass =
@@ -244,13 +258,19 @@ function BenefitsReferralExtrasPage() {
   }
 
   if (snapshot.audience === "player") {
-    return <BenefitsPlayerReferralContent mode="invite" />;
+    return <BenefitsPlayerReferralContent mode="invite" embedded />;
   }
 
   return null;
 }
 
-function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" }) {
+function BenefitsPlayerReferralContent({
+  mode,
+  embedded = false,
+}: {
+  mode: "invite" | "rewards";
+  embedded?: boolean;
+}) {
   const t = useTranslations("benefits");
   const tCommon = useTranslations("common");
   const tShare = useTranslations("share");
@@ -384,11 +404,13 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
     })();
   }, [copyInviteUrl, inviteUrl, shareData]);
 
+  const pageShell = (content: React.ReactNode) => (
+    <BenefitsMobileShell fullPageRoute={!embedded}>{content}</BenefitsMobileShell>
+  );
+
   if (loading) {
-    return (
-      <BenefitsMobileShell>
-        <p className="text-sm text-gn-text-secondary">{tCommon("loadingEllipsis")}</p>
-      </BenefitsMobileShell>
+    return pageShell(
+      <p className="text-sm text-gn-text-secondary">{tCommon("loadingEllipsis")}</p>,
     );
   }
 
@@ -530,8 +552,8 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
   );
 
   if (mode === "invite") {
-    return (
-      <BenefitsMobileShell>
+    return pageShell(
+      <>
         <header>
           <h1 className="text-xl font-semibold tracking-tight text-gn-text max-lg:text-base sm:text-2xl">
             {t("benefitsTitle")}
@@ -555,13 +577,13 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
           {rewardsFields}
         </section>
 
-        <BenefitsScrollEndSpacer />
-      </BenefitsMobileShell>
+        {embedded ? null : <BenefitsScrollEndSpacer />}
+      </>,
     );
   }
 
-  return (
-    <BenefitsMobileShell>
+  return pageShell(
+    <>
       <section className="space-y-4 max-lg:space-y-2.5" aria-labelledby="benefits-rewards-heading">
         <h2
           id="benefits-rewards-heading"
@@ -571,7 +593,7 @@ function BenefitsPlayerReferralContent({ mode }: { mode: "invite" | "rewards" })
         </h2>
         {rewardsFields}
       </section>
-      <BenefitsScrollEndSpacer />
-    </BenefitsMobileShell>
+      {embedded ? null : <BenefitsScrollEndSpacer />}
+    </>,
   );
 }

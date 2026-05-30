@@ -14,5 +14,9 @@ export default async function BenefitsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <BenefitsReferralPage variant="invite-only" />;
+  return (
+    <div data-benefits-route-page className="min-w-0 max-w-full">
+      <BenefitsReferralPage variant="invite-only" />
+    </div>
+  );
 }
