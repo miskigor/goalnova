@@ -162,7 +162,7 @@ const accentOutlineButtonClass =
   "box-border w-full max-w-full min-w-0 rounded-lg border border-orange-500/50 bg-orange-500/10 px-3 py-2 text-xs font-semibold text-orange-200 transition hover:bg-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40 max-lg:py-1.5 sm:py-2.5";
 
 const linkBoxClass =
-  "box-border w-full min-w-0 max-w-full overflow-x-auto rounded-lg border border-gn-border-subtle bg-gn-surface/30 px-2.5 py-2 font-mono text-[10px] leading-snug text-gn-text break-all max-lg:max-h-16 sm:px-3 sm:py-2.5 sm:text-xs";
+  "box-border w-full min-w-0 max-w-full overflow-x-hidden rounded-lg border border-gn-border-subtle bg-gn-surface/30 px-2.5 py-2 font-mono text-[10px] leading-snug text-gn-text break-all max-lg:max-h-16 sm:px-3 sm:py-2.5 sm:text-xs";
 
 function isShareCancelled(err: unknown): boolean {
   return err instanceof DOMException && err.name === "AbortError";

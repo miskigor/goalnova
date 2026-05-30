@@ -123,7 +123,9 @@ html {
     height: 100% !important;
     max-height: 100% !important;
     overflow: hidden !important;
+    overflow-x: hidden !important;
     overscroll-behavior: none;
+    overscroll-behavior-x: none;
   }
 
   body:has([data-app-root]) {
@@ -134,8 +136,9 @@ html {
     max-height: 100% !important;
     margin: 0;
     overflow: hidden !important;
-    overflow-x: clip;
+    overflow-x: hidden !important;
     overscroll-behavior: none;
+    overscroll-behavior-x: none;
     touch-action: manipulation;
   }
 
@@ -168,15 +171,16 @@ html {
   [data-app-mobile-bottom-nav-mount] {
     position: fixed !important;
     top: auto !important;
+    inset-inline: 0 !important;
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    width: 100% !important;
+    width: auto !important;
     max-width: 100% !important;
     margin: 0 !important;
     box-sizing: border-box !important;
     padding-bottom: max(0.25rem, env(safe-area-inset-bottom, 0px));
-    overflow-x: clip !important;
+    overflow-x: hidden !important;
     overflow-y: visible !important;
     z-index: 9999 !important;
     visibility: visible !important;
@@ -447,9 +451,10 @@ html {
     display: block;
     position: relative;
     overflow: hidden !important;
-    overflow-x: clip !important;
+    overflow-x: hidden !important;
     overscroll-behavior: none;
-    touch-action: manipulation;
+    overscroll-behavior-x: none;
+    touch-action: pan-y;
   }
 
   /* Tab pages (not home): full tab bar above Safari/Chrome toolbar. */
@@ -457,10 +462,11 @@ html {
     [data-app-mobile-bottom-nav-mount] {
     position: fixed !important;
     top: auto !important;
+    inset-inline: 0 !important;
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    width: 100% !important;
+    width: auto !important;
     max-width: 100% !important;
     margin: 0 !important;
     z-index: 10001 !important;
@@ -468,7 +474,7 @@ html {
     opacity: 1 !important;
     pointer-events: none !important;
     touch-action: manipulation;
-    overflow-x: clip !important;
+    overflow-x: hidden !important;
     overflow-y: visible !important;
     padding-bottom: calc(
       env(safe-area-inset-bottom, 0px) + var(--gn-tab-bar-mount-bottom, 4.5rem)
@@ -520,7 +526,7 @@ html {
     max-height: none !important;
     margin: 0 !important;
     overflow: hidden !important;
-    overflow-x: clip;
+    overflow-x: hidden !important;
     overscroll-behavior: none;
     overscroll-behavior-x: none;
     transform: none !important;
@@ -558,7 +564,7 @@ html {
     scroll-padding-top: var(--gn-page-content-scroll-padding-top);
     scroll-padding-bottom: 1.25rem;
     overflow-y: auto !important;
-    overflow-x: clip !important;
+    overflow-x: hidden !important;
     overscroll-behavior: none;
     overscroll-behavior-y: none;
     overscroll-behavior-x: none;
