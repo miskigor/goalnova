@@ -23,13 +23,16 @@ export default async function ContactPage({ params }: Props) {
 
       <LegalSection title={t("contact.emailTitle")}>
         <p>{t("contact.emailIntro")}</p>
-        <p>
-          <a
-            href={`mailto:${t("contact.emailAddress")}`}
-            className="font-medium text-gn-accent underline-offset-2 transition-colors hover:text-gn-accent-hover hover:underline"
-          >
-            {t("contact.emailAddress")}
-          </a>
+        <p className="flex flex-col gap-1">
+          {[t("contact.emailAddress"), t("contact.emailAddressSecondary")].map((email) => (
+            <a
+              key={email}
+              href={`mailto:${email}`}
+              className="font-medium text-gn-accent underline-offset-2 transition-colors hover:text-gn-accent-hover hover:underline"
+            >
+              {email}
+            </a>
+          ))}
         </p>
       </LegalSection>
 

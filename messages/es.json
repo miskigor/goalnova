@@ -528,7 +528,8 @@
       "companyName": "ADORES.FSH",
       "emailTitle": "Email",
       "emailIntro": "For general inquiries, privacy questions, or copyright reports:",
-      "emailAddress": "legal@pitchrusch.com",
+      "emailAddress": "info@pitchrusch.com",
+      "emailAddressSecondary": "info@adoresfsh.com",
       "addressTitle": "Address",
       "addressPlaceholder": "Dr. Franje Tuđmana 27a, 32236 Ilok"
     }
