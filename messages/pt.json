@@ -525,12 +525,12 @@
     "contact": {
       "title": "Contact",
       "companyTitle": "Company",
-      "companyName": "[Company name — placeholder]",
+      "companyName": "ADORES.FSH",
       "emailTitle": "Email",
       "emailIntro": "For general inquiries, privacy questions, or copyright reports:",
       "emailAddress": "legal@pitchrusch.com",
       "addressTitle": "Address",
-      "addressPlaceholder": "Registered business address will be published here."
+      "addressPlaceholder": "Dr. Franje Tuđmana 27a, 32236 Ilok"
     }
   },
   "landing": {
