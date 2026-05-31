@@ -133,6 +133,16 @@ function runProfileEditorMountedScrollReset(titleEl: HTMLElement | null) {
   }
 }
 
+/** Clears tab-bar overlap at the end of the long settings form (mobile only). */
+function SettingsProfileScrollEndSpacer() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none shrink-0 max-lg:block max-lg:h-[calc(var(--gn-app-bottom-nav-offset-measured,var(--gn-app-bottom-nav-offset,4.5rem))+3rem)] lg:hidden"
+    />
+  );
+}
+
 function ProfileEditorShell({ children }: { children: React.ReactNode }) {
   return (
     <div
@@ -142,7 +152,7 @@ function ProfileEditorShell({ children }: { children: React.ReactNode }) {
     >
       <div
         data-settings-profile-inset
-        className={`${SETTINGS_PROFILE_MOBILE_INSET_CLASS} space-y-3 max-lg:space-y-2.5 max-lg:pb-6 sm:space-y-6`}
+        className={`${SETTINGS_PROFILE_MOBILE_INSET_CLASS} space-y-3 max-lg:space-y-2.5 sm:space-y-6`}
       >
         {children}
       </div>
@@ -998,6 +1008,7 @@ export function ProfileEditor() {
       </button>
 
       <DeleteAccountSection />
+      <SettingsProfileScrollEndSpacer />
     </ProfileEditorShell>
   );
 }
