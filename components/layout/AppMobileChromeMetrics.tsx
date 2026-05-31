@@ -122,7 +122,6 @@ export function AppMobileChromeMetrics() {
 
     const selectors = [
       '[data-app-mobile-chrome-fixed="top"]',
-      '[data-app-mobile-chrome-fixed="bottom"]',
       "[data-app-mobile-header]",
       "[data-app-mobile-bottom-nav-mount]",
       "[data-app-bottom-nav]",

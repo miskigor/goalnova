@@ -123,11 +123,7 @@ html {
     height: 100% !important;
     max-height: 100% !important;
     overflow: hidden !important;
-    overflow-x: hidden !important;
-    overflow-y: hidden !important;
     overscroll-behavior: none;
-    position: fixed;
-    inset: 0;
   }
 
   body:has([data-app-root]) {
@@ -138,20 +134,16 @@ html {
     max-height: 100% !important;
     margin: 0;
     overflow: hidden !important;
-    overflow-x: hidden !important;
-    overflow-y: hidden !important;
+    overflow-x: clip;
     overscroll-behavior: none;
     touch-action: manipulation;
-    position: fixed;
-    inset: 0;
   }
 
   body:has([data-app-root]):has([data-pitchrusch-home-feed]) {
     display: block;
-    position: fixed !important;
-    inset: 0 !important;
+    position: relative;
     overflow: hidden !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     overscroll-behavior: none;
     touch-action: manipulation;
   }
@@ -172,8 +164,7 @@ html {
     z-index: 1000;
   }
 
-  /* Portaled mobile bottom tab bar — outside scroll containers. */
-  [data-app-mobile-chrome-fixed="bottom"],
+  /* In-layout mobile tab bar (AppChromeLayout) — fixed viewport bottom, no visualViewport. */
   [data-app-mobile-bottom-nav-mount] {
     position: fixed !important;
     bottom: 0 !important;
@@ -183,9 +174,9 @@ html {
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    padding-bottom: 0 !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     overflow-x: clip !important;
-    z-index: 1000 !important;
+    z-index: 9999 !important;
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
@@ -193,12 +184,6 @@ html {
     -webkit-transform: translateZ(0);
   }
 
-  [data-app-mobile-chrome-fixed="bottom"][data-vv-positioned="true"] {
-    top: var(--gn-mobile-chrome-bottom-top) !important;
-    bottom: auto !important;
-  }
-
-  [data-app-mobile-chrome-fixed="bottom"] [data-app-bottom-nav],
   [data-app-mobile-bottom-nav-mount] [data-app-bottom-nav] {
     display: block !important;
     visibility: visible !important;
@@ -282,7 +267,7 @@ html {
 
   [data-app-root]:has([data-pitchrusch-home-feed]) {
     position: fixed !important;
-    top: env(safe-area-inset-top, 0px) !important;
+    top: var(--gn-app-header-offset) !important;
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
@@ -457,17 +442,35 @@ html {
    */
   body:has([data-app-root]):not(:has([data-pitchrusch-home-feed])) {
     display: block;
-    position: fixed !important;
-    inset: 0 !important;
+    position: relative;
     overflow: hidden !important;
-    overflow-x: hidden !important;
-    overflow-y: hidden !important;
+    overflow-x: clip !important;
     overscroll-behavior: none;
     touch-action: manipulation;
   }
 
+  /* Tab pages (not home): pin bottom nav to visual viewport — same idea as /premium. */
+  body:has([data-app-root]):not(:has([data-pitchrusch-home-feed]))
+    [data-app-mobile-bottom-nav-mount] {
+    position: fixed !important;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: max(env(safe-area-inset-bottom, 0px), var(--gn-mobile-visual-bottom-inset, 0px)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    z-index: 10001 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
   [data-app-mobile-chrome-fixed="top"] [data-app-mobile-header],
-  [data-app-mobile-chrome-fixed="bottom"] [data-app-bottom-nav],
   [data-app-mobile-bottom-nav-mount] [data-app-bottom-nav] {
     visibility: visible;
     opacity: 1;
@@ -494,7 +497,7 @@ html {
 
   [data-app-root]:not(:has([data-pitchrusch-home-feed])) {
     position: fixed !important;
-    top: env(safe-area-inset-top, 0px) !important;
+    top: var(--gn-app-header-offset) !important;
     bottom: var(--gn-app-bottom-nav-offset, 4.5rem) !important;
     left: 0 !important;
     right: 0 !important;
@@ -529,7 +532,6 @@ html {
     padding-bottom: 0 !important;
   }
 
-  /* Shell Tailwind may add bottom-nav pb; root already ends above nav — only content tail padding here. */
   [data-app-main]:not(:has([data-pitchrusch-home-feed])) {
     flex: 1 1 auto;
     min-height: 0;
@@ -538,28 +540,20 @@ html {
     width: 100% !important;
     max-width: 100% !important;
     margin-inline: 0 !important;
-    padding-top: 0 !important;
+    padding-top: var(--gn-page-content-top-inset) !important;
     padding-bottom: 1.25rem !important;
     padding-left: max(0.75rem, env(safe-area-inset-left, 0px)) !important;
     padding-right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
     scroll-padding-top: var(--gn-page-content-scroll-padding-top);
     scroll-padding-bottom: 1.25rem;
     overflow-y: auto !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     overscroll-behavior: none;
     overscroll-behavior-y: none;
     overscroll-behavior-x: none;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
     align-items: stretch;
-  }
-
-  /* /profile — drop duplicate bottom-nav padding from Tailwind shell class. */
-  [data-app-main]:has([data-own-profile-page]) {
-    padding-top: 0 !important;
-    padding-bottom: 1rem !important;
-    scroll-padding-top: 0 !important;
-    scroll-padding-bottom: 1rem !important;
   }
 
   [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) {
@@ -570,10 +564,7 @@ html {
     margin-inline: 0;
     min-width: 0;
     min-height: 0;
-    height: auto;
-    max-height: none;
     overflow-x: clip;
-    overflow-y: visible;
   }
 
   [data-app-main-inner]:not(:has([data-pitchrusch-home-feed])) > * {
@@ -600,6 +591,21 @@ html {
    */
   [data-app-main]:has([data-pitchrusch-explore-page]) {
     scroll-padding-top: var(--gn-page-content-scroll-padding-top);
+  }
+
+  [data-app-main-inner]:has([data-pitchrusch-explore-page]) {
+    flex: 0 1 auto;
+    height: auto;
+    min-height: min-content;
+    overflow-y: visible;
+  }
+
+  /* /profile — let [data-app-main] scroll full page height (same as explore). */
+  [data-app-main-inner]:has([data-own-profile-page]) {
+    flex: 0 1 auto;
+    height: auto;
+    min-height: min-content;
+    overflow-y: visible;
   }
 
   /*
@@ -665,57 +671,6 @@ html {
     min-width: 0;
   }
 
-  /*
-   * /benefits — same inset + scroll band as /settings/profile (content only; never bottom tab bar rules).
-   */
-  [data-app-main]:not(:has([data-pitchrusch-home-feed])):has([data-benefits-route-page]) {
-    overflow-x: hidden !important;
-    padding-left: max(0.625rem, env(safe-area-inset-left, 0px)) !important;
-    padding-right: max(0.625rem, env(safe-area-inset-right, 0px)) !important;
-    padding-bottom: calc(
-      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem)) + 2.75rem
-      + var(--gn-mobile-visual-bottom-inset, 0px)
-    ) !important;
-    scroll-padding-top: var(--gn-page-content-scroll-padding-top);
-    scroll-padding-bottom: calc(
-      var(--gn-app-bottom-nav-offset-measured, var(--gn-app-bottom-nav-offset, 4.5rem)) + 2.75rem
-      + var(--gn-mobile-visual-bottom-inset, 0px)
-    );
-  }
-
-  [data-app-main-inner]:has([data-benefits-route-page]) {
-    flex: 0 1 auto;
-    height: auto;
-    min-height: min-content;
-    overflow-x: hidden;
-    overflow-y: visible;
-  }
-
-  [data-benefits-route-page],
-  [data-benefits-page],
-  [data-benefits-inset] {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    overflow-x: hidden;
-  }
-
-  [data-benefits-inset] {
-    margin-inline: auto;
-    max-width: calc(100% - 2.5rem);
-    padding-inline: 0.25rem;
-  }
-
-  [data-benefits-inset] button,
-  [data-benefits-inset] a,
-  [data-benefits-inset] section,
-  [data-benefits-inset] .rounded-xl {
-    box-sizing: border-box;
-    max-width: 100%;
-    min-width: 0;
-  }
-
   /* /premium — fixed band; no pull-to-shift; bottom tab bar must stay visible (no body overflow clip). */
   html:has([data-premium-fit-viewport]) {
     overscroll-behavior: none !important;
@@ -726,7 +681,6 @@ html {
     touch-action: manipulation;
   }
 
-  body:has([data-premium-fit-viewport]) [data-app-mobile-chrome-fixed="bottom"],
   body:has([data-premium-fit-viewport]) [data-app-mobile-bottom-nav-mount] {
     position: fixed !important;
     bottom: max(env(safe-area-inset-bottom, 0px), var(--gn-mobile-visual-bottom-inset, 0px)) !important;
