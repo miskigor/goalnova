@@ -48,8 +48,8 @@ function ProfilePageShell({ children }: { children: React.ReactNode }) {
         "overflow-x-clip lg:max-w-2xl lg:pb-8",
       ].join(" ")}
     >
-      {/* Inner band — globals zero [data-profile-shell] pt; mobile insets for header + bottom nav */}
-      <div className="box-border flex w-full min-w-0 max-w-full flex-col space-y-4 max-lg:space-y-3 max-lg:pt-[calc(4rem+var(--gn-app-bottom-nav-offset,4.5rem))] max-lg:pb-0 lg:pt-0 lg:pb-0">
+      {/* Inner band — top inset comes from [data-app-main]; no extra mobile pt here */}
+      <div className="box-border flex w-full min-w-0 max-w-full flex-col space-y-4 max-lg:space-y-3 max-lg:pt-0 max-lg:pb-0 lg:pt-0 lg:pb-0">
         {children}
       </div>
     </div>
