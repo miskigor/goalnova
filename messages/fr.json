@@ -451,7 +451,7 @@
   },
   "legal": {
     "common": {
-      "backHome": "← Back to home"
+      "backHome": "← Retour à l'accueil"
     },
     "footer": {
       "terms": "Terms",
@@ -524,13 +524,13 @@
     },
     "contact": {
       "title": "Contact",
-      "companyTitle": "Company",
+      "companyTitle": "Société",
       "companyName": "ADORES.FSH",
-      "emailTitle": "Email",
-      "emailIntro": "For general inquiries, privacy questions, or copyright reports:",
+      "emailTitle": "E-mail",
+      "emailIntro": "Pour les demandes générales, les questions sur la confidentialité ou les signalements de droits d'auteur :",
       "emailAddress": "info@pitchrusch.com",
       "emailAddressSecondary": "info@adoresfsh.com",
-      "addressTitle": "Address",
+      "addressTitle": "Adresse",
       "addressPlaceholder": "Dr. Franje Tuđmana 27a, 32236 Ilok"
     }
   },

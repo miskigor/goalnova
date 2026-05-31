@@ -21,7 +21,7 @@
     "termsTitle": "Terms of Service",
     "privacyTitle": "Privacy Policy",
     "contentPolicyTitle": "Music & Copyright Policy",
-    "contactTitle": "Contact",
+    "contactTitle": "Kontakt",
     "scoutApplyTitle": "Become a Verified Scout",
     "scoutDashboardTitle": "Scout dashboard",
     "adminScoutVerificationsTitle": "Überprüfung der Scout-Verifizierung",
@@ -451,13 +451,13 @@
   },
   "legal": {
     "common": {
-      "backHome": "← Back to home"
+      "backHome": "← Zurück zur Startseite"
     },
     "footer": {
       "terms": "Terms",
       "privacy": "Privacy",
       "contentPolicy": "Music & copyright",
-      "contact": "Contact",
+      "contact": "Kontakt",
       "navAriaLabel": "Rechtliche Links"
     },
     "terms": {
@@ -523,14 +523,14 @@
       "s6email": "contact@pitchrusch.app"
     },
     "contact": {
-      "title": "Contact",
-      "companyTitle": "Company",
+      "title": "Kontakt",
+      "companyTitle": "Unternehmen",
       "companyName": "ADORES.FSH",
-      "emailTitle": "Email",
-      "emailIntro": "For general inquiries, privacy questions, or copyright reports:",
+      "emailTitle": "E-Mail",
+      "emailIntro": "Für allgemeine Anfragen, Datenschutzfragen oder Urheberrechtsmeldungen:",
       "emailAddress": "info@pitchrusch.com",
       "emailAddressSecondary": "info@adoresfsh.com",
-      "addressTitle": "Address",
+      "addressTitle": "Adresse",
       "addressPlaceholder": "Dr. Franje Tuđmana 27a, 32236 Ilok"
     }
   },
