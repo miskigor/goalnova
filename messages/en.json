@@ -1706,7 +1706,7 @@
     "challengeWaitToAttach": "Confirming challenge… try again in a moment.",
     "submitToChallengeSuccess": "Video submitted to challenge",
     "submitToChallengeError": "Could not submit to this challenge. Try again.",
-    "mergeCompletedWithoutMusic": "Video saved, but music could not be added. Your clip was published without the soundtrack.",
+    "mergeCompletedWithoutMusic": "Your video was published without added music because audio processing failed.",
     "mergeMusicFailed": "Video could not be published with music.",
     "uploadPublishedWithMusic": "Video published with music.",
     "youReachedFreeVideoLimit": "You have reached the free video limit.",

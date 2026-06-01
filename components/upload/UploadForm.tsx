@@ -221,6 +221,8 @@ export function UploadForm() {
   const [uploadPhase, setUploadPhase] = useState<UploadPhase>("idle");
   const [lastChallengeAiOk, setLastChallengeAiOk] = useState(true);
   const [failureDetail, setFailureDetail] = useState<string | null>(null);
+  /** Shown on success when library music merge failed but the original video was published. */
+  const [uploadSuccessWarning, setUploadSuccessWarning] = useState<string | null>(null);
   const [initError, setInitError] = useState<string | null>(null);
   const [selectedMusicTrackId, setSelectedMusicTrackId] = useState<string | null>(
     null,
@@ -317,6 +319,7 @@ export function UploadForm() {
         setSuperAdminChallengeBypass(false);
         setInitError(null);
         setFailureDetail(null);
+        setUploadSuccessWarning(null);
         setUploadPhase("idle");
         setSelectedMusicTrackId(null);
         setSelectedMusicTitle("");
@@ -561,12 +564,14 @@ export function UploadForm() {
         return t("uploadStatusSaving");
       case "ai_analyzing":
         return t("uploadStatusAiAnalyzing");
-      case "success":
-        return effectiveJoinChallengeId.trim()
+      case "success": {
+        const base = effectiveJoinChallengeId.trim()
           ? lastChallengeAiOk
             ? t("challengeUploadCompleteSuccess")
             : t("challengeUploadAiIncomplete")
           : t("videoUploadedSuccess");
+        return uploadSuccessWarning ? `${base} ${uploadSuccessWarning}` : base;
+      }
       case "failed":
         return `${t("uploadStatusFailedPrefix")}${failureDetail ?? tCommon("genericError")}`;
       default:
@@ -575,6 +580,7 @@ export function UploadForm() {
   }, [
     uploadPhase,
     failureDetail,
+    uploadSuccessWarning,
     t,
     tCommon,
     effectiveJoinChallengeId,
@@ -586,6 +592,7 @@ export function UploadForm() {
     async (file: File) => {
       setUploadPhase("validating");
       setFailureDetail(null);
+      setUploadSuccessWarning(null);
       setInitError(null);
       setSelectedFileMeta({ name: file.name, size: file.size });
 
@@ -739,12 +746,10 @@ export function UploadForm() {
         let storeVol = 1;
 
         /**
-         * Music publish policy (strict — no fake “with music” success):
-         * - TEMP: `TEMP_BLOCK_PUBLISH_WITH_MUSIC` or `NEXT_PUBLIC_DISABLE_MUSIC_MERGE_PUBLISH` ⇒
-         *   block without calling merge (re-enable merge with `NEXT_PUBLIC_ALLOW_PUBLISH_WITH_MUSIC=true`).
-         * - Otherwise: merge API must return `ok === true` + non-empty `processed_video_url`.
-         * - On block/failure: delete raw upload, show `mergeMusicFailed` (hr: "Video nije bilo moguće objaviti s glazbom.").
+         * Optional library music: merge when selected; on failure publish original upload without
+         * `selected_music_track_id` and show `mergeCompletedWithoutMusic` on success.
          */
+        let publishedWithoutLibraryMusic = false;
         if (musicId) {
           setUploadPhase("processing_merge");
           if (isPublishWithMusicBlocked()) {
@@ -914,12 +919,9 @@ export function UploadForm() {
 
         const hasProcessedMergedVideo =
           typeof processedVideoUrl === "string" && processedVideoUrl.trim().length > 0;
-        /** Music chosen ⇒ merged asset URL is mandatory; no silent fallback to plain video publish. */
-        const musicPublishBlocked =
-          Boolean(musicId) && (mergeFailed || !hasProcessedMergedVideo);
-        if (musicPublishBlocked) {
-          console.error(
-            "[PitchRusch upload] music selected but merge did not yield processed_video_url — blocking publish (no fallback)",
+        if (musicId && (mergeFailed || !hasProcessedMergedVideo)) {
+          console.warn(
+            "[PitchRusch upload] library music merge failed — publishing original video without added track",
             {
               musicId,
               storagePath: uploadData.path,
@@ -927,14 +929,10 @@ export function UploadForm() {
               hasProcessedMergedVideo,
             },
           );
-          try {
-            await supabase.storage.from(activeBucket).remove([uploadData.path]);
-          } catch (rmErr) {
-            console.error("[PitchRusch upload] cleanup after merge failure (remove raw upload)", rmErr);
-          }
-          setUploadPhase("failed");
-          setFailureDetail(t("mergeMusicFailed"));
-          return;
+          publishedWithoutLibraryMusic = true;
+          publishUrl = videoUrl;
+          sourceUrl = null;
+          processedVideoUrl = null;
         }
 
         if (hasProcessedMergedVideo) {
@@ -1010,21 +1008,6 @@ export function UploadForm() {
           return;
         }
 
-        const rowMusicId = (insertedRow?.selected_music_track_id ?? "").trim();
-        const rowProcessed = (insertedRow?.processed_video_url ?? "").trim();
-        if (rowMusicId.length > 0 && rowProcessed.length === 0) {
-          console.error(
-            "[PitchRusch upload] DB row has music id but no processed_video_url — rejecting fake music publish",
-            { videoId: insertedRow?.id, rowMusicId },
-          );
-          if (insertedRow?.id) {
-            await supabase.from("videos").delete().eq("id", insertedRow.id);
-          }
-          setUploadPhase("failed");
-          setFailureDetail(t("mergeMusicFailed"));
-          return;
-        }
-
         const newVideoId = insertedRow?.id ?? null;
         let aiAnalysisOk = true;
 
@@ -1043,6 +1026,9 @@ export function UploadForm() {
         }
 
         setLastChallengeAiOk(aiAnalysisOk);
+        setUploadSuccessWarning(
+          publishedWithoutLibraryMusic ? t("mergeCompletedWithoutMusic") : null,
+        );
         setUploadPhase("success");
         finishChallengeSuccessUx({
           challengeId: resolvedChallengeId || null,
@@ -1098,6 +1084,7 @@ export function UploadForm() {
 
     setSelectedFileMeta({ name: next.name, size: next.size });
     setFailureDetail(null);
+    setUploadSuccessWarning(null);
     setVideoDurationProbeFailed(false);
     setWizardStep(1);
 
@@ -1162,6 +1149,7 @@ export function UploadForm() {
     if (fileInputRef.current) fileInputRef.current.value = "";
     setUploadPhase("idle");
     setFailureDetail(null);
+    setUploadSuccessWarning(null);
     setDraftVideoFile(null);
     setWizardStep(1);
     setSelectedFileMeta(null);

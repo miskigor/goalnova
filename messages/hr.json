@@ -1706,7 +1706,7 @@
     "challengeWaitToAttach": "Potvrđujem izazov… pokušajte za trenutak.",
     "submitToChallengeSuccess": "Video je prijavljen na izazov",
     "submitToChallengeError": "Prijava na izazov nije uspjela. Pokušajte ponovo.",
-    "mergeCompletedWithoutMusic": "Video je spremljen, ali glazba nije mogla biti dodana. Vaš isječak je objavljen bez zvučne podloge.",
+    "mergeCompletedWithoutMusic": "Video je objavljen bez dodane glazbe jer obrada glazbe nije uspjela.",
     "mergeMusicFailed": "Video nije bilo moguće objaviti s glazbom.",
     "uploadPublishedWithMusic": "Video je objavljen s glazbom.",
     "youReachedFreeVideoLimit": "Dosegnuo si besplatni limit videa.",
