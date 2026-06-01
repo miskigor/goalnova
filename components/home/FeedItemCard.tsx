@@ -31,13 +31,13 @@ import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 const DASHBOARD_SLIDE =
   "min-h-[26rem] w-full overflow-hidden rounded-2xl border border-white/[0.06] bg-black sm:min-h-[28rem] lg:min-h-[30rem]";
 
-/** Mobile home feed tile — 9:16 from width (stable; no dvh). */
+/** Mobile home feed tile — fixed 9:16 frame (globals enforce size; not media-driven). */
 const HOME_FEED_MOBILE_FRAME =
-  "relative isolate mx-auto mt-2 box-border flex h-[min(68cqh,540px)] w-auto max-w-[min(92vw,380px)] aspect-[9/16] shrink-0 grow-0 flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
+  "relative isolate mx-auto mt-2 box-border flex h-[min(62cqh,500px)] w-auto min-w-0 max-w-[min(88vw,360px)] aspect-[9/16] shrink-0 grow-0 flex-none flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
 
-/** Profile + caption — aligned with video width, safe gap above bottom nav. */
+/** Profile + caption — aligned with video frame width, safe gap above bottom nav. */
 const HOME_FEED_MOBILE_META_BELOW =
-  "pointer-events-none relative z-[1] mx-auto box-border w-[96%] max-w-[380px] shrink-0 grow-0 px-1.5 pb-0 pt-0 max-lg:max-h-[12rem] max-lg:overflow-y-auto lg:hidden";
+  "pointer-events-none relative z-[1] mx-auto box-border w-auto min-w-0 max-w-[min(88vw,360px)] shrink-0 grow-0 px-1.5 pb-0 pt-0 max-lg:max-h-[12rem] max-lg:overflow-y-auto lg:hidden";
 
 /** Mobile home snap column — fixed video frame + meta; frame must not shrink when meta loads. */
 const HOME_FEED_MOBILE_SLIDE_STACK =
@@ -334,7 +334,7 @@ export function FeedItemCard({
             sources={playbackSources}
             renderedPrimarySrc={renderedPrimarySrc}
             videoId={feedVideoKey}
-            mediaFit="cover"
+            mediaFit="contain"
             mediaObjectPosition="center"
             preload={videoPreload}
             fetchPriority={videoFetchPriority}

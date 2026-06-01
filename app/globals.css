@@ -366,7 +366,7 @@ body,
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-meta-below] {
     pointer-events: auto;
-    max-width: min(360px, 92vw);
+    max-width: min(88vw, 360px);
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root],
@@ -381,7 +381,7 @@ body,
     transform: none !important;
   }
 
-  /* Letterbox outside home feed — home uses cover in its own rules below. */
+  /* Letterbox outside home feed — home feed uses contain in its own rules below. */
   [data-gn-video-media]:not([data-pitchrusch-feed-video]) video {
     box-sizing: border-box;
     width: 100% !important;
@@ -392,27 +392,48 @@ body,
     object-position: center !important;
   }
 
-  /* Početna: cap frame from scrollport (cqh), not svh — stable across browser chrome. */
+  /*
+   * Početna: fixed portrait frame — identical for every account/video (not intrinsic media size).
+   */
   [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-video-frame] {
-    flex: 0 0 auto !important;
+    box-sizing: border-box;
+    flex: none !important;
+    flex-grow: 0 !important;
     flex-shrink: 0 !important;
-    max-height: min(68cqh, 540px) !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: min(88vw, 360px) !important;
+    height: min(62cqh, 500px) !important;
+    max-height: min(62cqh, 500px) !important;
+    aspect-ratio: 9 / 16 !important;
+    margin-inline: auto !important;
   }
 
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-video],
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] [data-gn-video-media],
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] [data-gn-video-media] > div {
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0;
-  }
-
-  [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] video {
+    position: absolute !important;
+    inset: 0 !important;
     box-sizing: border-box;
     width: 100% !important;
     height: 100% !important;
-    max-height: 100% !important;
     max-width: 100% !important;
-    object-fit: cover !important;
+    max-height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+  }
+
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] video,
+  [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] img {
+    box-sizing: border-box;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    object-fit: contain !important;
     object-position: center center !important;
   }
 
