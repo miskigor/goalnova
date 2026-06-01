@@ -402,9 +402,9 @@ body,
     flex-shrink: 0 !important;
     width: auto !important;
     min-width: 0 !important;
-    max-width: min(88vw, 360px) !important;
-    height: min(62cqh, 500px) !important;
-    max-height: min(62cqh, 500px) !important;
+    max-width: min(82vw, 320px) !important;
+    height: min(56cqh, 440px) !important;
+    max-height: min(56cqh, 440px) !important;
     aspect-ratio: 9 / 16 !important;
     margin-inline: auto !important;
   }
