@@ -33,7 +33,7 @@ const DASHBOARD_SLIDE =
 
 /** Mobile home feed tile — 9:16 from width (stable; no dvh). */
 const HOME_FEED_MOBILE_FRAME =
-  "relative isolate mx-auto mt-2 box-border flex w-[96%] max-w-[380px] aspect-[9/16] max-h-[min(52svh,480px)] shrink-0 grow-0 flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
+  "relative isolate mx-auto mt-2 box-border flex h-[min(68cqh,540px)] w-auto max-w-[min(92vw,380px)] aspect-[9/16] shrink-0 grow-0 flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
 
 /** Profile + caption — aligned with video width, safe gap above bottom nav. */
 const HOME_FEED_MOBILE_META_BELOW =

@@ -396,7 +396,7 @@ body,
   [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-video-frame] {
     flex: 0 0 auto !important;
     flex-shrink: 0 !important;
-    max-height: min(52cqh, 480px) !important;
+    max-height: min(68cqh, 540px) !important;
   }
 
   [data-pitchrusch-home-feed] [data-pitchrusch-feed-video] [data-gn-video-media],
