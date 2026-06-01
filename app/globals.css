@@ -44,6 +44,7 @@
 html {
   margin: 0;
   padding: 0;
+  background-color: #000;
   scroll-behavior: smooth;
   width: 100%;
   max-width: 100%;
@@ -51,6 +52,11 @@ html {
   overflow-x: hidden;
   overscroll-behavior-x: none;
   touch-action: pan-y;
+}
+
+body,
+#__next {
+  background-color: #000;
 }
 
 @media (prefers-reduced-motion: reduce) {

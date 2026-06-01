@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import {
@@ -15,6 +14,7 @@ import {
 } from "@/lib/auth/consumeAuthRedirectFromUrl";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { AppChromeLayout } from "@/components/layout/AppChromeLayout";
+import { PitchruschLoadingScreen } from "@/components/loading/PitchruschLoadingScreen";
 import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
 import type { Session } from "@supabase/supabase-js";
@@ -48,32 +48,6 @@ function oauthReturnLikely(): boolean {
   );
 }
 
-function InlineSpinner() {
-  return (
-    <svg
-      className="h-4 w-4 animate-spin text-gn-accent"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8v4l3-3-3-3v4a12 12 0 00-12 12h4z"
-      />
-    </svg>
-  );
-}
-
 const CONFIRM_EMAIL_PATH = "/confirm-email";
 
 /** Guest routes that always render their form — no auto-redirect from a persisted Supabase session. */
@@ -93,7 +67,6 @@ function protectedChromeLoading(
 }
 
 export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
-  const tCommon = useTranslations("authCommon");
   const router = useRouter();
   const pathname = usePathname();
 
@@ -275,12 +248,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   if (checking) {
     return protectedChromeLoading(
       mode,
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="flex items-center gap-2 text-sm text-gn-text-secondary">
-          <InlineSpinner />
-          {tCommon("loading")}
-        </div>
-      </div>,
+      <PitchruschLoadingScreen fullScreen={false} />,
     );
   }
 
@@ -305,37 +273,18 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     !oauthReturnLikely();
 
   if (staleSessionWithoutFreshLogin) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center bg-gn-bg">
-        <div className="flex items-center gap-2 text-sm text-gn-text-secondary">
-          <InlineSpinner />
-          {tCommon("loading")}
-        </div>
-      </div>
-    );
+    return <PitchruschLoadingScreen fullScreen={false} />;
   }
 
   if ((mode === "protected" && !isLoggedIn) || blockedUnconfirmed) {
     return protectedChromeLoading(
       mode,
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="flex items-center gap-2 text-sm text-gn-text-secondary">
-          <InlineSpinner />
-          {tCommon("loading")}
-        </div>
-      </div>,
+      <PitchruschLoadingScreen fullScreen={false} />,
     );
   }
 
   if (mode === "guest" && guestAuthSnapshotPending) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="flex items-center gap-2 text-sm text-gn-text-secondary">
-          <InlineSpinner />
-          {tCommon("loading")}
-        </div>
-      </div>
-    );
+    return <PitchruschLoadingScreen fullScreen={false} />;
   }
 
   return <>{children}</>;
