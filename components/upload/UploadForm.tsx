@@ -66,6 +66,25 @@ function tempDebugMergeUpload(label: string, payload: Record<string, unknown>) {
   console.info(`[PitchRusch TEMP DEBUG] ${label}`, payload);
 }
 
+/** Production-safe merge diagnostics (always logged when library music merge runs). */
+function logMusicMergeDiagnostics(payload: {
+  httpStatus: number | null;
+  mergeResOk: boolean;
+  mergeApiHeader: string | null;
+  parseState: string;
+  jsonOk: unknown;
+  apiError: string | null;
+  rawBodyPreview: string;
+  processedVideoUrlLength: number;
+  mergeRejectReasons?: string[];
+  selectedMusicTrackId?: string | null;
+  storagePath?: string;
+  videoFileBytes?: number;
+  phase?: string;
+}) {
+  console.info("[PitchRusch upload] music merge diagnostics", payload);
+}
+
 type UploadPhase =
   | "idle"
   | "validating"
@@ -754,6 +773,11 @@ export function UploadForm() {
           setUploadPhase("processing_merge");
           if (isPublishWithMusicBlocked()) {
             mergeFailed = true;
+            console.warn("[PitchRusch upload] merge skipped — client gate (API not called)", {
+              selectedMusicTrackId: musicId,
+              reason:
+                "TEMP_BLOCK_PUBLISH_WITH_MUSIC or NEXT_PUBLIC_DISABLE_MUSIC_MERGE_PUBLISH; override with NEXT_PUBLIC_ALLOW_PUBLISH_WITH_MUSIC=true",
+            });
             tempDebugMergeUpload("publish-with-music blocked", {
               reason:
                 "temp gate or NEXT_PUBLIC_DISABLE_MUSIC_MERGE_PUBLISH; allow via NEXT_PUBLIC_ALLOW_PUBLISH_WITH_MUSIC=true",
@@ -777,12 +801,18 @@ export function UploadForm() {
               setFailureDetail(t("mustBeLoggedIn"));
               return;
             } else {
-              try {
-              /** Music merge: `POST /api/videos/merge-music` — `app/api/videos/merge-music/route.ts` */
               const mergeEndpoint =
                 typeof window !== "undefined"
                   ? `${window.location.origin}/api/videos/merge-music`
                   : "/api/videos/merge-music";
+              try {
+              console.info("[PitchRusch upload] music merge request started", {
+                selectedMusicTrackId: musicId,
+                storagePath: uploadData.path,
+                storageBucket: activeBucket,
+                videoFileBytes: file.size,
+                mergeEndpoint,
+              });
               const mergeRes = await fetch(mergeEndpoint, {
                 method: "POST",
                 headers: {
@@ -857,6 +887,46 @@ export function UploadForm() {
               const pickUrl = (v: unknown) =>
                 typeof v === "string" ? v.trim() : "";
               const processedVideoUrlFromApi = pickUrl(mergeJson.processed_video_url);
+              const parseState = !trimmed
+                ? "empty_body"
+                : !parseOk
+                  ? "invalid_json"
+                  : isEmptyObject
+                    ? "empty_object_json"
+                    : processedVideoUrlFromApi.length === 0
+                      ? "missing_processed_video_url"
+                      : "ok";
+              const mergeRejectReasons: string[] = [];
+              if (!parseOk) mergeRejectReasons.push("response_not_json");
+              else if (isEmptyObject) mergeRejectReasons.push("response_empty_object");
+              if (!mergeRes.ok) mergeRejectReasons.push(`http_status_${mergeRes.status}`);
+              if (mergeApiHeader !== "1") {
+                mergeRejectReasons.push(
+                  `missing_x_pitchrusch_merge_api_header:${mergeApiHeader ?? "null"}`,
+                );
+              }
+              if (mergeJson.ok !== true) mergeRejectReasons.push("json_ok_not_true");
+              if (processedVideoUrlFromApi.length === 0) {
+                mergeRejectReasons.push("missing_processed_video_url");
+              }
+              const apiError =
+                typeof mergeJson.error === "string" ? mergeJson.error : null;
+              logMusicMergeDiagnostics({
+                phase: mergeRejectReasons.length === 0 ? "accepted" : "rejected",
+                selectedMusicTrackId: musicId,
+                storagePath: uploadData.path,
+                videoFileBytes: file.size,
+                httpStatus: mergeRes.status,
+                mergeResOk: mergeRes.ok,
+                mergeApiHeader,
+                parseState,
+                jsonOk: mergeJson.ok,
+                apiError,
+                rawBodyPreview: rawBody.slice(0, 500),
+                processedVideoUrlLength: processedVideoUrlFromApi.length,
+                mergeRejectReasons:
+                  mergeRejectReasons.length > 0 ? mergeRejectReasons : undefined,
+              });
               const mergeOk =
                 parseOk &&
                 !isEmptyObject &&
@@ -883,34 +953,33 @@ export function UploadForm() {
                 });
               } else {
                 mergeFailed = true;
-                const parseState = !trimmed
-                  ? "empty_body"
-                  : !parseOk
-                    ? "invalid_json"
-                    : isEmptyObject
-                      ? "empty_object_json"
-                      : "missing_processed_video_url";
-                const mergeDiagnostics = {
-                  httpStatus: mergeRes.status,
-                  mergeResOk: mergeRes.ok,
-                  mergeApiHeader,
-                  parseState,
-                  jsonOk: mergeJson.ok,
-                  processed_video_url_length: processedVideoUrlFromApi.length,
-                  mergeEndpoint,
-                  rawBodyLength: rawBody.length,
-                  rawBodyPreview: rawBody.slice(0, 500),
-                  parsedKeys: parseOk ? Object.keys(mergeJson) : [],
-                  fullParsedBody: parseOk ? mergeJson : null,
-                };
-                console.error(
-                  `[PitchRusch upload] merge API missing required processed_video_url (aliases ignored) ${JSON.stringify(
-                    mergeDiagnostics,
-                  )}`,
+                console.warn(
+                  "[PitchRusch upload] merge API rejected — fallback will publish original video",
+                  { mergeRejectReasons, httpStatus: mergeRes.status },
                 );
               }
             } catch (mergeErr) {
-              console.error("[PitchRusch upload] merge-music network/parse error", mergeErr);
+              const mergeErrMessage =
+                mergeErr instanceof Error ? mergeErr.message : String(mergeErr);
+              logMusicMergeDiagnostics({
+                phase: "network_or_parse_exception",
+                selectedMusicTrackId: musicId,
+                storagePath: uploadData.path,
+                videoFileBytes: file.size,
+                httpStatus: null,
+                mergeResOk: false,
+                mergeApiHeader: null,
+                parseState: "network_or_parse_exception",
+                jsonOk: null,
+                apiError: mergeErrMessage,
+                rawBodyPreview: "",
+                processedVideoUrlLength: 0,
+              });
+              console.error("[PitchRusch upload] merge-music network/parse error", {
+                selectedMusicTrackId: musicId,
+                mergeEndpoint,
+                error: mergeErr,
+              });
               mergeFailed = true;
             }
             }

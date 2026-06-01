@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
@@ -112,6 +112,13 @@ function truncateUrlForLog(u: string, max = 220): string {
   return `${s.slice(0, max)}…`;
 }
 
+function errorDiagnostics(err: unknown): { message: string; stack: string | null } {
+  if (err instanceof Error) {
+    return { message: err.message, stack: err.stack ?? null };
+  }
+  return { message: String(err), stack: null };
+}
+
 export async function GET() {
   const fail: MergeFailureBody = { ok: false, error: "Music merge failed" };
   const final_response_payload = JSON.stringify(fail);
@@ -129,8 +136,18 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const startedAtMs = Date.now();
+
+  const runtimeAtStart = getMergeRuntimeStatus();
+  console.info("[merge-music] runtime status", {
+    ready: runtimeAtStart.ready,
+    reason: runtimeAtStart.ready ? null : runtimeAtStart.reason,
+    videoMergeDisabled: process.env.VIDEO_MERGE_DISABLED === "true",
+    hasServiceRoleKey: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()),
+    maxDurationSeconds: maxDuration,
+  });
   if (mergeDebugEnabled()) {
-    console.info("[merge-music] POST received");
+    console.info("[merge-music] verbose debug enabled");
   }
 
   let source_video_url: string | null = null;
@@ -143,11 +160,27 @@ export async function POST(req: Request) {
   let merged_output_path: string | null = null;
   let final_uploaded_processed_video_url: string | null = null;
 
-  const respondFail = (status: number, error: string): Response => {
+  const respondFail = (status: number, error: string, cause?: unknown): Response => {
     const body: MergeFailureBody = {
       ok: false,
       error: error.trim() || "Music merge failed",
     };
+    const causeDiag = cause !== undefined ? errorDiagnostics(cause) : null;
+    const isTimeout =
+      /timed out|timeout|ETIMEDOUT|function invocation|60000/i.test(body.error) ||
+      (causeDiag !== null && /timed out|timeout|ETIMEDOUT/i.test(causeDiag.message));
+    console.error("[merge-music] fail", {
+      httpStatus: status,
+      error: body.error,
+      selected_music_track_id,
+      storagePath: source_video_url ? "(set)" : null,
+      elapsedMs: Date.now() - startedAtMs,
+      isTimeout,
+      processed_video_url_missing: true,
+      ...(causeDiag
+        ? { exceptionMessage: causeDiag.message, stack: causeDiag.stack }
+        : {}),
+    });
     const final_response_payload = JSON.stringify(body);
     logMergeTempDebug({
       source_video_url,
@@ -176,7 +209,6 @@ export async function POST(req: Request) {
 
     const runtime = getMergeRuntimeStatus();
     if (!runtime.ready) {
-      console.error("[merge-music] merge runtime not ready:", runtime.reason);
       return respondFail(503, "Merge not implemented");
     }
 
@@ -260,6 +292,14 @@ export async function POST(req: Request) {
     music_start_seconds_request = startRaw;
     music_end_seconds_request = Number.isFinite(endRaw) ? endRaw : null;
 
+    console.info("[merge-music] start", {
+      selected_music_track_id: musicTrackId,
+      storagePath,
+      storageBucket,
+      music_start_seconds_request: startRaw,
+      music_end_seconds_request: Number.isFinite(endRaw) ? endRaw : null,
+    });
+
     logMergeTempDebug({
       phase: "after_track_loaded",
       source_video_url,
@@ -285,12 +325,21 @@ export async function POST(req: Request) {
       const outLocal = `${dir}/out.mp4`;
 
       await downloadStorageObjectToFile(service, storageBucket, storagePath, videoLocal);
+      const videoFileStat = await stat(videoLocal);
       await downloadToFile(musicUrl, audioLocal);
 
       const videoDur = ffprobeDurationSeconds(videoLocal);
       if (videoDur <= 0) {
         throw new Error("Could not read video duration");
       }
+
+      console.info("[merge-music] start", {
+        phase: "inputs_ready",
+        storagePath,
+        videoBytes: videoFileStat.size,
+        videoDurationSec: videoDur,
+        selected_music_track_id: musicTrackId,
+      });
 
       let musicDur = Math.max(
         0,
@@ -391,17 +440,21 @@ export async function POST(req: Request) {
       final_response_payload,
     });
 
-    if (mergeDebugEnabled()) {
-      console.info("[merge-music] SUCCESS", { processed_video_url: finalPublicUrl });
-    }
+    console.info("[merge-music] success", {
+      httpStatus: 200,
+      selected_music_track_id,
+      merged_output_path,
+      processed_video_url_length: finalPublicUrl.length,
+      elapsedMs: Date.now() - startedAtMs,
+      x_pitchrusch_merge_api: "1",
+    });
 
     return mergeHttpResponse(success, 200);
   } catch (e) {
     if (e instanceof MergeJsonHttpError) {
-      return respondFail(e.httpStatus, e.errorMessage);
+      return respondFail(e.httpStatus, e.errorMessage, e);
     }
     const detail = e instanceof Error ? e.message : String(e);
-    console.error("[merge-music] pipeline error", detail, e);
-    return respondFail(500, `Music merge failed: ${detail.slice(0, 140)}`);
+    return respondFail(500, `Music merge failed: ${detail.slice(0, 140)}`, e);
   }
 }
