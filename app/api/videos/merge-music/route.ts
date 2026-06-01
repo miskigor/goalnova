@@ -319,14 +319,23 @@ export async function POST(req: Request) {
       });
     }
 
+    const pipelineStartedMs = Date.now();
     const result = await withTempDir(async (dir) => {
       const videoLocal = `${dir}/input_video.bin`;
       const audioLocal = `${dir}/input_audio.bin`;
       const outLocal = `${dir}/out.mp4`;
 
-      await downloadStorageObjectToFile(service, storageBucket, storagePath, videoLocal);
+      const downloadStartedMs = Date.now();
+      await Promise.all([
+        downloadStorageObjectToFile(service, storageBucket, storagePath, videoLocal),
+        downloadToFile(musicUrl, audioLocal),
+      ]);
       const videoFileStat = await stat(videoLocal);
-      await downloadToFile(musicUrl, audioLocal);
+      console.info("[merge-music] phase", {
+        phase: "downloads_done",
+        elapsedMs: Date.now() - downloadStartedMs,
+        videoBytes: videoFileStat.size,
+      });
 
       const videoDur = ffprobeDurationSeconds(videoLocal);
       if (videoDur <= 0) {
@@ -362,6 +371,7 @@ export async function POST(req: Request) {
 
       const volume = Math.min(2, Math.max(0, Number.isFinite(volumeRaw) ? volumeRaw : 1));
 
+      const ffmpegStartedMs = Date.now();
       await mergeVideoWithMusicAudio({
         videoPath: videoLocal,
         audioPath: audioLocal,
@@ -369,6 +379,11 @@ export async function POST(req: Request) {
         musicStartSec: startSec,
         musicEndSec: clampedEnd,
         volume,
+        videoDurationSec: videoDur,
+      });
+      console.info("[merge-music] phase", {
+        phase: "ffmpeg_done",
+        elapsedMs: Date.now() - ffmpegStartedMs,
         videoDurationSec: videoDur,
       });
 
@@ -405,6 +420,10 @@ export async function POST(req: Request) {
         },
         mergedLocalPath: outLocal,
       };
+    });
+    console.info("[merge-music] phase", {
+      phase: "pipeline_done",
+      elapsedMs: Date.now() - pipelineStartedMs,
     });
 
     music_start_seconds_applied = result.applied.musicStartSeconds;

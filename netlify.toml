@@ -15,6 +15,13 @@
 [context.production.environment]
   NEXT_PUBLIC_SITE_URL = "https://pitchrusch.com"
 
+# FFmpeg merge runs inside the Next server handler; more memory = more CPU on Netlify.
+[functions]
+  external_node_modules = ["ffmpeg-static", "@ffprobe-installer/ffprobe"]
+
+[functions."___netlify-server-handler"]
+  memory = 3008
+
 [[redirects]]
   from = "http://pitchrusch.com/*"
   to = "https://pitchrusch.com/:splat"

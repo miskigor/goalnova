@@ -827,6 +827,7 @@ export function UploadForm() {
                   musicEndSeconds: musicEndSec,
                   musicVolume,
                 }),
+                signal: AbortSignal.timeout(120_000),
               });
               const mergeApiHeader = mergeRes.headers.get("x-pitchrusch-merge-api");
               const rawBody = await mergeRes.text();

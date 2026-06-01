@@ -158,7 +158,8 @@ export function mergeVideoWithMusicAudio(params: MergeParams): Promise<void> {
   const canCopyVideo = codec === "h264";
   const copyArgs = [...base, "-c:v", "copy", params.outputPath];
 
-  // Re-encode when stream copy is unavailable (e.g. iPhone HEVC in MOV). Higher quality than CRF 23/veryfast.
+  // Re-encode when stream copy is unavailable (e.g. iPhone HEVC). Use a fast preset so merge
+  // finishes within Netlify's ~60s synchronous limit (gateway may cut off earlier on slow runs).
   const reencodeArgs = [
     ...base,
     "-c:v",
@@ -168,11 +169,13 @@ export function mergeVideoWithMusicAudio(params: MergeParams): Promise<void> {
     "-level",
     "4.1",
     "-preset",
-    "medium",
+    "ultrafast",
     "-crf",
-    "20",
+    "23",
     "-pix_fmt",
     "yuv420p",
+    "-threads",
+    "0",
     params.outputPath,
   ];
 
