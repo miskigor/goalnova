@@ -1,7 +1,7 @@
 {
   "name": "PitchRusch",
   "short_name": "PitchRusch",
-  "description": "Football talent discovery and scouting",
+  "description": "Football talent discovery platform for players, scouts and clubs.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",

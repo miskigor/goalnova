@@ -3,7 +3,7 @@ import { privateDisallowPaths } from "@/lib/seo/privateRobots";
 import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 
 export default function robots(): MetadataRoute.Robots {
-  const origin = getServerSiteOrigin() ?? "https://pitchrusch.com";
+  const origin = (getServerSiteOrigin() ?? "https://pitchrusch.com").replace(/\/$/, "");
   return {
     rules: [
       {

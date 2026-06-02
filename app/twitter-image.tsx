@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { SITE_SEO_OG_TAGLINE } from "@/lib/seo/brandMetadata";
 
 export const runtime = "edge";
 export const size = { width: 1200, height: 600 };
@@ -50,7 +51,7 @@ export default function TwitterImage() {
                 lineHeight: 1.25,
               }}
             >
-              Discover football talent. Built for scouts and clubs.
+              {SITE_SEO_OG_TAGLINE}
             </div>
           </div>
           <div

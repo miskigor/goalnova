@@ -31,9 +31,7 @@ type SitemapItem = {
 };
 
 async function collectAllItems(): Promise<SitemapItem[]> {
-  const origin = getServerSiteOrigin() ?? "https://pitchrusch.com";
   const now = new Date();
-  void origin;
   const items: SitemapItem[] = [];
 
   for (const locale of routing.locales) {
@@ -100,10 +98,10 @@ async function collectAllItems(): Promise<SitemapItem[]> {
 
 /** Single sitemap at `/sitemap.xml` (robots.txt). Under 50k URLs — no `generateSitemaps` split. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const origin = getServerSiteOrigin() ?? "https://pitchrusch.com";
+  const origin = (getServerSiteOrigin() ?? "https://pitchrusch.com").replace(/\/$/, "");
   const items = await collectAllItems();
   return items.map((item) => ({
-    url: `${origin}${item.path}`,
+    url: `${origin}${item.path.startsWith("/") ? item.path : `/${item.path}`}`,
     lastModified: item.lastModified,
     changeFrequency: item.changeFrequency,
     priority: item.priority,

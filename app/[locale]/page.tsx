@@ -9,6 +9,7 @@ import { LandingFooter } from "@/components/landing/LandingFooter";
 import { hrefWithLocale } from "@/i18n/routing";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
+import { SITE_SEO_KEYWORDS } from "@/lib/seo/brandMetadata";
 import { routing } from "@/i18n/routing";
 
 type Props = {
@@ -20,28 +21,49 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "metadata" });
   const origin = getServerSiteOrigin();
   const metadataBase = siteMetadataBase(origin);
+  const title = t("landingTitle");
   const description = t("landingDescription");
   const localePrefix = locale === routing.defaultLocale ? "" : `/${locale}`;
+  const canonicalPath = localePrefix || "/";
 
   return {
     metadataBase,
-    title: t("landingTitle"),
+    title,
     description,
+    applicationName: APP_DISPLAY_NAME,
+    keywords: [...SITE_SEO_KEYWORDS],
     alternates: {
-      canonical: localePrefix || "/",
+      canonical: canonicalPath,
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, l === routing.defaultLocale ? "/" : `/${l}`]),
+      ),
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true },
     },
     openGraph: {
       type: "website",
       siteName: APP_DISPLAY_NAME,
-      title: t("landingTitle"),
+      title,
       description,
       locale,
-      url: localePrefix || "/",
+      url: canonicalPath,
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: `${APP_DISPLAY_NAME} — Football talent discovery`,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
-      title: t("landingTitle"),
+      title,
       description,
+      images: ["/twitter-image"],
     },
   };
 }
@@ -51,6 +73,7 @@ export default async function LandingPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("landing");
+  const meta = await getTranslations("metadata");
   const legal = await getTranslations("legal");
   const year = new Date().getFullYear();
   const h = (path: string) => hrefWithLocale(path, locale);
@@ -64,11 +87,14 @@ export default async function LandingPage({ params }: Props) {
       {
         "@type": "Organization",
         name: APP_DISPLAY_NAME,
+        alternateName: ["pitchrusch", "Pitch Rusch"],
         ...(origin ? { url: origin } : {}),
       },
       {
         "@type": "WebSite",
         name: APP_DISPLAY_NAME,
+        alternateName: "pitchrusch",
+        description: meta("landingDescription"),
         ...(pageUrl ? { url: pageUrl } : {}),
       },
     ],

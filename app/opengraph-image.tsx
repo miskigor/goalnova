@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { SITE_SEO_OG_TAGLINE } from "@/lib/seo/brandMetadata";
 
 export const runtime = "edge";
 export const size = { width: 1200, height: 630 };
@@ -50,7 +51,7 @@ export default function OpenGraphImage() {
                 lineHeight: 1.25,
               }}
             >
-              Premium football talent discovery for scouts, clubs, and players.
+              {SITE_SEO_OG_TAGLINE}
             </div>
           </div>
           <div

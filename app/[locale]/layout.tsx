@@ -65,11 +65,20 @@ export async function generateMetadata({
       description: t("rootDescription"),
       locale,
       url: locale === routing.defaultLocale ? "/" : `/${locale}`,
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: `${APP_DISPLAY_NAME} — Football talent discovery`,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: t("rootTitle"),
       description: t("rootDescription"),
+      images: ["/twitter-image"],
     },
     icons: {
       icon: [
