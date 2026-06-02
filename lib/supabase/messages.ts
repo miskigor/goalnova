@@ -470,20 +470,20 @@ export async function fetchDisplayNamesForUserIds(
   const stillNeed = unique.filter((id) => !out.has(id));
   if (stillNeed.length === 0) return out;
 
-  const { data: scouts, error: scoutsError } = await supabase
-    .from("scout_profiles")
-    .select("id, organization")
-    .in("id", stillNeed);
+  const { data: scouts, error: scoutsError } = await supabase.rpc(
+    "get_scout_profile_display_names",
+    { p_user_ids: stillNeed },
+  );
 
   if (scoutsError) {
-    logFullSupabaseError("[messages] fetchDisplayNames scout_profiles", scoutsError, {
+    logFullSupabaseError("[messages] fetchDisplayNames get_scout_profile_display_names", scoutsError, {
       count: stillNeed.length,
     });
   }
 
   for (const row of scouts ?? []) {
-    const org = row.organization?.trim();
-    if (org) out.set(row.id, org);
+    const label = row.display_name?.trim() || row.organization?.trim();
+    if (label) out.set(row.id, label);
   }
 
   const stillNeed2 = unique.filter((id) => !out.has(id));

@@ -1009,6 +1009,16 @@ export type Database = {
         Args: { p_is_premium: boolean };
         Returns: null;
       };
+      get_scout_profile_display_names: {
+        Args: { p_user_ids: string[] };
+        Returns: {
+          id: string;
+          organization: string | null;
+          avatar_url: string | null;
+          display_name: string | null;
+          verification_status: string;
+        }[];
+      };
       submit_scout_verification_application: {
         Args: {
           p_business_email: string;
