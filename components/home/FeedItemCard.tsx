@@ -26,6 +26,7 @@ import {
   videoPlaybackUrl,
 } from "@/lib/video/videoPlaybackUrl";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
+import { isMobileLayoutStableV2Enabled } from "@/lib/layout/mobileLayoutStableV2Flag";
 
 /** Dashboard embed: framed tile; home immersive slides use {@link FEED_SLIDE} overflow-hidden. */
 const DASHBOARD_SLIDE =
@@ -34,6 +35,14 @@ const DASHBOARD_SLIDE =
 /** Mobile home feed tile — fixed 9:16 frame (globals enforce size; not media-driven). */
 const HOME_FEED_MOBILE_FRAME =
   "relative isolate mx-auto mt-2 box-border flex h-[min(56cqh,440px)] w-auto min-w-0 max-w-[min(82vw,320px)] aspect-[9/16] shrink-0 grow-0 flex-none flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
+
+/** V2 /home — centered snap stage; one compact card per page (overlays inside card). */
+const HOME_FEED_V2_SLIDE_STACK =
+  "mx-auto flex h-full min-h-0 w-full max-w-full flex-col items-center justify-start overflow-hidden max-lg:bg-black max-lg:gap-0 max-lg:pt-0 max-lg:pb-0 lg:contents";
+
+/** V2 /home — TikTok-style card: 9:16 frame, in-card rail + bottom meta overlay. */
+const HOME_FEED_V2_CARD =
+  "relative isolate mx-auto box-border flex h-[min(56cqh,440px)] w-auto min-w-0 max-w-[min(82vw,320px)] aspect-[9/16] shrink-0 grow-0 flex-none flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
 
 /** Profile + caption — aligned with video frame width, safe gap above bottom nav. */
 const HOME_FEED_MOBILE_META_BELOW =
@@ -154,8 +163,61 @@ export function FeedItemCard({
     ) : null;
 
   const isHomeSnapSlide = feedIndex !== undefined;
+  const v2HomeSnapLayout = isMobileLayoutStableV2Enabled() && isHomeSnapSlide;
 
-  const feedMetaBlockBelow = (
+  const feedMetaProfileRow = (
+    <div className="flex min-w-0 items-center gap-1.5">
+      {profilePath ? (
+        <Link
+          href={profilePath}
+          className="flex h-7 w-7 min-h-7 min-w-7 max-h-7 max-w-7 shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-gn-border-subtle"
+          aria-label={t("viewPlayerProfileAria", { name: displayName })}
+        >
+          <ProfileAvatar
+            name={displayName}
+            imageUrl={userAvatarUrl?.trim() || undefined}
+            sizeClassName="h-7 w-7 min-h-7 min-w-7 max-h-7 max-w-7 shrink-0 text-[10px] font-semibold"
+            className="overflow-hidden rounded-full ring-0"
+          />
+        </Link>
+      ) : (
+        <ProfileAvatar
+          name={displayName}
+          imageUrl={userAvatarUrl?.trim() || undefined}
+          sizeClassName="h-7 w-7 min-h-7 min-w-7 max-h-7 max-w-7 shrink-0 text-[10px] font-semibold"
+          className="overflow-hidden rounded-full ring-1 ring-gn-border-subtle"
+        />
+      )}
+
+      <div className="min-w-0 flex-1">
+        {profilePath ? (
+          <Link
+            href={profilePath}
+            className="block min-w-0"
+            aria-label={t("viewPlayerProfileAria", { name: displayName })}
+          >
+            <p className="truncate text-[12px] font-semibold leading-tight text-gn-text">
+              {displayName}
+            </p>
+            <p className="truncate text-[10px] font-medium leading-tight text-gn-text-secondary">
+              @{displayUsername}
+            </p>
+          </Link>
+        ) : (
+          <>
+            <p className="truncate text-[12px] font-semibold leading-tight text-gn-text">
+              {displayName}
+            </p>
+            <p className="truncate text-[10px] font-medium leading-tight text-gn-text-secondary">
+              @{displayUsername}
+            </p>
+          </>
+        )}
+      </div>
+    </div>
+  );
+
+  const feedMetaCaptionBlock = (
     <>
       {loadFailed && hasUrl ? (
         <p className="pointer-events-auto mb-1 text-[10px] font-medium text-gn-accent" role="alert">
@@ -163,70 +225,27 @@ export function FeedItemCard({
         </p>
       ) : null}
 
+      {captionText ? (
+        <p className="line-clamp-2 min-w-0 break-words text-[11px] leading-snug text-gn-text-secondary">
+          {captionText}
+        </p>
+      ) : null}
+
+      {item.musicTrack && hasProcessedAsset ? (
+        <VideoMusicCredit
+          track={item.musicTrack}
+          compact
+          className="!text-[10px] !leading-snug !text-gn-text-tertiary"
+        />
+      ) : null}
+    </>
+  );
+
+  const feedMetaBlockBelow = (
+    <>
       <div className="pointer-events-auto space-y-0.5">
-        <div className="flex min-w-0 items-center gap-1.5">
-          {profilePath ? (
-            <Link
-              href={profilePath}
-              className="flex h-7 w-7 min-h-7 min-w-7 max-h-7 max-w-7 shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-gn-border-subtle"
-              aria-label={t("viewPlayerProfileAria", { name: displayName })}
-            >
-              <ProfileAvatar
-                name={displayName}
-                imageUrl={userAvatarUrl?.trim() || undefined}
-                sizeClassName="h-7 w-7 min-h-7 min-w-7 max-h-7 max-w-7 shrink-0 text-[10px] font-semibold"
-                className="overflow-hidden rounded-full ring-0"
-              />
-            </Link>
-          ) : (
-            <ProfileAvatar
-              name={displayName}
-              imageUrl={userAvatarUrl?.trim() || undefined}
-              sizeClassName="h-7 w-7 min-h-7 min-w-7 max-h-7 max-w-7 shrink-0 text-[10px] font-semibold"
-              className="overflow-hidden rounded-full ring-1 ring-gn-border-subtle"
-            />
-          )}
-
-          <div className="min-w-0 flex-1">
-            {profilePath ? (
-              <Link
-                href={profilePath}
-                className="block min-w-0"
-                aria-label={t("viewPlayerProfileAria", { name: displayName })}
-              >
-                <p className="truncate text-[12px] font-semibold leading-tight text-gn-text">
-                  {displayName}
-                </p>
-                <p className="truncate text-[10px] font-medium leading-tight text-gn-text-secondary">
-                  @{displayUsername}
-                </p>
-              </Link>
-            ) : (
-              <>
-                <p className="truncate text-[12px] font-semibold leading-tight text-gn-text">
-                  {displayName}
-                </p>
-                <p className="truncate text-[10px] font-medium leading-tight text-gn-text-secondary">
-                  @{displayUsername}
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-
-        {captionText ? (
-          <p className="line-clamp-2 min-w-0 break-words text-[11px] leading-snug text-gn-text-secondary">
-            {captionText}
-          </p>
-        ) : null}
-
-        {item.musicTrack && hasProcessedAsset ? (
-          <VideoMusicCredit
-            track={item.musicTrack}
-            compact
-            className="!text-[10px] !leading-snug !text-gn-text-tertiary"
-          />
-        ) : null}
+        {feedMetaProfileRow}
+        {feedMetaCaptionBlock}
       </div>
     </>
   );
@@ -358,22 +377,40 @@ export function FeedItemCard({
         />
       </div>
 
-      {/* Floating action rail — on video (mobile: inside frame, not over meta strip) */}
-      <div
-        data-pitchrusch-feed-rail
-        className="pointer-events-auto absolute end-[max(0.75rem,env(safe-area-inset-right,0px))] z-50 flex w-11 max-w-11 flex-col items-center justify-center gap-1 max-lg:end-2 max-lg:bottom-4 max-lg:top-auto max-lg:max-h-[12rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:justify-end"
-      >
-        <FeedVideoEngagement
-          videoId={video.id}
-          initialLikeCount={scoutMetrics?.likesCount ?? null}
-          initialCommentCount={scoutMetrics?.commentsCount ?? null}
-          variant="rail"
-          trailingActions={shareTrailing}
-          railSoundSlot={
-            hasUrl ? <FeedSoundRailButton feedVideoKey={feedVideoKey} /> : null
-          }
-        />
-      </div>
+      {!v2HomeSnapLayout ? (
+        <div
+          data-pitchrusch-feed-rail
+          className="pointer-events-auto absolute end-[max(0.75rem,env(safe-area-inset-right,0px))] z-50 flex w-11 max-w-11 flex-col items-center justify-center gap-1 max-lg:end-2 max-lg:bottom-4 max-lg:top-auto max-lg:max-h-[12rem] lg:end-3 lg:w-10 lg:gap-2 lg:top-12 lg:bottom-44 lg:max-h-none lg:justify-end"
+        >
+          <FeedVideoEngagement
+            videoId={video.id}
+            initialLikeCount={scoutMetrics?.likesCount ?? null}
+            initialCommentCount={scoutMetrics?.commentsCount ?? null}
+            variant="rail"
+            trailingActions={shareTrailing}
+            railSoundSlot={
+              hasUrl ? <FeedSoundRailButton feedVideoKey={feedVideoKey} /> : null
+            }
+          />
+        </div>
+      ) : (
+        <div
+          data-pitchrusch-feed-rail
+          data-pitchrusch-feed-v2-rail
+          className="pointer-events-auto absolute z-50 flex w-11 max-w-11 flex-col items-center justify-end gap-1.5"
+        >
+          <FeedVideoEngagement
+            videoId={video.id}
+            initialLikeCount={scoutMetrics?.likesCount ?? null}
+            initialCommentCount={scoutMetrics?.commentsCount ?? null}
+            variant="rail"
+            trailingActions={shareTrailing}
+            railSoundSlot={
+              hasUrl ? <FeedSoundRailButton feedVideoKey={feedVideoKey} /> : null
+            }
+          />
+        </div>
+      )}
     </>
   );
 
@@ -392,19 +429,52 @@ export function FeedItemCard({
   return (
     <article
       {...feedCardProps}
-      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden ${slideClassName} max-lg:!items-center max-lg:!justify-center`}
+      className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden ${slideClassName} ${
+        isHomeSnapSlide
+          ? v2HomeSnapLayout
+            ? "max-lg:!items-center max-lg:!justify-start"
+            : "max-lg:!items-center max-lg:!justify-center"
+          : ""
+      }`}
     >
       {isHomeSnapSlide ? (
-        <div className={HOME_FEED_MOBILE_SLIDE_STACK}>
-          <div
-            data-pitchrusch-home-feed-video-frame
-            className={HOME_FEED_MOBILE_FRAME}
-          >
-            {videoAndRail}
-          </div>
-          <div data-pitchrusch-feed-meta-below className={HOME_FEED_MOBILE_META_BELOW}>
-            {feedMetaBlockBelow}
-          </div>
+        <div
+          className={v2HomeSnapLayout ? HOME_FEED_V2_SLIDE_STACK : HOME_FEED_MOBILE_SLIDE_STACK}
+          {...(v2HomeSnapLayout ? { "data-pitchrusch-home-feed-v2-slide": "" } : {})}
+        >
+          {v2HomeSnapLayout ? (
+            <div
+              data-pitchrusch-home-feed-video-frame
+              data-pitchrusch-home-feed-v2-card
+              className={HOME_FEED_V2_CARD}
+            >
+              {videoAndRail}
+              <div
+                data-pitchrusch-feed-v2-meta-overlay
+                className="pointer-events-none absolute inset-x-0 bottom-0 z-30 box-border min-w-0 overflow-hidden"
+              >
+                <div
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-[min(42%,9.5rem)] bg-gradient-to-t from-black/90 via-black/55 to-transparent"
+                  aria-hidden
+                />
+                <div className="relative z-10 box-border min-w-0 max-w-[calc(100%-3.25rem)] px-3 pb-3 pt-10 pe-2 ps-[max(0.75rem,env(safe-area-inset-left,0px))]">
+                  {feedMetaBlockOverlay}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div
+                data-pitchrusch-home-feed-video-frame
+                className={HOME_FEED_MOBILE_FRAME}
+              >
+                {videoAndRail}
+              </div>
+              <div data-pitchrusch-feed-meta-below className={HOME_FEED_MOBILE_META_BELOW}>
+                {feedMetaBlockBelow}
+              </div>
+            </>
+          )}
           <div
             {...feedMetaProps}
             className="pointer-events-none absolute inset-x-0 start-0 z-20 box-border hidden min-w-0 max-w-[calc(100%-4rem)] pe-2 ps-[max(0.625rem,env(safe-area-inset-left,0px))] pt-6 pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:block lg:bottom-0 lg:px-3.5"

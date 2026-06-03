@@ -15,6 +15,7 @@ import {
 import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
 import { ScoutOwnProfileView } from "@/components/profile/ScoutOwnProfileView";
 import type { Database } from "@/lib/supabase/client";
+import { profileVideosDebug } from "@/lib/profile/profileVideosDebug";
 
 type UserRow = Database["public"]["Tables"]["users"]["Row"];
 type ScoutProfileRow = Database["public"]["Tables"]["scout_profiles"]["Row"];
@@ -71,24 +72,44 @@ export function OwnProfileView() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    profileVideosDebug("OwnProfileView mounted", {
+      path: typeof window !== "undefined" ? window.location.pathname : null,
+    });
+  }, []);
+
+  useEffect(() => {
     let mounted = true;
     void (async () => {
       const result = await loadAndEnsureProfile();
       if (!mounted) return;
       if (!result.success) {
+        profileVideosDebug("loadAndEnsureProfile failed", {
+          message: result.error.message,
+        });
         setError(result.error.message);
         return;
       }
       if (result.data.role === "scout") {
+        profileVideosDebug("route", {
+          branch: "scout",
+          note: "PlayerPublicProfile/video grid not used for scouts",
+          userId: result.data.user.id,
+        });
         setScoutBundle({ user: result.data.user, profile: result.data.profile });
         return;
       }
       const usernameFromProfile = result.data.profile.username?.trim() || null;
       const nextSlug = usernameFromProfile || result.data.user.id?.trim() || null;
       if (!nextSlug) {
+        profileVideosDebug("route", { branch: "player", error: "missing_slug" });
         setError(tCommon("genericError"));
         return;
       }
+      profileVideosDebug("route", {
+        branch: "player",
+        playerSlug: nextSlug,
+        willRender: "PlayerPublicProfile",
+      });
       setPlayerSlug(nextSlug);
       void tryConsumePendingReferralWithRetry();
     })().catch((err) => {

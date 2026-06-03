@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { isDev } from "@/lib/devLog";
+import { isMobileLayoutStableV2Enabled } from "@/lib/layout/mobileLayoutStableV2Flag";
 import { logAppShellPageOverflowOffenders } from "@/lib/layout/detectHorizontalOverflow";
 
 const PROBE_SELECTORS = [
@@ -58,6 +59,7 @@ export function AppLayoutDebugProbe() {
 
   useEffect(() => {
     if (!isDev || typeof window === "undefined") return;
+    if (isMobileLayoutStableV2Enabled()) return;
 
     const style = document.createElement("style");
     style.setAttribute("data-gn-layout-debug", "");

@@ -27,6 +27,8 @@ import {
   APP_PROFILE_SHELL_CLASS,
   PUBLIC_PLAYER_PROFILE_SECTION_CLASS,
 } from "@/lib/layout/appShellClasses";
+import { profileVideosDebug } from "@/lib/profile/profileVideosDebug";
+import { publicProfileDebug } from "@/lib/profile/publicProfileDebug";
 
 function DetailRow({ label, value }: { label: string; value: string | null | undefined }) {
   const v = value?.trim();
@@ -76,9 +78,18 @@ type Props = {
   playerSlug: string;
   /** When true, parent already provides {@link APP_PROFILE_SHELL_CLASS}. */
   embedded?: boolean;
+  /** Public `/player/[slug]` via {@link PlayerPublicProfilePage} (not /profile). */
+  publicProfile?: boolean;
+  /** From parent {@link usePathname} (locale stripped). */
+  i18nPathname?: string;
 };
 
-export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
+export function PlayerPublicProfile({
+  playerSlug,
+  embedded = false,
+  publicProfile = false,
+  i18nPathname = "",
+}: Props) {
   const t = useTranslations("playerProfile");
   const tProfile = useTranslations("profile");
   const tFields = useTranslations("profileEditor");
@@ -103,9 +114,19 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
   const [userAvatarUrl, setUserAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!publicProfile) return;
+    publicProfileDebug("content mounted", {
+      i18nPathname,
+      playerSlug,
+      extra: { component: "PlayerPublicProfile" },
+    });
+  }, [playerSlug, publicProfile, i18nPathname]);
+
+  useEffect(() => {
     let cancelled = false;
 
     (async () => {
+      profileVideosDebug("fetch start", { playerSlug });
       setLoadError(null);
       setVideosNote(null);
       setDeleteError(null);
@@ -122,6 +143,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
       if (cancelled) return;
 
       if (profileErr) {
+        profileVideosDebug("fetch profile error", { playerSlug, profileErr });
         setLoadError(profileErr);
         setProfile(null);
         setUserAvatarUrl(null);
@@ -129,6 +151,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
       }
 
       if (!p) {
+        profileVideosDebug("fetch profile empty", { playerSlug });
         setProfile(null);
         setUserAvatarUrl(null);
         return;
@@ -140,6 +163,24 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
       const { videos: v, errorMessage: vErr } = await fetchVideosForPlayer(p.id);
       if (cancelled) return;
       setVideos(v);
+      if (publicProfile) {
+        publicProfileDebug("videos query done", {
+          i18nPathname,
+          playerSlug,
+          videosCount: v.length,
+          extra: {
+            userId: p.id,
+            fetchError: vErr ?? null,
+            query: "fetchVideosForPlayer",
+          },
+        });
+      } else {
+        profileVideosDebug("fetch videos done", {
+          count: v.length,
+          userId: p.id,
+          fetchError: vErr ?? null,
+        });
+      }
       if (vErr) {
         setVideosNote(vErr);
       }
@@ -148,7 +189,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [playerSlug]);
+  }, [playerSlug, publicProfile, i18nPathname]);
 
   const profileSectionClass = PUBLIC_PLAYER_PROFILE_SECTION_CLASS;
   const profileInnerClass = `${profileSectionClass} space-y-6 max-lg:space-y-2`;
@@ -370,7 +411,18 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
         <UploadFirstVideoBanner variant="profile" onLater={dismissUploadFirst} />
       ) : null}
 
-      <section className={`${profileSectionClass} max-lg:space-y-1`} aria-label={t("videosSectionAria")}>
+      <section
+        className={`${profileSectionClass} max-lg:space-y-1`}
+        aria-label={t("videosSectionAria")}
+        data-profile-videos-section
+        data-profile-videos-count={videos.length}
+        {...(publicProfile
+          ? {
+              "data-public-profile-videos-section": "",
+              "data-public-profile-videos-count": videos.length,
+            }
+          : {})}
+      >
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gn-text-tertiary max-lg:mb-2">
           {t("videosHeading")}
         </h2>
@@ -399,6 +451,7 @@ export function PlayerPublicProfile({ playerSlug, embedded = false }: Props) {
             canDelete={isOwnProfile}
             deletingVideoId={deletingVideoId}
             onDelete={onDeleteVideo}
+            publicProfile={publicProfile}
           />
         )}
       </section>

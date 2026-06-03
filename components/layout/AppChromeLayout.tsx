@@ -8,6 +8,7 @@ import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBanner";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
 import { AppMobileChromeMetrics } from "@/components/layout/AppMobileChromeMetrics";
+import { AppChromeLayoutStableV2 } from "@/components/layout/mobile-v2/AppChromeLayoutStableV2";
 import {
   APP_SHELL_COLUMN_CLASS,
   APP_SHELL_MAIN_CLASS,
@@ -15,6 +16,7 @@ import {
   APP_SHELL_ROOT_CLASS,
   APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS,
 } from "@/lib/layout/appShellClasses";
+import { isMobileLayoutStableV2Enabled } from "@/lib/layout/mobileLayoutStableV2Flag";
 
 function AppMainColumn({ children }: { children: React.ReactNode }) {
   return (
@@ -29,13 +31,10 @@ function AppMainColumn({ children }: { children: React.ReactNode }) {
   );
 }
 
-/**
- * Logged-in shell: desktop sidebar + mobile bottom nav always mounted in-layout.
- */
-export function AppChromeLayout({ children }: { children: React.ReactNode }) {
+/** Production shell (V1) — unchanged when {@link isMobileLayoutStableV2Enabled} is false. */
+function AppChromeLayoutV1({ children }: { children: React.ReactNode }) {
   return (
-    <FeedbackProvider>
-      <AdminSupportUnreadProvider>
+    <>
         <AppLayoutDebugProbe />
         <AppShellDebugOverlay />
         <AppMobileChromeMetrics />
@@ -49,6 +48,23 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
         >
           <AppMobileBottomNav />
         </div>
+    </>
+  );
+}
+
+/**
+ * Logged-in shell: desktop sidebar + mobile bottom nav always mounted in-layout.
+ * V2 rebuild is opt-in via `NEXT_PUBLIC_MOBILE_LAYOUT_STABLE_V2=true`.
+ */
+export function AppChromeLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <FeedbackProvider>
+      <AdminSupportUnreadProvider>
+        {isMobileLayoutStableV2Enabled() ? (
+          <AppChromeLayoutStableV2>{children}</AppChromeLayoutStableV2>
+        ) : (
+          <AppChromeLayoutV1>{children}</AppChromeLayoutV1>
+        )}
       </AdminSupportUnreadProvider>
     </FeedbackProvider>
   );

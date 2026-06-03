@@ -1,0 +1,374 @@
+/**
+ * Mobile layout stable V2 — scoped under html[data-mobile-layout-stable-v2].
+ * Does not change production (V1) when the feature flag is off.
+ */
+
+[data-mobile-layout-stable-v2] {
+  --mlv2-top: calc(0.75rem + env(safe-area-inset-top, 0px));
+  --mlv2-inline-pad: 1rem;
+  --mlv2-bottom-nav-height: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  /* Home feed reads legacy vars — map to V2 insets */
+  --gn-app-header-offset: var(--mlv2-top);
+  --gn-app-bottom-nav-offset: var(--mlv2-bottom-nav-height);
+}
+
+@media (max-width: 1023px) {
+  html[data-mobile-layout-stable-v2],
+  html[data-mobile-layout-stable-v2] body {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  /* V1 portaled/fixed chrome must not appear in V2 */
+  html[data-mobile-layout-stable-v2] [data-app-mobile-bottom-nav-mount],
+  html[data-mobile-layout-stable-v2] [data-app-mobile-header] {
+    display: none !important;
+  }
+
+  /* No visualViewport / measured inset hacks in V2 */
+  html[data-mobile-layout-stable-v2] {
+    --gn-mobile-visual-bottom-inset: 0px;
+  }
+}
+
+/* Shell: flag on html, structure on [data-mlv2-root] (last child = bottom nav) */
+[data-mobile-layout-stable-v2] [data-mlv2-root] {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  background-color: var(--color-gn-bg, #0a0a0a);
+  color: var(--color-gn-text, #fafafa);
+}
+
+@media (max-width: 1023px) {
+  [data-mobile-layout-stable-v2] [data-mlv2-root] {
+    position: fixed;
+    inset: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-root] > aside {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  [data-mobile-layout-stable-v2] [data-mlv2-root] {
+    position: relative;
+    flex-direction: row;
+    min-height: 100dvh;
+    overflow-x: clip;
+  }
+}
+
+[data-mobile-layout-stable-v2] [data-mlv2-column] {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 1023px) {
+  [data-mobile-layout-stable-v2] [data-mlv2-column] {
+    height: 100%;
+    max-height: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  [data-mobile-layout-stable-v2] [data-mlv2-column] {
+    padding-inline-start: 15.5rem;
+  }
+}
+
+[data-mobile-layout-stable-v2] [data-mlv2-scroll] {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: clip;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+[data-mobile-layout-stable-v2] [data-mlv2-content] {
+  box-sizing: border-box;
+  margin-inline: auto;
+  width: 100%;
+  min-width: 0;
+  max-width: 28rem;
+  padding-inline: var(--mlv2-inline-pad);
+  padding-top: var(--mlv2-top);
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 1024px) {
+  [data-mobile-layout-stable-v2] [data-mlv2-content] {
+    max-width: 56rem;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] [data-challenges-page],
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] [data-pitchrusch-explore-page] {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+/*
+ * /profile — V1 uses [data-app-main-inner]:has([data-own-profile-page]) for scroll growth.
+ * V2: drop legacy top band (4rem + bottom-nav offset), keep one 12px inset, let grid scroll in mlv2-scroll.
+ */
+@media (max-width: 1023px) {
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="profile"] {
+    display: block;
+    height: auto;
+    min-height: min-content;
+    max-height: none;
+    padding-top: max(0.75rem, env(safe-area-inset-top, 0px));
+    padding-bottom: 1rem;
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] [data-profile-shell] {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  [data-mobile-layout-stable-v2] [data-own-profile-page] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: min-content;
+    max-height: none;
+    margin-inline: 0;
+    padding-inline: 0 !important;
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
+  /* OwnProfileView inner band — V1 mobile pt reserved header+nav; invalid in V2 */
+  [data-mobile-layout-stable-v2] [data-own-profile-page] > div {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    min-height: min-content;
+    height: auto;
+    max-height: none;
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
+  [data-mobile-layout-stable-v2] [data-own-profile-page] [data-profile-videos-section] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto;
+    min-height: min-content;
+    max-height: none;
+    overflow: visible;
+  }
+
+  [data-mobile-layout-stable-v2] [data-own-profile-page] [data-profile-video-grid] {
+    display: grid !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    max-height: none !important;
+    height: auto;
+    min-height: min-content;
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
+  /* contain: layout style (globals) can zero-out 9:16 cells inside nested scroll on iOS */
+  [data-mobile-layout-stable-v2] [data-own-profile-page] [data-profile-video-cell] {
+    contain: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative;
+    aspect-ratio: 9 / 16;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  [data-mobile-layout-stable-v2] [data-own-profile-page] [data-profile-video-tile] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1 !important;
+  }
+
+  [data-mobile-layout-stable-v2] [data-own-profile-page] [data-profile-video-tile] video {
+    opacity: 1 !important;
+    object-fit: cover !important;
+  }
+
+  /*
+   * Public `/player/[slug]` — PlayerPublicProfilePage + PlayerPublicProfile(embedded).
+   * Same nested-scroll + contain fixes as own profile; no V1 header offset band.
+   */
+  [data-mobile-layout-stable-v2] [data-public-profile-page] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: min-content;
+    max-height: none;
+    margin-inline: 0;
+    padding-inline: 0 !important;
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
+  [data-mobile-layout-stable-v2] [data-public-profile-page] [data-public-profile-videos-section],
+  [data-mobile-layout-stable-v2] [data-public-profile-page] [data-profile-videos-section] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto;
+    min-height: min-content;
+    max-height: none;
+    overflow: visible;
+  }
+
+  [data-mobile-layout-stable-v2] [data-public-profile-page] [data-public-profile-video-grid],
+  [data-mobile-layout-stable-v2] [data-public-profile-page] [data-profile-video-grid] {
+    display: grid !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    max-height: none !important;
+    height: auto;
+    min-height: min-content;
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
+  [data-mobile-layout-stable-v2] [data-public-profile-page] [data-public-profile-video-cell],
+  [data-mobile-layout-stable-v2] [data-public-profile-page] [data-profile-video-cell] {
+    contain: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative;
+    aspect-ratio: 9 / 16;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  [data-mobile-layout-stable-v2] [data-public-profile-page] [data-profile-video-tile] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1 !important;
+  }
+
+  [data-mobile-layout-stable-v2] [data-public-profile-page] [data-profile-video-tile] video {
+    opacity: 1 !important;
+    object-fit: cover !important;
+  }
+}
+
+/* Bottom nav: last child inside [data-mlv2-column], static in-flow (no portal / fixed / vv) */
+[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+  overflow-x: clip;
+  border-top: 1px solid var(--color-gn-border-subtle, rgba(255, 255, 255, 0.08));
+  background-color: var(--color-gn-bg, #0a0a0a);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  position: static !important;
+  top: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+  z-index: 1;
+}
+
+@media (min-width: 1024px) {
+  [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] {
+    display: none;
+  }
+}
+
+[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] {
+  position: static !important;
+  top: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+  min-height: 4.5rem !important;
+  width: 100%;
+  /* safe-area only on [data-mlv2-bottom-nav] wrapper — avoid double inset */
+  padding-bottom: 0.25rem !important;
+}
+
+/* /debug/mobile-layout-v2 — colored shell regions */
+@media (max-width: 1023px) {
+  html[data-mobile-layout-stable-v2][data-mlv2-layout-test] [data-mlv2-root] {
+    outline: 4px solid rgb(220, 38, 38);
+    outline-offset: -4px;
+    background-color: rgba(220, 38, 38, 0.28) !important;
+  }
+
+  html[data-mobile-layout-stable-v2][data-mlv2-layout-test] [data-mlv2-scroll] {
+    outline: 4px solid rgb(59, 130, 246);
+    outline-offset: -4px;
+    background-color: rgba(59, 130, 246, 0.32) !important;
+  }
+
+  html[data-mobile-layout-stable-v2][data-mlv2-layout-test] [data-mlv2-bottom-nav] {
+    outline: 4px solid rgb(34, 197, 94);
+    outline-offset: -4px;
+    background-color: rgba(34, 197, 94, 0.42) !important;
+  }
+
+  html[data-mobile-layout-stable-v2][data-mlv2-layout-test] [data-mlv2-bottom-nav] [data-app-bottom-nav] {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+[data-mobile-layout-stable-v2] [data-mlv2-mock-grid] {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 390px) {
+  [data-mobile-layout-stable-v2] [data-mlv2-mock-grid] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+[data-mobile-layout-stable-v2] [data-mlv2-mock-card] {
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-gn-border-subtle, rgba(255, 255, 255, 0.12));
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.75rem;
+  font-size: 0.875rem;
+}

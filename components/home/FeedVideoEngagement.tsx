@@ -39,7 +39,7 @@ type Props = {
   /** Smaller controls, single row (e.g. public video page). */
   compact?: boolean;
   /** Vertical icon stack (TikTok-style rail). */
-  variant?: "default" | "rail";
+  variant?: "default" | "rail" | "home-v2-row";
 };
 
 function formatCount(value: number | null): string {
@@ -94,7 +94,9 @@ export function FeedVideoEngagement({
 }: Props) {
   const t = useTranslations("feedEngagement");
   const rail = variant === "rail";
-  const compactUi = compact || rail;
+  const homeV2Row = variant === "home-v2-row";
+  const useRailComments = rail || homeV2Row;
+  const compactUi = compact || rail || homeV2Row;
   const tCommon = useTranslations("authCommon");
   const router = useRouter();
 
@@ -391,7 +393,11 @@ export function FeedVideoEngagement({
   return (
     <div
       className={[
-        rail ? "relative flex flex-col items-center gap-1 max-lg:gap-2.5 lg:gap-1.5" : "space-y-3",
+        homeV2Row
+          ? "relative flex w-full min-w-0 flex-row flex-wrap items-center justify-center gap-2.5"
+          : rail
+            ? "relative flex flex-col items-center gap-1 max-lg:gap-2.5 lg:gap-1.5"
+            : "space-y-3",
         className,
       ]
         .filter(Boolean)
@@ -431,11 +437,13 @@ export function FeedVideoEngagement({
 
       <div
         className={
-            rail
-            ? "flex w-full touch-manipulation flex-col items-center gap-1 max-lg:gap-2.5 lg:gap-1.5"
-            : compactUi
-              ? "flex flex-nowrap items-center gap-1"
-              : "flex flex-wrap items-center gap-2"
+          homeV2Row
+            ? "flex w-full touch-manipulation flex-row flex-wrap items-center justify-center gap-2.5"
+            : rail
+              ? "flex w-full touch-manipulation flex-col items-center gap-1 max-lg:gap-2.5 lg:gap-1.5"
+              : compactUi
+                ? "flex flex-nowrap items-center gap-1"
+                : "flex flex-wrap items-center gap-2"
         }
       >
         <button
@@ -450,8 +458,8 @@ export function FeedVideoEngagement({
             compactUi ? `${t("like")} ${formatCount(likeCount)}` : undefined
           }
           className={[
-            rail ? RAIL_MOBILE_BTN : "inline-flex shrink-0 items-center rounded-full border font-semibold transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50",
-            rail
+            rail || homeV2Row ? RAIL_MOBILE_BTN : "inline-flex shrink-0 items-center rounded-full border font-semibold transition-[color,background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+            rail || homeV2Row
               ? "border-white/25 bg-black/55 text-[10px] leading-none"
               : compactUi
                 ? "h-7 gap-0.5 px-1.5 py-0 text-[11px] leading-none"
@@ -462,17 +470,17 @@ export function FeedVideoEngagement({
           ].join(" ")}
           aria-pressed={liked}
         >
-          <span aria-hidden className={rail ? "max-lg:text-[22px] max-lg:leading-none lg:text-lg lg:leading-none" : compactUi ? "text-[13px] leading-none" : "text-base leading-none"}>
+          <span aria-hidden className={rail || homeV2Row ? "max-lg:text-[22px] max-lg:leading-none lg:text-lg lg:leading-none" : compactUi ? "text-[13px] leading-none" : "text-base leading-none"}>
             {liked ? "♥" : "♡"}
           </span>
-          {rail ? (
+          {rail || homeV2Row ? (
             <span className="max-lg:text-[13px] lg:text-[8px] font-bold tabular-nums leading-none text-white/90">
               {formatCount(likeCount)}
             </span>
           ) : compactUi ? null : (
             t("like")
           )}
-          {!rail ? (
+          {!rail && !homeV2Row ? (
             <span
               className={
                 compactUi
@@ -495,26 +503,26 @@ export function FeedVideoEngagement({
             compactUi ? `${t("comment")} ${formatCount(commentCount)}` : undefined
           }
           className={[
-            rail
+            rail || homeV2Row
               ? `${RAIL_MOBILE_BTN} border-white/25 bg-black/55 text-white/90 hover:border-white/35 hover:bg-white/[0.12] hover:text-white`
               : "inline-flex shrink-0 items-center rounded-full border border-white/[0.12] bg-white/[0.06] font-semibold text-white/85 transition-[color,background-color,border-color,transform] duration-200 ease-out hover:border-gn-accent/35 hover:bg-white/[0.09] hover:text-white",
-            !rail && compactUi
+            !rail && !homeV2Row && compactUi
               ? "h-7 gap-0.5 px-1.5 py-0 text-[11px] leading-none"
-              : !rail
+              : !rail && !homeV2Row
                 ? "min-h-[2.75rem] gap-2 px-4 py-2 text-sm"
                 : "",
           ].join(" ")}
         >
-          {compactUi || rail ? (
+          {compactUi || rail || homeV2Row ? (
             <CommentGlyph
               className={
-                rail ? "size-3 max-lg:size-[22px] lg:size-4 shrink-0 text-current opacity-95" : "size-3.5 shrink-0 text-current opacity-90"
+                rail || homeV2Row ? "size-3 max-lg:size-[22px] lg:size-4 shrink-0 text-current opacity-95" : "size-3.5 shrink-0 text-current opacity-90"
               }
             />
           ) : (
             t("comment")
           )}
-          {rail ? (
+          {rail || homeV2Row ? (
             <span className="max-lg:text-[13px] lg:text-[8px] font-bold tabular-nums leading-none text-white/90">
               {formatCount(commentCount)}
             </span>
@@ -534,19 +542,21 @@ export function FeedVideoEngagement({
         {trailingActions ? (
           <div
             className={
-              rail
-                ? "flex flex-col items-center [&_button]:h-11 [&_button]:w-11 [&_button]:min-h-0 [&_button]:shrink-0 [&_button]:rounded-full [&_button]:border [&_button]:border-white/25 [&_button]:bg-black/55 [&_button]:p-0 [&_button]:text-white/90 [&_button]:shadow-[0_2px_10px_rgba(0,0,0,0.4)] [&_button]:ring-1 [&_button]:ring-white/10 [&_button]:backdrop-blur-md max-lg:[&_button]:h-11 max-lg:[&_button]:w-11 max-lg:[&_svg]:!h-[22px] max-lg:[&_svg]:!w-[22px] lg:[&_button]:h-10 lg:[&_button]:w-10 [&_button:hover]:border-white/35 [&_button:hover]:bg-white/[0.12]"
-                : "flex shrink-0 items-center"
+              homeV2Row
+                ? "flex shrink-0 flex-row items-center [&_button]:h-11 [&_button]:w-11 [&_button]:min-h-0 [&_button]:shrink-0 [&_button]:rounded-full [&_button]:border [&_button]:border-white/25 [&_button]:bg-black/55 [&_button]:p-0 [&_button]:text-white/90 [&_button]:shadow-[0_2px_10px_rgba(0,0,0,0.4)] [&_button]:ring-1 [&_button]:ring-white/10 [&_button]:backdrop-blur-md max-lg:[&_button]:h-11 max-lg:[&_button]:w-11 max-lg:[&_svg]:!h-[22px] max-lg:[&_svg]:!w-[22px] [&_button:hover]:border-white/35 [&_button:hover]:bg-white/[0.12]"
+                : rail
+                  ? "flex flex-col items-center [&_button]:h-11 [&_button]:w-11 [&_button]:min-h-0 [&_button]:shrink-0 [&_button]:rounded-full [&_button]:border [&_button]:border-white/25 [&_button]:bg-black/55 [&_button]:p-0 [&_button]:text-white/90 [&_button]:shadow-[0_2px_10px_rgba(0,0,0,0.4)] [&_button]:ring-1 [&_button]:ring-white/10 [&_button]:backdrop-blur-md max-lg:[&_button]:h-11 max-lg:[&_button]:w-11 max-lg:[&_svg]:!h-[22px] max-lg:[&_svg]:!w-[22px] lg:[&_button]:h-10 lg:[&_button]:w-10 [&_button:hover]:border-white/35 [&_button:hover]:bg-white/[0.12]"
+                  : "flex shrink-0 items-center"
             }
           >
             {trailingActions}
           </div>
         ) : null}
 
-        {rail && railSoundSlot ? railSoundSlot : null}
+        {(rail || homeV2Row) && railSoundSlot ? railSoundSlot : null}
       </div>
 
-      {commentsOpen && rail && portalReady
+      {commentsOpen && useRailComments && portalReady
         ? createPortal(
             <>
               <button
@@ -661,7 +671,7 @@ export function FeedVideoEngagement({
           )
         : null}
 
-      {commentsOpen && !rail ? (
+      {commentsOpen && !useRailComments ? (
         <div className="box-border min-w-0 max-w-full rounded-xl border border-white/[0.08] bg-black/35 p-3 backdrop-blur-sm">
             <>
               <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-gn-text-tertiary">
