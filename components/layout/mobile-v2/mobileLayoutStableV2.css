@@ -4,8 +4,12 @@
  */
 
 [data-mobile-layout-stable-v2] {
-  --mlv2-top: calc(0.75rem + env(safe-area-inset-top, 0px));
-  --mlv2-inline-pad: 1rem;
+  --mlv2-page-top: 20px;
+  --mlv2-viewport-max: 390px;
+  --mlv2-content-max: min(100%, 390px);
+  --mlv2-home-card-max: min(82vw, 330px);
+  --mlv2-inline-pad: 16px;
+  --mlv2-top: calc(var(--mlv2-page-top) + env(safe-area-inset-top, 0px));
   --mlv2-bottom-nav-height: calc(4.5rem + env(safe-area-inset-bottom, 0px));
   /* Home feed reads legacy vars — map to V2 insets */
   --gn-app-header-offset: var(--mlv2-top);
@@ -18,8 +22,85 @@
     height: 100dvh;
     max-height: 100dvh;
     min-height: 0;
+    width: 100%;
+    max-width: 100%;
     overflow: hidden;
+    overflow-x: hidden;
     overscroll-behavior: none;
+    overscroll-behavior-x: none;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-root] {
+    position: fixed;
+    inset: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    overflow-x: hidden;
+    align-items: center;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-column] {
+    width: 100%;
+    max-width: var(--mlv2-content-max, min(100%, 390px));
+    margin-inline: auto;
+    min-width: 0;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
+
+  /* Centered content column — all routes including home */
+  [data-mobile-layout-stable-v2] [data-mlv2-content] {
+    width: 100%;
+    max-width: var(--mlv2-content-max, min(100%, 390px));
+    margin-inline: auto;
+    padding-inline: var(--mlv2-inline-pad, 16px);
+    padding-top: var(--mlv2-top);
+    padding-bottom: 1rem;
+    box-sizing: border-box;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="home"] {
+    max-width: var(--mlv2-content-max, min(100%, 390px));
+    margin-inline: auto;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* Keep page content inside the column — no bleed / 100vw drift */
+  [data-mobile-layout-stable-v2] [data-mlv2-content] > *,
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] > * {
+    box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] [class*="100vw"],
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] .w-screen,
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] [class*="max-w-screen"],
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] [class*="min-w-screen"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-content] [class*="-mx-"],
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] [class*="-mx-"],
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] [class*="mx-["] {
+    margin-inline: 0 !important;
   }
 
   /* V1 portaled/fixed chrome must not appear in V2 */
@@ -47,15 +128,6 @@
 }
 
 @media (max-width: 1023px) {
-  [data-mobile-layout-stable-v2] [data-mlv2-root] {
-    position: fixed;
-    inset: 0;
-    height: 100dvh;
-    max-height: 100dvh;
-    min-height: 0;
-    overflow: hidden;
-  }
-
   [data-mobile-layout-stable-v2] [data-mlv2-root] > aside {
     display: none !important;
   }
@@ -84,6 +156,9 @@
   [data-mobile-layout-stable-v2] [data-mlv2-column] {
     height: 100%;
     max-height: 100%;
+    width: 100%;
+    max-width: var(--mlv2-content-max, min(100%, 390px));
+    margin-inline: auto;
   }
 }
 
@@ -96,9 +171,13 @@
 [data-mobile-layout-stable-v2] [data-mlv2-scroll] {
   flex: 1 1 auto;
   min-height: 0;
-  overflow-x: clip;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior-y: contain;
+  overscroll-behavior-x: none;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -107,10 +186,11 @@
   margin-inline: auto;
   width: 100%;
   min-width: 0;
-  max-width: 28rem;
-  padding-inline: var(--mlv2-inline-pad);
+  max-width: var(--mlv2-content-max, min(100%, 390px));
+  padding-inline: var(--mlv2-inline-pad, 16px);
   padding-top: var(--mlv2-top);
   padding-bottom: 1rem;
+  overflow-x: hidden;
 }
 
 @media (min-width: 1024px) {
@@ -123,32 +203,51 @@
 }
 
 @media (max-width: 1023px) {
-  [data-mobile-layout-stable-v2] [data-mlv2-scroll] [data-challenges-page],
-  [data-mobile-layout-stable-v2] [data-mlv2-scroll] [data-pitchrusch-explore-page] {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
-}
-
-/*
- * /profile — V1 uses [data-app-main-inner]:has([data-own-profile-page]) for scroll growth.
- * V2: drop legacy top band (4rem + bottom-nav offset), keep one 12px inset, let grid scroll in mlv2-scroll.
- */
-@media (max-width: 1023px) {
   [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="profile"] {
     display: block;
     height: auto;
     min-height: min-content;
     max-height: none;
-    padding-top: max(0.75rem, env(safe-area-inset-top, 0px));
+    padding-top: var(--mlv2-top);
     padding-bottom: 1rem;
-    overflow-x: clip;
+    overflow-x: hidden;
     overflow-y: visible;
   }
 
   [data-mobile-layout-stable-v2] [data-mlv2-scroll] [data-profile-shell] {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+    padding-inline: 0 !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+  }
+
+  /*
+   * Tab pages — [data-mlv2-content] owns top + horizontal inset; drop duplicate AppMobileTabPageShell padding.
+   */
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] [data-pitchrusch-explore-page],
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] [data-challenges-page],
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] div.space-y-6.overflow-x-clip {
+    padding-top: 0 !important;
+    padding-inline: 0 !important;
+    margin-inline: 0 !important;
+    max-width: 100% !important;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* /admin — AdminShell main adds its own px; V2 column already has 16px */
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] .min-h-dvh.min-w-0.w-full > div > main {
+    padding-inline: 0 !important;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] {
+    overflow-x: hidden;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] > * {
+    max-width: 100%;
+    min-width: 0;
   }
 
   [data-mobile-layout-stable-v2] [data-own-profile-page] {
@@ -161,7 +260,7 @@
     max-height: none;
     margin-inline: 0;
     padding-inline: 0 !important;
-    overflow-x: clip;
+    overflow-x: hidden;
     overflow-y: visible;
   }
 
@@ -172,7 +271,7 @@
     min-height: min-content;
     height: auto;
     max-height: none;
-    overflow-x: clip;
+    overflow-x: hidden;
     overflow-y: visible;
   }
 
@@ -193,7 +292,7 @@
     max-height: none !important;
     height: auto;
     min-height: min-content;
-    overflow-x: clip;
+    overflow-x: hidden;
     overflow-y: visible;
   }
 
@@ -236,7 +335,7 @@
     max-height: none;
     margin-inline: 0;
     padding-inline: 0 !important;
-    overflow-x: clip;
+    overflow-x: hidden;
     overflow-y: visible;
   }
 
@@ -259,7 +358,7 @@
     max-height: none !important;
     height: auto;
     min-height: min-content;
-    overflow-x: clip;
+    overflow-x: hidden;
     overflow-y: visible;
   }
 
@@ -293,10 +392,12 @@
 [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] {
   flex: 0 0 auto;
   width: 100%;
-  max-width: 100%;
+  max-width: var(--mlv2-content-max, min(100%, 390px));
+  margin-inline: auto;
   min-width: 0;
   height: auto;
-  overflow-x: clip;
+  overflow-x: hidden;
+  box-sizing: border-box;
   border-top: 1px solid var(--color-gn-border-subtle, rgba(255, 255, 255, 0.08));
   background-color: var(--color-gn-bg, #0a0a0a);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -324,8 +425,49 @@
   transform: none !important;
   min-height: 4.5rem !important;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
   /* safe-area only on [data-mlv2-bottom-nav] wrapper — avoid double inset */
   padding-bottom: 0.25rem !important;
+}
+
+@media (max-width: 1023px) {
+  [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] > div {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    padding-inline: 2.5rem !important;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] a,
+  [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > *,
+  [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > div {
+    min-width: 0 !important;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] span {
+    display: block;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [class*="rounded-full"][class*="bg-orange"] {
+    width: min(2.25rem, 44px) !important;
+    height: min(2.25rem, 44px) !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 44px !important;
+    max-height: 44px !important;
+  }
 }
 
 /* /debug/mobile-layout-v2 — colored shell regions */

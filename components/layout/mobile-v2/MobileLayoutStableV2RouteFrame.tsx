@@ -46,8 +46,8 @@ export function MobileLayoutStableV2RouteFrame({
       className={[
         MLV2_CONTENT_MAX_CLASS,
         route === "home"
-          ? "max-lg:flex max-lg:h-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:pb-0"
-          : "",
+          ? "max-lg:flex max-lg:h-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:max-w-[min(100%,390px)] max-lg:mx-auto max-lg:px-0 max-lg:pb-0"
+          : "max-lg:overflow-x-hidden",
         route === "profile" || route === "public-player" ? "max-lg:pb-4" : "",
       ]
         .filter(Boolean)
