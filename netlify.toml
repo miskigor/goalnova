@@ -1,7 +1,7 @@
 # --- Environment variables (Netlify: Site → Environment variables) ---
 # Set secrets in the UI, never commit (see .env.example).
-# OPENAI_API_KEY: scope to Functions + Runtime only — NOT Builds (avoids Next inlining into scan output).
-# SUPABASE_SERVICE_ROLE_KEY, Stripe keys: same runtime-only pattern when possible.
+# OpenAI key: set in Netlify UI (often Builds+Functions+Runtime on free plan). App reads it only at
+# request time via runtimeEnv.server.ts so `next build` does not embed the value in artifacts.
 # NEXT_PUBLIC_SITE_URL (below or in UI): use a valid absolute URL, e.g. https://pitchrusch.com
 # (no stray quotes/spaces). Invalid values no longer crash the app, but metadata/OG URLs may be wrong.
 #
@@ -14,8 +14,7 @@
 # Optional: add your Netlify deploy-preview pattern if you test recovery on previews.
 #
 [build]
-  # Server bundles may embed runtime-only secrets during `next build` if scoped to Builds.
-  environment = { SECRETS_SCAN_OMIT_PATHS = ".next/server" }
+  environment = { SECRETS_SCAN_OMIT_PATHS = ".next/**,.netlify/**" }
 
 [context.production.environment]
   NEXT_PUBLIC_SITE_URL = "https://pitchrusch.com"

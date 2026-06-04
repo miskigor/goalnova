@@ -4,11 +4,6 @@ import {
   isOpenAiApiErrorCode,
   resolveOpenAiApiError,
 } from "@/lib/ai/classifyOpenAiError";
-import {
-  getOpenAiModel,
-  hasOpenAiApiKey,
-  VideoAiConfigError,
-} from "@/lib/ai/openaiRuntime.server";
 import { resolveAuthenticatedUserIdFromBearer } from "@/lib/stripe/server";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
 
@@ -143,6 +138,7 @@ export async function POST(req: Request): Promise<Response> {
       return json({ ok: false, error: mapAccessError(access.error) }, status);
     }
 
+    const { hasOpenAiApiKey } = await import("@/lib/ai/openaiRuntime.server");
     if (!hasOpenAiApiKey()) {
       const demoAllowed =
         process.env.NEXT_PUBLIC_ALLOW_DEMO_AI_SCORING === "true";
@@ -160,13 +156,14 @@ export async function POST(req: Request): Promise<Response> {
     });
     return json({ ok: true, scores }, 200);
   } catch (e) {
-    if (e instanceof VideoAiConfigError) {
+    if (e instanceof Error && e.name === "VideoAiConfigError") {
       return json({ ok: false, error: "ai_not_configured" }, 503);
     }
     const message = e instanceof Error ? e.message : "analysis_failed";
     const mapped = mapAnalysisError(message);
 
     if (isOpenAiFailure(message, mapped.error)) {
+      const { getOpenAiModel } = await import("@/lib/ai/openaiRuntime.server");
       const model = getOpenAiModel();
       const fields = extractOpenAiLogFields(e, model);
       const specificCode = isOpenAiApiErrorCode(mapped.error)

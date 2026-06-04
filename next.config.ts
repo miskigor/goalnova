@@ -52,8 +52,11 @@ const explicitLanHosts =
     .filter(Boolean) ?? [];
 
 const nextConfig: NextConfig = {
+  productionBrowserSourceMaps: false,
   experimental: {
     optimizePackageImports: ["next-intl"],
+    // Keep secret env names/values out of shipped server source maps (Netlify secret scan).
+    serverSourceMaps: false,
   },
   allowedDevOrigins: [
     ...lanDevOriginPatterns,

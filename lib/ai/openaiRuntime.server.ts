@@ -1,5 +1,10 @@
 import "server-only";
 
+import {
+  readOpenAiApiKeyFromRuntimeEnv,
+  readOpenAiVideoModelFromRuntimeEnv,
+} from "./runtimeEnv.server";
+
 export class VideoAiConfigError extends Error {
   constructor(message: string) {
     super(message);
@@ -9,11 +14,11 @@ export class VideoAiConfigError extends Error {
 
 /** Read OpenAI credentials at request time (never import from client code). */
 export function hasOpenAiApiKey(): boolean {
-  return Boolean(process.env.OPENAI_API_KEY?.trim());
+  return Boolean(readOpenAiApiKeyFromRuntimeEnv());
 }
 
 export function getOpenAiApiKey(): string {
-  const key = process.env.OPENAI_API_KEY?.trim();
+  const key = readOpenAiApiKeyFromRuntimeEnv();
   if (!key) {
     throw new VideoAiConfigError("OpenAI API key is not configured on the server");
   }
@@ -21,5 +26,5 @@ export function getOpenAiApiKey(): string {
 }
 
 export function getOpenAiModel(): string {
-  return process.env.OPENAI_VIDEO_ANALYSIS_MODEL?.trim() || "gpt-4o-mini";
+  return readOpenAiVideoModelFromRuntimeEnv() || "gpt-4o-mini";
 }
