@@ -12,6 +12,7 @@ import {
   createWeeklyChallenge,
   fetchWeeklyChallengesAdminList,
   listDisplayTitle,
+  localeHasOwnTranslation,
   updateWeeklyChallenge,
   weeklyChallengeRowToForm,
 } from "@/lib/supabase/weeklyChallengesAdmin";
@@ -64,6 +65,7 @@ export function AdminWeeklyChallengesPage() {
 
   const [mode, setMode] = useState<"idle" | "create" | "edit">("idle");
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingRow, setEditingRow] = useState<WeeklyChallengeRow | null>(null);
   const [form, setForm] = useState<WeeklyChallengeFormInput>(EMPTY_FORM);
   const [contentLocale, setContentLocale] = useState<AppLocale>("en");
   const [startsLocal, setStartsLocal] = useState("");
@@ -77,6 +79,8 @@ export function AdminWeeklyChallengesPage() {
   const formCardRef = useRef<HTMLElement | null>(null);
 
   const localeContent = form.translations[contentLocale];
+  const showsBaseFallbackHint =
+    mode === "edit" && editingRow != null && !localeHasOwnTranslation(editingRow, contentLocale);
 
   const loadList = useCallback(async () => {
     setListLoading(true);
@@ -113,6 +117,7 @@ export function AdminWeeklyChallengesPage() {
   function openCreate() {
     setMode("create");
     setEditingId(null);
+    setEditingRow(null);
     setForm(EMPTY_FORM);
     setContentLocale("en");
     setStartsLocal("");
@@ -127,6 +132,7 @@ export function AdminWeeklyChallengesPage() {
     const next = weeklyChallengeRowToForm(row);
     setMode("edit");
     setEditingId(row.id);
+    setEditingRow(row);
     setForm(next);
     setContentLocale("en");
     setStartsLocal(toDatetimeLocalValue(row.starts_at));
@@ -144,6 +150,7 @@ export function AdminWeeklyChallengesPage() {
   function cancelForm() {
     setMode("idle");
     setEditingId(null);
+    setEditingRow(null);
     setForm(EMPTY_FORM);
     setFormError(null);
     setFormSuccess(null);
@@ -328,24 +335,42 @@ export function AdminWeeklyChallengesPage() {
                   role="tablist"
                   aria-label={t("fieldContentLocale")}
                 >
-                  {WEEKLY_CHALLENGE_CONTENT_LOCALES.map((locale) => (
-                    <button
-                      key={locale}
-                      type="button"
-                      role="tab"
-                      aria-selected={contentLocale === locale}
-                      onClick={() => setContentLocale(locale)}
-                      disabled={formLoading}
-                      className={`rounded-md px-2 py-1 text-[11px] font-semibold uppercase tracking-wide ${
-                        contentLocale === locale
-                          ? "bg-orange-500 text-black"
-                          : "bg-white/10 text-zinc-300 hover:bg-white/15"
-                      }`}
-                    >
-                      {locale}
-                    </button>
-                  ))}
+                  {WEEKLY_CHALLENGE_CONTENT_LOCALES.map((locale) => {
+                    const hasOwn =
+                      mode === "edit" && editingRow
+                        ? localeHasOwnTranslation(editingRow, locale)
+                        : locale === "en" &&
+                          !!form.translations.en.title.trim();
+                    return (
+                      <button
+                        key={locale}
+                        type="button"
+                        role="tab"
+                        aria-selected={contentLocale === locale}
+                        onClick={() => setContentLocale(locale)}
+                        disabled={formLoading}
+                        className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-semibold uppercase tracking-wide ${
+                          contentLocale === locale
+                            ? "bg-orange-500 text-black"
+                            : "bg-white/10 text-zinc-300 hover:bg-white/15"
+                        }`}
+                      >
+                        {locale}
+                        {hasOwn ? (
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full ${
+                              contentLocale === locale ? "bg-black/60" : "bg-emerald-400"
+                            }`}
+                            aria-hidden
+                          />
+                        ) : null}
+                      </button>
+                    );
+                  })}
                 </div>
+                {showsBaseFallbackHint ? (
+                  <p className="text-[11px] text-amber-200/80">{t("contentUsingBaseFallback")}</p>
+                ) : null}
               </div>
 
               <label className={labelClass}>

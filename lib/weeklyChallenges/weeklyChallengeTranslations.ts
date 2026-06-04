@@ -35,6 +35,26 @@ function trimOrNull(s: string): string | null {
   return t.length > 0 ? t : null;
 }
 
+function baseColumnsAsLocaleContent(row: WeeklyChallengeRow): WeeklyChallengeLocaleContent {
+  return {
+    title: row.title,
+    description: row.description ?? "",
+    rules: row.rules ?? "",
+    equipment: row.equipment ?? "",
+    badgeName: row.badge_name ?? "",
+  };
+}
+
+function hasLocaleContent(content: WeeklyChallengeLocaleContent): boolean {
+  return !!(
+    content.title.trim() ||
+    content.description.trim() ||
+    content.rules.trim() ||
+    content.equipment.trim() ||
+    content.badgeName.trim()
+  );
+}
+
 function pickLocaleBranch(
   raw: unknown,
   locale: WeeklyChallengeContentLocale,
@@ -61,30 +81,41 @@ function pickLocaleBranch(
   };
 }
 
+/** True when `translations` has its own copy for this locale (not relying on base columns). */
+export function localeHasOwnTranslation(
+  row: WeeklyChallengeRow,
+  locale: WeeklyChallengeContentLocale,
+): boolean {
+  return hasLocaleContent(pickLocaleBranch(row.translations, locale));
+}
+
+/**
+ * Resolved copy for a locale: JSON branch when present, otherwise base columns
+ * (`title`, `description`, `rules`, `equipment`, `badge_name`).
+ */
+export function resolveWeeklyChallengeLocaleContent(
+  row: WeeklyChallengeRow,
+  locale: WeeklyChallengeContentLocale,
+): WeeklyChallengeLocaleContent {
+  const fromJson = pickLocaleBranch(row.translations, locale);
+  const base = baseColumnsAsLocaleContent(row);
+  if (!hasLocaleContent(fromJson)) {
+    return base;
+  }
+  return {
+    title: fromJson.title.trim() || base.title,
+    description: fromJson.description.trim() || base.description,
+    rules: fromJson.rules.trim() || base.rules,
+    equipment: fromJson.equipment.trim() || base.equipment,
+    badgeName: fromJson.badgeName.trim() || base.badgeName,
+  };
+}
+
 /** Parse DB `translations` + base columns into a full per-locale admin form. */
 export function weeklyChallengeRowToForm(row: WeeklyChallengeRow): WeeklyChallengeFormInput {
   const translations = emptyWeeklyChallengeTranslations();
   for (const locale of WEEKLY_CHALLENGE_CONTENT_LOCALES) {
-    const fromJson = pickLocaleBranch(row.translations, locale);
-    const hasJson =
-      fromJson.title.trim() ||
-      fromJson.description.trim() ||
-      fromJson.rules.trim() ||
-      fromJson.equipment.trim() ||
-      fromJson.badgeName.trim();
-    if (hasJson) {
-      translations[locale] = fromJson;
-      continue;
-    }
-    if (locale === FALLBACK_LOCALE) {
-      translations[locale] = {
-        title: row.title,
-        description: row.description ?? "",
-        rules: row.rules ?? "",
-        equipment: row.equipment ?? "",
-        badgeName: row.badge_name ?? "",
-      };
-    }
+    translations[locale] = resolveWeeklyChallengeLocaleContent(row, locale);
   }
   return {
     translations,
@@ -168,8 +199,10 @@ export function weeklyChallengeFormToDbPayload(input: WeeklyChallengeFormInput):
   };
 }
 
-export function listDisplayTitle(row: WeeklyChallengeRow): string {
-  const en = pickLocaleBranch(row.translations, FALLBACK_LOCALE);
-  if (en.title.trim()) return en.title.trim();
-  return row.title.trim() || "—";
+export function listDisplayTitle(
+  row: WeeklyChallengeRow,
+  locale: WeeklyChallengeContentLocale = FALLBACK_LOCALE,
+): string {
+  const resolved = resolveWeeklyChallengeLocaleContent(row, locale);
+  return resolved.title.trim() || "—";
 }

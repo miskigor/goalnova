@@ -17,6 +17,8 @@ function isMissingTableError(error: unknown): boolean {
 
 export {
   listDisplayTitle,
+  localeHasOwnTranslation,
+  resolveWeeklyChallengeLocaleContent,
   weeklyChallengeRowToForm,
 } from "@/lib/weeklyChallenges/weeklyChallengeTranslations";
 
