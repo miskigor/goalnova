@@ -21,7 +21,15 @@ import {
 
 const RANKINGS_PAGE_LIMIT = 50;
 
-function RankingsVideoThumb({ sources }: { sources: string[] }) {
+type RankingsThumbLayout = "mobile" | "desktop";
+
+function RankingsVideoThumb({
+  sources,
+  layout,
+}: {
+  sources: string[];
+  layout: RankingsThumbLayout;
+}) {
   const { containerRef, loadMedia } = useMediaNearViewport({
     rootMargin: "200px 0px 200px 0px",
   });
@@ -50,17 +58,27 @@ function RankingsVideoThumb({ sources }: { sources: string[] }) {
     v.setAttribute("playsinline", "");
   }, [activeSrc]);
 
+  const isMobile = layout === "mobile";
+
   return (
     <div
       ref={containerRef}
       {...gnVideoMediaDataProps}
-      className={`relative aspect-video w-[6.5rem] shrink-0 rounded-lg sm:w-32 ${GN_VIDEO_MEDIA_STAGE_CLASS}`}
+      className={
+        isMobile
+          ? "relative mx-auto box-border aspect-[3/4] w-full min-w-0 max-w-[9.5rem] overflow-hidden rounded-lg bg-black"
+          : `relative aspect-video w-[6.5rem] shrink-0 rounded-lg sm:w-32 ${GN_VIDEO_MEDIA_STAGE_CLASS}`
+      }
     >
       {loadMedia && activeSrc ? (
         <video
           ref={videoRef}
           key={activeSrc}
-          className={`${GN_VIDEO_MEDIA_ELEMENT_ABSOLUTE_CLASS} [transform:translateZ(0)]`}
+          className={
+            isMobile
+              ? "pointer-events-none absolute inset-0 z-0 size-full max-h-full max-w-full min-h-0 min-w-0 object-cover object-center [color-scheme:dark] [transform:translateZ(0)]"
+              : `${GN_VIDEO_MEDIA_ELEMENT_ABSOLUTE_CLASS} [transform:translateZ(0)]`
+          }
           src={activeSrc}
           muted
           playsInline
@@ -114,6 +132,38 @@ function MetricLine({
   );
 }
 
+function RankingCardBody({
+  item,
+  tab,
+  t,
+  metaLine,
+}: {
+  item: RankingsListItem;
+  tab: RankingsTab;
+  t: ReturnType<typeof useTranslations<"rankings">>;
+  metaLine: string;
+}) {
+  return (
+    <>
+      <p className="truncate text-sm font-semibold leading-snug text-gn-text">
+        {item.displayName}
+      </p>
+      <p className="truncate text-xs leading-snug text-gn-text-secondary">
+        @{item.usernameLabel}
+      </p>
+      {metaLine ? (
+        <p className="mt-1 text-xs leading-snug text-gn-text-tertiary">
+          {metaLine}
+        </p>
+      ) : null}
+      <MetricLine tab={tab} item={item} t={t} />
+      {item.musicTrack ? (
+        <VideoMusicCredit track={item.musicTrack} compact className="mt-1 max-w-full" />
+      ) : null}
+    </>
+  );
+}
+
 function RankingCard({
   item,
   tab,
@@ -139,40 +189,30 @@ function RankingCard({
   const metaLine = metaParts.join(" · ");
 
   return (
-    <article className="flex gap-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-3 transition-[border-color,box-shadow,background-color] duration-300 ease-gn-smooth motion-reduce:transition-none hover:border-white/[0.1] hover:bg-gn-surface/45 hover:shadow-[0_12px_40px_-18px_rgba(0,0,0,0.5)] sm:gap-4 sm:p-4">
-      <div
-        className="flex w-9 shrink-0 flex-col items-center justify-start pt-0.5 sm:w-10"
-        aria-hidden
-      >
-        <span className="text-lg font-bold tabular-nums text-gn-accent sm:text-xl">
-          {item.rank}
-        </span>
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-stretch">
+    <article
+      data-pitchrusch-rankings-card
+      className="box-border w-full min-w-0 max-w-full overflow-hidden rounded-2xl border border-gn-border-subtle bg-gn-surface/30 transition-[border-color,box-shadow,background-color] duration-300 ease-gn-smooth motion-reduce:transition-none hover:border-white/[0.1] hover:bg-gn-surface/45 hover:shadow-[0_12px_40px_-18px_rgba(0,0,0,0.5)]"
+    >
+      {/* Mobile — Explore-style tile + text below (no text beside video) */}
+      <div className="box-border flex w-full min-w-0 max-w-full flex-col overflow-hidden lg:hidden">
+        <div className="flex min-w-0 items-center gap-2 px-3 pt-3">
+          <span
+            className="text-lg font-bold tabular-nums text-gn-accent"
+            aria-hidden
+          >
+            {item.rank}
+          </span>
+        </div>
         <Link
           href={videoHref}
-          className="flex min-w-0 gap-3 rounded-xl outline-none ring-gn-accent/40 transition-colors hover:bg-white/[0.03] focus-visible:ring-2 sm:min-h-0 sm:flex-1 sm:gap-4"
+          className="box-border block w-full min-w-0 max-w-full overflow-hidden px-3 pt-2 outline-none ring-gn-accent/40 focus-visible:ring-2"
         >
-          <RankingsVideoThumb sources={item.playbackSources} />
-          <div className="min-w-0 flex-1 py-0.5">
-            <p className="truncate text-sm font-semibold text-gn-text">
-              {item.displayName}
-            </p>
-            <p className="truncate text-xs text-gn-text-secondary">
-              @{item.usernameLabel}
-            </p>
-            {metaLine ? (
-              <p className="mt-1 line-clamp-2 text-xs text-gn-text-tertiary">
-                {metaLine}
-              </p>
-            ) : null}
-            <MetricLine tab={tab} item={item} t={t} />
-            {item.musicTrack ? (
-              <VideoMusicCredit track={item.musicTrack} compact className="mt-1" />
-            ) : null}
-          </div>
+          <RankingsVideoThumb sources={item.playbackSources} layout="mobile" />
         </Link>
-        <div className="flex shrink-0 items-center sm:flex-col sm:justify-center sm:border-s sm:border-gn-border-subtle sm:ps-4">
+        <div className="box-border min-w-0 max-w-full overflow-hidden px-3 py-2">
+          <RankingCardBody item={item} tab={tab} t={t} metaLine={metaLine} />
+        </div>
+        <div className="box-border px-3 pb-3">
           <Link
             href={profileHref}
             className="text-xs font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
@@ -181,24 +221,66 @@ function RankingCard({
           </Link>
         </div>
       </div>
+
+      {/* Desktop — original horizontal row */}
+      <div className="hidden gap-3 p-3 sm:gap-4 sm:p-4 lg:flex">
+        <div
+          className="flex w-9 shrink-0 flex-col items-center justify-start pt-0.5 sm:w-10"
+          aria-hidden
+        >
+          <span className="text-lg font-bold tabular-nums text-gn-accent sm:text-xl">
+            {item.rank}
+          </span>
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-stretch">
+          <Link
+            href={videoHref}
+            className="flex min-w-0 gap-3 rounded-xl outline-none ring-gn-accent/40 transition-colors hover:bg-white/[0.03] focus-visible:ring-2 sm:min-h-0 sm:flex-1 sm:gap-4"
+          >
+            <RankingsVideoThumb sources={item.playbackSources} layout="desktop" />
+            <div className="min-w-0 flex-1 py-0.5">
+              <RankingCardBody item={item} tab={tab} t={t} metaLine={metaLine} />
+            </div>
+          </Link>
+          <div className="flex shrink-0 items-center sm:flex-col sm:justify-center sm:border-s sm:border-gn-border-subtle sm:ps-4">
+            <Link
+              href={profileHref}
+              className="text-xs font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
+            >
+              {t("viewProfile")}
+            </Link>
+          </div>
+        </div>
+      </div>
     </article>
   );
 }
 
 function SkeletonList() {
   return (
-    <div className="flex flex-col gap-3" aria-hidden>
+    <div className="flex flex-col gap-3 overflow-x-clip sm:gap-4" aria-hidden>
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="flex gap-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/20 p-3 sm:p-4"
+          className="box-border w-full min-w-0 overflow-hidden rounded-2xl border border-gn-border-subtle bg-gn-surface/20 lg:flex lg:gap-3 lg:p-3"
         >
-          <div className="h-8 w-9 shrink-0 animate-pulse rounded bg-gn-surface/50" />
-          <div className="h-[4.5rem] w-[6.5rem] shrink-0 animate-pulse rounded-lg bg-gn-surface/50 sm:w-32" />
-          <div className="min-w-0 flex-1 space-y-2 py-1">
-            <div className="h-4 max-w-[12rem] w-[60%] animate-pulse rounded bg-gn-surface/50" />
-            <div className="h-3 max-w-[8rem] w-[40%] animate-pulse rounded bg-gn-surface/50" />
-            <div className="h-3 w-[75%] animate-pulse rounded bg-gn-surface/50" />
+          <div className="flex flex-col gap-2 p-3 lg:hidden">
+            <div className="h-6 w-8 animate-pulse rounded bg-gn-surface/50" />
+            <div className="mx-auto aspect-[3/4] w-full max-w-[9.5rem] animate-pulse rounded-lg bg-gn-surface/50" />
+            <div className="min-w-0 space-y-2">
+              <div className="h-4 w-[60%] max-w-[12rem] animate-pulse rounded bg-gn-surface/50" />
+              <div className="h-3 w-[40%] max-w-[8rem] animate-pulse rounded bg-gn-surface/50" />
+              <div className="h-3 w-[75%] animate-pulse rounded bg-gn-surface/50" />
+            </div>
+          </div>
+          <div className="hidden gap-3 p-3 lg:flex lg:w-full">
+            <div className="h-8 w-9 shrink-0 animate-pulse rounded bg-gn-surface/50" />
+            <div className="h-[4.5rem] w-[6.5rem] shrink-0 animate-pulse rounded-lg bg-gn-surface/50 sm:w-32" />
+            <div className="min-w-0 flex-1 space-y-2 py-1">
+              <div className="h-4 max-w-[12rem] w-[60%] animate-pulse rounded bg-gn-surface/50" />
+              <div className="h-3 max-w-[8rem] w-[40%] animate-pulse rounded bg-gn-surface/50" />
+              <div className="h-3 w-[75%] animate-pulse rounded bg-gn-surface/50" />
+            </div>
           </div>
         </div>
       ))}
@@ -250,7 +332,7 @@ export function RankingsView() {
   }, [tab, load]);
 
   return (
-    <div className="mx-auto w-full min-w-0 max-w-2xl">
+    <div className="mx-auto box-border w-full min-w-0 max-w-2xl overflow-x-clip">
       <header className="mb-6 sm:mb-8">
         <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl lg:text-3xl">
           {t("title")}
@@ -282,7 +364,7 @@ export function RankingsView() {
       </header>
 
       <div
-        className="mb-6 flex gap-1 rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-1"
+        className="mb-6 flex min-w-0 gap-1 rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-1"
         role="tablist"
         aria-label={t("tabsAria")}
       >
@@ -346,7 +428,7 @@ export function RankingsView() {
 
       {!loading && !loadFailed && rows.length > 0 ? (
         <div
-          className="flex flex-col gap-3 sm:gap-4"
+          className="box-border flex w-full min-w-0 max-w-full flex-col gap-3 overflow-x-clip sm:gap-4"
           role="tabpanel"
           aria-labelledby={`rankings-tab-${tab}`}
           aria-label={t("leaderboard")}
