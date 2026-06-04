@@ -9,7 +9,7 @@ import { LocalePreferenceSync } from "@/components/i18n/LocalePreferenceSync";
 import { LocaleRouteFallback } from "@/components/loading/LocaleRouteFallback";
 import type { AppLocale } from "@/i18n/routing";
 import { RTL_LOCALES, routing } from "@/i18n/routing";
-import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
+import { buildBrandLinkPreviewMetadata } from "@/lib/seo/englishLinkPreview";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 
 const geistSans = Geist({
@@ -44,6 +44,8 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "metadata" });
   const origin = getServerSiteOrigin();
   const metadataBase = siteMetadataBase(origin);
+  const canonicalPath = locale === routing.defaultLocale ? "/" : `/${locale}`;
+  const linkPreview = buildBrandLinkPreviewMetadata({ canonicalPath, origin });
 
   return {
     metadataBase,
@@ -53,33 +55,13 @@ export async function generateMetadata({
     },
     description: t("rootDescription"),
     alternates: {
-      canonical: locale === routing.defaultLocale ? "/" : `/${locale}`,
+      canonical: canonicalPath,
       languages: Object.fromEntries(
         routing.locales.map((l) => [l, l === routing.defaultLocale ? "/" : `/${l}`]),
       ),
     },
-    openGraph: {
-      type: "website",
-      siteName: APP_DISPLAY_NAME,
-      title: t("rootTitle"),
-      description: t("rootDescription"),
-      locale,
-      url: locale === routing.defaultLocale ? "/" : `/${locale}`,
-      images: [
-        {
-          url: "/opengraph-image",
-          width: 1200,
-          height: 630,
-          alt: `${APP_DISPLAY_NAME} — Football talent discovery`,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: t("rootTitle"),
-      description: t("rootDescription"),
-      images: ["/twitter-image"],
-    },
+    openGraph: linkPreview.openGraph,
+    twitter: linkPreview.twitter,
     icons: {
       icon: [
         { url: "/favicon.ico", sizes: "any" },
