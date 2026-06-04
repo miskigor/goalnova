@@ -4,12 +4,12 @@
 
 const REASONS: Record<string, { en: string; hr: string }> = {
   ai_not_configured: {
-    en: "Server missing OPENAI_API_KEY (ai_not_configured).",
-    hr: "Na serveru nema OPENAI_API_KEY (ai_not_configured).",
+    en: "Server AI provider is not configured (ai_not_configured).",
+    hr: "Serverski AI provider nije konfiguriran (ai_not_configured).",
   },
   service_role_missing: {
-    en: "Server missing SUPABASE_SERVICE_ROLE_KEY (service_role_missing).",
-    hr: "Na serveru nema SUPABASE_SERVICE_ROLE_KEY (service_role_missing).",
+    en: "Server database access is not configured (service_role_missing).",
+    hr: "Serverski pristup bazi nije konfiguriran (service_role_missing).",
   },
   video_download_failed: {
     en: "Video could not be downloaded for analysis (video_download_failed).",

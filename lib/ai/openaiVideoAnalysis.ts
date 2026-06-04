@@ -1,3 +1,12 @@
+import "server-only";
+
+import {
+  getOpenAiApiKey,
+  getOpenAiModel,
+  VideoAiConfigError,
+} from "./openaiRuntime.server";
+
+export { VideoAiConfigError };
 import {
   buildVideoAnalysisSystemMessageCombined,
   buildVideoAnalysisUserPrompt,
@@ -8,27 +17,6 @@ import {
 } from "./parseVideoAnalysisResponse";
 import type { VideoAnalysisScores } from "./types";
 import type { ExtractedFrame } from "./extractVideoFrames";
-
-export class VideoAiConfigError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "VideoAiConfigError";
-  }
-}
-
-function openAiApiKey(): string {
-  const key = process.env.OPENAI_API_KEY?.trim();
-  if (!key) {
-    throw new VideoAiConfigError("OPENAI_API_KEY is not configured");
-  }
-  return key;
-}
-
-function openAiModel(): string {
-  return (
-    process.env.OPENAI_VIDEO_ANALYSIS_MODEL?.trim() || "gpt-4o-mini"
-  );
-}
 
 function localeInstruction(locale: string): string {
   const base = locale.toLowerCase().split("-")[0];
@@ -63,11 +51,11 @@ export async function analyzeFootballClipWithOpenAI(params: {
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${openAiApiKey()}`,
+      Authorization: `Bearer ${getOpenAiApiKey()}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: openAiModel(),
+      model: getOpenAiModel(),
       temperature: 0.35,
       response_format: { type: "json_object" },
       messages: [

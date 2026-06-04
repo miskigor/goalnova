@@ -27,10 +27,6 @@ export type OpenAiErrorLogFields = {
   model: string;
 };
 
-export function openAiModelFromEnv(): string {
-  return process.env.OPENAI_VIDEO_ANALYSIS_MODEL?.trim() || "gpt-4o-mini";
-}
-
 function tryParseOpenAiBody(body: string): {
   code?: string;
   type?: string;
@@ -48,13 +44,20 @@ function tryParseOpenAiBody(body: string): {
   }
 }
 
+function sanitizeLogText(text: string): string {
+  return text
+    .replace(/Bearer\s+sk-[A-Za-z0-9_-]+/gi, "Bearer [redacted]")
+    .replace(/sk-[A-Za-z0-9_-]{20,}/g, "[redacted]");
+}
+
 /** Extract log-safe fields from thrown Error message (never includes API key). */
 export function extractOpenAiLogFields(
   err: unknown,
   model: string,
 ): OpenAiErrorLogFields {
   const name = err instanceof Error ? err.name : "Error";
-  const message = err instanceof Error ? err.message : String(err);
+  const rawMessage = err instanceof Error ? err.message : String(err);
+  const message = sanitizeLogText(rawMessage);
   const httpMatch = message.match(/openai_http_(\d+)(?::([\s\S]*))?/);
 
   if (httpMatch) {

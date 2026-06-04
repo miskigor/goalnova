@@ -2,11 +2,13 @@ import { assertVideoAiAnalyzeAccess } from "@/lib/ai/analysisAccess";
 import {
   extractOpenAiLogFields,
   isOpenAiApiErrorCode,
-  openAiModelFromEnv,
   resolveOpenAiApiError,
 } from "@/lib/ai/classifyOpenAiError";
-import { runServerVideoAiAnalysis } from "@/lib/ai/runServerVideoAiAnalysis";
-import { VideoAiConfigError } from "@/lib/ai/openaiVideoAnalysis";
+import {
+  getOpenAiModel,
+  hasOpenAiApiKey,
+  VideoAiConfigError,
+} from "@/lib/ai/openaiRuntime.server";
 import { resolveAuthenticatedUserIdFromBearer } from "@/lib/stripe/server";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
 
@@ -27,7 +29,6 @@ type ApiFailure = {
   status?: number | null;
   code?: string | null;
   type?: string | null;
-  messagePreview?: string;
 };
 
 type ApiSuccess = { ok: true; scores: unknown };
@@ -78,6 +79,9 @@ function mapAnalysisError(message: string): { error: string; status: number } {
   ) {
     return { error: resolveOpenAiApiError(message), status: 502 };
   }
+  if (isOpenAiApiErrorCode(message)) {
+    return { error: message, status: 502 };
+  }
   if (message === "supabase_service_unavailable") {
     return { error: "service_role_missing", status: 503 };
   }
@@ -114,7 +118,7 @@ export async function POST(req: Request): Promise<Response> {
     }
 
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()) {
-      console.error("[ai-analyze] SUPABASE_SERVICE_ROLE_KEY missing");
+      console.error("[ai-analyze] service role key missing");
       return json({ ok: false, error: "service_role_missing" }, 503);
     }
 
@@ -139,7 +143,7 @@ export async function POST(req: Request): Promise<Response> {
       return json({ ok: false, error: mapAccessError(access.error) }, status);
     }
 
-    if (!process.env.OPENAI_API_KEY?.trim()) {
+    if (!hasOpenAiApiKey()) {
       const demoAllowed =
         process.env.NEXT_PUBLIC_ALLOW_DEMO_AI_SCORING === "true";
       if (!demoAllowed) {
@@ -147,6 +151,9 @@ export async function POST(req: Request): Promise<Response> {
       }
     }
 
+    const { runServerVideoAiAnalysis } = await import(
+      "@/lib/ai/runServerVideoAiAnalysis"
+    );
     const scores = await runServerVideoAiAnalysis({
       videoId,
       locale: typeof body.locale === "string" ? body.locale : undefined,
@@ -160,7 +167,7 @@ export async function POST(req: Request): Promise<Response> {
     const mapped = mapAnalysisError(message);
 
     if (isOpenAiFailure(message, mapped.error)) {
-      const model = openAiModelFromEnv();
+      const model = getOpenAiModel();
       const fields = extractOpenAiLogFields(e, model);
       const specificCode = isOpenAiApiErrorCode(mapped.error)
         ? mapped.error
@@ -184,7 +191,6 @@ export async function POST(req: Request): Promise<Response> {
           status: fields.status,
           code: fields.code,
           type: fields.type,
-          messagePreview: fields.message,
         },
         mapped.status,
         { "x-pitchrusch-ai-error": specificCode },

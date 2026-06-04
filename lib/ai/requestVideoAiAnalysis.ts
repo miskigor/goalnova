@@ -27,7 +27,6 @@ type ApiFailure = {
   status?: number | null;
   code?: string | null;
   type?: string | null;
-  messagePreview?: string;
 };
 
 export class VideoAiRequestError extends Error {

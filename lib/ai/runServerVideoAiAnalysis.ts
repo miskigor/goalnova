@@ -3,6 +3,7 @@ import "server-only";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { extractVideoFramesFromUrl } from "./extractVideoFrames";
+import { hasOpenAiApiKey } from "./openaiRuntime.server";
 import {
   analyzeFootballClipWithOpenAI,
   VideoAiConfigError,
@@ -17,7 +18,7 @@ export async function runServerVideoAiAnalysis(params: {
   const videoId = params.videoId.trim();
   if (!videoId) throw new Error("invalid_video_id");
 
-  const hasOpenAi = Boolean(process.env.OPENAI_API_KEY?.trim());
+  const hasOpenAi = hasOpenAiApiKey();
   const demoAllowed =
     process.env.NEXT_PUBLIC_ALLOW_DEMO_AI_SCORING === "true";
 
@@ -29,7 +30,7 @@ export async function runServerVideoAiAnalysis(params: {
       });
     }
     throw new VideoAiConfigError(
-      "AI scoring is not configured. Set OPENAI_API_KEY or enable demo scoring for development.",
+      "AI scoring is not configured. Add the server OpenAI API key or enable demo scoring for development.",
     );
   }
 
