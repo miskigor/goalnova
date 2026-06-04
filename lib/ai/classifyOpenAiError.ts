@@ -1,5 +1,23 @@
 /** Maps OpenAI / vision errors to stable API codes (no secrets). */
 
+export const OPENAI_API_ERROR_CODES = [
+  "openai_auth_failed",
+  "openai_quota_exceeded",
+  "openai_rate_limited",
+  "openai_model_not_available",
+  "openai_invalid_request",
+  "openai_timeout",
+  "openai_failed",
+] as const;
+
+export type OpenAiApiErrorCode = (typeof OPENAI_API_ERROR_CODES)[number];
+
+const OPENAI_API_ERROR_CODE_SET = new Set<string>(OPENAI_API_ERROR_CODES);
+
+export function isOpenAiApiErrorCode(code: string): boolean {
+  return OPENAI_API_ERROR_CODE_SET.has(code.trim());
+}
+
 export type OpenAiErrorLogFields = {
   name: string;
   message: string;
@@ -63,10 +81,25 @@ export function extractOpenAiLogFields(
   };
 }
 
+/**
+ * Resolve a thrown/internal message to the API error code (classify once).
+ * Already-specific codes are returned unchanged.
+ */
+export function resolveOpenAiApiError(message: string): OpenAiApiErrorCode {
+  const msg = message.trim();
+  if (isOpenAiApiErrorCode(msg)) {
+    return msg as OpenAiApiErrorCode;
+  }
+  return classifyOpenAiError(msg);
+}
+
 /** Classify internal OpenAI error text to a client-safe code. */
-export function classifyOpenAiError(message: string): string {
+export function classifyOpenAiError(message: string): OpenAiApiErrorCode {
   const msg = message.trim();
   if (!msg) return "openai_failed";
+  if (isOpenAiApiErrorCode(msg)) {
+    return msg as OpenAiApiErrorCode;
+  }
 
   const httpMatch = msg.match(/openai_http_(\d+)(?::([\s\S]*))?/);
   if (httpMatch) {
@@ -118,10 +151,6 @@ export function classifyOpenAiError(message: string): string {
 
   if (msg.includes("timeout") || msg.includes("timed out")) {
     return "openai_timeout";
-  }
-
-  if (msg.startsWith("openai_")) {
-    return "openai_failed";
   }
 
   return "openai_failed";

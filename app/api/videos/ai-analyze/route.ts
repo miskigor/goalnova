@@ -1,8 +1,9 @@
 import { assertVideoAiAnalyzeAccess } from "@/lib/ai/analysisAccess";
 import {
-  classifyOpenAiError,
   extractOpenAiLogFields,
+  isOpenAiApiErrorCode,
   openAiModelFromEnv,
+  resolveOpenAiApiError,
 } from "@/lib/ai/classifyOpenAiError";
 import { runServerVideoAiAnalysis } from "@/lib/ai/runServerVideoAiAnalysis";
 import { VideoAiConfigError } from "@/lib/ai/openaiVideoAnalysis";
@@ -19,7 +20,16 @@ type Body = {
   scoutInsight?: boolean;
 };
 
-type ApiFailure = { ok: false; error: string };
+type ApiFailure = {
+  ok: false;
+  error: string;
+  provider?: string;
+  status?: number | null;
+  code?: string | null;
+  type?: string | null;
+  messagePreview?: string;
+};
+
 type ApiSuccess = { ok: true; scores: unknown };
 
 const JSON_HEADERS: Record<string, string> = {
@@ -27,8 +37,15 @@ const JSON_HEADERS: Record<string, string> = {
   "Cache-Control": "no-store",
 };
 
-function json(data: ApiSuccess | ApiFailure, status: number): Response {
-  return new Response(JSON.stringify(data), { status, headers: JSON_HEADERS });
+function json(
+  data: ApiSuccess | ApiFailure,
+  status: number,
+  extraHeaders?: Record<string, string>,
+): Response {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { ...JSON_HEADERS, ...extraHeaders },
+  });
 }
 
 function mapAccessError(code: string): string {
@@ -59,24 +76,20 @@ function mapAnalysisError(message: string): { error: string; status: number } {
     message.startsWith("openai_") ||
     message.includes("openai_http_")
   ) {
-    return { error: classifyOpenAiError(message), status: 502 };
-  }
-  const OPENAI_API_CODES = new Set([
-    "openai_auth_failed",
-    "openai_quota_exceeded",
-    "openai_rate_limited",
-    "openai_model_not_available",
-    "openai_invalid_request",
-    "openai_timeout",
-    "openai_failed",
-  ]);
-  if (OPENAI_API_CODES.has(message)) {
-    return { error: message, status: 502 };
+    return { error: resolveOpenAiApiError(message), status: 502 };
   }
   if (message === "supabase_service_unavailable") {
     return { error: "service_role_missing", status: 503 };
   }
   return { error: "analysis_failed", status: 500 };
+}
+
+function isOpenAiFailure(message: string, apiError: string): boolean {
+  return (
+    apiError.startsWith("openai_") ||
+    message.includes("openai_http_") ||
+    message.startsWith("openai_")
+  );
 }
 
 export async function POST(req: Request): Promise<Response> {
@@ -145,15 +158,16 @@ export async function POST(req: Request): Promise<Response> {
     }
     const message = e instanceof Error ? e.message : "analysis_failed";
     const mapped = mapAnalysisError(message);
-    if (
-      message.includes("openai_http_") ||
-      message.startsWith("openai_") ||
-      mapped.error.startsWith("openai_")
-    ) {
+
+    if (isOpenAiFailure(message, mapped.error)) {
       const model = openAiModelFromEnv();
       const fields = extractOpenAiLogFields(e, model);
+      const specificCode = isOpenAiApiErrorCode(mapped.error)
+        ? mapped.error
+        : resolveOpenAiApiError(message);
+
       console.error("[ai-analyze] openai error", {
-        apiError: mapped.error,
+        apiError: specificCode,
         name: fields.name,
         message: fields.message,
         status: fields.status,
@@ -161,9 +175,23 @@ export async function POST(req: Request): Promise<Response> {
         type: fields.type,
         model: fields.model,
       });
-    } else {
-      console.error("[ai-analyze]", mapped.error, message, e);
+
+      return json(
+        {
+          ok: false,
+          error: specificCode,
+          provider: "openai",
+          status: fields.status,
+          code: fields.code,
+          type: fields.type,
+          messagePreview: fields.message,
+        },
+        mapped.status,
+        { "x-pitchrusch-ai-error": specificCode },
+      );
     }
+
+    console.error("[ai-analyze]", mapped.error, message, e);
     return json({ ok: false, error: mapped.error }, mapped.status);
   }
 }

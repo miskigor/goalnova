@@ -1,9 +1,11 @@
 import { supabase } from "@/lib/supabase/client";
 import type { VideoAnalysisScores } from "./types";
+import { isOpenAiApiErrorCode } from "./classifyOpenAiError";
 import {
   logAiAnalysisFailed,
   logAiAnalysisStarted,
   logAiApiResponse,
+  logAiApiResponseExact,
 } from "./aiAnalysisClientLog";
 import { normalizeAiErrorCode } from "./normalizeAiErrorCode";
 
@@ -18,7 +20,15 @@ export type RequestVideoAiAnalysisParams = {
 export const AI_ANALYSIS_REQUEST_TIMEOUT_MS = 90_000;
 
 type ApiSuccess = { ok: true; scores: VideoAnalysisScores };
-type ApiFailure = { ok: false; error: string };
+type ApiFailure = {
+  ok: false;
+  error: string;
+  provider?: string;
+  status?: number | null;
+  code?: string | null;
+  type?: string | null;
+  messagePreview?: string;
+};
 
 export class VideoAiRequestError extends Error {
   readonly code: string;
@@ -101,9 +111,10 @@ export async function requestVideoAiAnalysis(
     body = null;
   }
 
+  const headerError = res.headers.get("x-pitchrusch-ai-error")?.trim() || null;
   const apiError =
     body && "error" in body && typeof body.error === "string"
-      ? body.error
+      ? body.error.trim()
       : undefined;
 
   logAiApiResponse({
@@ -113,11 +124,24 @@ export async function requestVideoAiAnalysis(
     bodyPreview: bodyPreview(rawText || "{}"),
   });
 
+  const failureBody = body && body.ok === false ? body : null;
+  logAiApiResponseExact({
+    status: res.status,
+    error: apiError,
+    provider: failureBody?.provider,
+    headerError,
+    code: failureBody?.code ?? null,
+    type: failureBody?.type ?? null,
+  });
+
   if (!res.ok || !body || body.ok !== true) {
-    const raw =
-      apiError ??
+    const exact =
+      apiError ||
+      headerError ||
       (res.status === 0 ? "network_error" : `ai_analyze_http_${res.status}`);
-    const code = normalizeAiErrorCode(raw);
+    const code = isOpenAiApiErrorCode(exact)
+      ? exact
+      : normalizeAiErrorCode(exact);
     logAiAnalysisFailed({ reason: code, error: rawText || res.statusText });
     throw new VideoAiRequestError(code);
   }

@@ -3,7 +3,6 @@ import "server-only";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { extractVideoFramesFromUrl } from "./extractVideoFrames";
-import { classifyOpenAiError } from "./classifyOpenAiError";
 import {
   analyzeFootballClipWithOpenAI,
   VideoAiConfigError,
@@ -78,7 +77,7 @@ export async function runServerVideoAiAnalysis(params: {
     if (e instanceof VideoAiConfigError) throw e;
     const msg = e instanceof Error ? e.message : "openai_failed";
     if (msg.startsWith("openai_") || msg.includes("openai_http_")) {
-      throw new Error(classifyOpenAiError(msg));
+      throw e instanceof Error ? e : new Error(msg);
     }
     throw e;
   }

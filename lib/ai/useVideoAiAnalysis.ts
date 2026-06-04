@@ -9,6 +9,7 @@ import {
   VideoAiRequestError,
 } from "@/lib/ai/requestVideoAiAnalysis";
 import { getAiErrorReasonLabel } from "@/lib/ai/aiErrorReasonLabel";
+import { isOpenAiApiErrorCode } from "@/lib/ai/classifyOpenAiError";
 import { normalizeAiErrorCode } from "@/lib/ai/normalizeAiErrorCode";
 import { logAiAnalysisFailed, logAiAnalysisStarted } from "@/lib/ai/aiAnalysisClientLog";
 import {
@@ -232,7 +233,9 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
             : e instanceof Error
               ? e.message
               : "unknown";
-      const code = normalizeAiErrorCode(raw);
+      const code = isOpenAiApiErrorCode(raw)
+        ? raw
+        : normalizeAiErrorCode(raw);
       logAiAnalysisFailed({ reason: code, error: e });
       logFullSupabaseError("[useVideoAiAnalysis] reanalyze", e, {
         videoId,

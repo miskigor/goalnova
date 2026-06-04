@@ -17,6 +17,18 @@ export function logAiApiResponse(payload: {
   console.info("[PitchRusch AI] api response", payload);
 }
 
+/** Temporary production-safe diagnostics for exact API error codes. */
+export function logAiApiResponseExact(payload: {
+  status: number;
+  error?: string;
+  provider?: string;
+  headerError?: string | null;
+  code?: string | null;
+  type?: string | null;
+}): void {
+  console.info("[PitchRusch AI] api response exact", payload);
+}
+
 export function logAiAnalysisFailed(payload: {
   reason: string;
   error?: unknown;
