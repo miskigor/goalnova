@@ -31,7 +31,8 @@
     "resetPasswordTitle": "Nova šifra",
     "forgotPasswordTitle": "Zaboravljena lozinka",
     "accountRecoveryTitle": "Oporavak računa",
-    "landingDescription": "Prenesi nogometne highlightse, sudjeluj u izazovima i izgradi profil koji skauti mogu otkriti."
+    "landingDescription": "Prenesi nogometne highlightse, sudjeluj u izazovima i izgradi profil koji skauti mogu otkriti.",
+    "adminWeeklyChallengesTitle": "Weekly challenges (admin)"
   },
   "common": {
     "save": "Spremi",
@@ -219,7 +220,8 @@
     "noticeMessageScoutVerificationIssue": "Vaše informacije za verifikaciju skauta zahtijevaju pregled. Molimo ažurirajte potrebne podatke.",
     "noticeMessageFinalWarning": "Ovo je posljednje upozorenje. Daljnja kršenja mogu dovesti do suspenzije računa.",
     "tasksEmptyAssigned": "Nema vama dodijeljenih prijava.",
-    "userDetailLabelFoundingPlayer": "Founding Player"
+    "userDetailLabelFoundingPlayer": "Founding Player",
+    "navWeeklyChallenges": "Weekly challenges"
   },
   "adminAccountRecovery": {
     "title": "Zahtjevi za oporavak računa",
@@ -2110,5 +2112,52 @@
     "scoutBenefitsTitle": "Scout pogodnosti uskoro stižu",
     "scoutBenefitsBody": "Nagrade za pozivanje trenutno su dostupne igračima. Scout alati i Pro pogodnosti dostupni su kroz Premium.",
     "scoutBenefitsCta": "Pogledaj Premium"
+  },
+  "adminWeeklyChallenges": {
+    "pageTitle": "Weekly challenges",
+    "pageSubtitle": "Prepare weekly skill challenges before public launch. Not visible on the player Challenges page yet.",
+    "privateNotice": "Admin only — players cannot see or join these challenges until a future release enables the public UI.",
+    "newChallenge": "New weekly challenge",
+    "listHeading": "All weekly challenges",
+    "listEmpty": "No weekly challenges yet.",
+    "loading": "Loading…",
+    "loadError": "Could not load weekly challenges.",
+    "colStarts": "Starts",
+    "colEnds": "Ends",
+    "colRewardXp": "Reward XP",
+    "colBadge": "Badge",
+    "badgeActive": "Active",
+    "badgeInactive": "Inactive",
+    "badgePublic": "Public flag",
+    "badgePrivate": "Private",
+    "edit": "Edit",
+    "formCreateTitle": "New weekly challenge",
+    "formEditTitle": "Edit weekly challenge",
+    "formIdleHint": "Form",
+    "formIdleBody": "Choose “New weekly challenge” or Edit on a row.",
+    "fieldTitle": "Title",
+    "fieldDescription": "Description",
+    "fieldRules": "Rules",
+    "fieldEquipment": "Equipment",
+    "fieldEquipmentPlaceholder": "e.g. ball, cones, one wall",
+    "fieldRewardXp": "Reward XP",
+    "fieldBadgeName": "Badge name",
+    "fieldMaxVideoDuration": "Max video duration (seconds)",
+    "fieldFreeAttempts": "Free attempts",
+    "fieldPremiumAttempts": "Premium attempts",
+    "fieldStartsAt": "Starts at",
+    "fieldEndsAt": "Ends at",
+    "fieldIsActive": "Active",
+    "fieldIsPublic": "Public (future player visibility)",
+    "fieldIsPublicHint": "When public UI ships, only public + active challenges will appear to players.",
+    "titleRequired": "Title is required.",
+    "maxVideoDurationInvalid": "Max video duration must be a positive number.",
+    "saveError": "Could not save.",
+    "createSuccess": "Weekly challenge created.",
+    "updateSuccess": "Changes saved.",
+    "createChallenge": "Create",
+    "saveChanges": "Save changes",
+    "saving": "Saving…",
+    "cancel": "Cancel"
   }
 }

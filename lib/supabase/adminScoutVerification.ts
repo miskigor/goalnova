@@ -1,3 +1,4 @@
+import { isBootstrapAdminEmail } from "@/lib/admin/bootstrapAdminEmails";
 import { supabase } from "@/lib/supabase/client";
 import type { Database } from "@/lib/supabase/client";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
@@ -62,11 +63,23 @@ export async function fetchStaffAccess(): Promise<StaffAccess> {
     };
   }
   const uid = sessionData.session?.user?.id ?? null;
+  const sessionEmail = sessionData.session?.user?.email ?? null;
   if (!uid) {
     return {
       isStaff: false,
       role: null,
       isSuperAdmin: false,
+      isSupportAdmin: false,
+      isModerator: false,
+      error: null,
+    };
+  }
+
+  if (isBootstrapAdminEmail(sessionEmail)) {
+    return {
+      isStaff: true,
+      role: "super_admin",
+      isSuperAdmin: true,
       isSupportAdmin: false,
       isModerator: false,
       error: null,

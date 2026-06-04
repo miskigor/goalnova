@@ -562,6 +562,121 @@ export type Database = {
         };
         Relationships: [];
       };
+      /** `20260604120000_weekly_challenges_admin_foundation.sql` — admin-only until public UI ships. */
+      weekly_challenges: {
+        Row: {
+          id: string;
+          title: string;
+          description: string | null;
+          rules: string | null;
+          equipment: string | null;
+          reward_xp: number;
+          badge_name: string | null;
+          max_video_duration_seconds: number | null;
+          free_attempts: number;
+          premium_attempts: number;
+          starts_at: string | null;
+          ends_at: string | null;
+          is_active: boolean;
+          is_public: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          description?: string | null;
+          rules?: string | null;
+          equipment?: string | null;
+          reward_xp?: number;
+          badge_name?: string | null;
+          max_video_duration_seconds?: number | null;
+          free_attempts?: number;
+          premium_attempts?: number;
+          starts_at?: string | null;
+          ends_at?: string | null;
+          is_active?: boolean;
+          is_public?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          description?: string | null;
+          rules?: string | null;
+          equipment?: string | null;
+          reward_xp?: number;
+          badge_name?: string | null;
+          max_video_duration_seconds?: number | null;
+          free_attempts?: number;
+          premium_attempts?: number;
+          starts_at?: string | null;
+          ends_at?: string | null;
+          is_active?: boolean;
+          is_public?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      weekly_challenge_submissions: {
+        Row: {
+          id: string;
+          weekly_challenge_id: string;
+          user_id: string;
+          video_id: string | null;
+          status: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          weekly_challenge_id: string;
+          user_id: string;
+          video_id?: string | null;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          weekly_challenge_id?: string;
+          user_id?: string;
+          video_id?: string | null;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      weekly_challenge_badges: {
+        Row: {
+          id: string;
+          weekly_challenge_id: string;
+          user_id: string;
+          badge_name: string;
+          earned_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          weekly_challenge_id: string;
+          user_id: string;
+          badge_name: string;
+          earned_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          weekly_challenge_id?: string;
+          user_id?: string;
+          badge_name?: string;
+          earned_at?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       /** Matches `public.challenges` incl. admin fields (see `20260407140000_challenges_admin_fields_rls.sql`). */
       challenges: {
         Row: {
