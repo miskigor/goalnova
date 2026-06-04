@@ -1,8 +1,11 @@
 /** Mobile V2 scrollport — reset on route change so page titles start at the top. */
 
+import { devLog, isDev } from "@/lib/devLog";
+
 const MLV2_SCROLL_SELECTOR = "[data-mlv2-scroll]";
 const MLV2_MOBILE_MAX_WIDTH_PX = 1023;
-const ROUTE_RESET_DELAYS_MS = [100, 300, 600] as const;
+/** immediate + rAF + delayed passes to beat browser/iOS scroll restoration. */
+const ROUTE_RESET_DELAYS_MS = [50, 150, 300, 600] as const;
 
 export function isMlv2MobileViewport(): boolean {
   if (typeof window === "undefined") return false;
@@ -19,14 +22,23 @@ function resolveMlv2ScrollElement(): HTMLElement | null {
   return scroll instanceof HTMLElement ? scroll : null;
 }
 
-/** Clears vertical/horizontal scroll on the V2 shell scrollport. */
-export function resetMlv2ScrollPosition(): void {
+/** Clears vertical/horizontal scroll on the V2 shell scrollport only. */
+export function resetMlv2ScrollPosition(pathname = ""): void {
   if (!isMlv2MobileViewport()) return;
 
   const scroll = resolveMlv2ScrollElement();
-  if (scroll) {
-    scroll.scrollTop = 0;
-    scroll.scrollLeft = 0;
+  if (!scroll) return;
+
+  const scrollTopBefore = scroll.scrollTop;
+  scroll.scrollTop = 0;
+  scroll.scrollLeft = 0;
+
+  if (isDev && pathname) {
+    devLog("[PitchRusch V2 scroll reset]", {
+      pathname,
+      scrollTopBefore,
+      scrollTopAfter: scroll.scrollTop,
+    });
   }
 }
 
@@ -43,10 +55,7 @@ export function scheduleMlv2ScrollReset(pathname: string): () => void {
   let rafId: number | null = null;
 
   const doReset = () => {
-    const scroll = resolveMlv2ScrollElement();
-    if (!scroll) return;
-    scroll.scrollTop = 0;
-    scroll.scrollLeft = 0;
+    resetMlv2ScrollPosition(pathname);
   };
 
   doReset();
@@ -73,9 +82,17 @@ export function enableMlv2ScrollRestorationManual(): () => void {
   }
 
   const previous = window.history.scrollRestoration;
-  window.history.scrollRestoration = "manual";
+  try {
+    window.history.scrollRestoration = "manual";
+  } catch {
+    return () => {};
+  }
 
   return () => {
-    window.history.scrollRestoration = previous;
+    try {
+      window.history.scrollRestoration = previous;
+    } catch {
+      /* ignore */
+    }
   };
 }

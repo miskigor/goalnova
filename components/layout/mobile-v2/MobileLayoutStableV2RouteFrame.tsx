@@ -43,9 +43,14 @@ export function MobileLayoutStableV2RouteFrame({
   const pathname = usePathname();
   const route = mlv2RouteKind(pathname);
 
-  useEffect(() => enableMlv2ScrollRestorationManual(), []);
+  useEffect(() => {
+    const restoreScrollRestoration = enableMlv2ScrollRestorationManual();
+    return restoreScrollRestoration;
+  }, []);
 
-  useLayoutEffect(() => scheduleMlv2ScrollReset(pathname), [pathname]);
+  useLayoutEffect(() => {
+    return scheduleMlv2ScrollReset(pathname);
+  }, [pathname]);
 
   return (
     <div
