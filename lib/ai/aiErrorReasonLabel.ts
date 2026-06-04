@@ -27,6 +27,30 @@ const REASONS: Record<string, { en: string; hr: string }> = {
     en: "OpenAI request failed (openai_failed).",
     hr: "OpenAI zahtjev nije uspio (openai_failed).",
   },
+  openai_auth_failed: {
+    en: "OpenAI API key rejected (openai_auth_failed).",
+    hr: "OpenAI API ključ odbijen (openai_auth_failed).",
+  },
+  openai_quota_exceeded: {
+    en: "OpenAI quota or billing limit reached (openai_quota_exceeded).",
+    hr: "OpenAI kvota ili billing limit dosegnut (openai_quota_exceeded).",
+  },
+  openai_rate_limited: {
+    en: "OpenAI rate limit hit — try again shortly (openai_rate_limited).",
+    hr: "OpenAI rate limit — pokušaj ponovno za trenutak (openai_rate_limited).",
+  },
+  openai_model_not_available: {
+    en: "Configured OpenAI model is not available (openai_model_not_available).",
+    hr: "Konfigurirani OpenAI model nije dostupan (openai_model_not_available).",
+  },
+  openai_invalid_request: {
+    en: "OpenAI rejected the vision request (openai_invalid_request).",
+    hr: "OpenAI je odbio vision zahtjev (openai_invalid_request).",
+  },
+  openai_timeout: {
+    en: "OpenAI request timed out (openai_timeout).",
+    hr: "OpenAI zahtjev je istekao (openai_timeout).",
+  },
   timeout: {
     en: "Analysis timed out (timeout).",
     hr: "Analiza je istekla (timeout).",

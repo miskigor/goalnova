@@ -3,6 +3,7 @@ import "server-only";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { extractVideoFramesFromUrl } from "./extractVideoFrames";
+import { classifyOpenAiError } from "./classifyOpenAiError";
 import {
   analyzeFootballClipWithOpenAI,
   VideoAiConfigError,
@@ -34,7 +35,7 @@ export async function runServerVideoAiAnalysis(params: {
   }
 
   const service = createServiceRoleClient();
-  if (!service) throw new Error("supabase_service_unavailable");
+  if (!service) throw new Error("service_role_missing");
 
   const { data: video, error } = await service
     .from("videos")
@@ -51,10 +52,34 @@ export async function runServerVideoAiAnalysis(params: {
     throw new Error("video_playback_missing");
   }
 
-  const frames = await extractVideoFramesFromUrl(playbackUrl);
-  return analyzeFootballClipWithOpenAI({
-    videoId,
-    locale: params.locale,
-    frames,
-  });
+  let frames;
+  try {
+    frames = await extractVideoFramesFromUrl(playbackUrl);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "video_download_failed";
+    if (
+      msg === "missing_video_url" ||
+      msg === "video_too_large" ||
+      msg === "frame_extraction_failed" ||
+      msg.startsWith("Download failed")
+    ) {
+      throw new Error("video_download_failed");
+    }
+    throw e;
+  }
+
+  try {
+    return await analyzeFootballClipWithOpenAI({
+      videoId,
+      locale: params.locale,
+      frames,
+    });
+  } catch (e) {
+    if (e instanceof VideoAiConfigError) throw e;
+    const msg = e instanceof Error ? e.message : "openai_failed";
+    if (msg.startsWith("openai_") || msg.includes("openai_http_")) {
+      throw new Error(classifyOpenAiError(msg));
+    }
+    throw e;
+  }
 }

@@ -1,4 +1,9 @@
 import { assertVideoAiAnalyzeAccess } from "@/lib/ai/analysisAccess";
+import {
+  classifyOpenAiError,
+  extractOpenAiLogFields,
+  openAiModelFromEnv,
+} from "@/lib/ai/classifyOpenAiError";
 import { runServerVideoAiAnalysis } from "@/lib/ai/runServerVideoAiAnalysis";
 import { VideoAiConfigError } from "@/lib/ai/openaiVideoAnalysis";
 import { resolveAuthenticatedUserIdFromBearer } from "@/lib/stripe/server";
@@ -54,7 +59,19 @@ function mapAnalysisError(message: string): { error: string; status: number } {
     message.startsWith("openai_") ||
     message.includes("openai_http_")
   ) {
-    return { error: "openai_failed", status: 502 };
+    return { error: classifyOpenAiError(message), status: 502 };
+  }
+  const OPENAI_API_CODES = new Set([
+    "openai_auth_failed",
+    "openai_quota_exceeded",
+    "openai_rate_limited",
+    "openai_model_not_available",
+    "openai_invalid_request",
+    "openai_timeout",
+    "openai_failed",
+  ]);
+  if (OPENAI_API_CODES.has(message)) {
+    return { error: message, status: 502 };
   }
   if (message === "supabase_service_unavailable") {
     return { error: "service_role_missing", status: 503 };
@@ -128,7 +145,25 @@ export async function POST(req: Request): Promise<Response> {
     }
     const message = e instanceof Error ? e.message : "analysis_failed";
     const mapped = mapAnalysisError(message);
-    console.error("[ai-analyze]", mapped.error, message, e);
+    if (
+      message.includes("openai_http_") ||
+      message.startsWith("openai_") ||
+      mapped.error.startsWith("openai_")
+    ) {
+      const model = openAiModelFromEnv();
+      const fields = extractOpenAiLogFields(e, model);
+      console.error("[ai-analyze] openai error", {
+        apiError: mapped.error,
+        name: fields.name,
+        message: fields.message,
+        status: fields.status,
+        code: fields.code,
+        type: fields.type,
+        model: fields.model,
+      });
+    } else {
+      console.error("[ai-analyze]", mapped.error, message, e);
+    }
     return json({ ok: false, error: mapped.error }, mapped.status);
   }
 }
