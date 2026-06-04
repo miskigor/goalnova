@@ -3,7 +3,6 @@ import "server-only";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { extractVideoFramesFromUrl } from "./extractVideoFrames";
-import { hasOpenAiApiKey } from "./openaiRuntime.server";
 import {
   analyzeFootballClipWithOpenAI,
   VideoAiConfigError,
@@ -18,6 +17,7 @@ export async function runServerVideoAiAnalysis(params: {
   const videoId = params.videoId.trim();
   if (!videoId) throw new Error("invalid_video_id");
 
+  const { hasOpenAiApiKey } = await import("./openaiRuntime.server");
   const hasOpenAi = hasOpenAiApiKey();
   const demoAllowed =
     process.env.NEXT_PUBLIC_ALLOW_DEMO_AI_SCORING === "true";

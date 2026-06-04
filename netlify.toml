@@ -1,7 +1,5 @@
 # --- Environment variables (Netlify: Site → Environment variables) ---
 # Set secrets in the UI, never commit (see .env.example).
-# OpenAI key: set in Netlify UI (often Builds+Functions+Runtime on free plan). App reads it only at
-# request time via runtimeEnv.server.ts so `next build` does not embed the value in artifacts.
 # NEXT_PUBLIC_SITE_URL (below or in UI): use a valid absolute URL, e.g. https://pitchrusch.com
 # (no stray quotes/spaces). Invalid values no longer crash the app, but metadata/OG URLs may be wrong.
 #
@@ -13,9 +11,6 @@
 #   …same path for: bs, es, pt, sr, fr, it, nl, tr, ar
 # Optional: add your Netlify deploy-preview pattern if you test recovery on previews.
 #
-[build]
-  environment = { SECRETS_SCAN_OMIT_PATHS = ".next/**,.netlify/**" }
-
 [context.production.environment]
   NEXT_PUBLIC_SITE_URL = "https://pitchrusch.com"
   NEXT_PUBLIC_MOBILE_LAYOUT_STABLE_V2 = "true"

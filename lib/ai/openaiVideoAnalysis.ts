@@ -1,10 +1,6 @@
 import "server-only";
 
-import {
-  getOpenAiApiKey,
-  getOpenAiModel,
-  VideoAiConfigError,
-} from "./openaiRuntime.server";
+import { VideoAiConfigError } from "./openaiRuntime.server";
 
 export { VideoAiConfigError };
 import {
@@ -47,6 +43,8 @@ export async function analyzeFootballClipWithOpenAI(params: {
       detail: "low" as const,
     },
   }));
+
+  const { getOpenAiApiKey, getOpenAiModel } = await import("./openaiRuntime.server");
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
