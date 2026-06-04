@@ -40,6 +40,7 @@ import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
 import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
+import { useV2HomeFeedSnapController } from "@/hooks/useV2HomeFeedSnapController";
 import { currentUserHasAnyVideo } from "@/lib/supabase/currentUserVideos";
 
 /** Scrollport width: stay within the main column (negative margins removed — they fought min-w-0 and could widen scrollWidth). */
@@ -169,6 +170,8 @@ function FeedScrollWithUserAudioActivation({
   const { notifyFeedUserActivation, reportScrollSnapBoost } = useHomeFeedSound();
   const lastNearEndAtRef = useRef(0);
   const scrollBoostRafRef = useRef<number | null>(null);
+
+  useV2HomeFeedSnapController(scrollRef, snapVideoKeys?.length ?? 0);
 
   useEffect(() => {
     const el = scrollRef.current;
