@@ -1,8 +1,11 @@
 "use client";
 
-import { useLayoutEffect, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, type ReactNode } from "react";
 import { usePathname } from "@/i18n/navigation";
-import { resetMlv2ScrollPosition } from "@/lib/layout/mlv2ScrollReset";
+import {
+  enableMlv2ScrollRestorationManual,
+  scheduleMlv2ScrollReset,
+} from "@/lib/layout/mlv2ScrollReset";
 import {
   MLV2_CONTENT_ATTR,
   MLV2_CONTENT_MAX_CLASS,
@@ -40,9 +43,9 @@ export function MobileLayoutStableV2RouteFrame({
   const pathname = usePathname();
   const route = mlv2RouteKind(pathname);
 
-  useLayoutEffect(() => {
-    resetMlv2ScrollPosition();
-  }, [pathname]);
+  useEffect(() => enableMlv2ScrollRestorationManual(), []);
+
+  useLayoutEffect(() => scheduleMlv2ScrollReset(pathname), [pathname]);
 
   return (
     <div
