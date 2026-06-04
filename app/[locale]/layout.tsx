@@ -15,6 +15,8 @@ import {
   PITCHRUSCH_CRITICAL_FIRST_PAINT_SCRIPT,
 } from "@/lib/loading/criticalFirstPaint";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
+import { isMobileLayoutStableV2Enabled } from "@/lib/layout/mobileLayoutStableV2Flag";
+import { MLV2_HTML_ATTRIBUTE_SYNC_SCRIPT } from "@/lib/layout/mlv2HtmlAttributeSync";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -111,6 +113,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   const dir = RTL_LOCALES.includes(locale as AppLocale) ? "rtl" : "ltr";
+  const mobileLayoutStableV2 = isMobileLayoutStableV2Enabled();
 
   return (
     <html
@@ -131,6 +134,12 @@ export default async function LocaleLayout({ children, params }: Props) {
           id="pitchrusch-critical-first-paint-js"
           dangerouslySetInnerHTML={{ __html: PITCHRUSCH_CRITICAL_FIRST_PAINT_SCRIPT }}
         />
+        {mobileLayoutStableV2 ? (
+          <script
+            id="mlv2-html-attribute-sync"
+            dangerouslySetInnerHTML={{ __html: MLV2_HTML_ATTRIBUTE_SYNC_SCRIPT }}
+          />
+        ) : null}
       </head>
       <body
         style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}

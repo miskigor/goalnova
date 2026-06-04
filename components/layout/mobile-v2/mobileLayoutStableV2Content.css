@@ -146,7 +146,19 @@
   }
 
   /*
-   * Portrait card fills snap scrollport minus ~10px margin; no 440px / 56cqh cap (globals + Tailwind).
+   * Neutralize V1 globals home video-frame caps under V2 (no 56cqh / 82vw fight).
+   */
+  html[data-mobile-layout-stable-v2] [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-video-frame][data-pitchrusch-home-feed-v2-card] {
+    height: auto !important;
+    max-height: none !important;
+    max-width: 330px !important;
+    width: min(78vw, 330px) !important;
+    min-height: 0 !important;
+    margin-inline: auto !important;
+  }
+
+  /*
+   * V2 /home card — single stable size (vw cap + px max; no cqh/svh/dvh/100vw/100% height).
    */
   html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-card],
   html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-video-frame][data-pitchrusch-home-feed-v2-card] {
@@ -158,13 +170,13 @@
     flex-shrink: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    width: auto !important;
+    width: min(78vw, 330px) !important;
+    max-width: 330px !important;
     min-width: 0 !important;
-    max-width: calc(100vw - 20px) !important;
-    height: calc(100% - 20px) !important;
-    max-height: calc(100% - 20px) !important;
+    height: auto !important;
+    max-height: none !important;
     min-height: 0 !important;
-    margin: 10px auto !important;
+    margin: auto !important;
     aspect-ratio: 9 / 16 !important;
     overflow: hidden !important;
     border-radius: 16px !important;
