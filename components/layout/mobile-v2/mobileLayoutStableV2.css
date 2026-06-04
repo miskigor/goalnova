@@ -25,7 +25,7 @@
     width: 100%;
     max-width: 100%;
     overflow: hidden;
-    overflow-x: hidden;
+    overflow-x: clip;
     overscroll-behavior: none;
     overscroll-behavior-x: none;
   }
@@ -39,16 +39,21 @@
     width: 100%;
     max-width: 100%;
     overflow: hidden;
-    overflow-x: hidden;
+    overflow-x: clip;
     align-items: center;
   }
 
   [data-mobile-layout-stable-v2] [data-mlv2-column] {
+    flex: 1 1 auto;
+    height: 100%;
+    max-height: 100%;
     width: 100%;
     max-width: var(--mlv2-content-max, min(100%, 390px));
     margin-inline: auto;
     min-width: 0;
-    overflow-x: hidden;
+    min-height: 0;
+    overflow: hidden;
+    overflow-x: clip;
     box-sizing: border-box;
   }
 
@@ -56,8 +61,10 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    overflow-x: hidden;
+    min-height: 0;
+    overflow-x: clip;
     overscroll-behavior-x: none;
+    touch-action: pan-y;
   }
 
   /* Centered content column — all routes including home */
@@ -70,7 +77,7 @@
     padding-bottom: 1rem;
     box-sizing: border-box;
     min-width: 0;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="home"] {
@@ -112,6 +119,41 @@
   /* No visualViewport / measured inset hacks in V2 */
   html[data-mobile-layout-stable-v2] {
     --gn-mobile-visual-bottom-inset: 0px;
+    --gn-app-header-offset-measured: initial;
+    --gn-app-bottom-nav-offset-measured: initial;
+    --gn-premium-safe-top: initial;
+  }
+
+  /*
+   * V2 isolation — V1 globals.css targets [data-pitchrusch-home-feed] without [data-app-root].
+   * Inside V2 shell, V1 must not own width/height/padding for feed or video-frame.
+   */
+  html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed],
+  html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-feed-panel],
+  html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root],
+  html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-feed-items],
+  html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-feed-item],
+  html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-feed-card] {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-feed-scroll-root] {
+    padding-top: 0 !important;
+    scroll-padding-top: 0 !important;
+  }
+
+  html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-video-frame][data-pitchrusch-home-feed-v2-card] {
+    height: auto !important;
+    max-height: none !important;
+    width: min(78vw, 330px) !important;
+    max-width: 330px !important;
+    min-height: 0 !important;
+    margin-inline: auto !important;
   }
 }
 
@@ -159,6 +201,13 @@
     width: 100%;
     max-width: var(--mlv2-content-max, min(100%, 390px));
     margin-inline: auto;
+    overflow: hidden;
+    overflow-x: clip;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] {
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
   }
 }
 
@@ -174,7 +223,7 @@
   min-width: 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   overflow-y: auto;
   overscroll-behavior-y: contain;
   overscroll-behavior-x: none;
@@ -242,7 +291,7 @@
   }
 
   [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] > * {

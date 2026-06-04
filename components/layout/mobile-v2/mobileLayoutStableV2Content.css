@@ -58,24 +58,21 @@
     box-sizing: border-box;
     flex: 1 1 auto !important;
     min-height: 0 !important;
+    /* Fill V2 scroll band — override HomeFeed 100svh Tailwind (not document svh) */
     height: 100% !important;
     max-height: 100% !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     overflow-y: auto !important;
     overscroll-behavior-y: contain !important;
+    overscroll-behavior-x: none !important;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: y mandatory !important;
     scroll-behavior: smooth !important;
-    /* Full snap scrollport — inset comes from card margin, not scroll padding */
     padding-top: 0 !important;
     scroll-padding-top: 0;
     scroll-padding-bottom: 0;
   }
 
-  /*
-   * TikTok snap: each `<li>` = one scrollport page (100cqh from scroll-root container).
-   * List grows with items; do not clamp `ul` to a single viewport height.
-   */
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-feed-items] {
     box-sizing: border-box;
     display: flex !important;
@@ -88,20 +85,23 @@
     max-height: none !important;
   }
 
+  /*
+   * Snap pages — percentage of scroll-root (stable vs 100cqh when container height shifts).
+   */
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-feed-item] {
     box-sizing: border-box;
     display: flex !important;
     flex-direction: column !important;
-    flex: 0 0 100cqh !important;
+    flex: 0 0 100% !important;
     flex-grow: 0 !important;
     flex-shrink: 0 !important;
-    flex-basis: 100cqh !important;
-    height: 100cqh !important;
-    max-height: 100cqh !important;
-    min-height: 100cqh !important;
+    flex-basis: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 100% !important;
     justify-content: center !important;
     align-items: center !important;
-    overflow-x: hidden;
+    overflow-x: clip;
     overflow-y: hidden;
     scroll-snap-align: start !important;
     scroll-snap-stop: always !important;
@@ -146,7 +146,7 @@
   }
 
   /*
-   * Portrait card fills snap scrollport minus ~10px margin; no 440px / 56cqh cap (globals + Tailwind).
+   * V2 home card — single stable size (vw cap + px max; no cqh/svh/dvh/100vw/100% height).
    */
   html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-card],
   html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-video-frame][data-pitchrusch-home-feed-v2-card] {
@@ -158,13 +158,13 @@
     flex-shrink: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    width: auto !important;
+    width: min(78vw, 330px) !important;
+    max-width: 330px !important;
     min-width: 0 !important;
-    max-width: calc(100vw - 20px) !important;
-    height: calc(100% - 20px) !important;
-    max-height: calc(100% - 20px) !important;
+    height: auto !important;
+    max-height: none !important;
     min-height: 0 !important;
-    margin: 10px auto !important;
+    margin: auto !important;
     aspect-ratio: 9 / 16 !important;
     overflow: hidden !important;
     border-radius: 16px !important;

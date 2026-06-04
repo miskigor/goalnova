@@ -40,9 +40,9 @@ const HOME_FEED_MOBILE_FRAME =
 const HOME_FEED_V2_SLIDE_STACK =
   "mx-auto flex h-full min-h-0 w-full max-w-full flex-col items-center justify-start overflow-hidden max-lg:bg-black max-lg:gap-0 max-lg:pt-0 max-lg:pb-0 lg:contents";
 
-/** V2 /home — TikTok-style card: 9:16 frame, in-card rail + bottom meta overlay. */
+/** V2 /home — 9:16 frame; mobile size from mobileLayoutStableV2Content.css (stable vw cap). */
 const HOME_FEED_V2_CARD =
-  "relative isolate mx-auto box-border flex h-[min(56cqh,440px)] w-auto min-w-0 max-w-[min(82vw,320px)] aspect-[9/16] shrink-0 grow-0 flex-none flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
+  "relative isolate mx-auto box-border flex w-auto min-w-0 shrink-0 grow-0 flex-none flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black aspect-[9/16] max-lg:flex max-lg:shrink-0 lg:contents";
 
 /** Profile + caption — aligned with video frame width, safe gap above bottom nav. */
 const HOME_FEED_MOBILE_META_BELOW =

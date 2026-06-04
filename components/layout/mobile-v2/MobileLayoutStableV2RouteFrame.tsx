@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, type ReactNode } from "react";
+import { useLayoutEffect, type ReactNode } from "react";
 import { usePathname } from "@/i18n/navigation";
 import {
   enableMlv2ScrollRestorationManual,
@@ -43,7 +43,7 @@ export function MobileLayoutStableV2RouteFrame({
   const pathname = usePathname();
   const route = mlv2RouteKind(pathname);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const restoreScrollRestoration = enableMlv2ScrollRestorationManual();
     return restoreScrollRestoration;
   }, []);

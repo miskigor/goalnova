@@ -15,6 +15,11 @@ import {
   PITCHRUSCH_CRITICAL_FIRST_PAINT_SCRIPT,
 } from "@/lib/loading/criticalFirstPaint";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
+import { isMobileLayoutStableV2Enabled } from "@/lib/layout/mobileLayoutStableV2Flag";
+import { MLV2_ROOT_ATTR } from "@/components/layout/mobile-v2/mobileLayoutStableV2.tokens";
+
+/** Sets V2 html flag on app routes before first paint (avoids hydration size flash). */
+const MLV2_HTML_ATTRIBUTE_SYNC_SCRIPT = `(function(){var p=location.pathname,re=/(?:^|\\/)(?:home|explore|profile|upload|challenges|scout-dashboard|scout-apply|admin|notifications|messages|settings|premium|benefits|rankings|discover|player)(?:\\/|$)/;if(!re.test(p))return;document.documentElement.setAttribute("${MLV2_ROOT_ATTR}","");})();`;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -111,6 +116,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   const dir = RTL_LOCALES.includes(locale as AppLocale) ? "rtl" : "ltr";
+  const mobileLayoutStableV2 = isMobileLayoutStableV2Enabled();
 
   return (
     <html
@@ -131,6 +137,12 @@ export default async function LocaleLayout({ children, params }: Props) {
           id="pitchrusch-critical-first-paint-js"
           dangerouslySetInnerHTML={{ __html: PITCHRUSCH_CRITICAL_FIRST_PAINT_SCRIPT }}
         />
+        {mobileLayoutStableV2 ? (
+          <script
+            id="mlv2-html-attribute-sync"
+            dangerouslySetInnerHTML={{ __html: MLV2_HTML_ATTRIBUTE_SYNC_SCRIPT }}
+          />
+        ) : null}
       </head>
       <body
         style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}

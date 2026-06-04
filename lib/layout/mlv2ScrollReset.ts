@@ -33,6 +33,13 @@ export function resetMlv2ScrollPosition(pathname = ""): void {
   scroll.scrollTop = 0;
   scroll.scrollLeft = 0;
 
+  document.documentElement.scrollLeft = 0;
+  document.body.scrollLeft = 0;
+
+  if (pathname && !isMlv2HomePathname(pathname) && typeof window !== "undefined") {
+    window.scrollTo(0, 0);
+  }
+
   if (isDev && pathname) {
     devLog("[PitchRusch V2 scroll reset]", {
       pathname,
