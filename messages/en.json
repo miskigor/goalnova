@@ -31,7 +31,7 @@
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
     "accountRecoveryTitle": "Account recovery",
-    "landingDescription": "Upload football highlights, join challenges and build a player profile scouts can discover."
+    "landingDescription": "Football talent discovery platform for players, scouts and clubs. Upload highlights, join challenges and get discovered."
   },
   "common": {
     "save": "Save",
@@ -535,6 +535,7 @@
     }
   },
   "landing": {
+    "seoBrandLine": "PitchRusch is a football talent discovery platform for players, scouts and clubs.",
     "headline": "Show your football talent.",
     "subhead": "Upload your highlights, join challenges and get noticed by scouts.",
     "ctaPrimary": "Join PitchRusch",

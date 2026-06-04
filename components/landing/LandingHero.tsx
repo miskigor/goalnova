@@ -1,9 +1,11 @@
 import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
 import { LandingFeedPreview } from "@/components/landing/LandingFeedPreview";
 
 type Props = {
   signupHref: string;
   challengesHref: string;
+  brandIntro: string;
   headline: string;
   subhead: string;
   ctaPrimary: string;
@@ -15,6 +17,7 @@ type Props = {
 export function LandingHero({
   signupHref,
   challengesHref,
+  brandIntro,
   headline,
   subhead,
   ctaPrimary,
@@ -31,9 +34,15 @@ export function LandingHero({
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_minmax(0,340px)] lg:items-center lg:gap-12">
         <div className="text-center lg:text-left">
           <h1 className="text-balance text-3xl font-bold tracking-tight text-gn-text sm:text-4xl sm:leading-tight lg:text-5xl">
-            {headline}
+            {APP_DISPLAY_NAME}
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-pretty text-base leading-relaxed text-gn-text-secondary sm:text-lg lg:mx-0">
+          <p className="mx-auto mt-3 max-w-xl text-pretty text-base leading-relaxed text-gn-text-secondary sm:text-lg lg:mx-0">
+            {brandIntro}
+          </p>
+          <h2 className="mx-auto mt-4 max-w-xl text-pretty text-xl font-semibold tracking-tight text-gn-text sm:text-2xl lg:mx-0">
+            {headline}
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-pretty text-base leading-relaxed text-gn-text-secondary sm:text-lg lg:mx-0">
             {subhead}
           </p>
           <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:justify-center lg:justify-start">

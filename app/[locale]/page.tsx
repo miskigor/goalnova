@@ -9,7 +9,7 @@ import { LandingFooter } from "@/components/landing/LandingFooter";
 import { hrefWithLocale } from "@/i18n/routing";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
-import { SITE_SEO_KEYWORDS } from "@/lib/seo/brandMetadata";
+import { SITE_SEO_DESCRIPTION, SITE_SEO_KEYWORDS } from "@/lib/seo/brandMetadata";
 import { routing } from "@/i18n/routing";
 
 type Props = {
@@ -22,7 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const origin = getServerSiteOrigin();
   const metadataBase = siteMetadataBase(origin);
   const title = t("landingTitle");
-  const description = t("landingDescription");
+  const description =
+    locale === routing.defaultLocale ? SITE_SEO_DESCRIPTION : t("landingDescription");
   const localePrefix = locale === routing.defaultLocale ? "" : `/${locale}`;
   const canonicalPath = localePrefix || "/";
 
@@ -127,6 +128,7 @@ export default async function LandingPage({ params }: Props) {
         <LandingHero
           signupHref={h("/signup")}
           challengesHref={h("/challenges")}
+          brandIntro={t("seoBrandLine")}
           headline={t("headline")}
           subhead={t("subhead")}
           ctaPrimary={t("ctaPrimary")}
