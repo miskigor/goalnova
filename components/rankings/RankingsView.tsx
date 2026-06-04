@@ -15,13 +15,18 @@ import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFi
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
 import {
   GN_VIDEO_MEDIA_ELEMENT_ABSOLUTE_CLASS,
-  GN_VIDEO_MEDIA_STAGE_CLASS,
   gnVideoMediaDataProps,
 } from "@/lib/video/videoMediaDisplayClasses";
 
 const RANKINGS_PAGE_LIMIT = 50;
 
-function RankingsVideoThumb({ sources }: { sources: string[] }) {
+function RankingsVideoThumb({
+  sources,
+  layout,
+}: {
+  sources: string[];
+  layout: "mobile" | "desktop";
+}) {
   const { containerRef, loadMedia } = useMediaNearViewport({
     rootMargin: "200px 0px 200px 0px",
   });
@@ -50,12 +55,13 @@ function RankingsVideoThumb({ sources }: { sources: string[] }) {
     v.setAttribute("playsinline", "");
   }, [activeSrc]);
 
+  const thumbShellClass =
+    layout === "mobile"
+      ? "relative box-border mx-auto h-[7.5rem] w-[5.625rem] max-w-[min(36vw,8.75rem)] shrink-0 overflow-hidden rounded-lg bg-black"
+      : "relative box-border aspect-video h-auto w-[6.5rem] shrink-0 overflow-hidden rounded-lg bg-black lg:w-32";
+
   return (
-    <div
-      ref={containerRef}
-      {...gnVideoMediaDataProps}
-      className={`relative aspect-video w-[6.5rem] shrink-0 rounded-lg sm:w-32 ${GN_VIDEO_MEDIA_STAGE_CLASS}`}
-    >
+    <div ref={containerRef} {...gnVideoMediaDataProps} className={thumbShellClass}>
       {loadMedia && activeSrc ? (
         <video
           ref={videoRef}
@@ -114,6 +120,47 @@ function MetricLine({
   );
 }
 
+function RankingCardBody({
+  item,
+  tab,
+  t,
+  metaLine,
+  profileHref,
+  showInlineRank,
+}: {
+  item: RankingsListItem;
+  tab: RankingsTab;
+  t: ReturnType<typeof useTranslations<"rankings">>;
+  metaLine: string;
+  profileHref: string;
+  showInlineRank: boolean;
+}) {
+  return (
+    <div className="box-border min-w-0 w-full max-w-full py-0.5">
+      {showInlineRank ? (
+        <p className="text-lg font-bold tabular-nums text-gn-accent">{item.rank}</p>
+      ) : null}
+      <p className="text-sm font-semibold leading-snug text-gn-text">{item.displayName}</p>
+      <p className="text-xs leading-snug text-gn-text-secondary">@{item.usernameLabel}</p>
+      {metaLine ? (
+        <p className="mt-1 text-xs leading-snug text-gn-text-tertiary">{metaLine}</p>
+      ) : null}
+      <MetricLine tab={tab} item={item} t={t} />
+      {item.musicTrack ? (
+        <VideoMusicCredit track={item.musicTrack} compact className="mt-1" />
+      ) : null}
+      <div className="mt-2 lg:hidden">
+        <Link
+          href={profileHref}
+          className="text-xs font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
+        >
+          {t("viewProfile")}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 function RankingCard({
   item,
   tab,
@@ -139,46 +186,59 @@ function RankingCard({
   const metaLine = metaParts.join(" · ");
 
   return (
-    <article className="flex gap-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-3 transition-[border-color,box-shadow,background-color] duration-300 ease-gn-smooth motion-reduce:transition-none hover:border-white/[0.1] hover:bg-gn-surface/45 hover:shadow-[0_12px_40px_-18px_rgba(0,0,0,0.5)] sm:gap-4 sm:p-4">
-      <div
-        className="flex w-9 shrink-0 flex-col items-center justify-start pt-0.5 sm:w-10"
-        aria-hidden
-      >
-        <span className="text-lg font-bold tabular-nums text-gn-accent sm:text-xl">
-          {item.rank}
-        </span>
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-stretch">
+    <article
+      data-pitchrusch-rankings-card
+      className="box-border w-full min-w-0 max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-3 transition-[border-color,box-shadow,background-color] duration-300 ease-gn-smooth motion-reduce:transition-none hover:border-white/[0.1] hover:bg-gn-surface/45 hover:shadow-[0_12px_40px_-18px_rgba(0,0,0,0.5)] lg:p-4"
+    >
+      {/* Mobile / tablet portrait — Explore-style stack (thumb, then text). */}
+      <div className="flex w-full min-w-0 flex-col gap-2 lg:hidden">
         <Link
           href={videoHref}
-          className="flex min-w-0 gap-3 rounded-xl outline-none ring-gn-accent/40 transition-colors hover:bg-white/[0.03] focus-visible:ring-2 sm:min-h-0 sm:flex-1 sm:gap-4"
+          className="block w-full min-w-0 rounded-xl outline-none ring-gn-accent/40 transition-colors hover:bg-white/[0.03] focus-visible:ring-2"
         >
-          <RankingsVideoThumb sources={item.playbackSources} />
-          <div className="min-w-0 flex-1 py-0.5">
-            <p className="truncate text-sm font-semibold text-gn-text">
-              {item.displayName}
-            </p>
-            <p className="truncate text-xs text-gn-text-secondary">
-              @{item.usernameLabel}
-            </p>
-            {metaLine ? (
-              <p className="mt-1 line-clamp-2 text-xs text-gn-text-tertiary">
-                {metaLine}
-              </p>
-            ) : null}
-            <MetricLine tab={tab} item={item} t={t} />
-            {item.musicTrack ? (
-              <VideoMusicCredit track={item.musicTrack} compact className="mt-1" />
-            ) : null}
-          </div>
+          <RankingsVideoThumb sources={item.playbackSources} layout="mobile" />
         </Link>
-        <div className="flex shrink-0 items-center sm:flex-col sm:justify-center sm:border-s sm:border-gn-border-subtle sm:ps-4">
+        <RankingCardBody
+          item={item}
+          tab={tab}
+          t={t}
+          metaLine={metaLine}
+          profileHref={profileHref}
+          showInlineRank
+        />
+      </div>
+
+      {/* Desktop — original horizontal row. */}
+      <div className="hidden min-w-0 gap-4 lg:flex">
+        <div
+          className="flex w-10 shrink-0 flex-col items-center justify-start pt-0.5"
+          aria-hidden
+        >
+          <span className="text-xl font-bold tabular-nums text-gn-accent">{item.rank}</span>
+        </div>
+        <div className="flex min-w-0 flex-1 flex-row items-stretch gap-4">
           <Link
-            href={profileHref}
-            className="text-xs font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
+            href={videoHref}
+            className="flex min-h-0 min-w-0 flex-1 flex-row items-stretch gap-4 rounded-xl outline-none ring-gn-accent/40 transition-colors hover:bg-white/[0.03] focus-visible:ring-2"
           >
-            {t("viewProfile")}
+            <RankingsVideoThumb sources={item.playbackSources} layout="desktop" />
+            <RankingCardBody
+              item={item}
+              tab={tab}
+              t={t}
+              metaLine={metaLine}
+              profileHref={profileHref}
+              showInlineRank={false}
+            />
           </Link>
+          <div className="flex shrink-0 flex-col items-center justify-center border-s border-gn-border-subtle ps-4">
+            <Link
+              href={profileHref}
+              className="text-xs font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
+            >
+              {t("viewProfile")}
+            </Link>
+          </div>
         </div>
       </div>
     </article>
@@ -191,14 +251,25 @@ function SkeletonList() {
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="flex gap-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/20 p-3 sm:p-4"
+          className="box-border w-full min-w-0 max-w-full overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/20 p-3 lg:p-4"
         >
-          <div className="h-8 w-9 shrink-0 animate-pulse rounded bg-gn-surface/50" />
-          <div className="h-[4.5rem] w-[6.5rem] shrink-0 animate-pulse rounded-lg bg-gn-surface/50 sm:w-32" />
-          <div className="min-w-0 flex-1 space-y-2 py-1">
-            <div className="h-4 max-w-[12rem] w-[60%] animate-pulse rounded bg-gn-surface/50" />
-            <div className="h-3 max-w-[8rem] w-[40%] animate-pulse rounded bg-gn-surface/50" />
-            <div className="h-3 w-[75%] animate-pulse rounded bg-gn-surface/50" />
+          <div className="flex flex-col gap-2 lg:hidden">
+            <div className="mx-auto h-[7.5rem] w-[5.625rem] max-w-[min(36vw,8.75rem)] animate-pulse rounded-lg bg-gn-surface/50" />
+            <div className="min-w-0 space-y-2 py-1">
+              <div className="h-5 w-8 animate-pulse rounded bg-gn-surface/50" />
+              <div className="h-4 w-[60%] animate-pulse rounded bg-gn-surface/50" />
+              <div className="h-3 w-[40%] animate-pulse rounded bg-gn-surface/50" />
+              <div className="h-3 w-[75%] animate-pulse rounded bg-gn-surface/50" />
+            </div>
+          </div>
+          <div className="hidden gap-4 lg:flex">
+            <div className="h-8 w-10 shrink-0 animate-pulse rounded bg-gn-surface/50" />
+            <div className="h-[4.5rem] w-[6.5rem] shrink-0 animate-pulse rounded-lg bg-gn-surface/50 lg:w-32" />
+            <div className="min-w-0 flex-1 space-y-2 py-1">
+              <div className="h-4 w-[60%] animate-pulse rounded bg-gn-surface/50" />
+              <div className="h-3 w-[40%] animate-pulse rounded bg-gn-surface/50" />
+              <div className="h-3 w-[75%] animate-pulse rounded bg-gn-surface/50" />
+            </div>
           </div>
         </div>
       ))}
@@ -250,7 +321,7 @@ export function RankingsView() {
   }, [tab, load]);
 
   return (
-    <div className="mx-auto w-full min-w-0 max-w-2xl">
+    <div className="mx-auto box-border w-full min-w-0 max-w-2xl overflow-x-clip max-lg:max-w-full">
       <header className="mb-6 sm:mb-8">
         <h1 className="text-xl font-semibold tracking-tight text-gn-text sm:text-2xl lg:text-3xl">
           {t("title")}
