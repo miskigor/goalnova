@@ -1,5 +1,10 @@
 # --- Environment variables (Netlify: Site → Environment variables) ---
 # Set secrets in the UI, never commit (see .env.example).
+# OpenAI key must not be written into build artifacts (see scripts/next-build.mjs).
+[build.environment]
+  OPENAI_API_KEY = ""
+  OPENAI_VIDEO_ANALYSIS_MODEL = ""
+
 # NEXT_PUBLIC_SITE_URL (below or in UI): use a valid absolute URL, e.g. https://pitchrusch.com
 # (no stray quotes/spaces). Invalid values no longer crash the app, but metadata/OG URLs may be wrong.
 #

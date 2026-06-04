@@ -1,6 +1,6 @@
 /** Maps OpenAI / vision errors to stable API codes (no secrets). */
 
-export const OPENAI_API_ERROR_CODES = [
+export const VISION_PROVIDER_ERROR_CODES = [
   "openai_auth_failed",
   "openai_quota_exceeded",
   "openai_rate_limited",
@@ -10,12 +10,12 @@ export const OPENAI_API_ERROR_CODES = [
   "openai_failed",
 ] as const;
 
-export type OpenAiApiErrorCode = (typeof OPENAI_API_ERROR_CODES)[number];
+export type OpenAiApiErrorCode = (typeof VISION_PROVIDER_ERROR_CODES)[number];
 
-const OPENAI_API_ERROR_CODE_SET = new Set<string>(OPENAI_API_ERROR_CODES);
+const VISION_PROVIDER_ERROR_CODE_SET = new Set<string>(VISION_PROVIDER_ERROR_CODES);
 
-export function isOpenAiApiErrorCode(code: string): boolean {
-  return OPENAI_API_ERROR_CODE_SET.has(code.trim());
+export function isOpenAiApiErrorCode(code: string): code is OpenAiApiErrorCode {
+  return VISION_PROVIDER_ERROR_CODE_SET.has(code.trim());
 }
 
 export type OpenAiErrorLogFields = {
