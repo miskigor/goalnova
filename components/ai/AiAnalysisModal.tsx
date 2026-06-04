@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
+import { getAiErrorReasonLabel } from "@/lib/ai/aiErrorReasonLabel";
 import { Link } from "@/i18n/navigation";
 import type { FlexibleMetricKey, VideoAnalysisScores } from "@/lib/ai/types";
 import { FLEXIBLE_METRIC_ORDER, isAssessable } from "@/lib/ai/visibilityAnalysis";
@@ -742,6 +744,8 @@ export function AiAnalysisResultPanel({
   );
 }
 
+const PREMIUM_CHECK_TIMEOUT_MS = 12_000;
+
 export function AiAnalysisModal({
   open,
   onClose,
@@ -752,17 +756,42 @@ export function AiAnalysisModal({
   titleOverride,
   onBeforeReanalyze,
 }: Props) {
+  const locale = useLocale();
   const t = useTranslations("ai");
   const tp = useTranslations("premium");
   const { isPremium: premiumFromCtx, premiumLoaded: premiumStatusLoaded } = usePremium();
   const isPremium = skipPremiumGate || premiumFromCtx;
   const premiumLoaded = skipPremiumGate ? true : premiumStatusLoaded;
+  const [premiumCheckTimedOut, setPremiumCheckTimedOut] = useState(false);
+  const [localRunError, setLocalRunError] = useState<{
+    code: string;
+    message: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!open) {
+      setPremiumCheckTimedOut(false);
+      setLocalRunError(null);
+      return;
+    }
+    if (premiumLoaded) {
+      setPremiumCheckTimedOut(false);
+      return;
+    }
+    const id = setTimeout(
+      () => setPremiumCheckTimedOut(true),
+      PREMIUM_CHECK_TIMEOUT_MS,
+    );
+    return () => clearTimeout(id);
+  }, [open, premiumLoaded]);
 
   const {
     scores,
     loadSavedBusy,
     runBusy,
     error,
+    errorKind,
+    errorCode,
     refreshSavedFromDb,
     reanalyze,
   } = useVideoAiAnalysis({
@@ -776,19 +805,31 @@ export function AiAnalysisModal({
   });
 
   const handleReanalyze = async () => {
+    setLocalRunError(null);
     if (onBeforeReanalyze) {
       const allowed = await onBeforeReanalyze();
-      if (!allowed) return;
+      if (!allowed) {
+        const code = "permission_denied";
+        setLocalRunError({
+          code,
+          message: getAiErrorReasonLabel(code, locale),
+        });
+        return;
+      }
     }
     await reanalyze();
   };
 
   if (!open) return null;
 
+  const displayError = localRunError?.message ?? error;
+  const displayErrorCode = localRunError?.code ?? errorCode;
+  const hasBlockingError = Boolean(displayError);
+
   const showAnalysisLoading =
-    runBusy || (loadSavedBusy && !scores);
+    !hasBlockingError && (runBusy || (loadSavedBusy && !scores));
   const showResults = Boolean(scores) && !runBusy;
-  const showErrorFull = Boolean(error) && !scores && !showAnalysisLoading;
+  const showErrorFull = hasBlockingError && !scores && !runBusy;
   const showInitialCta =
     isPremium &&
     premiumStatusLoaded &&
@@ -796,7 +837,7 @@ export function AiAnalysisModal({
     videoId.trim() &&
     !scores &&
     !showAnalysisLoading &&
-    !error;
+    !hasBlockingError;
 
   const loadingTitle = runBusy
     ? t("analyzingPerformance")
@@ -852,7 +893,19 @@ export function AiAnalysisModal({
             </div>
           ) : !isPremium || !premiumStatusLoaded ? (
             <div className="space-y-4 rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 text-center">
-              {!premiumStatusLoaded ? (
+              {premiumCheckTimedOut && !premiumLoaded ? (
+                <div className="space-y-4">
+                  <p className="text-sm font-semibold text-gn-accent" role="alert">
+                    {t("errorTitle")}
+                  </p>
+                  <p className="text-sm leading-relaxed text-gn-text-secondary">
+                    {getAiErrorReasonLabel("premium_check_timeout", locale)}
+                  </p>
+                  <p className="break-all font-mono text-xs text-gn-text-tertiary">
+                    premium_check_timeout
+                  </p>
+                </div>
+              ) : !premiumStatusLoaded ? (
                 <LoadingState
                   title={t("checkingPremium")}
                   subtitle={t("loadingSubtle")}
@@ -889,30 +942,50 @@ export function AiAnalysisModal({
           ) : showErrorFull ? (
             <div className="space-y-5 rounded-xl border border-gn-accent/25 bg-gn-accent/[0.06] p-6 text-center">
               <p className="text-sm font-semibold text-gn-accent" role="alert">
-                {t("errorTitle")}
+                {errorKind === "run" || localRunError
+                  ? t("analysisFailed")
+                  : t("errorTitle")}
               </p>
               <p className="text-sm leading-relaxed text-gn-text-secondary">
-                {error}
+                {displayError}
               </p>
+              {displayErrorCode ? (
+                <p className="break-all font-mono text-xs text-gn-text-tertiary">
+                  {displayErrorCode}
+                </p>
+              ) : null}
               <button
                 type="button"
-                disabled={loadSavedBusy}
-                aria-busy={loadSavedBusy}
-                onClick={() => void refreshSavedFromDb()}
+                disabled={loadSavedBusy || runBusy}
+                aria-busy={loadSavedBusy || runBusy}
+                onClick={() =>
+                  void (errorKind === "run" || localRunError
+                    ? handleReanalyze()
+                    : refreshSavedFromDb())
+                }
                 className="w-full rounded-xl bg-gn-accent py-3.5 text-sm font-semibold text-gn-bg transition-opacity hover:opacity-92 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {loadSavedBusy ? t("loadingExisting") : t("tryAgain")}
+                {runBusy
+                  ? t("runningAnalysis")
+                  : loadSavedBusy
+                    ? t("loadingExisting")
+                    : t("tryAgain")}
               </button>
             </div>
           ) : showResults && scores ? (
             <div className="space-y-5">
               {error ? (
-                <p
+                <div
                   className="rounded-lg border border-gn-accent/30 bg-gn-accent/10 px-3 py-2 text-center text-sm text-gn-accent"
                   role="alert"
                 >
-                  {error}
-                </p>
+                  <p>{error}</p>
+                  {errorCode ? (
+                    <p className="mt-1 break-all font-mono text-xs text-gn-text-tertiary">
+                      {errorCode}
+                    </p>
+                  ) : null}
+                </div>
               ) : null}
 
               <AiAnalysisResultPanel

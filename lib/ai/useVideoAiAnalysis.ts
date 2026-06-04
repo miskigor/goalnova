@@ -2,9 +2,15 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useLocale } from "next-intl";
-import { useTranslations } from "next-intl";
 import type { VideoAnalysisScores } from "@/lib/ai/types";
-import { requestVideoAiAnalysis } from "@/lib/ai/requestVideoAiAnalysis";
+import {
+  AI_ANALYSIS_REQUEST_TIMEOUT_MS,
+  requestVideoAiAnalysis,
+  VideoAiRequestError,
+} from "@/lib/ai/requestVideoAiAnalysis";
+import { getAiErrorReasonLabel } from "@/lib/ai/aiErrorReasonLabel";
+import { normalizeAiErrorCode } from "@/lib/ai/normalizeAiErrorCode";
+import { logAiAnalysisFailed, logAiAnalysisStarted } from "@/lib/ai/aiAnalysisClientLog";
 import {
   fetchPersistedVideoAiAnalysis,
   mapAiAnalysisRowToScores,
@@ -13,6 +19,11 @@ import {
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { supabase } from "@/lib/supabase/client";
 import { scheduleAiAnalysisNotification } from "@/lib/supabase/notifications";
+
+const LOAD_SAVED_TIMEOUT_MS = 20_000;
+const UPSERT_TIMEOUT_MS = 30_000;
+
+export type AiAnalysisErrorKind = "load" | "run" | null;
 
 export type UseVideoAiAnalysisArgs = {
   open: boolean;
@@ -27,13 +38,33 @@ export type UseVideoAiAnalysisArgs = {
   scoutInsight?: boolean;
 };
 
+function withTimeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  onTimeout: () => void,
+): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const id = setTimeout(() => {
+      onTimeout();
+      reject(new Error("timeout"));
+    }, ms);
+    promise
+      .then((v) => {
+        clearTimeout(id);
+        resolve(v);
+      })
+      .catch((e) => {
+        clearTimeout(id);
+        reject(e);
+      });
+  });
+}
+
 /**
  * Fetches saved `ai_analyses` when active; runs the AI provider only when `reanalyze()` is called.
  */
 export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
   const locale = useLocale();
-  const t = useTranslations("ai");
-  const tErr = useTranslations("errors");
   const {
     open,
     videoId,
@@ -48,6 +79,9 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
   const [loadSavedBusy, setLoadSavedBusy] = useState(false);
   const [runBusy, setRunBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorKind, setErrorKind] = useState<AiAnalysisErrorKind>(null);
+  /** Machine-readable code for console diagnostics (not shown in UI). */
+  const [errorCode, setErrorCode] = useState<string | null>(null);
 
   const active =
     open &&
@@ -60,6 +94,8 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
   const resetLocal = useCallback(() => {
     setScores(null);
     setError(null);
+    setErrorKind(null);
+    setErrorCode(null);
     setRunBusy(false);
     setLoadSavedBusy(false);
   }, []);
@@ -76,10 +112,27 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
     if (!active || !viewerId) return;
     setLoadSavedBusy(true);
     setError(null);
+    setErrorKind(null);
+    setErrorCode(null);
     try {
-      const { row, errorMessage } = await fetchPersistedVideoAiAnalysis(videoId);
+      const { row, errorMessage } = await withTimeout(
+        fetchPersistedVideoAiAnalysis(videoId),
+        LOAD_SAVED_TIMEOUT_MS,
+        () => {
+          logAiAnalysisFailed({
+            reason: "load_saved_timeout",
+            error: { videoId, timeoutMs: LOAD_SAVED_TIMEOUT_MS },
+          });
+        },
+      );
       if (errorMessage) {
-        setError(t("loadError"));
+        const code =
+          errorMessage.length > 0
+            ? `load_failed:${errorMessage}`
+            : "load_failed";
+        setErrorKind("load");
+        setErrorCode(code);
+        setError(getAiErrorReasonLabel(code, locale));
         logFullSupabaseError(
           "[useVideoAiAnalysis] refreshSavedFromDb",
           new Error(errorMessage),
@@ -91,15 +144,22 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
         setScores(mapAiAnalysisRowToScores(row));
       }
     } catch (e) {
+      const reason =
+        e instanceof Error && e.message === "timeout"
+          ? "load_saved_timeout"
+          : "load_saved_unexpected";
+      logAiAnalysisFailed({ reason, error: e });
       logFullSupabaseError("[useVideoAiAnalysis] refreshSavedFromDb unexpected", e, {
         videoId,
         viewerId,
       });
-      setError(t("loadError"));
+      setErrorKind("load");
+      setErrorCode(reason);
+      setError(getAiErrorReasonLabel(reason, locale));
     } finally {
       setLoadSavedBusy(false);
     }
-  }, [active, viewerId, videoId, t]);
+  }, [active, viewerId, videoId, locale]);
 
   useEffect(() => {
     if (!active) return;
@@ -107,22 +167,47 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
   }, [active, refreshSavedFromDb]);
 
   const reanalyze = useCallback(async () => {
-    if (!active || !viewerId) return;
+    if (!active || !viewerId) {
+      const code = "not_active";
+      logAiAnalysisFailed({ reason: code, error: { active, viewerId: Boolean(viewerId) } });
+      setErrorKind("run");
+      setErrorCode(code);
+      setError(getAiErrorReasonLabel(code, locale));
+      return;
+    }
     setRunBusy(true);
     setError(null);
+    setErrorKind(null);
+    setErrorCode(null);
+    logAiAnalysisStarted({ videoId, scoutInsight, locale });
     try {
       const next = await requestVideoAiAnalysis({
         videoId,
         locale,
         scoutInsight,
       });
-      const { row, errorMessage } = await upsertPersistedVideoAiAnalysis({
-        userId: viewerId,
-        videoId,
-        scores: next,
-      });
+      const { row, errorMessage } = await withTimeout(
+        upsertPersistedVideoAiAnalysis({
+          userId: viewerId,
+          videoId,
+          scores: next,
+        }),
+        UPSERT_TIMEOUT_MS,
+        () => {
+          logAiAnalysisFailed({
+            reason: "timeout",
+            error: { step: "upsert", timeoutMs: UPSERT_TIMEOUT_MS },
+          });
+        },
+      );
       if (errorMessage || !row) {
-        setError(t("analysisSaveFailed"));
+        const code = normalizeAiErrorCode(
+          errorMessage ? `save_failed:${errorMessage}` : "save_failed",
+        );
+        setErrorKind("run");
+        setErrorCode(code);
+        setError(getAiErrorReasonLabel(code, locale));
+        logAiAnalysisFailed({ reason: code, error: errorMessage });
         logFullSupabaseError(
           "[useVideoAiAnalysis] reanalyze upsert",
           new Error(errorMessage ?? "no row returned"),
@@ -139,21 +224,37 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
       scheduleAiAnalysisNotification(supabase, videoId, viewerId);
       onRunSuccess?.();
     } catch (e) {
+      const raw =
+        e instanceof VideoAiRequestError
+          ? e.code
+          : e instanceof Error && e.message === "timeout"
+            ? "timeout"
+            : e instanceof Error
+              ? e.message
+              : "unknown";
+      const code = normalizeAiErrorCode(raw);
+      logAiAnalysisFailed({ reason: code, error: e });
       logFullSupabaseError("[useVideoAiAnalysis] reanalyze", e, {
         videoId,
         viewerId,
+        code,
+        timeoutMs: AI_ANALYSIS_REQUEST_TIMEOUT_MS,
       });
-      setError(tErr("analysis"));
+      setErrorKind("run");
+      setErrorCode(code);
+      setError(getAiErrorReasonLabel(code, locale));
     } finally {
       setRunBusy(false);
     }
-  }, [active, viewerId, videoId, locale, onRunSuccess, scoutInsight, t, tErr]);
+  }, [active, viewerId, videoId, locale, onRunSuccess, scoutInsight]);
 
   return {
     scores,
     loadSavedBusy,
     runBusy,
     error,
+    errorKind,
+    errorCode,
     refreshSavedFromDb,
     reanalyze,
   };

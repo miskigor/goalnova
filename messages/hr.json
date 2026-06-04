@@ -1162,6 +1162,8 @@
     "saveError": "Analiza je gotova, ali nije spremljena.",
     "analysisSaveFailed": "Analizu nismo mogli spremiti. Pokušaj ponovno za trenutak.",
     "errorTitle": "Nešto je pošlo po krivu",
+    "analysisFailed": "AI analiza trenutno nije uspjela. Pokušaj ponovno.",
+    "analysisFailedHint": "Provjeri vezu i pokušaj ponovno za trenutak.",
     "tryAgain": "Pokušaj ponovno",
     "scoresHeading": "Ocjene",
     "radarPlaceholder": "Radar grafikon — poveži model da popuniš više osi.",

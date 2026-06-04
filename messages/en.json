@@ -1162,6 +1162,8 @@
     "saveError": "Analysis finished but could not be saved.",
     "analysisSaveFailed": "We couldn't save your analysis. Please try again in a moment.",
     "errorTitle": "Something went wrong",
+    "analysisFailed": "AI analysis didn't work right now. Please try again.",
+    "analysisFailedHint": "Check your connection and try again in a moment.",
     "tryAgain": "Try again",
     "scoresHeading": "Scores",
     "radarPlaceholder": "Radar chart — connect a real model to populate multi-axis visuals.",
