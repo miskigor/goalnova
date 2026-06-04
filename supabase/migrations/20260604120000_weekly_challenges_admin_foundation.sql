@@ -38,12 +38,18 @@ create table if not exists public.weekly_challenges (
   ends_at timestamptz,
   is_active boolean not null default false,
   is_public boolean not null default false,
+  translations jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 comment on table public.weekly_challenges is
   'Weekly skill challenges (admin-managed; public player UI not wired yet).';
+
+comment on column public.weekly_challenges.translations is
+  'Per-locale content. Locale keys: en, hr, de, bs, es, pt, sr, fr, it, nl, tr, ar. '
+  'Each locale object: { title, description, rules, equipment, badge_name }. '
+  'Base columns (title, description, rules, equipment, badge_name) mirror English (en) as fallback.';
 
 create index if not exists weekly_challenges_starts_at_idx
   on public.weekly_challenges (starts_at desc nulls last);

@@ -1,5 +1,37 @@
-/** Weekly challenge tables — keep in sync with `20260604120000_weekly_challenges_admin_foundation.sql`. */
+import type { Json } from "@/lib/supabase/database.types";
+import type { AppLocale } from "@/i18n/routing";
+import { locales } from "@/i18n/routing";
 
+/** Per-locale weekly challenge copy — keys must match `i18n/routing.ts` `locales`. */
+export type WeeklyChallengeContentLocale = AppLocale;
+
+export type WeeklyChallengeLocaleContent = {
+  title: string;
+  description: string;
+  rules: string;
+  equipment: string;
+  badgeName: string;
+};
+
+export type WeeklyChallengeTranslations = Record<
+  WeeklyChallengeContentLocale,
+  WeeklyChallengeLocaleContent
+>;
+
+/** Ensures compile-time coverage of all 12 locales. */
+export const WEEKLY_CHALLENGE_LOCALE_KEYS = locales;
+
+export type WeeklyChallengeTranslationsJson = {
+  [K in WeeklyChallengeContentLocale]?: {
+    title?: string | null;
+    description?: string | null;
+    rules?: string | null;
+    equipment?: string | null;
+    badge_name?: string | null;
+  };
+};
+
+/** Weekly challenge tables — keep in sync with `20260604120000_weekly_challenges_admin_foundation.sql`. */
 export type WeeklyChallengeRow = {
   id: string;
   title: string;
@@ -15,6 +47,7 @@ export type WeeklyChallengeRow = {
   ends_at: string | null;
   is_active: boolean;
   is_public: boolean;
+  translations: WeeklyChallengeTranslationsJson | Json | null;
   created_at: string;
   updated_at: string;
 };
@@ -34,6 +67,7 @@ export type WeeklyChallengeInsert = {
   ends_at?: string | null;
   is_active?: boolean;
   is_public?: boolean;
+  translations?: WeeklyChallengeTranslationsJson | Json | null;
   created_at?: string;
   updated_at?: string;
 };
@@ -43,12 +77,8 @@ export type WeeklyChallengeUpdate = Partial<
 >;
 
 export type WeeklyChallengeFormInput = {
-  title: string;
-  description: string;
-  rules: string;
-  equipment: string;
+  translations: WeeklyChallengeTranslations;
   rewardXp: number;
-  badgeName: string;
   maxVideoDurationSeconds: number | null;
   freeAttempts: number;
   premiumAttempts: number;

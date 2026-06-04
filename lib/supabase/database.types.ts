@@ -579,6 +579,7 @@ export type Database = {
           ends_at: string | null;
           is_active: boolean;
           is_public: boolean;
+          translations: Json;
           created_at: string;
           updated_at: string;
         };
@@ -597,6 +598,7 @@ export type Database = {
           ends_at?: string | null;
           is_active?: boolean;
           is_public?: boolean;
+          translations?: Json;
           created_at?: string;
           updated_at?: string;
         };
@@ -615,6 +617,7 @@ export type Database = {
           ends_at?: string | null;
           is_active?: boolean;
           is_public?: boolean;
+          translations?: Json;
           created_at?: string;
           updated_at?: string;
         };

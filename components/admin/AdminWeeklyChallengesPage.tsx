@@ -2,13 +2,21 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import type { WeeklyChallengeFormInput, WeeklyChallengeRow } from "@/lib/supabase/weeklyChallenges.types";
+import type { AppLocale } from "@/i18n/routing";
+import type {
+  WeeklyChallengeFormInput,
+  WeeklyChallengeLocaleContent,
+  WeeklyChallengeRow,
+} from "@/lib/supabase/weeklyChallenges.types";
 import {
   createWeeklyChallenge,
   fetchWeeklyChallengesAdminList,
+  listDisplayTitle,
   updateWeeklyChallenge,
   weeklyChallengeRowToForm,
 } from "@/lib/supabase/weeklyChallengesAdmin";
+import { WEEKLY_CHALLENGE_CONTENT_LOCALES } from "@/lib/weeklyChallenges/weeklyChallengeLocales";
+import { emptyWeeklyChallengeTranslations } from "@/lib/weeklyChallenges/weeklyChallengeTranslations";
 
 function toDatetimeLocalValue(iso: string | null): string {
   if (!iso) return "";
@@ -34,12 +42,8 @@ function formatWhen(iso: string | null): string {
 }
 
 const EMPTY_FORM: WeeklyChallengeFormInput = {
-  title: "",
-  description: "",
-  rules: "",
-  equipment: "",
+  translations: emptyWeeklyChallengeTranslations(),
   rewardXp: 0,
-  badgeName: "",
   maxVideoDurationSeconds: 60,
   freeAttempts: 1,
   premiumAttempts: 0,
@@ -48,6 +52,8 @@ const EMPTY_FORM: WeeklyChallengeFormInput = {
   isActive: false,
   isPublic: false,
 };
+
+type LocaleContentField = keyof WeeklyChallengeLocaleContent;
 
 export function AdminWeeklyChallengesPage() {
   const t = useTranslations("adminWeeklyChallenges");
@@ -59,6 +65,7 @@ export function AdminWeeklyChallengesPage() {
   const [mode, setMode] = useState<"idle" | "create" | "edit">("idle");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<WeeklyChallengeFormInput>(EMPTY_FORM);
+  const [contentLocale, setContentLocale] = useState<AppLocale>("en");
   const [startsLocal, setStartsLocal] = useState("");
   const [endsLocal, setEndsLocal] = useState("");
   const [maxDurationLocal, setMaxDurationLocal] = useState("60");
@@ -68,6 +75,8 @@ export function AdminWeeklyChallengesPage() {
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
   const formCardRef = useRef<HTMLElement | null>(null);
+
+  const localeContent = form.translations[contentLocale];
 
   const loadList = useCallback(async () => {
     setListLoading(true);
@@ -88,10 +97,24 @@ export function AdminWeeklyChallengesPage() {
     return t("formIdleHint");
   }, [mode, t]);
 
+  function setLocaleField(field: LocaleContentField, value: string) {
+    setForm((f) => ({
+      ...f,
+      translations: {
+        ...f.translations,
+        [contentLocale]: {
+          ...f.translations[contentLocale],
+          [field]: value,
+        },
+      },
+    }));
+  }
+
   function openCreate() {
     setMode("create");
     setEditingId(null);
     setForm(EMPTY_FORM);
+    setContentLocale("en");
     setStartsLocal("");
     setEndsLocal("");
     setMaxDurationLocal("60");
@@ -105,6 +128,7 @@ export function AdminWeeklyChallengesPage() {
     setMode("edit");
     setEditingId(row.id);
     setForm(next);
+    setContentLocale("en");
     setStartsLocal(toDatetimeLocalValue(row.starts_at));
     setEndsLocal(toDatetimeLocalValue(row.ends_at));
     setMaxDurationLocal(
@@ -126,9 +150,10 @@ export function AdminWeeklyChallengesPage() {
   }
 
   async function submitForm() {
-    const title = form.title.trim();
-    if (!title) {
+    const enTitle = form.translations.en.title.trim();
+    if (!enTitle) {
       setFormError(t("titleRequired"));
+      setContentLocale("en");
       return;
     }
 
@@ -145,7 +170,6 @@ export function AdminWeeklyChallengesPage() {
 
     const payload: WeeklyChallengeFormInput = {
       ...form,
-      title,
       rewardXp: Number.isFinite(form.rewardXp) ? Math.max(0, Math.floor(form.rewardXp)) : 0,
       freeAttempts: Math.max(0, Math.floor(form.freeAttempts)),
       premiumAttempts: Math.max(0, Math.floor(form.premiumAttempts)),
@@ -228,7 +252,7 @@ export function AdminWeeklyChallengesPage() {
                   className="rounded-lg border border-white/10 bg-white/[0.03] p-3"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2">
-                    <h3 className="text-sm font-semibold text-white">{row.title}</h3>
+                    <h3 className="text-sm font-semibold text-white">{listDisplayTitle(row)}</h3>
                     <div className="flex flex-wrap gap-1.5 text-[10px] font-medium uppercase tracking-wide">
                       {row.is_active ? (
                         <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-emerald-200">
@@ -296,13 +320,42 @@ export function AdminWeeklyChallengesPage() {
                 void submitForm();
               }}
             >
+              <div className="space-y-2 rounded-lg border border-white/10 bg-black/30 p-3">
+                <p className={labelClass}>{t("fieldContentLocale")}</p>
+                <p className="text-[11px] text-zinc-500">{t("contentLocaleHint")}</p>
+                <div
+                  className="flex flex-wrap gap-1"
+                  role="tablist"
+                  aria-label={t("fieldContentLocale")}
+                >
+                  {WEEKLY_CHALLENGE_CONTENT_LOCALES.map((locale) => (
+                    <button
+                      key={locale}
+                      type="button"
+                      role="tab"
+                      aria-selected={contentLocale === locale}
+                      onClick={() => setContentLocale(locale)}
+                      disabled={formLoading}
+                      className={`rounded-md px-2 py-1 text-[11px] font-semibold uppercase tracking-wide ${
+                        contentLocale === locale
+                          ? "bg-orange-500 text-black"
+                          : "bg-white/10 text-zinc-300 hover:bg-white/15"
+                      }`}
+                    >
+                      {locale}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <label className={labelClass}>
-                {t("fieldTitle")} *
+                {t("fieldTitle")}
+                {contentLocale === "en" ? " *" : null}
                 <input
-                  value={form.title}
-                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  value={localeContent.title}
+                  onChange={(e) => setLocaleField("title", e.target.value)}
                   disabled={formLoading}
-                  required
+                  required={contentLocale === "en"}
                   className={inputClass}
                 />
               </label>
@@ -310,8 +363,8 @@ export function AdminWeeklyChallengesPage() {
               <label className={labelClass}>
                 {t("fieldDescription")}
                 <textarea
-                  value={form.description}
-                  onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  value={localeContent.description}
+                  onChange={(e) => setLocaleField("description", e.target.value)}
                   disabled={formLoading}
                   rows={3}
                   className={inputClass}
@@ -321,8 +374,8 @@ export function AdminWeeklyChallengesPage() {
               <label className={labelClass}>
                 {t("fieldRules")}
                 <textarea
-                  value={form.rules}
-                  onChange={(e) => setForm((f) => ({ ...f, rules: e.target.value }))}
+                  value={localeContent.rules}
+                  onChange={(e) => setLocaleField("rules", e.target.value)}
                   disabled={formLoading}
                   rows={3}
                   className={inputClass}
@@ -332,12 +385,22 @@ export function AdminWeeklyChallengesPage() {
               <label className={labelClass}>
                 {t("fieldEquipment")}
                 <textarea
-                  value={form.equipment}
-                  onChange={(e) => setForm((f) => ({ ...f, equipment: e.target.value }))}
+                  value={localeContent.equipment}
+                  onChange={(e) => setLocaleField("equipment", e.target.value)}
                   disabled={formLoading}
                   rows={2}
                   className={inputClass}
                   placeholder={t("fieldEquipmentPlaceholder")}
+                />
+              </label>
+
+              <label className={labelClass}>
+                {t("fieldBadgeName")}
+                <input
+                  value={localeContent.badgeName}
+                  onChange={(e) => setLocaleField("badgeName", e.target.value)}
+                  disabled={formLoading}
+                  className={inputClass}
                 />
               </label>
 
@@ -359,18 +422,6 @@ export function AdminWeeklyChallengesPage() {
                   />
                 </label>
                 <label className={labelClass}>
-                  {t("fieldBadgeName")}
-                  <input
-                    value={form.badgeName}
-                    onChange={(e) => setForm((f) => ({ ...f, badgeName: e.target.value }))}
-                    disabled={formLoading}
-                    className={inputClass}
-                  />
-                </label>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                <label className={labelClass}>
                   {t("fieldMaxVideoDuration")}
                   <input
                     type="number"
@@ -381,6 +432,9 @@ export function AdminWeeklyChallengesPage() {
                     className={inputClass}
                   />
                 </label>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
                 <label className={labelClass}>
                   {t("fieldFreeAttempts")}
                   <input
@@ -397,24 +451,23 @@ export function AdminWeeklyChallengesPage() {
                     className={inputClass}
                   />
                 </label>
+                <label className={labelClass}>
+                  {t("fieldPremiumAttempts")}
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.premiumAttempts}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        premiumAttempts: Number.parseInt(e.target.value, 10) || 0,
+                      }))
+                    }
+                    disabled={formLoading}
+                    className={inputClass}
+                  />
+                </label>
               </div>
-
-              <label className={labelClass}>
-                {t("fieldPremiumAttempts")}
-                <input
-                  type="number"
-                  min={0}
-                  value={form.premiumAttempts}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      premiumAttempts: Number.parseInt(e.target.value, 10) || 0,
-                    }))
-                  }
-                  disabled={formLoading}
-                  className={inputClass}
-                />
-              </label>
 
               <label className={labelClass}>
                 {t("fieldStartsAt")}
