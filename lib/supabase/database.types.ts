@@ -623,30 +623,37 @@ export type Database = {
         };
         Relationships: [];
       };
+      /** `20260605120000_weekly_challenge_submissions_phase2.sql` */
       weekly_challenge_submissions: {
         Row: {
           id: string;
-          weekly_challenge_id: string;
-          user_id: string;
+          challenge_id: string;
+          player_id: string;
           video_id: string | null;
+          score: number | null;
+          rank: number | null;
           status: string;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
-          weekly_challenge_id: string;
-          user_id: string;
+          challenge_id: string;
+          player_id: string;
           video_id?: string | null;
+          score?: number | null;
+          rank?: number | null;
           status?: string;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
-          weekly_challenge_id?: string;
-          user_id?: string;
+          challenge_id?: string;
+          player_id?: string;
           video_id?: string | null;
+          score?: number | null;
+          rank?: number | null;
           status?: string;
           created_at?: string;
           updated_at?: string;

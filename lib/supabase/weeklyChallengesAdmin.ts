@@ -119,7 +119,7 @@ export async function fetchWeeklyChallengeSubmissionCount(
   const { count, error } = await supabase
     .from("weekly_challenge_submissions")
     .select("id", { count: "exact", head: true })
-    .eq("weekly_challenge_id", challengeId);
+    .eq("challenge_id", challengeId);
 
   if (error) {
     logFullSupabaseError("[weeklyChallengesAdmin] submission count", error);

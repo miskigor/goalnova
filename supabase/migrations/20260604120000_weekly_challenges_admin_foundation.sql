@@ -59,21 +59,26 @@ create index if not exists weekly_challenges_is_active_idx
   where is_active = true;
 
 -- ---------------------------------------------------------------------------
--- weekly_challenge_submissions (foundation only — no player upload flow yet)
+-- weekly_challenge_submissions (schema stub — Phase 2 migration completes RLS/limits)
 -- ---------------------------------------------------------------------------
 create table if not exists public.weekly_challenge_submissions (
   id uuid primary key default gen_random_uuid(),
-  weekly_challenge_id uuid not null references public.weekly_challenges (id) on delete cascade,
-  user_id uuid not null references auth.users (id) on delete cascade,
+  challenge_id uuid not null references public.weekly_challenges (id) on delete cascade,
+  player_id uuid not null references auth.users (id) on delete cascade,
   video_id uuid references public.videos (id) on delete set null,
+  score numeric check (score is null or score >= 0),
+  rank integer check (rank is null or rank > 0),
   status text not null default 'pending'
     check (status in ('pending', 'submitted', 'scored', 'rejected')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
-create index if not exists weekly_challenge_submissions_challenge_idx
-  on public.weekly_challenge_submissions (weekly_challenge_id, created_at desc);
+create index if not exists weekly_challenge_submissions_challenge_player_idx
+  on public.weekly_challenge_submissions (challenge_id, player_id);
+
+create index if not exists weekly_challenge_submissions_challenge_created_idx
+  on public.weekly_challenge_submissions (challenge_id, created_at desc);
 
 -- ---------------------------------------------------------------------------
 -- weekly_challenge_badges (foundation only)
@@ -130,13 +135,6 @@ create policy "weekly_challenges_admin_all"
   using (public.goalnova_weekly_challenge_admin())
   with check (public.goalnova_weekly_challenge_admin());
 
-drop policy if exists "weekly_challenge_submissions_admin_select" on public.weekly_challenge_submissions;
-create policy "weekly_challenge_submissions_admin_select"
-  on public.weekly_challenge_submissions
-  for select
-  to authenticated
-  using (public.goalnova_weekly_challenge_admin());
-
 drop policy if exists "weekly_challenge_badges_admin_select" on public.weekly_challenge_badges;
 create policy "weekly_challenge_badges_admin_select"
   on public.weekly_challenge_badges
@@ -145,5 +143,5 @@ create policy "weekly_challenge_badges_admin_select"
   using (public.goalnova_weekly_challenge_admin());
 
 grant select, insert, update, delete on table public.weekly_challenges to authenticated;
-grant select on table public.weekly_challenge_submissions to authenticated;
+grant select, insert, update, delete on table public.weekly_challenge_submissions to authenticated;
 grant select on table public.weekly_challenge_badges to authenticated;
