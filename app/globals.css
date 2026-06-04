@@ -45,6 +45,7 @@ html {
   margin: 0;
   padding: 0;
   background-color: #000;
+  color-scheme: dark;
   scroll-behavior: smooth;
   width: 100%;
   max-width: 100%;
@@ -55,7 +56,14 @@ html {
 }
 
 body,
-#__next {
+#__next,
+#__next > div,
+main,
+[data-app-root],
+[data-mlv2-root],
+[data-mlv2-column],
+[data-mlv2-scroll] {
+  margin: 0;
   background-color: #000;
 }
 

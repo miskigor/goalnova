@@ -77,8 +77,23 @@ export default function GlobalError({
   const rtl = RTL_LOCALES.includes(locale);
 
   return (
-    <html lang={locale} dir={rtl ? "rtl" : "ltr"}>
-      <body className="flex min-h-dvh min-w-0 flex-col items-center justify-center gap-4 overflow-x-clip bg-gn-bg px-4 text-center text-gn-text sm:px-6">
+    <html
+      lang={locale}
+      dir={rtl ? "rtl" : "ltr"}
+      style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}
+    >
+      <head>
+        <meta name="color-scheme" content="dark" />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: "html,body{margin:0;background:#000;color-scheme:dark;}",
+          }}
+        />
+      </head>
+      <body
+        style={{ margin: 0, backgroundColor: "#000" }}
+        className="flex min-h-dvh min-w-0 flex-col items-center justify-center gap-4 overflow-x-clip bg-gn-bg px-4 text-center text-gn-text sm:px-6"
+      >
         <p className="max-w-md text-lg font-semibold">{errors.globalErrorTitle}</p>
         <div className="flex flex-wrap justify-center gap-3">
           <button type="button" onClick={() => reset()} className={GN_PRIMARY_BUTTON_CLASS}>

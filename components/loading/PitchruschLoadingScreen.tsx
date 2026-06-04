@@ -15,6 +15,18 @@ export function PitchruschLoadingScreen({
 }: PitchruschLoadingScreenProps) {
   return (
     <div
+      style={{
+        margin: 0,
+        width: "100%",
+        minWidth: 0,
+        backgroundColor: "#000",
+        color: "#fafafa",
+        minHeight: fullScreen ? "100dvh" : "50vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        boxSizing: "border-box",
+      }}
       className={[
         "w-full min-w-0 bg-black px-4 text-gn-text",
         fullScreen

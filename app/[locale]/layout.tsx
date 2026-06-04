@@ -10,6 +10,10 @@ import { LocaleRouteFallback } from "@/components/loading/LocaleRouteFallback";
 import type { AppLocale } from "@/i18n/routing";
 import { RTL_LOCALES, routing } from "@/i18n/routing";
 import { buildBrandLinkPreviewMetadata } from "@/lib/seo/englishLinkPreview";
+import {
+  PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS,
+  PITCHRUSCH_CRITICAL_FIRST_PAINT_SCRIPT,
+} from "@/lib/loading/criticalFirstPaint";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 
 const geistSans = Geist({
@@ -112,13 +116,24 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html
       lang={locale}
       dir={dir}
-      style={{ backgroundColor: "#000" }}
+      style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${bebasNeue.variable} ${notoArabic.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <meta name="color-scheme" content="dark" />
+        <style
+          id="pitchrusch-critical-first-paint"
+          dangerouslySetInnerHTML={{ __html: PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS }}
+        />
+        <script
+          id="pitchrusch-critical-first-paint-js"
+          dangerouslySetInnerHTML={{ __html: PITCHRUSCH_CRITICAL_FIRST_PAINT_SCRIPT }}
+        />
+      </head>
       <body
-        style={{ backgroundColor: "#000" }}
+        style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}
         className="flex min-h-dvh min-w-0 max-w-full flex-col overflow-x-hidden bg-gn-bg text-gn-text"
       >
         <NextIntlClientProvider locale={locale as AppLocale} messages={messages}>
