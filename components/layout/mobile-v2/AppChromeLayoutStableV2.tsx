@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
 import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
@@ -20,7 +20,7 @@ import "@/components/layout/mobile-v2/mobileLayoutStableV2Content.css";
  * Desktop keeps {@link AppSidebar}; mobile uses bottom nav only.
  */
 export function AppChromeLayoutStableV2({ children }: { children: ReactNode }) {
-  useLayoutEffect(() => {
+  useEffect(() => {
     document.documentElement.setAttribute(MLV2_ROOT_ATTR, "");
     return () => {
       document.documentElement.removeAttribute(MLV2_ROOT_ATTR);
