@@ -19,7 +19,7 @@ import { ScoutShortlistButton } from "./ScoutShortlistButton";
 import { ProfileVideoGrid } from "@/components/profile/ProfileVideoGrid";
 import { FoundingPlayerBadge, PlayerPremiumBadge } from "@/components/premium/PremiumBadges";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
-import { ProfileUploadLink } from "@/components/profile/ProfileUploadLink";
+import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
 import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
@@ -331,16 +331,15 @@ export function PlayerPublicProfile({
         </div>
         {userId && profile.id === userId ? (
           <div
-            className="profile-actions box-border grid w-full max-w-full min-w-0 grid-cols-1 gap-3 overflow-x-clip max-lg:gap-1.5 max-sm:grid-cols-1 sm:grid-cols-2"
+            className="profile-actions box-border w-full max-w-full min-w-0 overflow-x-clip"
             data-profile-actions
           >
             <Link
               href="/settings/profile"
-              className="box-border flex min-h-11 w-full max-w-full min-w-0 items-center justify-center rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-3 py-2.5 text-center text-sm font-medium text-gn-text transition-colors hover:border-gn-accent/40 hover:bg-gn-surface-elevated max-lg:min-h-7 max-lg:rounded-lg max-lg:py-1 max-lg:text-xs"
+              className={`${GN_PRIMARY_BUTTON_CLASS} box-border min-h-11 w-full max-w-full min-w-0 max-lg:min-h-7 max-lg:rounded-lg max-lg:py-1 max-lg:text-xs`}
             >
               <span className="min-w-0 truncate">{tProfile("editProfile")}</span>
             </Link>
-            <ProfileUploadLink className="min-h-11 w-full max-w-full min-w-0 max-lg:min-h-7" />
           </div>
         ) : null}
         {userId && profile.id !== userId ? (
