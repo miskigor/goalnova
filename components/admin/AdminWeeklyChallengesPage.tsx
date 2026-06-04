@@ -10,6 +10,7 @@ import type {
 } from "@/lib/supabase/weeklyChallenges.types";
 import {
   createWeeklyChallenge,
+  fetchWeeklyChallengeById,
   fetchWeeklyChallengesAdminList,
   listDisplayTitle,
   localeHasOwnTranslation,
@@ -17,6 +18,8 @@ import {
   weeklyChallengeRowToForm,
 } from "@/lib/supabase/weeklyChallengesAdmin";
 import { WEEKLY_CHALLENGE_CONTENT_LOCALES } from "@/lib/weeklyChallenges/weeklyChallengeLocales";
+import type { WeeklyChallengeGeneratedTranslations } from "@/lib/weeklyChallenges/weeklyChallengeTranslateTargets";
+import { supabase } from "@/lib/supabase/client";
 import { emptyWeeklyChallengeTranslations } from "@/lib/weeklyChallenges/weeklyChallengeTranslations";
 
 function toDatetimeLocalValue(iso: string | null): string {
@@ -56,6 +59,33 @@ const EMPTY_FORM: WeeklyChallengeFormInput = {
 
 type LocaleContentField = keyof WeeklyChallengeLocaleContent;
 
+type TranslateFn = (key: string) => string;
+
+function translateErrorMessage(reason: string | undefined, t: TranslateFn): string {
+  switch (reason) {
+    case "english_title_required":
+      return t("titleRequired");
+    case "openai_not_configured":
+      return t("generateTranslationsNotConfigured");
+    case "openai_auth_failed":
+      return t("generateTranslationsAuthFailed");
+    case "openai_quota_exceeded":
+      return t("generateTranslationsQuota");
+    case "openai_rate_limited":
+      return t("generateTranslationsRateLimited");
+    case "openai_timeout":
+      return t("generateTranslationsTimeout");
+    case "forbidden":
+      return t("generateTranslationsForbidden");
+    case "not_authenticated":
+      return t("generateTranslationsAuthError");
+    case "save_failed":
+      return t("generateTranslationsSaveFailed");
+    default:
+      return t("generateTranslationsFailed");
+  }
+}
+
 export function AdminWeeklyChallengesPage() {
   const t = useTranslations("adminWeeklyChallenges");
 
@@ -73,6 +103,7 @@ export function AdminWeeklyChallengesPage() {
   const [maxDurationLocal, setMaxDurationLocal] = useState("60");
 
   const [formLoading, setFormLoading] = useState(false);
+  const [translateLoading, setTranslateLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
@@ -154,6 +185,85 @@ export function AdminWeeklyChallengesPage() {
     setForm(EMPTY_FORM);
     setFormError(null);
     setFormSuccess(null);
+  }
+
+  async function generateTranslations() {
+    const en = form.translations.en;
+    if (!en.title.trim()) {
+      setFormError(t("titleRequired"));
+      setContentLocale("en");
+      return;
+    }
+
+    setTranslateLoading(true);
+    setFormError(null);
+    setFormSuccess(null);
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    if (!token) {
+      setTranslateLoading(false);
+      setFormError(t("generateTranslationsAuthError"));
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/admin/weekly-challenges/generate-translations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          challengeId: mode === "edit" && editingId ? editingId : undefined,
+          english: {
+            title: en.title,
+            description: en.description,
+            rules: en.rules,
+            equipment: en.equipment,
+            badgeName: en.badgeName,
+          },
+        }),
+      });
+
+      const payload = (await res.json()) as {
+        ok?: boolean;
+        reason?: string;
+        saved?: boolean;
+        translations?: WeeklyChallengeGeneratedTranslations;
+      };
+
+      if (!res.ok || !payload.ok || !payload.translations) {
+        setFormError(translateErrorMessage(payload.reason, t));
+        return;
+      }
+
+      setForm((f) => {
+        const next = { ...f.translations };
+        for (const [locale, content] of Object.entries(payload.translations!)) {
+          next[locale as keyof WeeklyChallengeGeneratedTranslations] = content;
+        }
+        return { ...f, translations: next };
+      });
+
+      if (payload.saved && editingId) {
+        const { row } = await fetchWeeklyChallengeById(editingId);
+        if (row) {
+          setEditingRow(row);
+        }
+        await loadList();
+      }
+
+      setFormSuccess(
+        payload.saved ? t("generateTranslationsSuccessSaved") : t("generateTranslationsSuccess"),
+      );
+    } catch {
+      setFormError(t("generateTranslationsFailed"));
+    } finally {
+      setTranslateLoading(false);
+    }
   }
 
   async function submitForm() {
@@ -348,8 +458,8 @@ export function AdminWeeklyChallengesPage() {
                         role="tab"
                         aria-selected={contentLocale === locale}
                         onClick={() => setContentLocale(locale)}
-                        disabled={formLoading}
-                        className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-semibold uppercase tracking-wide ${
+                      disabled={formLoading || translateLoading}
+                      className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-semibold uppercase tracking-wide ${
                           contentLocale === locale
                             ? "bg-orange-500 text-black"
                             : "bg-white/10 text-zinc-300 hover:bg-white/15"
@@ -371,6 +481,20 @@ export function AdminWeeklyChallengesPage() {
                 {showsBaseFallbackHint ? (
                   <p className="text-[11px] text-amber-200/80">{t("contentUsingBaseFallback")}</p>
                 ) : null}
+                <button
+                  type="button"
+                  onClick={() => void generateTranslations()}
+                  disabled={
+                    formLoading ||
+                    translateLoading ||
+                    !form.translations.en.title.trim()
+                  }
+                  className="w-full rounded-lg border border-sky-500/40 bg-sky-500/15 px-3 py-2 text-xs font-semibold text-sky-100 hover:bg-sky-500/25 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {translateLoading
+                    ? t("generateTranslationsLoading")
+                    : t("generateTranslations")}
+                </button>
               </div>
 
               <label className={labelClass}>
@@ -379,7 +503,7 @@ export function AdminWeeklyChallengesPage() {
                 <input
                   value={localeContent.title}
                   onChange={(e) => setLocaleField("title", e.target.value)}
-                  disabled={formLoading}
+                  disabled={formLoading || translateLoading}
                   required={contentLocale === "en"}
                   className={inputClass}
                 />
@@ -390,7 +514,7 @@ export function AdminWeeklyChallengesPage() {
                 <textarea
                   value={localeContent.description}
                   onChange={(e) => setLocaleField("description", e.target.value)}
-                  disabled={formLoading}
+                  disabled={formLoading || translateLoading}
                   rows={3}
                   className={inputClass}
                 />
@@ -401,7 +525,7 @@ export function AdminWeeklyChallengesPage() {
                 <textarea
                   value={localeContent.rules}
                   onChange={(e) => setLocaleField("rules", e.target.value)}
-                  disabled={formLoading}
+                  disabled={formLoading || translateLoading}
                   rows={3}
                   className={inputClass}
                 />
@@ -412,7 +536,7 @@ export function AdminWeeklyChallengesPage() {
                 <textarea
                   value={localeContent.equipment}
                   onChange={(e) => setLocaleField("equipment", e.target.value)}
-                  disabled={formLoading}
+                  disabled={formLoading || translateLoading}
                   rows={2}
                   className={inputClass}
                   placeholder={t("fieldEquipmentPlaceholder")}
@@ -424,7 +548,7 @@ export function AdminWeeklyChallengesPage() {
                 <input
                   value={localeContent.badgeName}
                   onChange={(e) => setLocaleField("badgeName", e.target.value)}
-                  disabled={formLoading}
+                  disabled={formLoading || translateLoading}
                   className={inputClass}
                 />
               </label>
@@ -442,7 +566,7 @@ export function AdminWeeklyChallengesPage() {
                         rewardXp: Number.parseInt(e.target.value, 10) || 0,
                       }))
                     }
-                    disabled={formLoading}
+                    disabled={formLoading || translateLoading}
                     className={inputClass}
                   />
                 </label>
@@ -453,7 +577,7 @@ export function AdminWeeklyChallengesPage() {
                     min={1}
                     value={maxDurationLocal}
                     onChange={(e) => setMaxDurationLocal(e.target.value)}
-                    disabled={formLoading}
+                    disabled={formLoading || translateLoading}
                     className={inputClass}
                   />
                 </label>
@@ -472,7 +596,7 @@ export function AdminWeeklyChallengesPage() {
                         freeAttempts: Number.parseInt(e.target.value, 10) || 0,
                       }))
                     }
-                    disabled={formLoading}
+                    disabled={formLoading || translateLoading}
                     className={inputClass}
                   />
                 </label>
@@ -488,7 +612,7 @@ export function AdminWeeklyChallengesPage() {
                         premiumAttempts: Number.parseInt(e.target.value, 10) || 0,
                       }))
                     }
-                    disabled={formLoading}
+                    disabled={formLoading || translateLoading}
                     className={inputClass}
                   />
                 </label>
@@ -500,7 +624,7 @@ export function AdminWeeklyChallengesPage() {
                   type="datetime-local"
                   value={startsLocal}
                   onChange={(e) => setStartsLocal(e.target.value)}
-                  disabled={formLoading}
+                  disabled={formLoading || translateLoading}
                   className={inputClass}
                 />
               </label>
@@ -511,7 +635,7 @@ export function AdminWeeklyChallengesPage() {
                   type="datetime-local"
                   value={endsLocal}
                   onChange={(e) => setEndsLocal(e.target.value)}
-                  disabled={formLoading}
+                  disabled={formLoading || translateLoading}
                   className={inputClass}
                 />
               </label>
@@ -524,7 +648,7 @@ export function AdminWeeklyChallengesPage() {
                     onChange={(e) =>
                       setForm((f) => ({ ...f, isActive: e.target.checked }))
                     }
-                    disabled={formLoading}
+                    disabled={formLoading || translateLoading}
                     className="h-4 w-4 rounded border-white/20 accent-orange-500"
                   />
                   {t("fieldIsActive")}
@@ -536,7 +660,7 @@ export function AdminWeeklyChallengesPage() {
                     onChange={(e) =>
                       setForm((f) => ({ ...f, isPublic: e.target.checked }))
                     }
-                    disabled={formLoading}
+                    disabled={formLoading || translateLoading}
                     className="h-4 w-4 rounded border-white/20 accent-orange-500"
                   />
                   {t("fieldIsPublic")}
@@ -558,7 +682,7 @@ export function AdminWeeklyChallengesPage() {
               <div className="flex flex-wrap gap-2 pt-1">
                 <button
                   type="submit"
-                  disabled={formLoading}
+                  disabled={formLoading || translateLoading}
                   className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-black hover:bg-orange-400 disabled:opacity-50"
                 >
                   {formLoading
@@ -570,7 +694,7 @@ export function AdminWeeklyChallengesPage() {
                 <button
                   type="button"
                   onClick={cancelForm}
-                  disabled={formLoading}
+                  disabled={formLoading || translateLoading}
                   className="rounded-xl border border-white/15 px-4 py-2 text-sm text-zinc-200 hover:bg-white/5"
                 >
                   {t("cancel")}
