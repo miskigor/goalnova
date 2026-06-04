@@ -1162,6 +1162,8 @@
     "saveError": "Analysis finished but could not be saved.",
     "analysisSaveFailed": "We couldn't save your analysis. Please try again in a moment.",
     "errorTitle": "Something went wrong",
+    "analysisFailed": "AI analysis didn't work right now. Please try again.",
+    "analysisFailedHint": "Check your connection and try again in a moment.",
     "tryAgain": "Try again",
     "scoresHeading": "Scores",
     "radarPlaceholder": "Radar chart — connect a real model to populate multi-axis visuals.",
@@ -1180,6 +1182,21 @@
     "evidenceLabel": "Evidence:",
     "legacyScoresHeading": "Scores (legacy breakdown)",
     "legacyScoresFootnote": "This analysis was saved before visibility-first scoring. Re-run analysis for evidence-based metrics.",
+    "playerStrength": "Strength",
+    "playerBadge": "Badge",
+    "playerImprove": "Improve",
+    "scoutNote": "Scout note",
+    "coreMetricsHeading": "Core metrics",
+    "core": {
+      "speed": "Speed",
+      "technique": "Technique",
+      "ball_control": "Ball control",
+      "agility": "Agility",
+      "shooting": "Shooting",
+      "passing": "Passing",
+      "decision_making": "Decision making",
+      "creativity": "Creativity"
+    },
     "metric": {
       "ball_control": "Ball control",
       "close_control": "Close control",
@@ -1195,21 +1212,6 @@
       "composure": "Composure",
       "defending": "Defending",
       "decision_making": "Decision making"
-    },
-    "playerStrength": "Strength",
-    "playerBadge": "Badge",
-    "playerImprove": "Improve",
-    "scoutNote": "Scout note",
-    "coreMetricsHeading": "Core metrics",
-    "core": {
-      "speed": "Speed",
-      "technique": "Technique",
-      "ball_control": "Ball control",
-      "agility": "Agility",
-      "shooting": "Shooting",
-      "passing": "Passing",
-      "decision_making": "Decision making",
-      "creativity": "Creativity"
     }
   },
   "feedback": {

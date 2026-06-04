@@ -1162,6 +1162,8 @@
     "saveError": "Análisis terminado pero no se pudo guardar.",
     "analysisSaveFailed": "No pudimos guardar el análisis. Inténtalo de nuevo en un momento.",
     "errorTitle": "Algo salió mal",
+    "analysisFailed": "AI analysis didn't work right now. Please try again.",
+    "analysisFailedHint": "Check your connection and try again in a moment.",
     "tryAgain": "Intentar de nuevo",
     "scoresHeading": "Puntuaciones",
     "radarPlaceholder": "Gráfico radar — conecta un modelo para varios ejes.",
@@ -1180,6 +1182,21 @@
     "evidenceLabel": "Evidencia:",
     "legacyScoresHeading": "Puntuaciones (vista anterior)",
     "legacyScoresFootnote": "Este análisis se guardó antes del sistema basado en visibilidad. Vuelve a analizar para métricas con evidencia.",
+    "playerStrength": "Strength",
+    "playerBadge": "Badge",
+    "playerImprove": "Improve",
+    "scoutNote": "Scout note",
+    "coreMetricsHeading": "Core metrics",
+    "core": {
+      "speed": "Speed",
+      "technique": "Technique",
+      "ball_control": "Ball control",
+      "agility": "Agility",
+      "shooting": "Shooting",
+      "passing": "Passing",
+      "decision_making": "Decision making",
+      "creativity": "Creativity"
+    },
     "metric": {
       "ball_control": "Control del balón",
       "close_control": "Control cercano",
@@ -1195,21 +1212,6 @@
       "composure": "Compostura",
       "defending": "Defensa",
       "decision_making": "Toma de decisiones"
-    },
-    "playerStrength": "Strength",
-    "playerBadge": "Badge",
-    "playerImprove": "Improve",
-    "scoutNote": "Scout note",
-    "coreMetricsHeading": "Core metrics",
-    "core": {
-      "speed": "Speed",
-      "technique": "Technique",
-      "ball_control": "Ball control",
-      "agility": "Agility",
-      "shooting": "Shooting",
-      "passing": "Passing",
-      "decision_making": "Decision making",
-      "creativity": "Creativity"
     }
   },
   "feedback": {

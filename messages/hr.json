@@ -1182,6 +1182,21 @@
     "evidenceLabel": "Dokaz:",
     "legacyScoresHeading": "Ocjene (stariji prikaz)",
     "legacyScoresFootnote": "Ova analiza je spremljena prije vidljivosti-prvo ocjenjivanja. Ponovno pokreni analizu za metrike temeljene na dokazima.",
+    "playerStrength": "Snaga",
+    "playerBadge": "Bedž",
+    "playerImprove": "Poboljšaj",
+    "scoutNote": "Scout bilješka",
+    "coreMetricsHeading": "Osnovne metrike",
+    "core": {
+      "speed": "Brzina",
+      "technique": "Tehnika",
+      "ball_control": "Kontrola lopte",
+      "agility": "Agilnost",
+      "shooting": "Šut",
+      "passing": "Dodavanje",
+      "decision_making": "Donošenje odluka",
+      "creativity": "Kreativnost"
+    },
     "metric": {
       "ball_control": "Kontrola lopte",
       "close_control": "Bliska kontrola",
@@ -1197,21 +1212,6 @@
       "composure": "Smirenost",
       "defending": "Obrana",
       "decision_making": "Donošenje odluka"
-    },
-    "playerStrength": "Snaga",
-    "playerBadge": "Bedž",
-    "playerImprove": "Poboljšaj",
-    "scoutNote": "Scout bilješka",
-    "coreMetricsHeading": "Osnovne metrike",
-    "core": {
-      "speed": "Brzina",
-      "technique": "Tehnika",
-      "ball_control": "Kontrola lopte",
-      "agility": "Agilnost",
-      "shooting": "Šut",
-      "passing": "Dodavanje",
-      "decision_making": "Donošenje odluka",
-      "creativity": "Kreativnost"
     }
   },
   "feedback": {

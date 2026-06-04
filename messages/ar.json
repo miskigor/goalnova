@@ -1162,6 +1162,8 @@
     "saveError": "Analysis finished but could not be saved.",
     "analysisSaveFailed": "We couldn't save your analysis. Please try again in a moment.",
     "errorTitle": "Something went wrong",
+    "analysisFailed": "AI analysis didn't work right now. Please try again.",
+    "analysisFailedHint": "Check your connection and try again in a moment.",
     "tryAgain": "Try again",
     "scoresHeading": "Scores",
     "radarPlaceholder": "Radar chart — connect a real model to populate multi-axis visuals.",
@@ -1180,6 +1182,21 @@
     "evidenceLabel": "الدليل:",
     "legacyScoresHeading": "النتائج (عرض قديم)",
     "legacyScoresFootnote": "حُفظ هذا التحليل قبل نظام التقييم القائم على الظهور. أعد التحليل للحصول على مقاييس مبنية على الدليل.",
+    "playerStrength": "Strength",
+    "playerBadge": "Badge",
+    "playerImprove": "Improve",
+    "scoutNote": "Scout note",
+    "coreMetricsHeading": "Core metrics",
+    "core": {
+      "speed": "Speed",
+      "technique": "Technique",
+      "ball_control": "Ball control",
+      "agility": "Agility",
+      "shooting": "Shooting",
+      "passing": "Passing",
+      "decision_making": "Decision making",
+      "creativity": "Creativity"
+    },
     "metric": {
       "ball_control": "السيطرة على الكرة",
       "close_control": "السيطرة القريبة",
@@ -1195,21 +1212,6 @@
       "composure": "الهدوء",
       "defending": "الدفاع",
       "decision_making": "اتخاذ القرار"
-    },
-    "playerStrength": "Strength",
-    "playerBadge": "Badge",
-    "playerImprove": "Improve",
-    "scoutNote": "Scout note",
-    "coreMetricsHeading": "Core metrics",
-    "core": {
-      "speed": "Speed",
-      "technique": "Technique",
-      "ball_control": "Ball control",
-      "agility": "Agility",
-      "shooting": "Shooting",
-      "passing": "Passing",
-      "decision_making": "Decision making",
-      "creativity": "Creativity"
     }
   },
   "feedback": {
