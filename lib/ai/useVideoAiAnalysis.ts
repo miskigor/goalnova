@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
-import { getVideoAnalysisProvider } from "@/lib/ai";
 import type { VideoAnalysisScores } from "@/lib/ai/types";
+import { requestVideoAiAnalysis } from "@/lib/ai/requestVideoAiAnalysis";
 import {
   fetchPersistedVideoAiAnalysis,
   mapAiAnalysisRowToScores,
@@ -23,6 +23,8 @@ export type UseVideoAiAnalysisArgs = {
   databaseVideoIdMissing: boolean;
   /** Called after a new analysis is computed and persisted successfully. */
   onRunSuccess?: () => void;
+  /** Scout insight — uses server scout gate instead of player premium. */
+  scoutInsight?: boolean;
 };
 
 /**
@@ -40,6 +42,7 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
     premiumStatusLoaded,
     databaseVideoIdMissing,
     onRunSuccess,
+    scoutInsight = false,
   } = args;
   const [scores, setScores] = useState<VideoAnalysisScores | null>(null);
   const [loadSavedBusy, setLoadSavedBusy] = useState(false);
@@ -108,8 +111,11 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
     setRunBusy(true);
     setError(null);
     try {
-      const provider = getVideoAnalysisProvider();
-      const next = await provider.analyzeVideo({ videoId, locale });
+      const next = await requestVideoAiAnalysis({
+        videoId,
+        locale,
+        scoutInsight,
+      });
       const { row, errorMessage } = await upsertPersistedVideoAiAnalysis({
         userId: viewerId,
         videoId,
@@ -141,7 +147,7 @@ export function useVideoAiAnalysis(args: UseVideoAiAnalysisArgs) {
     } finally {
       setRunBusy(false);
     }
-  }, [active, viewerId, videoId, locale, onRunSuccess, t, tErr]);
+  }, [active, viewerId, videoId, locale, onRunSuccess, scoutInsight, t, tErr]);
 
   return {
     scores,

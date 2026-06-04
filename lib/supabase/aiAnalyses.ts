@@ -2,6 +2,7 @@ import type { Database } from "./database.types";
 import { supabase } from "./client";
 import { logFullSupabaseError, supabaseErrorToUserMessage } from "./logError";
 import type { VideoAnalysisScores } from "@/lib/ai/types";
+import { toStoredVisibilityAnalysis } from "@/lib/ai/toStoredVisibilityAnalysis";
 
 export type AiAnalysisRow = Database["public"]["Tables"]["ai_analyses"]["Row"];
 
@@ -35,17 +36,19 @@ export async function upsertAiAnalysis(params: {
   scores: VideoAnalysisScores;
 }): Promise<{ row: AiAnalysisRow | null; errorMessage: string | null }> {
   const leg = params.scores.legacy;
+  const v2 = params.scores.v2;
   const payload: Database["public"]["Tables"]["ai_analyses"]["Insert"] = {
     user_id: params.userId,
     video_id: params.videoId,
-    speed: leg?.speed ?? null,
-    technique: leg?.technique ?? null,
-    decision_making: leg?.decision_making ?? null,
-    agility: leg?.agility ?? null,
-    shot_power: leg?.shot_power ?? null,
+    speed: leg?.speed ?? v2?.scores.speed ?? null,
+    technique: leg?.technique ?? v2?.scores.technique ?? null,
+    decision_making:
+      leg?.decision_making ?? v2?.scores.decision_making ?? null,
+    agility: leg?.agility ?? v2?.scores.agility ?? null,
+    shot_power: leg?.shot_power ?? v2?.scores.shooting ?? null,
     overall_score: params.scores.overall_score,
     feedback_text: params.scores.feedback_text,
-    visibility_analysis: params.scores.visibility_analysis,
+    visibility_analysis: toStoredVisibilityAnalysis(params.scores),
     valid_for_football_analysis: params.scores.valid_for_football_analysis,
     clip_type: params.scores.clip_type,
     invalid_reason: params.scores.invalid_reason,

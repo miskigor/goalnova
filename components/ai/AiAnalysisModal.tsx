@@ -307,15 +307,91 @@ function ScoreRow({ label, value }: { label: string; value: number }) {
   );
 }
 
+function PlayerV2Preview({
+  scores,
+  t,
+}: {
+  scores: VideoAnalysisScores;
+  t: ReturnType<typeof useTranslations<"ai">>;
+}) {
+  const v2 = scores.v2;
+  const strength = v2?.strengths[0]?.trim();
+  const badge = v2?.badges[0]?.trim();
+  const improve = v2?.improvements[0]?.trim();
+  const motivation =
+    v2?.player_friendly_summary?.trim() || scores.feedback_text;
+
+  return (
+    <>
+      <div className="rounded-2xl border border-gn-accent/35 bg-gradient-to-br from-gn-accent/15 to-transparent p-5 text-center ring-1 ring-gn-accent/20">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gn-accent/90">
+          {t("overallScore")}
+        </p>
+        <p className="mt-2 text-5xl font-bold tabular-nums tracking-tight text-gn-accent sm:text-6xl">
+          {Math.round(scores.overall_score)}
+        </p>
+        <p className="mt-1 text-xs text-gn-text-tertiary">/ 100</p>
+      </div>
+
+      {strength ? (
+        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gn-text-tertiary">
+            {t("playerStrength")}
+          </p>
+          <p className="mt-1.5 text-base font-semibold text-gn-text">{strength}</p>
+        </div>
+      ) : null}
+
+      {badge ? (
+        <div className="rounded-2xl border border-gn-accent/25 bg-gn-accent/10 px-4 py-3.5 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gn-accent/90">
+            {t("playerBadge")}
+          </p>
+          <p className="mt-1.5 text-lg font-bold text-gn-accent">{badge}</p>
+        </div>
+      ) : null}
+
+      {improve ? (
+        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gn-text-tertiary">
+            {t("playerImprove")}
+          </p>
+          <p className="mt-1.5 text-sm leading-relaxed text-gn-text">{improve}</p>
+        </div>
+      ) : null}
+
+      {motivation ? (
+        <p className="text-center text-sm leading-relaxed text-gn-text-secondary">
+          {motivation}
+        </p>
+      ) : null}
+    </>
+  );
+}
+
+const CORE_METRIC_KEYS = [
+  "speed",
+  "technique",
+  "ball_control",
+  "agility",
+  "shooting",
+  "passing",
+  "decision_making",
+  "creativity",
+] as const;
+
 /** Renders saved or freshly computed scores (reusable layout). */
 export function AiAnalysisResultPanel({
   scores,
   onReanalyze,
   reanalyzeBusy,
+  variant = "player",
 }: {
   scores: VideoAnalysisScores;
   onReanalyze: () => void;
   reanalyzeBusy: boolean;
+  /** Player: compact preview. Scout: coach note + detailed metrics. */
+  variant?: "player" | "scout";
 }) {
   const locale = normalizeUiLocale(useLocale());
   const t = useTranslations("ai");
@@ -401,8 +477,26 @@ export function AiAnalysisResultPanel({
     );
   }
 
+  if (variant === "player") {
+    return (
+      <div className="box-border w-full min-w-0 max-w-full space-y-5 overflow-x-clip">
+        <p className="text-center text-xs text-gn-text-tertiary">{t("fromSavedHint")}</p>
+        <PlayerV2Preview scores={scores} t={t} />
+        <button
+          type="button"
+          disabled={reanalyzeBusy}
+          onClick={onReanalyze}
+          className="w-full rounded-xl border border-white/[0.12] py-3 text-sm font-medium text-gn-text transition-colors hover:bg-white/[0.05] disabled:opacity-50"
+        >
+          {reanalyzeBusy ? t("loading") : t("reanalyze")}
+        </button>
+      </div>
+    );
+  }
+
   const va = scores.visibility_analysis;
   const legacy = scores.legacy;
+  const v2 = scores.v2;
   const localizedClipSummary =
     va && shouldUseLocalizedFallback(va.clip_summary, locale)
       ? fb.clipSummary
@@ -439,7 +533,7 @@ export function AiAnalysisResultPanel({
           {Math.round(scores.overall_score)}
         </p>
         <p className="mt-1 text-xs text-gn-text-tertiary">/ 100</p>
-        {va ? (
+        {va || v2 ? (
           <div className="mx-auto mt-4 max-w-xs">
             <ConfidenceMicro
               value={scores.overall_confidence}
@@ -449,6 +543,48 @@ export function AiAnalysisResultPanel({
           </div>
         ) : null}
       </div>
+
+      {v2?.coach_feedback ? (
+        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 sm:p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gn-text-tertiary">
+            {t("scoutNote")}
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-gn-text">
+            {v2.coach_feedback}
+          </p>
+        </div>
+      ) : null}
+
+      {v2 ? (
+        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 sm:p-5">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.12em] text-gn-accent/90">
+            {t("coreMetricsHeading")}
+          </p>
+          <div className="space-y-4">
+            {CORE_METRIC_KEYS.map((key) => {
+              const value = v2.scores[key];
+              if (value == null) return null;
+              const coreLabels: Record<(typeof CORE_METRIC_KEYS)[number], string> = {
+                speed: t("core.speed"),
+                technique: t("core.technique"),
+                ball_control: t("core.ball_control"),
+                agility: t("core.agility"),
+                shooting: t("core.shooting"),
+                passing: t("core.passing"),
+                decision_making: t("core.decision_making"),
+                creativity: t("core.creativity"),
+              };
+              return (
+                <ScoreRow
+                  key={key}
+                  label={coreLabels[key]}
+                  value={value}
+                />
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
 
       {va ? (
         <>
@@ -636,6 +772,7 @@ export function AiAnalysisModal({
     isPremium,
     premiumStatusLoaded: premiumLoaded,
     databaseVideoIdMissing,
+    scoutInsight: skipPremiumGate,
   });
 
   const handleReanalyze = async () => {
@@ -781,6 +918,7 @@ export function AiAnalysisModal({
                 scores={scores}
                 onReanalyze={() => void handleReanalyze()}
                 reanalyzeBusy={runBusy}
+                variant={skipPremiumGate ? "scout" : "player"}
               />
             </div>
           ) : showInitialCta ? (

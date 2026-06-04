@@ -1195,6 +1195,21 @@
       "composure": "الهدوء",
       "defending": "الدفاع",
       "decision_making": "اتخاذ القرار"
+    },
+    "playerStrength": "Strength",
+    "playerBadge": "Badge",
+    "playerImprove": "Improve",
+    "scoutNote": "Scout note",
+    "coreMetricsHeading": "Core metrics",
+    "core": {
+      "speed": "Speed",
+      "technique": "Technique",
+      "ball_control": "Ball control",
+      "agility": "Agility",
+      "shooting": "Shooting",
+      "passing": "Passing",
+      "decision_making": "Decision making",
+      "creativity": "Creativity"
     }
   },
   "feedback": {

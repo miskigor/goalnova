@@ -86,69 +86,70 @@ ${VIDEO_ANALYSIS_FOOTBALL_VALIDITY_GATE}
 - For every **assessable** metric: integer 0–100, confidence 0–1, and **evidence** referencing what is visible.
 - If resolution, length, framing, or stability limit judgment, reflect that in \`camera\` and lower confidence.
 
-## Overall score (Phase 2 only; irrelevant when \`valid_for_football_analysis\` is false)
-- \`overall_score\`: mean of **assessable** metric scores only (rounded). If none assessable, 0.
-- \`overall_confidence\`: honest aggregate of assessable confidences; 0 when invalid in Phase 1.
+## Scoring (Phase 2 only)
+- Populate \`scores\` only for visible skills; otherwise null.
+- \`confidence\` is 0–100 (clip quality + evidence).
+- \`overall_score\` must align with visible \`scores\` and \`confidence\` — not independent hype.
 
-## Feedback
-- \`feedback_text\` must reference concrete visible behaviour when scoring; when rejecting in Phase 1, explain why and what would work instead.
+## Player copy
+- \`player_friendly_summary\`: one upbeat sentence.
+- \`coach_feedback\`: scout-facing note with visible evidence.
 
 ${VIDEO_ANALYSIS_CONSERVATIVE_RULES}
 `.trim();
 
 /**
- * Instructions for JSON matching app types. **Output order in the model's reasoning:**
- * 1) Classification fields → 2) If valid, full \`visibility_analysis\`.
+ * V2 JSON schema — player-first output (vision frames).
  */
 export const VIDEO_ANALYSIS_JSON_INSTRUCTIONS = `
 Return **one** JSON object (no markdown fences, no text outside JSON).
 
-**Output order (mental checklist for the model):**
-1. Set \`valid_for_football_analysis\`, \`clip_type\`, \`invalid_reason\`, \`overall_score\`, \`overall_confidence\`, \`feedback_text\` **first** (Phase 1).
-2. **If and only if** \`valid_for_football_analysis\` is **true**, fill \`visibility_analysis\` with metrics (Phase 2).
-3. **If** \`valid_for_football_analysis\` is **false**, \`visibility_analysis\` MUST be **null** — omit any football \`metrics\` entirely.
+**Phase 1 — Football validity (mandatory first)**
+- If the clip is **not** football (other sports, random footage, no ball/player context): set \`valid_for_football_analysis\` to **false**.
+- When false: \`overall_score\` = 0, \`confidence\` = 0, every entry in \`scores\` must be **null**, arrays empty, \`coach_feedback\` explains why (short), \`player_friendly_summary\` tells what to upload instead. **Do not** invent football scores.
+
+**Phase 2 — Only when \`valid_for_football_analysis\` is true**
+- Score only skills clearly visible in the frames. Use **null** for anything you cannot see — never guess.
+- \`confidence\` (0–100): how reliably the footage supports your scores (camera, length, clarity).
+- \`overall_score\` (0–100): should reflect visible metrics **and** confidence — do not give high overall scores with low confidence or mostly null metrics.
+- \`strengths\`: 1–3 short phrases (top strength first).
+- \`improvements\`: 1–3 short, actionable tips (one concrete habit each).
+- \`badges\`: 1–2 catchy titles, e.g. "Fast Feet", "Great Control", "Strong Finisher", "Sharp Dribbler", "High Energy".
+- \`coach_feedback\`: 1–2 sentences for scouts — concrete, observational (what you saw).
+- \`player_friendly_summary\`: one short motivational sentence for the player (no jargon).
 
 Shape:
 
 {
-  "valid_for_football_analysis": <boolean — **false** means this clip is NOT valid for football analysis; there is no separate "invalid_for_football_analysis" field>,
-  "clip_type": "<training | match | skill | non_football | unclear | other>",
-  "invalid_reason": "<string or null — required when valid_for_football_analysis is false>",
-  "overall_score": <0-100 — 0 when valid_for_football_analysis is false, or mean of assessable metrics when true>,
-  "overall_confidence": <0-1 — **0** when valid_for_football_analysis is false>,
-  "feedback_text": "string",
-  "visibility_analysis": null | {
-    "schema_version": 1,
-    "clip_summary": "string — neutral description of what happens on screen",
-    "clip_type": "string — e.g. training_drill | match_play | goalkeeper_training | static_skills | one_v_one | sprint_highlight | passing_drill | other",
-    "visible_actions": ["labels for actions you actually see"],
-    "camera": {
-      "quality": "strong" | "adequate" | "limited",
-      "assessment_note": "string"
-    },
-    "metrics": { },
-    "overall_confidence": <0-1>
-  }
+  "valid_for_football_analysis": <boolean>,
+  "overall_score": <0-100 integer>,
+  "confidence": <0-100 integer>,
+  "scores": {
+    "speed": <0-100 integer or null>,
+    "technique": <0-100 integer or null>,
+    "ball_control": <0-100 integer or null>,
+    "agility": <0-100 integer or null>,
+    "shooting": <0-100 integer or null>,
+    "passing": <0-100 integer or null>,
+    "decision_making": <0-100 integer or null>,
+    "creativity": <0-100 integer or null>
+  },
+  "strengths": ["string"],
+  "improvements": ["string"],
+  "badges": ["string"],
+  "coach_feedback": "string",
+  "player_friendly_summary": "string"
 }
 
-**Never** generate football \`metrics\` with assessable scores when \`valid_for_football_analysis\` is false.
-
-Inside \`metrics\` (only when visibility_analysis is present), allowed keys:
-ball_control, close_control, dribbling, acceleration, agility, first_touch, passing, shooting, finishing, coordination, balance, composure, defending, decision_making
-
-Each key must be either:
-- { "status": "assessable", "score": <0-100 int>, "confidence": <0-1>, "evidence": "<required>" }
-- { "status": "not_assessable", "reason": "<string>" }
-
 Rules:
-- Do not add assessable entries for skills not clearly shown.
-- \`overall_score\` must not incorporate not_assessable metrics (no zero-fill).
-- Prefer fewer honest assessable metrics over many speculative scores.
+- Never output serious football grades for non-football videos.
+- Prefer null over invented numbers.
+- Keep all text brief and useful to a young player.
 `.trim();
 
 /** Optional second user message for APIs that keep system minimal. */
 export const VIDEO_ANALYSIS_USER_REMINDER = `
-Phase 1 first: classify the clip — is it actually football? If clearly non-football, set valid_for_football_analysis to false, visibility_analysis to null, overall_score and overall_confidence to 0, and STOP. If football evidence is present, continue to Phase 2 and score only assessable dimensions.
+Phase 1 first: is this actually football? If not, valid_for_football_analysis false, overall_score 0, confidence 0, all scores null — STOP. If yes, score only what you see; use null otherwise; keep copy short and helpful.
 `.trim();
 
 export type VideoAnalysisPromptParts = {

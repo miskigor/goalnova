@@ -1,5 +1,6 @@
 import type { VideoAnalysisProvider } from "./videoAnalysisProvider";
 import type {
+  CoreSkillScores,
   MetricAssessment,
   VisibilityAnalysisDraft,
   VisibilityAnalysisPayload,
@@ -548,6 +549,7 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
         feedback_text: copy.strictModeFeedback,
         visibility_analysis: null,
         legacy: null,
+        v2: null,
       };
     }
 
@@ -563,6 +565,7 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
         feedback_text: copy.invalidFeedback,
         visibility_analysis: null,
         legacy: null,
+        v2: null,
       };
       return invalid;
     }
@@ -1032,6 +1035,47 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
         ? ` ${copy.recommendationPrefix} ${weakest.join(", ")}.`
         : "";
 
+    const assessedEntries = Object.entries(localizedPayload.metrics).filter(
+      ([, value]) => value?.status === "assessable",
+    ) as [string, Extract<MetricAssessment, { status: "assessable" }>][];
+    const top =
+      assessedEntries.sort((a, b) => b[1].score - a[1].score)[0]?.[0] ??
+      "ball_control";
+    const scores: CoreSkillScores = {
+      speed:
+        localizedPayload.metrics.acceleration?.status === "assessable"
+          ? localizedPayload.metrics.acceleration.score
+          : null,
+      technique:
+        localizedPayload.metrics.coordination?.status === "assessable"
+          ? localizedPayload.metrics.coordination.score
+          : null,
+      ball_control:
+        localizedPayload.metrics.ball_control?.status === "assessable"
+          ? localizedPayload.metrics.ball_control.score
+          : null,
+      agility:
+        localizedPayload.metrics.agility?.status === "assessable"
+          ? localizedPayload.metrics.agility.score
+          : null,
+      shooting:
+        localizedPayload.metrics.shooting?.status === "assessable"
+          ? localizedPayload.metrics.shooting.score
+          : null,
+      passing:
+        localizedPayload.metrics.passing?.status === "assessable"
+          ? localizedPayload.metrics.passing.score
+          : null,
+      decision_making:
+        localizedPayload.metrics.decision_making?.status === "assessable"
+          ? localizedPayload.metrics.decision_making.score
+          : null,
+      creativity:
+        localizedPayload.metrics.dribbling?.status === "assessable"
+          ? localizedPayload.metrics.dribbling.score
+          : null,
+    };
+
     const result: VideoAnalysisScores = {
       valid_for_football_analysis: true,
       clip_type: draft.clip_type,
@@ -1041,6 +1085,20 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
       feedback_text: `${copy.feedbackGeneric}${recText}`.trim(),
       visibility_analysis: localizedPayload,
       legacy: null,
+      v2: {
+        confidence: Math.round(overall_confidence * 100),
+        scores,
+        strengths: [formatMetricLabel(normalizeLocale(locale), top)],
+        improvements: weakest.length
+          ? [
+              `${copy.recommendationPrefix.replace(/:$/, "")} ${weakest[0]}.`,
+            ]
+          : ["Film a clearer full-action rep to unlock sharper tips."],
+        badges: ["Fast Feet"],
+        coach_feedback: localizedPayload.clip_summary,
+        player_friendly_summary:
+          "Strong clip — keep training with the same energy and upload your next highlight.",
+      },
     };
     return result;
   },

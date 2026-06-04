@@ -1,4 +1,4 @@
-import { getVideoAnalysisProvider } from "@/lib/ai";
+import { requestVideoAiAnalysis } from "@/lib/ai/requestVideoAiAnalysis";
 import { upsertAiAnalysis } from "@/lib/supabase/aiAnalyses";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 
@@ -16,7 +16,7 @@ export async function runAndPersistChallengeVideoAiAnalysis(params: {
   if (!vid || !uid) return { ok: false, error: "invalid_params" };
 
   try {
-    const scores = await getVideoAnalysisProvider().analyzeVideo({
+    const scores = await requestVideoAiAnalysis({
       videoId: vid,
       locale: params.locale,
     });

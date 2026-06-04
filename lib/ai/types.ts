@@ -1,8 +1,5 @@
 /**
- * Visibility-first AI output for a single video.
- * `visibility_analysis` holds evidence-based metrics; legacy columns remain for old rows.
- *
- * Model instructions (conservative, evidence-first) live in `videoAnalysisPrompts.ts`.
+ * AI video analysis types (v2 player-first schema + legacy visibility rows).
  */
 
 export const FLEXIBLE_METRIC_KEYS = [
@@ -46,34 +43,62 @@ export type VisibilityAnalysisPayload = {
     quality: "strong" | "adequate" | "limited";
     assessment_note: string;
   };
-  /** Only metrics that were evaluated for this clip (assessable or explicitly skipped). */
   metrics: Partial<Record<FlexibleMetricKey, MetricAssessment>>;
   overall_confidence: number;
 };
 
-/** Build-time shape before mean confidence is computed from assessable metrics. */
 export type VisibilityAnalysisDraft = Omit<
   VisibilityAnalysisPayload,
   "overall_confidence"
 >;
 
-export type VideoAnalysisScores = {
-  /**
-   * False when the clip is not football-related or lacks enough evidence for fair scoring.
-   * When false, `visibility_analysis` must be null and no football metrics are produced.
-   */
+/** Eight core skills returned by the vision model (null = not visible). */
+export type CoreSkillScores = {
+  speed: number | null;
+  technique: number | null;
+  ball_control: number | null;
+  agility: number | null;
+  shooting: number | null;
+  passing: number | null;
+  decision_making: number | null;
+  creativity: number | null;
+};
+
+/** Raw model JSON (see `videoAnalysisPrompts` v2 instructions). */
+export type VideoAnalysisModelJson = {
   valid_for_football_analysis: boolean;
-  /** High-level classification (e.g. training, match, skill, non_football, unclear). */
+  overall_score: number;
+  confidence: number;
+  scores: CoreSkillScores;
+  strengths: string[];
+  improvements: string[];
+  badges: string[];
+  coach_feedback: string;
+  player_friendly_summary: string;
+};
+
+/** Persisted inside `visibility_analysis` jsonb for v2 rows. */
+export type VideoAnalysisV2Stored = {
+  schema_version: 2;
+  confidence: number;
+  scores: CoreSkillScores;
+  strengths: string[];
+  improvements: string[];
+  badges: string[];
+  coach_feedback: string;
+  player_friendly_summary: string;
+  scout_visibility: VisibilityAnalysisPayload | null;
+};
+
+export type VideoAnalysisScores = {
+  valid_for_football_analysis: boolean;
   clip_type: string | null;
-  /** Set when `valid_for_football_analysis` is false. */
   invalid_reason: string | null;
   overall_score: number;
+  /** 0–1 for UI confidence bars */
   overall_confidence: number;
   feedback_text: string;
   visibility_analysis: VisibilityAnalysisPayload | null;
-  /**
-   * Rows saved before `visibility_analysis` existed: five legacy scores for the old UI.
-   */
   legacy: {
     speed: number;
     technique: number;
@@ -81,4 +106,6 @@ export type VideoAnalysisScores = {
     agility: number;
     shot_power: number;
   } | null;
+  /** Present on v2 analyses (also embedded in `visibility_analysis` when saved). */
+  v2: Omit<VideoAnalysisV2Stored, "schema_version" | "scout_visibility"> | null;
 };

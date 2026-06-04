@@ -1,6 +1,8 @@
 import type {
+  CoreSkillScores,
   FlexibleMetricKey,
   MetricAssessment,
+  VideoAnalysisV2Stored,
   VisibilityAnalysisPayload,
 } from "./types";
 
@@ -57,11 +59,79 @@ export function overallFromAssessableMetrics(
   };
 }
 
+function parseCoreScores(raw: unknown): CoreSkillScores | null {
+  if (!raw || typeof raw !== "object") return null;
+  const o = raw as Record<string, unknown>;
+  const keys = [
+    "speed",
+    "technique",
+    "ball_control",
+    "agility",
+    "shooting",
+    "passing",
+    "decision_making",
+    "creativity",
+  ] as const;
+  const scores = {} as CoreSkillScores;
+  for (const key of keys) {
+    const v = o[key];
+    if (v === null || v === undefined) {
+      scores[key] = null;
+    } else if (typeof v === "number" && Number.isFinite(v)) {
+      scores[key] = Math.min(100, Math.max(0, Math.round(v)));
+    } else {
+      return null;
+    }
+  }
+  return scores;
+}
+
+export function normalizeV2StoredPayload(
+  raw: unknown,
+): VideoAnalysisV2Stored | null {
+  if (!raw || typeof raw !== "object") return null;
+  const o = raw as Record<string, unknown>;
+  if (o.schema_version !== 2) return null;
+  const scores = parseCoreScores(o.scores);
+  if (!scores) return null;
+  if (typeof o.confidence !== "number") return null;
+
+  const strList = (v: unknown) =>
+    Array.isArray(v)
+      ? v.filter((x): x is string => typeof x === "string").map((s) => s.trim())
+      : [];
+
+  const scout =
+    o.scout_visibility != null
+      ? normalizeVisibilityPayload(o.scout_visibility)
+      : null;
+
+  return {
+    schema_version: 2,
+    confidence: Math.min(100, Math.max(0, Math.round(o.confidence))),
+    scores,
+    strengths: strList(o.strengths),
+    improvements: strList(o.improvements),
+    badges: strList(o.badges),
+    coach_feedback:
+      typeof o.coach_feedback === "string" ? o.coach_feedback.trim() : "",
+    player_friendly_summary:
+      typeof o.player_friendly_summary === "string"
+        ? o.player_friendly_summary.trim()
+        : "",
+    scout_visibility: scout,
+  };
+}
+
 export function normalizeVisibilityPayload(
   raw: unknown,
 ): VisibilityAnalysisPayload | null {
   if (!raw || typeof raw !== "object") return null;
   const o = raw as Record<string, unknown>;
+  if (o.schema_version === 2) {
+    const v2 = normalizeV2StoredPayload(raw);
+    return v2?.scout_visibility ?? null;
+  }
   if (o.schema_version !== 1) return null;
   if (typeof o.clip_summary !== "string" || typeof o.clip_type !== "string")
     return null;

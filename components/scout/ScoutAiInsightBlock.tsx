@@ -165,6 +165,7 @@ export function ScoutAiInsightBlock({
           scores={mapAiAnalysisRowToScores(analysis)}
           onReanalyze={() => openView()}
           reanalyzeBusy={false}
+          variant="scout"
         />
       ) : null}
 
