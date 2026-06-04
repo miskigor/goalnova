@@ -3,6 +3,7 @@
 const HOME_FEED_MOBILE_MAX_WIDTH_PX = 1023;
 
 const HOME_FEED_MOUNTED_SCROLL_RESET_SELECTORS = [
+  "[data-mlv2-scroll]",
   "[data-app-root]",
   "[data-app-column]",
   "[data-app-main]",
@@ -26,7 +27,11 @@ export function runHomeFeedMountedScrollReset(): void {
 
   for (const selector of HOME_FEED_MOUNTED_SCROLL_RESET_SELECTORS) {
     document.querySelectorAll(selector).forEach((node) => {
-      if (node instanceof HTMLElement) node.scrollLeft = 0;
+      if (!(node instanceof HTMLElement)) return;
+      node.scrollLeft = 0;
+      if (selector === "[data-pitchrusch-feed-scroll-root]") {
+        node.scrollTop = 0;
+      }
     });
   }
 }

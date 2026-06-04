@@ -60,37 +60,51 @@
     min-height: 0 !important;
     height: 100% !important;
     max-height: 100% !important;
-    padding-top: var(--gn-page-content-top-inset, calc(0.75rem + env(safe-area-inset-top, 0px)));
-    scroll-padding-top: var(--gn-page-content-top-inset, calc(0.75rem + env(safe-area-inset-top, 0px)));
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: y mandatory !important;
+    scroll-behavior: smooth !important;
+    /* Full snap scrollport — inset comes from card margin, not scroll padding */
+    padding-top: 0 !important;
+    scroll-padding-top: 0;
     scroll-padding-bottom: 0;
   }
 
   /*
-   * One snap page = full scrollport height (next item hidden until snap). Override V1 svh calc
-   * on `<li>` — use scrollport % not overlay math. Content stacks at top inside the page.
+   * TikTok snap: each `<li>` = one scrollport page (100cqh from scroll-root container).
+   * List grows with items; do not clamp `ul` to a single viewport height.
    */
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-feed-items] {
     box-sizing: border-box;
-    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
     min-height: 0 !important;
-    max-height: 100% !important;
+    max-height: none !important;
   }
 
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-feed-item] {
     box-sizing: border-box;
     display: flex !important;
     flex-direction: column !important;
-    flex: 0 0 100% !important;
-    flex-basis: 100% !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    justify-content: flex-start !important;
+    flex: 0 0 100cqh !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+    flex-basis: 100cqh !important;
+    height: 100cqh !important;
+    max-height: 100cqh !important;
+    min-height: 100cqh !important;
+    justify-content: center !important;
     align-items: center !important;
     overflow-x: hidden;
     overflow-y: hidden;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
+    scroll-snap-align: start !important;
+    scroll-snap-stop: always !important;
     background-color: #000;
   }
 
@@ -101,7 +115,7 @@
     flex-direction: column !important;
     flex: 1 1 auto !important;
     align-items: center !important;
-    justify-content: flex-start !important;
+    justify-content: center !important;
     height: 100% !important;
     min-height: 0 !important;
     max-height: 100% !important;
@@ -112,7 +126,7 @@
   }
 
   /*
-   * V2 /home — TikTok-style compact card (one snap page, overlays inside card only).
+   * V2 /home — TikTok-style full scrollport card (one snap page; meta + rail on video).
    */
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-slide] {
     box-sizing: border-box;
@@ -120,7 +134,8 @@
     flex-direction: column !important;
     flex: 1 1 auto !important;
     align-items: center !important;
-    justify-content: flex-start !important;
+    justify-content: center !important;
+    width: 100% !important;
     height: 100% !important;
     min-height: 0 !important;
     max-height: 100% !important;
@@ -130,19 +145,44 @@
     background-color: #000 !important;
   }
 
-  [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-card] {
+  /*
+   * Portrait card fills snap scrollport minus ~10px margin; no 440px / 56cqh cap (globals + Tailwind).
+   */
+  html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-card],
+  html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-video-frame][data-pitchrusch-home-feed-v2-card] {
     box-sizing: border-box;
     position: relative !important;
     isolation: isolate !important;
     flex: 0 0 auto !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
     width: auto !important;
     min-width: 0 !important;
-    max-width: min(82vw, 330px) !important;
-    margin-inline: auto !important;
-    height: auto !important;
-    max-height: min(56cqh, 100%) !important;
+    max-width: calc(100vw - 20px) !important;
+    height: calc(100% - 20px) !important;
+    max-height: calc(100% - 20px) !important;
+    min-height: 0 !important;
+    margin: 10px auto !important;
     aspect-ratio: 9 / 16 !important;
     overflow: hidden !important;
+    border-radius: 16px !important;
+  }
+
+  [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-card] [data-pitchrusch-feed-video],
+  [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-card] [data-pitchrusch-feed-video] [data-gn-video-media],
+  [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-card] [data-pitchrusch-feed-video] [data-gn-video-media] > div {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-card] [data-pitchrusch-feed-video] video,
@@ -150,6 +190,10 @@
     display: block !important;
     width: 100% !important;
     height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    opacity: 1 !important;
+    visibility: visible !important;
     object-fit: contain !important;
     object-position: center center !important;
   }
