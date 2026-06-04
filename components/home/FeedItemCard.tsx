@@ -38,11 +38,11 @@ const HOME_FEED_MOBILE_FRAME =
 
 /** V2 /home — centered snap stage; one compact card per page (overlays inside card). */
 const HOME_FEED_V2_SLIDE_STACK =
-  "mx-auto flex h-full min-h-0 w-full max-w-full flex-col items-center justify-start overflow-hidden max-lg:bg-black max-lg:gap-0 max-lg:pt-0 max-lg:pb-0 lg:contents";
+  "mx-auto flex h-auto min-h-0 w-full max-w-full flex-col items-center justify-center overflow-hidden max-lg:bg-black max-lg:gap-0 max-lg:pt-0 max-lg:pb-0 lg:contents";
 
-/** V2 /home — TikTok-style card: 9:16 frame, in-card rail + bottom meta overlay. */
+/** V2 /home — compact 9:16 card; size locked in mobileLayoutStableV2Content.css (no cqh/svh). */
 const HOME_FEED_V2_CARD =
-  "relative isolate mx-auto box-border flex h-[min(56cqh,440px)] w-auto min-w-0 max-w-[min(82vw,320px)] aspect-[9/16] shrink-0 grow-0 flex-none flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
+  "relative isolate mx-auto box-border flex w-auto min-w-0 aspect-[9/16] shrink-0 grow-0 flex-none flex-col overflow-hidden rounded-[18px] border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
 
 /** Profile + caption — aligned with video frame width, safe gap above bottom nav. */
 const HOME_FEED_MOBILE_META_BELOW =
@@ -430,11 +430,7 @@ export function FeedItemCard({
     <article
       {...feedCardProps}
       className={`relative isolate box-border flex h-full min-h-0 min-w-0 w-full max-w-full flex-col overflow-hidden ${slideClassName} ${
-        isHomeSnapSlide
-          ? v2HomeSnapLayout
-            ? "max-lg:!items-center max-lg:!justify-start"
-            : "max-lg:!items-center max-lg:!justify-center"
-          : ""
+        isHomeSnapSlide ? "max-lg:!items-center max-lg:!justify-center" : ""
       }`}
     >
       {isHomeSnapSlide ? (
@@ -443,11 +439,7 @@ export function FeedItemCard({
           {...(v2HomeSnapLayout ? { "data-pitchrusch-home-feed-v2-slide": "" } : {})}
         >
           {v2HomeSnapLayout ? (
-            <div
-              data-pitchrusch-home-feed-video-frame
-              data-pitchrusch-home-feed-v2-card
-              className={HOME_FEED_V2_CARD}
-            >
+            <div data-pitchrusch-home-feed-v2-card className={HOME_FEED_V2_CARD}>
               {videoAndRail}
               <div
                 data-pitchrusch-feed-v2-meta-overlay
