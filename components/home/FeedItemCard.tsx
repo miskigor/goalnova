@@ -86,11 +86,14 @@ export function FeedItemCard({
       ? feedIndex - activeFeedIndex
       : null;
 
-  /** Active + next two clips: full buffer; previous two: metadata; rest: none. */
+  /**
+   * Home snap: only the active slide may buffer fully; N±1/N±2 stay light on open.
+   * Dashboard embed (no snap index) keeps metadata-only.
+   */
   const videoPreload: "none" | "metadata" | "auto" =
     slideOffset === null
       ? "metadata"
-      : slideOffset === 0 || slideOffset === 1 || slideOffset === 2
+      : slideOffset === 0
         ? "auto"
         : slideOffset === -1 || slideOffset === -2
           ? "metadata"
@@ -99,7 +102,7 @@ export function FeedItemCard({
   const videoFetchPriority: "high" | "low" | "auto" =
     slideOffset === null
       ? "auto"
-      : slideOffset !== null && Math.abs(slideOffset) <= 2
+      : slideOffset === 0
         ? "high"
         : "low";
 
