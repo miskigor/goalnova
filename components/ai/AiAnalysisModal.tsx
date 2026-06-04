@@ -805,17 +805,18 @@ export function AiAnalysisModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex min-w-0 items-end justify-center bg-black/70 p-3 backdrop-blur-[2px] sm:items-center sm:p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="ai-analysis-title"
+      className="fixed inset-0 z-[100] box-border flex min-w-0 max-lg:items-end max-lg:justify-center max-lg:overflow-x-clip bg-black/70 max-lg:px-[max(0.75rem,env(safe-area-inset-left,0px))] max-lg:pt-[max(0.75rem,env(safe-area-inset-top,0px))] max-lg:pe-[max(0.75rem,env(safe-area-inset-right,0px))] max-lg:pb-[calc(var(--gn-app-bottom-nav-offset,4.5rem)+max(0.75rem,env(safe-area-inset-bottom,0px)))] max-lg:backdrop-blur-[2px] sm:items-center sm:justify-center sm:p-4 sm:pb-[max(1rem,env(safe-area-inset-bottom,0px))]"
+      role="presentation"
       onClick={onClose}
     >
       <div
-        className="box-border max-h-[min(92dvh,720px)] w-full min-w-0 max-w-[min(32rem,calc(100vw-1.5rem))] overflow-y-auto overflow-x-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#14161c] to-gn-bg shadow-2xl shadow-black/50 sm:max-w-lg"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ai-analysis-title"
+        className="box-border flex w-full min-w-0 max-w-[min(32rem,calc(100vw-1.5rem))] max-lg:max-h-[min(calc(100dvh-var(--gn-app-bottom-nav-offset,4.5rem)-max(0.75rem,env(safe-area-inset-top,0px))-max(0.75rem,env(safe-area-inset-bottom,0px))-1rem),720px)] flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-[#14161c] to-gn-bg shadow-2xl shadow-black/50 sm:max-h-[min(92dvh,720px)] sm:max-w-lg"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 z-[1] flex min-w-0 items-center justify-between gap-3 border-b border-white/[0.06] bg-[#14161c]/95 px-4 py-3.5 backdrop-blur-sm sm:px-5">
+        <div className="z-[1] flex shrink-0 min-w-0 items-center justify-between gap-3 border-b border-white/[0.06] bg-[#14161c]/95 px-4 py-3.5 backdrop-blur-sm sm:px-5">
           <h2
             id="ai-analysis-title"
             className="min-w-0 flex-1 truncate text-lg font-semibold tracking-tight text-gn-text"
@@ -831,7 +832,7 @@ export function AiAnalysisModal({
           </button>
         </div>
 
-        <div className="px-4 pb-5 pt-4 sm:px-5 sm:pb-6">
+        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain px-4 pt-4 max-lg:pb-[calc(max(1rem,env(safe-area-inset-bottom,0px))+0.75rem)] [-webkit-overflow-scrolling:touch] sm:px-5 sm:pb-6">
           {!viewerId ? (
             <p className="py-6 text-center text-sm text-gn-text-secondary">
               {t("loginRequired")}
