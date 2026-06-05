@@ -187,9 +187,9 @@
     flex-shrink: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    width: min(80vw, 345px) !important;
-    max-width: 345px !important;
-    height: min(calc(100% - 20px), calc(min(80vw, 345px) * 16 / 9)) !important;
+    width: min(79vw, 338px) !important;
+    max-width: 338px !important;
+    height: min(calc(100% - 20px), calc(min(79vw, 338px) * 16 / 9)) !important;
     max-height: calc(100% - 20px) !important;
     min-height: 0 !important;
     margin-inline: auto !important;

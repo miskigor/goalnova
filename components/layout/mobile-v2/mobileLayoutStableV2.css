@@ -14,7 +14,7 @@
   --mlv2-profile-top: var(--mlv2-non-home-top);
   --mlv2-viewport-max: 390px;
   --mlv2-content-max: min(100%, 390px);
-  --mlv2-home-card-max: min(80vw, 345px);
+  --mlv2-home-card-max: min(79vw, 338px);
   --mlv2-inline-pad: 16px;
   --mlv2-top: calc(var(--mlv2-page-top) + env(safe-area-inset-top, 0px));
   --mlv2-bottom-nav-height: calc(4.5rem + env(safe-area-inset-bottom, 0px));
@@ -314,8 +314,8 @@
   html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-video-frame][data-pitchrusch-home-feed-v2-card] {
     height: auto !important;
     max-height: none !important;
-    width: min(80vw, 345px) !important;
-    max-width: 345px !important;
+    width: min(79vw, 338px) !important;
+    max-width: 338px !important;
     min-height: 0 !important;
     margin-inline: auto !important;
   }
