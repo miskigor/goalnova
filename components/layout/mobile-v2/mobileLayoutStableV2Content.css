@@ -177,6 +177,8 @@
   /*
    * V2 home card — fixed width; height fills feed band (9:16 capped by viewport gaps).
    */
+  html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-v2-card],
+  html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-video-frame][data-pitchrusch-home-feed-v2-card],
   html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-card],
   html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-video-frame][data-pitchrusch-home-feed-v2-card] {
     box-sizing: border-box;

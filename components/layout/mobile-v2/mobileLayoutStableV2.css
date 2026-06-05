@@ -311,14 +311,9 @@
     scroll-padding-top: 0 !important;
   }
 
-  html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-video-frame][data-pitchrusch-home-feed-v2-card] {
-    height: auto !important;
-    max-height: none !important;
-    width: min(79vw, 338px) !important;
-    max-width: 338px !important;
-    min-height: 0 !important;
-    margin-inline: auto !important;
-  }
+  /*
+   * Home card size — owned only by mobileLayoutStableV2Content.css (do not set width/height here).
+   */
 }
 
 /* Shell: flag on html, structure on [data-mlv2-root] (last child = bottom nav) */
