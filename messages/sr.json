@@ -773,6 +773,13 @@
       "rules": "Uputstva:\n- Označi 20 metara sa startnom i ciljnom linijom.\n- Kreni iza linije i sprintaj do cilja što je brže moguće.\n- Snimi ceo pokušaj od starta do cilja.\n\nOprema:\n- 2 čunja\n- Kamera na telefonu\n- Štoperica\n- Prostor od 20 metara\n\nPravila:\n- Igrač mora da startuje iza startne linije.\n- Udaljenost sprinta mora biti tačno 20 metara.\n- Ceo pokušaj mora biti vidljiv u videu.\n- Vreme se meri od prvog pokreta do prolaska kroz cilj.\n- Leteći start nije dozvoljen.\n- Editovani ili isečeni video snimci nisu dozvoljeni.\n- Maksimalna dužina videa je 15 sekundi.\n\nBodovanje:\n- Vreme sprinta: 60\n- Eksplozivnost starta: 20\n- Tehnika trčanja: 10\n- Valjanost izvedbe: 10\n\nPokušaji:\n- Besplatan igrač: 1 pokušaj\n- Premium igrač: više pokušaja + izbor najboljeg pokušaja + bolja vidljivost skautima",
       "badgeTitle": "Brzojac",
       "badgeDetail": "Značka za najbolje izvođače sprinta od 20 metara"
+    },
+    "keepyUps": {
+      "title": "Keepy-Ups Challenge",
+      "description": "Napravi 10 uzastopnih dodira bez pada lopte.",
+      "rules": "Cilj:\nNapravi 10 uzastopnih dodira bez pada lopte.\n\nPravila:\n- Start sa tla ili iz ruku.\n- Lopta ne sme da dodirne tlo.\n- Broji se samo 10 uzastopnih dodira.\n- Video mora da prikazuje celo telo i loptu celo vreme.\n- Video može da traje najviše 30 sekundi.\n- Igrač može da pošalje više pokušaja; najbolji pokušaj se računa.\n\nOsnovna nagrada:\n- 50 XP poena\n- \"Keepy-Ups Challenger\" značka na profilu\n- Challenge označen kao završen ✅\n\nOcenjivanje:\n✅ Uspešno odrađeno = završio challenge\n\nTežina:\n⭐ Početnik\n\nZašto je dobar:\n- Svi mogu da učestvuju.\n- Brzo se snima.\n- Dobar prvi challenge za nove korisnike.\n- Lako ga je proveriti na videu.",
+      "badgeTitle": "50 XP poena",
+      "badgeDetail": "Keepy-Ups Challenger značka na profilu + Challenge označen kao završen ✅"
     }
   },
   "rankings": {

@@ -836,6 +836,13 @@
       "rules": "Instructions:\n- Mark a 20-meter distance with a start and finish line.\n- Start behind the line and sprint to the finish as fast as possible.\n- Record the full attempt from start to finish.\n\nEquipment:\n- 2 cones\n- Phone camera\n- Stopwatch\n- 20 meter space\n\nRules:\n- The player must start behind the start line.\n- The sprint distance must be exactly 20 meters.\n- The full attempt must be visible in the video.\n- Time is measured from the first movement to crossing the finish line.\n- Flying start is not allowed.\n- Edited or cut videos are not allowed.\n- Maximum video length is 15 seconds.\n\nScoring:\n- Sprint time: 60\n- Start explosiveness: 20\n- Running technique: 10\n- Execution validity: 10\n\nAttempts:\n- Free player: 1 attempt\n- Premium player: multiple attempts + choose best attempt + better visibility to scouts",
       "badgeTitle": "Speedster",
       "badgeDetail": "Badge for top Sprint 20m performers"
+    },
+    "keepyUps": {
+      "title": "Keepy-Ups Challenge",
+      "description": "Complete 10 consecutive touches without dropping the ball.",
+      "rules": "Goal:\nComplete 10 consecutive touches without dropping the ball.\n\nRules:\n- Start from the ground or from hands.\n- The ball must not touch the ground.\n- Only 10 consecutive touches count.\n- The video must show your full body and the ball at all times.\n- Video may last up to 30 seconds maximum.\n- Players can submit multiple attempts; the best attempt counts.\n\nBasic reward:\n- 50 XP points\n- \"Keepy-Ups Challenger\" badge on profile\n- Challenge marked as completed ✅\n\nScoring:\n✅ Successfully completed = challenge finished\n\nDifficulty:\n⭐ Beginner\n\nWhy it's good:\n- Everyone can participate.\n- Quick to record.\n- A good first challenge for new users.\n- Easy to verify on video.",
+      "badgeTitle": "50 XP points",
+      "badgeDetail": "Keepy-Ups Challenger badge on profile + Challenge marked complete ✅"
     }
   },
   "rankings": {

@@ -773,6 +773,13 @@
       "rules": "Anleitung:\n- Markiere eine 20-Meter-Strecke mit Start- und Ziellinie.\n- Starte hinter der Linie und sprinte so schnell wie möglich ins Ziel.\n- Nimm den gesamten Versuch von Start bis Ziel auf.\n\nAusrüstung:\n- 2 Hütchen\n- Handykamera\n- Stoppuhr\n- 20 Meter Platz\n\nRegeln:\n- Der Spieler muss hinter der Startlinie starten.\n- Die Sprintdistanz muss genau 20 Meter betragen.\n- Der gesamte Versuch muss im Video sichtbar sein.\n- Die Zeit wird von der ersten Bewegung bis zum Überqueren der Ziellinie gemessen.\n- Fliegender Start ist nicht erlaubt.\n- Geschnittene oder bearbeitete Videos sind nicht erlaubt.\n- Maximale Videolänge ist 15 Sekunden.\n\nBewertung:\n- Sprintzeit: 60\n- Start-Explosivität: 20\n- Lauftechnik: 10\n- Gültigkeit der Ausführung: 10\n\nVersuche:\n- Free-Spieler: 1 Versuch\n- Premium-Spieler: mehrere Versuche + besten Versuch wählen + bessere Sichtbarkeit für Scouts",
       "badgeTitle": "Sprinter",
       "badgeDetail": "Abzeichen für die besten Sprint-20m-Performer"
+    },
+    "keepyUps": {
+      "title": "Keepy-Ups Challenge",
+      "description": "10 aufeinanderfolgende Ballberührungen ohne dass der Ball den Boden berührt.",
+      "rules": "Ziel:\n10 aufeinanderfolgende Ballberührungen ohne dass der Ball den Boden berührt.\n\nRegeln:\n- Start vom Boden oder aus den Händen.\n- Der Ball darf den Boden nicht berühren.\n- Es zählen nur 10 aufeinanderfolgende Berührungen.\n- Das Video muss den ganzen Körper und den Ball durchgehend zeigen.\n- Das Video darf maximal 30 Sekunden lang sein.\n- Spieler können mehrere Versuche einreichen; der beste Versuch zählt.\n\nGrundbelohnung:\n- 50 XP-Punkte\n- \"Keepy-Ups Challenger\"-Abzeichen im Profil\n- Challenge als abgeschlossen markiert ✅\n\nBewertung:\n✅ Erfolgreich abgeschlossen = Challenge beendet\n\nSchwierigkeit:\n⭐ Anfänger\n\nWarum es gut ist:\n- Jeder kann mitmachen.\n- Schnell aufgenommen.\n- Gute erste Challenge für neue Nutzer.\n- Leicht im Video zu überprüfen.",
+      "badgeTitle": "50 XP-Punkte",
+      "badgeDetail": "Keepy-Ups Challenger-Abzeichen im Profil + Challenge als abgeschlossen markiert ✅"
     }
   },
   "rankings": {

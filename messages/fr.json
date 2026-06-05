@@ -773,6 +773,13 @@
       "rules": "Instructions :\n- Marque une distance de 20 mètres avec une ligne de départ et d’arrivée.\n- Pars derrière la ligne et sprinte jusqu’à l’arrivée le plus vite possible.\n- Enregistre la tentative complète du départ à l’arrivée.\n\nÉquipement :\n- 2 cônes\n- Caméra de téléphone\n- Chronomètre\n- Espace de 20 mètres\n\nRègles :\n- Le joueur doit démarrer derrière la ligne de départ.\n- La distance du sprint doit être exactement de 20 mètres.\n- La tentative complète doit être visible dans la vidéo.\n- Le temps est mesuré du premier mouvement jusqu’au passage de la ligne d’arrivée.\n- Le départ lancé est interdit.\n- Les vidéos montées ou coupées sont interdites.\n- Durée maximale de la vidéo : 15 secondes.\n\nNotation :\n- Temps de sprint : 60\n- Explosivité du départ : 20\n- Technique de course : 10\n- Validité de l’exécution : 10\n\nTentatives :\n- Joueur gratuit : 1 tentative\n- Joueur premium : tentatives multiples + choix de la meilleure + meilleure visibilité pour les scouts",
       "badgeTitle": "As du sprint",
       "badgeDetail": "Badge pour les meilleurs du sprint de 20 mètres"
+    },
+    "keepyUps": {
+      "title": "Keepy-Ups Challenge",
+      "description": "Réalise 10 touches consécutives sans laisser le ballon tomber.",
+      "rules": "Objectif :\nRéalise 10 touches consécutives sans laisser le ballon tomber.\n\nRègles :\n- Départ depuis le sol ou des mains.\n- Le ballon ne doit pas toucher le sol.\n- Seules 10 touches consécutives comptent.\n- La vidéo doit montrer tout le corps et le ballon en permanence.\n- La vidéo peut durer au maximum 30 secondes.\n- Les joueurs peuvent envoyer plusieurs tentatives ; la meilleure compte.\n\nRécompense de base :\n- 50 points XP\n- Badge « Keepy-Ups Challenger » sur le profil\n- Challenge marqué comme terminé ✅\n\nNotation :\n✅ Réussi = challenge terminé\n\nDifficulté :\n⭐ Débutant\n\nPourquoi c'est bien :\n- Tout le monde peut participer.\n- Rapide à filmer.\n- Bon premier challenge pour les nouveaux utilisateurs.\n- Facile à vérifier sur la vidéo.",
+      "badgeTitle": "50 points XP",
+      "badgeDetail": "Badge Keepy-Ups Challenger sur le profil + Challenge marqué comme terminé ✅"
     }
   },
   "rankings": {

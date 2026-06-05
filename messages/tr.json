@@ -773,6 +773,13 @@
       "rules": "Talimatlar:\n- Başlangıç ve bitiş çizgisiyle 20 metrelik bir mesafe işaretle.\n- Çizginin arkasından başla ve bitişe mümkün olduğunca hızlı sprint at.\n- Denemeyi baştan sona kaydet.\n\nEkipman:\n- 2 konik\n- Telefon kamerası\n- Kronometre\n- 20 metrelik alan\n\nKurallar:\n- Oyuncu başlangıç çizgisinin arkasından başlamalıdır.\n- Sprint mesafesi tam olarak 20 metre olmalıdır.\n- Tüm deneme videoda görünür olmalıdır.\n- Süre ilk hareketten bitiş çizgisini geçmeye kadar ölçülür.\n- Uçuşlu starta izin verilmez.\n- Düzenlenmiş veya kesilmiş videolara izin verilmez.\n- Maksimum video süresi 15 saniyedir.\n\nPuanlama:\n- Sprint süresi: 60\n- Start patlayıcılığı: 20\n- Koşu tekniği: 10\n- Uygulama geçerliliği: 10\n\nDenemeler:\n- Ücretsiz oyuncu: 1 deneme\n- Premium oyuncu: birden fazla deneme + en iyi denemeyi seçme + scoutlara daha iyi görünürlük",
       "badgeTitle": "Hız Canavarı",
       "badgeDetail": "En iyi 20 m sprint performansları için rozet"
+    },
+    "keepyUps": {
+      "title": "Keepy-Ups Challenge",
+      "description": "Topu düşürmeden 10 ardışık dokunuş yap.",
+      "rules": "Hedef:\nTopu düşürmeden 10 ardışık dokunuş yap.\n\nKurallar:\n- Yerden veya ellerden başla.\n- Top yere değmemeli.\n- Sadece 10 ardışık dokunuş sayılır.\n- Video boyunca tüm vücut ve top görünür olmalı.\n- Video en fazla 30 saniye sürebilir.\n- Oyuncular birden fazla deneme gönderebilir; en iyi deneme sayılır.\n\nTemel ödül:\n- 50 XP puanı\n- Profilde \"Keepy-Ups Challenger\" rozeti\n- Challenge tamamlandı olarak işaretlendi ✅\n\nPuanlama:\n✅ Başarıyla tamamlandı = challenge bitti\n\nZorluk:\n⭐ Başlangıç\n\nNeden iyi:\n- Herkes katılabilir.\n- Hızlı kaydedilir.\n- Yeni kullanıcılar için iyi ilk challenge.\n- Videoda doğrulaması kolay.",
+      "badgeTitle": "50 XP puanı",
+      "badgeDetail": "Profilde Keepy-Ups Challenger rozeti + Challenge tamamlandı olarak işaretlendi ✅"
     }
   },
   "rankings": {

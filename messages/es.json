@@ -773,6 +773,13 @@
       "rules": "Instrucciones:\n- Marca una distancia de 20 metros con línea de salida y llegada.\n- Comienza detrás de la línea y sprinta hasta la meta lo más rápido posible.\n- Graba el intento completo desde el inicio hasta el final.\n\nEquipo:\n- 2 conos\n- Cámara de móvil\n- Cronómetro\n- Espacio de 20 metros\n\nReglas:\n- El jugador debe iniciar detrás de la línea de salida.\n- La distancia del sprint debe ser exactamente 20 metros.\n- El intento completo debe verse en el video.\n- El tiempo se mide desde el primer movimiento hasta cruzar la meta.\n- No se permite salida lanzada.\n- No se permiten videos editados o recortados.\n- Duración máxima del video: 15 segundos.\n\nPuntuación:\n- Tiempo de sprint: 60\n- Explosividad de salida: 20\n- Técnica de carrera: 10\n- Validez de ejecución: 10\n\nIntentos:\n- Jugador gratis: 1 intento\n- Jugador premium: múltiples intentos + elegir mejor intento + mayor visibilidad para scouts",
       "badgeTitle": "Velocista",
       "badgeDetail": "Insignia para los mejores del sprint de 20 metros"
+    },
+    "keepyUps": {
+      "title": "Keepy-Ups Challenge",
+      "description": "Completa 10 toques consecutivos sin dejar caer el balón.",
+      "rules": "Objetivo:\nCompleta 10 toques consecutivos sin dejar caer el balón.\n\nReglas:\n- Empieza desde el suelo o con las manos.\n- El balón no debe tocar el suelo.\n- Solo cuentan 10 toques consecutivos.\n- El video debe mostrar todo el cuerpo y el balón en todo momento.\n- El video puede durar como máximo 30 segundos.\n- Los jugadores pueden enviar varios intentos; cuenta el mejor.\n\nRecompensa básica:\n- 50 puntos XP\n- Insignia \"Keepy-Ups Challenger\" en el perfil\n- Challenge marcado como completado ✅\n\nPuntuación:\n✅ Completado con éxito = challenge terminado\n\nDificultad:\n⭐ Principiante\n\nPor qué es bueno:\n- Todos pueden participar.\n- Se graba rápido.\n- Buen primer challenge para usuarios nuevos.\n- Fácil de verificar en el video.",
+      "badgeTitle": "50 puntos XP",
+      "badgeDetail": "Insignia Keepy-Ups Challenger en el perfil + Challenge marcado como completado ✅"
     }
   },
   "rankings": {

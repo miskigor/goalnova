@@ -773,6 +773,13 @@
       "rules": "Instructies:\n- Markeer een afstand van 20 meter met een start- en finishlijn.\n- Start achter de lijn en sprint zo snel mogelijk naar de finish.\n- Neem de volledige poging op van start tot finish.\n\nMateriaal:\n- 2 pionnen\n- Telefooncamera\n- Stopwatch\n- Ruimte van 20 meter\n\nRegels:\n- De speler moet achter de startlijn beginnen.\n- De sprintafstand moet precies 20 meter zijn.\n- De volledige poging moet zichtbaar zijn in de video.\n- De tijd wordt gemeten vanaf de eerste beweging tot het passeren van de finishlijn.\n- Vliegende start is niet toegestaan.\n- Bewerkte of ingekorte video's zijn niet toegestaan.\n- Maximale videolengte is 15 seconden.\n\nScoring:\n- Sprinttijd: 60\n- Explosiviteit bij de start: 20\n- Loopttechniek: 10\n- Geldigheid van de uitvoering: 10\n\nPogingen:\n- Gratis speler: 1 poging\n- Premium speler: meerdere pogingen + beste poging kiezen + betere zichtbaarheid voor scouts",
       "badgeTitle": "Snelheidsduivel",
       "badgeDetail": "Badge voor de beste Sprint 20m-deelnemers"
+    },
+    "keepyUps": {
+      "title": "Keepy-Ups Challenge",
+      "description": "Maak 10 opeenvolgende touches zonder de bal te laten vallen.",
+      "rules": "Doel:\nMaak 10 opeenvolgende touches zonder de bal te laten vallen.\n\nRegels:\n- Start vanaf de grond of uit de handen.\n- De bal mag de grond niet raken.\n- Alleen 10 opeenvolgende touches tellen mee.\n- De video moet je hele lichaam en de bal de hele tijd tonen.\n- De video mag maximaal 30 seconden duren.\n- Spelers kunnen meerdere pogingen insturen; de beste poging telt.\n\nBasisbeloning:\n- 50 XP-punten\n- \"Keepy-Ups Challenger\"-badge op profiel\n- Challenge gemarkeerd als voltooid ✅\n\nScoring:\n✅ Succesvol voltooid = challenge afgerond\n\nMoeilijkheid:\n⭐ Beginner\n\nWaarom het goed is:\n- Iedereen kan meedoen.\n- Snel op te nemen.\n- Goede eerste challenge voor nieuwe gebruikers.\n- Makkelijk te verifiëren op video.",
+      "badgeTitle": "50 XP-punten",
+      "badgeDetail": "Keepy-Ups Challenger-badge op profiel + Challenge gemarkeerd als voltooid ✅"
     }
   },
   "rankings": {

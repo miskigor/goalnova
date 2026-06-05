@@ -773,6 +773,13 @@
       "rules": "Instruções:\n- Marca uma distância de 20 metros com linha de partida e chegada.\n- Começa atrás da linha e sprinta até à meta o mais rápido possível.\n- Grava a tentativa completa do início ao fim.\n\nEquipamento:\n- 2 cones\n- Câmara do telemóvel\n- Cronómetro\n- Espaço de 20 metros\n\nRegras:\n- O jogador deve começar atrás da linha de partida.\n- A distância do sprint deve ser exatamente 20 metros.\n- A tentativa completa deve estar visível no vídeo.\n- O tempo é medido do primeiro movimento até cruzar a meta.\n- Não é permitido início lançado.\n- Não são permitidos vídeos editados ou cortados.\n- Duração máxima do vídeo: 15 segundos.\n\nPontuação:\n- Tempo de sprint: 60\n- Explosão na partida: 20\n- Técnica de corrida: 10\n- Validade da execução: 10\n\nTentativas:\n- Jogador grátis: 1 tentativa\n- Jogador premium: várias tentativas + escolher a melhor + maior visibilidade para scouts",
       "badgeTitle": "Velocista",
       "badgeDetail": "Distintivo para os melhores no sprint de 20 metros"
+    },
+    "keepyUps": {
+      "title": "Keepy-Ups Challenge",
+      "description": "Completa 10 toques consecutivos sem deixar a bola cair.",
+      "rules": "Objetivo:\nCompleta 10 toques consecutivos sem deixar a bola cair.\n\nRegras:\n- Começa no chão ou das mãos.\n- A bola não pode tocar o chão.\n- Contam apenas 10 toques consecutivos.\n- O vídeo deve mostrar o corpo inteiro e a bola o tempo todo.\n- O vídeo pode durar no máximo 30 segundos.\n- Os jogadores podem enviar várias tentativas; conta a melhor.\n\nRecompensa base:\n- 50 pontos XP\n- Distintivo \"Keepy-Ups Challenger\" no perfil\n- Challenge marcado como concluído ✅\n\nPontuação:\n✅ Concluído com sucesso = challenge terminado\n\nDificuldade:\n⭐ Iniciante\n\nPorque é bom:\n- Todos podem participar.\n- Gravação rápida.\n- Bom primeiro challenge para novos utilizadores.\n- Fácil de verificar no vídeo.",
+      "badgeTitle": "50 pontos XP",
+      "badgeDetail": "Distintivo Keepy-Ups Challenger no perfil + Challenge marcado como concluído ✅"
     }
   },
   "rankings": {

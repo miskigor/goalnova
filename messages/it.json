@@ -773,6 +773,13 @@
       "rules": "Istruzioni:\n- Segna una distanza di 20 metri con linea di partenza e arrivo.\n- Parti dietro la linea e sprinta fino al traguardo il più velocemente possibile.\n- Registra l’intero tentativo dall’inizio alla fine.\n\nAttrezzatura:\n- 2 coni\n- Fotocamera del telefono\n- Cronometro\n- Spazio di 20 metri\n\nRegole:\n- Il giocatore deve partire dietro la linea di partenza.\n- La distanza dello sprint deve essere esattamente 20 metri.\n- L’intero tentativo deve essere visibile nel video.\n- Il tempo si misura dal primo movimento fino al passaggio del traguardo.\n- La partenza lanciata non è consentita.\n- I video modificati o tagliati non sono consentiti.\n- Durata massima video: 15 secondi.\n\nPunteggio:\n- Tempo sprint: 60\n- Esplosività partenza: 20\n- Tecnica di corsa: 10\n- Validità esecuzione: 10\n\nTentativi:\n- Giocatore free: 1 tentativo\n- Giocatore premium: tentativi multipli + scelta del migliore + migliore visibilità per gli scout",
       "badgeTitle": "Velocista",
       "badgeDetail": "Badge per i migliori nello sprint di 20 metri"
+    },
+    "keepyUps": {
+      "title": "Keepy-Ups Challenge",
+      "description": "Completa 10 tocchi consecutivi senza far cadere la palla.",
+      "rules": "Obiettivo:\nCompleta 10 tocchi consecutivi senza far cadere la palla.\n\nRegole:\n- Parti da terra o dalle mani.\n- La palla non deve toccare il terreno.\n- Contano solo 10 tocchi consecutivi.\n- Il video deve mostrare l'intero corpo e la palla per tutta la durata.\n- Il video può durare al massimo 30 secondi.\n- I giocatori possono inviare più tentativi; vale il migliore.\n\nRicompensa base:\n- 50 punti XP\n- Badge \"Keepy-Ups Challenger\" sul profilo\n- Challenge segnata come completata ✅\n\nPunteggio:\n✅ Completato con successo = challenge terminata\n\nDifficoltà:\n⭐ Principiante\n\nPerché è valida:\n- Tutti possono partecipare.\n- Si registra in fretta.\n- Ottima prima challenge per i nuovi utenti.\n- Facile da verificare sul video.",
+      "badgeTitle": "50 punti XP",
+      "badgeDetail": "Badge Keepy-Ups Challenger sul profilo + Challenge segnata come completata ✅"
     }
   },
   "rankings": {
