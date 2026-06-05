@@ -12,8 +12,6 @@ import {
   MLV2_ROOT_ATTR,
   MLV2_SCROLL_ATTR,
 } from "@/components/layout/mobile-v2/mobileLayoutStableV2.tokens";
-import "@/components/layout/mobile-v2/mobileLayoutStableV2.css";
-import "@/components/layout/mobile-v2/mobileLayoutStableV2Content.css";
 
 /**
  * Mobile shell V2 (feature-flagged): one scrollport, in-flow bottom nav, no top app menu.
