@@ -42,6 +42,7 @@ import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 import { useV2HomeFeedSnapController } from "@/hooks/useV2HomeFeedSnapController";
 import { currentUserHasAnyVideo } from "@/lib/supabase/currentUserVideos";
+import { isMobileLayoutStableV2Enabled } from "@/lib/layout/mobileLayoutStableV2Flag";
 
 /** Scrollport width: stay within the main column (negative margins removed — they fought min-w-0 and could widen scrollWidth). */
 const FEED_BLEED = "w-full min-w-0 max-w-full overflow-x-clip";
@@ -65,6 +66,13 @@ const FEED_SCROLLPORT =
   HOME_FEED_MOBILE_SCROLLPORT_HEIGHT +
   " lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
 
+/** V2 /home — fill in-flow home band only (no document svh; snap viewport owned by CSS). */
+const FEED_SCROLLPORT_V2_HOME =
+  "touch-pan-y snap-y snap-mandatory overflow-y-auto overflow-x-hidden scroll-smooth overscroll-y-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden " +
+  "[container-type:size] min-h-0 min-w-0 " +
+  "max-lg:flex-1 max-lg:min-h-0 max-lg:h-full max-lg:max-h-full max-lg:overflow-x-hidden max-lg:overflow-y-scroll max-lg:overscroll-y-none " +
+  "lg:h-[calc(min(100dvh,100svh)-8rem)] lg:max-h-[calc(min(100dvh,100svh)-8rem)] lg:flex-none";
+
 /**
  * Desktop: card fills snap `li` (cqh tile). Mobile: outer slide is a centering shell;
  * bounded video frame lives in {@link FeedItemCard} (avoids vv-width rules on feed-card).
@@ -82,9 +90,11 @@ type MyVideosStatus =
 function HomeFeedSnapList({
   items,
   feedSlideClassName,
+  v2HomeViewport,
 }: {
   items: AugmentedHomeFeedItem[];
   feedSlideClassName: string;
+  v2HomeViewport: boolean;
 }) {
   const { activeVideoId } = useHomeFeedSound();
 
@@ -126,7 +136,11 @@ function HomeFeedSnapList({
       />
       <ul
         {...feedItemsListProps}
-        className="m-0 flex h-full min-h-0 list-none flex-col gap-0 p-0"
+        className={
+          v2HomeViewport
+            ? "m-0 flex min-h-0 list-none flex-col gap-0 p-0"
+            : "m-0 flex h-full min-h-0 list-none flex-col gap-0 p-0"
+        }
       >
         {items.map((item, index) => (
           <li
@@ -523,17 +537,20 @@ export function HomeFeed() {
 
     const snapVideoKeys = items.map((it) => feedItemVideoKey(it)) as readonly string[];
 
+    const v2HomeViewport = isMobileLayoutStableV2Enabled();
+
     return (
       <HomeFeedSoundProvider bootstrapActiveVideoId={bootstrapActiveVideoId}>
         <>
           <FeedScrollWithUserAudioActivation
-            className={`${FEED_BLEED} ${FEED_SCROLLPORT}`}
+            className={`${FEED_BLEED} ${v2HomeViewport ? FEED_SCROLLPORT_V2_HOME : FEED_SCROLLPORT}`}
             onNearEnd={hasMore ? handleLoadMore : undefined}
             snapVideoKeys={snapVideoKeys}
           >
             <HomeFeedSnapList
               items={items}
               feedSlideClassName={FEED_SLIDE}
+              v2HomeViewport={v2HomeViewport}
             />
           </FeedScrollWithUserAudioActivation>
         </>

@@ -28,6 +28,38 @@
     --gn-page-content-top-inset: calc(0.75rem + env(safe-area-inset-top, 0px));
   }
 
+  /* /home — slightly shorter bottom nav; video sits flush above it */
+  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) {
+    --mlv2-bottom-nav-height: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+    --gn-app-bottom-nav-offset: var(--mlv2-bottom-nav-height);
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-bottom-nav] [data-app-bottom-nav] {
+    min-height: 3.5rem !important;
+    padding-top: 0 !important;
+    padding-bottom: 0.125rem !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-bottom-nav] [data-app-bottom-nav] > div {
+    height: 2.25rem !important;
+    min-height: 2.25rem !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-bottom-nav] [data-app-bottom-nav] a,
+  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > * {
+    height: 2.25rem !important;
+    min-height: 2.25rem !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-bottom-nav] [class*="rounded-full"][class*="bg-orange"] {
+    width: 2rem !important;
+    height: 2rem !important;
+    min-width: 2rem !important;
+    min-height: 2rem !important;
+    max-width: 2rem !important;
+    max-height: 2rem !important;
+  }
+
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed],
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-feed-scroll-root],
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-feed-items],
@@ -53,12 +85,14 @@
     overflow: clip;
   }
 
+  /*
+   * TikTok home viewport — internal scroll band only (not [data-mlv2-scroll] / other routes).
+   */
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-feed-scroll-root] {
     container-type: size;
     box-sizing: border-box;
     flex: 1 1 auto !important;
     min-height: 0 !important;
-    /* Fill V2 scroll band — override HomeFeed 100svh Tailwind (not document svh) */
     height: 100% !important;
     max-height: 100% !important;
     overflow-x: clip !important;
@@ -68,9 +102,8 @@
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: y mandatory !important;
     scroll-behavior: smooth !important;
-    padding-top: 0 !important;
-    scroll-padding-top: 0;
-    scroll-padding-bottom: 0;
+    padding: 0 !important;
+    scroll-padding: 0;
   }
 
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-feed-items] {
@@ -80,29 +113,28 @@
     gap: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
+    width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
   }
 
-  /*
-   * Snap pages — percentage of scroll-root (stable vs 100cqh when container height shifts).
-   */
+  /* One feed viewport per item — 100cqh; nav is outside scroll (no nav height in padding). */
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-feed-item] {
     box-sizing: border-box;
     display: flex !important;
     flex-direction: column !important;
-    flex: 0 0 100% !important;
+    flex: 0 0 100cqh !important;
     flex-grow: 0 !important;
     flex-shrink: 0 !important;
-    flex-basis: 100% !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 100% !important;
-    justify-content: center !important;
+    flex-basis: 100cqh !important;
+    height: 100cqh !important;
+    min-height: 100cqh !important;
+    max-height: 100cqh !important;
     align-items: center !important;
-    overflow-x: clip;
-    overflow-y: hidden;
+    justify-content: flex-end !important;
+    padding-top: 20px !important;
+    overflow: hidden !important;
     scroll-snap-align: start !important;
     scroll-snap-stop: always !important;
     background-color: #000;
@@ -115,26 +147,23 @@
     flex-direction: column !important;
     flex: 1 1 auto !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-end !important;
+    width: 100%;
+    max-width: 100%;
     height: 100% !important;
     min-height: 0 !important;
     max-height: 100% !important;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
 
-  /*
-   * V2 /home — TikTok-style full scrollport card (one snap page; meta + rail on video).
-   */
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-slide] {
     box-sizing: border-box;
     display: flex !important;
     flex-direction: column !important;
     flex: 1 1 auto !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-end !important;
     width: 100% !important;
     height: 100% !important;
     min-height: 0 !important;
@@ -146,7 +175,7 @@
   }
 
   /*
-   * V2 home card — single stable size (vw cap + px max; no cqh/svh/dvh/100vw/100% height).
+   * V2 home card — fixed width; height fills feed band (9:16 capped by viewport gaps).
    */
   html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-v2-card],
   html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed-video-frame][data-pitchrusch-home-feed-v2-card] {
@@ -160,11 +189,12 @@
     flex-direction: column !important;
     width: min(78vw, 330px) !important;
     max-width: 330px !important;
-    min-width: 0 !important;
-    height: auto !important;
-    max-height: none !important;
+    height: min(calc(100% - 20px), calc(min(78vw, 330px) * 16 / 9)) !important;
+    max-height: calc(100% - 20px) !important;
     min-height: 0 !important;
-    margin: auto !important;
+    margin-inline: auto !important;
+    margin-top: 0 !important;
+    margin-bottom: 8px !important;
     aspect-ratio: 9 / 16 !important;
     overflow: hidden !important;
     border-radius: 16px !important;
