@@ -7,8 +7,8 @@ export const MLV2_CONTENT_ATTR = "data-mlv2-content";
 export const MLV2_BOTTOM_NAV_ATTR = "data-mlv2-bottom-nav";
 export const MLV2_ROUTE_ATTR = "data-mlv2-route";
 
-/** Matches player bottom bar (4.5rem chrome + safe area). */
-export const MLV2_BOTTOM_NAV_OFFSET = "calc(4.5rem + env(safe-area-inset-bottom, 0px))";
+/** Matches V2 bottom bar (3.5rem chrome + safe area). */
+export const MLV2_BOTTOM_NAV_OFFSET = "calc(3.5rem + env(safe-area-inset-bottom, 0px))";
 
 /** Unified top inset (no mobile header). */
 export const MLV2_TOP_OFFSET = "calc(var(--mlv2-page-top, 20px) + env(safe-area-inset-top, 0px))";

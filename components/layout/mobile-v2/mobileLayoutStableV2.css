@@ -5,12 +5,14 @@
 
 [data-mobile-layout-stable-v2] {
   --mlv2-page-top: 20px;
+  --mlv2-page-top-scroll: 24px;
+  --mlv2-top-scroll: calc(var(--mlv2-page-top-scroll) + env(safe-area-inset-top, 0px));
   --mlv2-viewport-max: 390px;
   --mlv2-content-max: min(100%, 390px);
   --mlv2-home-card-max: min(82vw, 330px);
   --mlv2-inline-pad: 16px;
   --mlv2-top: calc(var(--mlv2-page-top) + env(safe-area-inset-top, 0px));
-  --mlv2-bottom-nav-height: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  --mlv2-bottom-nav-height: calc(3.5rem + env(safe-area-inset-bottom, 0px));
   /* Home feed reads legacy vars — map to V2 insets */
   --gn-app-header-offset: var(--mlv2-top);
   --gn-app-bottom-nav-offset: var(--mlv2-bottom-nav-height);
@@ -87,6 +89,22 @@
     overflow-x: hidden;
   }
 
+  /*
+   * Non-home — lower scroll/content start (/home unchanged).
+   */
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="profile"],
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="public-player"],
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] {
+    padding-top: var(--mlv2-top-scroll) !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-scroll] {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+
   /* Keep page content inside the column — no bleed / 100vw drift */
   [data-mobile-layout-stable-v2] [data-mlv2-content] > *,
   [data-mobile-layout-stable-v2] [data-mlv2-scroll] > * {
@@ -114,6 +132,58 @@
   html[data-mobile-layout-stable-v2] [data-app-mobile-bottom-nav-mount],
   html[data-mobile-layout-stable-v2] [data-app-mobile-header] {
     display: none !important;
+  }
+
+  /*
+   * V2 bottom nav — same width/height as /home on every route (override V1 globals + Tailwind).
+   */
+  html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] {
+    width: 100% !important;
+    max-width: var(--mlv2-content-max, min(100%, 390px)) !important;
+    margin-inline: auto !important;
+  }
+
+  html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 3.5rem !important;
+    padding-top: 0 !important;
+    padding-bottom: 0.125rem !important;
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] > div {
+    height: 2.25rem !important;
+    min-height: 2.25rem !important;
+    padding-inline: 2.5rem !important;
+  }
+
+  html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] a,
+  html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > *,
+  html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > div {
+    height: 2.25rem !important;
+    min-height: 2.25rem !important;
+  }
+
+  html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [class*="rounded-full"][class*="bg-orange"] {
+    width: 2rem !important;
+    height: 2rem !important;
+    min-width: 2rem !important;
+    min-height: 2rem !important;
+    max-width: 2rem !important;
+    max-height: 2rem !important;
+  }
+
+  html[data-mobile-layout-stable-v2] body:has([data-premium-fit-viewport]) [data-mlv2-bottom-nav] [data-app-bottom-nav] {
+    min-height: 3.5rem !important;
+    padding-bottom: 0.125rem !important;
+  }
+
+  html[data-mobile-layout-stable-v2] body:has([data-premium-fit-viewport]) [data-mlv2-bottom-nav] [data-app-bottom-nav] > div {
+    height: 2.25rem !important;
+    min-height: 2.25rem !important;
+    align-items: center !important;
+    padding-bottom: 0 !important;
   }
 
   /* No visualViewport / measured inset hacks in V2 */
@@ -257,14 +327,14 @@
     height: auto;
     min-height: min-content;
     max-height: none;
-    padding-top: var(--mlv2-top);
+    padding-top: var(--mlv2-top-scroll) !important;
     padding-bottom: 1rem;
     overflow-x: hidden;
     overflow-y: visible;
   }
 
   [data-mobile-layout-stable-v2] [data-mlv2-scroll] [data-profile-shell] {
-    padding-top: 0 !important;
+    padding-top: 0.375rem !important;
     padding-bottom: 0 !important;
     padding-inline: 0 !important;
     max-width: 100% !important;
@@ -277,7 +347,7 @@
   [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] [data-pitchrusch-explore-page],
   [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] [data-challenges-page],
   [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] div.space-y-6.overflow-x-clip {
-    padding-top: 0 !important;
+    padding-top: 0.375rem !important;
     padding-inline: 0 !important;
     margin-inline: 0 !important;
     max-width: 100% !important;
@@ -472,14 +542,15 @@
   left: auto !important;
   right: auto !important;
   transform: none !important;
-  min-height: 4.5rem !important;
+  min-height: 3.5rem !important;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   overflow-x: hidden;
   box-sizing: border-box;
   /* safe-area only on [data-mlv2-bottom-nav] wrapper — avoid double inset */
-  padding-bottom: 0.25rem !important;
+  padding-top: 0 !important;
+  padding-bottom: 0.125rem !important;
 }
 
 @media (max-width: 1023px) {
@@ -487,6 +558,8 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    height: 2.25rem !important;
+    min-height: 2.25rem !important;
     overflow-x: hidden;
     box-sizing: border-box;
     padding-inline: 2.5rem !important;
@@ -495,6 +568,8 @@
   [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] a,
   [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > *,
   [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > div {
+    height: 2.25rem !important;
+    min-height: 2.25rem !important;
     min-width: 0 !important;
     max-width: 100%;
     overflow: hidden;
@@ -510,12 +585,12 @@
   }
 
   [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [class*="rounded-full"][class*="bg-orange"] {
-    width: min(2.25rem, 44px) !important;
-    height: min(2.25rem, 44px) !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
-    max-width: 44px !important;
-    max-height: 44px !important;
+    width: 2rem !important;
+    height: 2rem !important;
+    min-width: 2rem !important;
+    min-height: 2rem !important;
+    max-width: 2rem !important;
+    max-height: 2rem !important;
   }
 }
 
