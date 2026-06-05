@@ -173,6 +173,17 @@ export function logFullSupabaseError(
   }
 }
 
+/** Safari/LAN dev fetch failures — avoid spamming Next.js error overlay. */
+export function isTransientNetworkError(message: string): boolean {
+  const m = message.trim().toLowerCase();
+  return (
+    m.includes("load failed") ||
+    m.includes("failed to fetch") ||
+    m.includes("networkerror") ||
+    m.includes("network request failed")
+  );
+}
+
 export function supabaseErrorToUserMessage(err: unknown): string {
   if (err == null) return "Unknown error";
   if (typeof err !== "object") return String(err);

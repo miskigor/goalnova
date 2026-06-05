@@ -7,7 +7,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/client";
-import { logFullSupabaseError, supabaseErrorToUserMessage } from "@/lib/supabase/logError";
+import { logFullSupabaseError, isTransientNetworkError, supabaseErrorToUserMessage } from "@/lib/supabase/logError";
 import {
   scheduleVideoCommentNotification,
   scheduleVideoLikedNotification,
@@ -30,8 +30,11 @@ async function getSessionUserId(
     await supabase.auth.getSession();
 
   if (sessionError) {
-    logFullSupabaseError(`[PitchRusch] ${label} getSession`, sessionError, context);
-    return { userId: null, sessionError: supabaseErrorToUserMessage(sessionError) };
+    const msg = supabaseErrorToUserMessage(sessionError);
+    if (!isTransientNetworkError(msg)) {
+      logFullSupabaseError(`[PitchRusch] ${label} getSession`, sessionError, context);
+    }
+    return { userId: null, sessionError: isTransientNetworkError(msg) ? null : msg };
   }
 
   return {
@@ -130,11 +133,14 @@ export async function fetchUserHasLiked(
     .maybeSingle();
 
   if (error) {
-    logFullSupabaseError("[PitchRusch likes] fetchUserHasLiked", error, {
-      video_id: vid,
-      user_id: authId,
-    });
-    return { liked: false, error: supabaseErrorToUserMessage(error) };
+    const msg = supabaseErrorToUserMessage(error);
+    if (!isTransientNetworkError(msg)) {
+      logFullSupabaseError("[PitchRusch likes] fetchUserHasLiked", error, {
+        video_id: vid,
+        user_id: authId,
+      });
+    }
+    return { liked: false, error: isTransientNetworkError(msg) ? null : msg };
   }
   return { liked: Boolean(data?.id), error: null };
 }

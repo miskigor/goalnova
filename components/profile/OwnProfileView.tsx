@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { loadAndEnsureProfile } from "@/lib/supabase/profile";
 import { tryConsumePendingReferralWithRetry } from "@/lib/supabase/referrals";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
@@ -16,6 +16,7 @@ import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
 import { ScoutOwnProfileView } from "@/components/profile/ScoutOwnProfileView";
 import type { Database } from "@/lib/supabase/client";
 import { profileVideosDebug } from "@/lib/profile/profileVideosDebug";
+import { scheduleProfilePageScrollReset } from "@/lib/profile/profilePageScrollReset";
 
 type UserRow = Database["public"]["Tables"]["users"]["Row"];
 type ScoutProfileRow = Database["public"]["Tables"]["scout_profiles"]["Row"];
@@ -49,8 +50,8 @@ function ProfilePageShell({ children }: { children: React.ReactNode }) {
         "overflow-x-clip lg:max-w-2xl lg:pb-8",
       ].join(" ")}
     >
-      {/* Inner band — globals zero [data-profile-shell] pt; mobile insets for header + bottom nav */}
-      <div className="box-border flex w-full min-w-0 max-w-full flex-col space-y-4 max-lg:space-y-3 max-lg:pt-[calc(4rem+var(--gn-app-bottom-nav-offset,4.5rem))] max-lg:pb-0 lg:pt-0 lg:pb-0">
+      {/* Inner band — top inset comes from app shell / V2 content column only */}
+      <div className="box-border flex w-full min-w-0 max-w-full flex-col space-y-4 max-lg:space-y-3 max-lg:pt-0 max-lg:pb-0 lg:pt-0 lg:pb-0">
         {children}
       </div>
     </div>
@@ -58,6 +59,7 @@ function ProfilePageShell({ children }: { children: React.ReactNode }) {
 }
 
 export function OwnProfileView() {
+  const pathname = usePathname();
   const tCommon = useTranslations("authCommon");
   const tPlayer = useTranslations("playerProfile");
   const tProfile = useTranslations("profile");
@@ -65,6 +67,7 @@ export function OwnProfileView() {
   const searchParams = useSearchParams();
   const showSavedBanner = searchParams.get("saved") === "1";
   const [playerSlug, setPlayerSlug] = useState<string | null>(null);
+  const [ownAvatarUrl, setOwnAvatarUrl] = useState<string | null>(null);
   const [scoutBundle, setScoutBundle] = useState<{
     user: UserRow;
     profile: ScoutProfileRow;
@@ -76,6 +79,17 @@ export function OwnProfileView() {
       path: typeof window !== "undefined" ? window.location.pathname : null,
     });
   }, []);
+
+  useEffect(() => {
+    if (pathname !== "/profile") return;
+    return scheduleProfilePageScrollReset(pathname);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (pathname !== "/profile") return;
+    if (!playerSlug && !scoutBundle) return;
+    return scheduleProfilePageScrollReset(pathname);
+  }, [pathname, playerSlug, scoutBundle]);
 
   useEffect(() => {
     let mounted = true;
@@ -95,6 +109,7 @@ export function OwnProfileView() {
           note: "PlayerPublicProfile/video grid not used for scouts",
           userId: result.data.user.id,
         });
+        setOwnAvatarUrl(result.data.user.avatar_url?.trim() || null);
         setScoutBundle({ user: result.data.user, profile: result.data.profile });
         return;
       }
@@ -105,6 +120,7 @@ export function OwnProfileView() {
         setError(tCommon("genericError"));
         return;
       }
+      setOwnAvatarUrl(result.data.user.avatar_url?.trim() || null);
       profileVideosDebug("route", {
         branch: "player",
         playerSlug: nextSlug,
@@ -170,7 +186,11 @@ export function OwnProfileView() {
   return (
     <ProfilePageShell>
       {savedBanner}
-      <PlayerPublicProfile embedded playerSlug={playerSlug} />
+      <PlayerPublicProfile
+        embedded
+        playerSlug={playerSlug}
+        prefetchedAvatarUrl={ownAvatarUrl}
+      />
       <DeleteAccountSection />
     </ProfilePageShell>
   );

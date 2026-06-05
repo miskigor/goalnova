@@ -527,9 +527,9 @@
     overflow-y: visible;
   }
 
-  /* OwnProfileView inner band — V1 mobile pt reserved header+nav; invalid in V2 */
+  /* OwnProfileView inner band — small top inset so header clears safe area */
   [data-mobile-layout-stable-v2] [data-own-profile-page] > div {
-    padding-top: 0 !important;
+    padding-top: 0.5rem !important;
     padding-bottom: 0 !important;
     min-height: min-content;
     height: auto;
@@ -598,6 +598,7 @@
     max-height: none;
     margin-inline: 0;
     padding-inline: 0 !important;
+    padding-top: 0.5rem !important;
     overflow-x: hidden;
     overflow-y: visible;
   }
@@ -647,6 +648,40 @@
 
   [data-mobile-layout-stable-v2] [data-public-profile-page] [data-profile-video-tile] video {
     opacity: 1 !important;
+    object-fit: cover !important;
+  }
+
+  [data-mobile-layout-stable-v2] [data-profile-header] {
+    overflow: visible !important;
+  }
+
+  [data-mobile-layout-stable-v2] [data-profile-avatar-slot] {
+    flex: 0 0 auto;
+    width: 3rem;
+    height: 3rem;
+    min-width: 3rem;
+    min-height: 3rem;
+    overflow: visible;
+  }
+
+  [data-mobile-layout-stable-v2] [data-profile-header] [data-profile-avatar] {
+    display: block !important;
+    flex: 0 0 auto;
+    width: 3rem !important;
+    height: 3rem !important;
+    min-width: 3rem !important;
+    min-height: 3rem !important;
+    aspect-ratio: 1 / 1 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative;
+    z-index: 1;
+  }
+
+  [data-mobile-layout-stable-v2] [data-profile-header] [data-profile-avatar] img {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
     object-fit: cover !important;
   }
 }

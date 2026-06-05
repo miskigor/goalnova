@@ -29,6 +29,7 @@ import {
 } from "@/lib/layout/appShellClasses";
 import { profileVideosDebug } from "@/lib/profile/profileVideosDebug";
 import { publicProfileDebug } from "@/lib/profile/publicProfileDebug";
+import { scheduleProfilePageScrollReset } from "@/lib/profile/profilePageScrollReset";
 
 function DetailRow({ label, value }: { label: string; value: string | null | undefined }) {
   const v = value?.trim();
@@ -82,6 +83,8 @@ type Props = {
   publicProfile?: boolean;
   /** From parent {@link usePathname} (locale stripped). */
   i18nPathname?: string;
+  /** Optional avatar URL from parent (e.g. own profile load) before slug fetch completes. */
+  prefetchedAvatarUrl?: string | null;
 };
 
 export function PlayerPublicProfile({
@@ -89,6 +92,7 @@ export function PlayerPublicProfile({
   embedded = false,
   publicProfile = false,
   i18nPathname = "",
+  prefetchedAvatarUrl = null,
 }: Props) {
   const t = useTranslations("playerProfile");
   const tProfile = useTranslations("profile");
@@ -121,6 +125,13 @@ export function PlayerPublicProfile({
       extra: { component: "PlayerPublicProfile" },
     });
   }, [playerSlug, publicProfile, i18nPathname]);
+
+  useEffect(() => {
+    if (!profile?.id) return;
+    return scheduleProfilePageScrollReset(
+      typeof window !== "undefined" ? window.location.pathname : "",
+    );
+  }, [profile?.id, playerSlug]);
 
   useEffect(() => {
     let cancelled = false;
@@ -192,7 +203,7 @@ export function PlayerPublicProfile({
   }, [playerSlug, publicProfile, i18nPathname]);
 
   const profileSectionClass = PUBLIC_PLAYER_PROFILE_SECTION_CLASS;
-  const profileInnerClass = `${profileSectionClass} space-y-6 max-lg:space-y-2`;
+  const profileInnerClass = `${profileSectionClass} space-y-6 max-lg:space-y-1.5`;
 
   function wrapInProfileShell(node: ReactNode) {
     if (embedded) return node;
@@ -307,22 +318,36 @@ export function PlayerPublicProfile({
     setVideos((prev) => prev.filter((v) => v.id !== videoId));
   }
 
+  const resolvedAvatarUrl =
+    prefetchedAvatarUrl?.trim() ||
+    userAvatarUrl?.trim() ||
+    profile?.avatar_url?.trim() ||
+    undefined;
+
   return wrapInProfileShell(
     <div className={profileInnerClass}>
-      <header className={`${profileSectionClass} space-y-3 max-lg:space-y-1.5`}>
-        <div className="flex min-w-0 items-center gap-3 max-lg:gap-2">
-          <ProfileAvatar
-            name={displayName}
-            imageUrl={userAvatarUrl?.trim() || undefined}
-            className="shrink-0"
-          />
-          <div className="min-w-0 flex-1 overflow-hidden">
-            <h1 className="truncate text-xl font-semibold tracking-tight text-gn-text-primary max-lg:text-base sm:text-2xl">
+      <header
+        data-profile-header
+        className={`${profileSectionClass} max-lg:mt-2 max-lg:pt-2 space-y-2 max-lg:space-y-1.5 sm:space-y-3`}
+      >
+        <div className="flex min-w-0 items-start gap-2.5 max-lg:gap-2">
+          <div data-profile-avatar-slot className="relative shrink-0">
+            <ProfileAvatar
+              name={displayName}
+              imageUrl={resolvedAvatarUrl}
+              sizeClassName="size-12"
+              className="ring-1 ring-gn-accent/40"
+            />
+          </div>
+          <div className="min-w-0 flex-1 overflow-hidden pt-1 max-lg:pt-1.5">
+            <h1 className="truncate text-lg font-semibold tracking-tight text-gn-text-primary max-lg:text-sm max-lg:font-medium sm:text-2xl">
               {displayName}
             </h1>
-            <p className="truncate text-sm text-gn-text-secondary max-lg:text-xs">@{displayUsername}</p>
+            <p className="truncate text-sm text-gn-text-secondary max-lg:text-[10px] max-lg:leading-tight">
+              @{displayUsername}
+            </p>
             {profile.founding_player === true || isPlayerPremium(profile) ? (
-              <div className="mt-1.5 flex min-w-0 max-w-full flex-wrap items-center gap-1.5 max-lg:mt-1 max-lg:gap-1">
+              <div className="mt-1 flex min-w-0 max-w-full flex-wrap items-center gap-1 max-lg:mt-0.5">
                 {profile.founding_player === true ? <FoundingPlayerBadge /> : null}
                 {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
               </div>

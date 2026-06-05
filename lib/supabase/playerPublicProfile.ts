@@ -73,7 +73,13 @@ export async function fetchPlayerProfileBySlug(
       return { profile: null, userAvatarUrl: null, errorMessage: null };
     }
     const avatar = typeof u?.avatar_url === "string" ? u.avatar_url.trim() : "";
-    return { profile, userAvatarUrl: avatar || null, errorMessage: null };
+    const profileAvatar =
+      typeof profile.avatar_url === "string" ? profile.avatar_url.trim() : "";
+    return {
+      profile,
+      userAvatarUrl: avatar || profileAvatar || null,
+      errorMessage: null,
+    };
   }
 
   return { profile, userAvatarUrl: null, errorMessage: null };

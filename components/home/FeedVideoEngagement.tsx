@@ -12,7 +12,7 @@ import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { supabase } from "@/lib/supabase/client";
-import { logFullSupabaseError } from "@/lib/supabase/logError";
+import { isTransientNetworkError, logFullSupabaseError } from "@/lib/supabase/logError";
 import { devLog } from "@/lib/devLog";
 import {
   fetchCommentCount,
@@ -194,13 +194,15 @@ export function FeedVideoEngagement({
     }
     const { liked: l, error } = await fetchUserHasLiked(supabase, videoId);
     if (error) {
-      logFullSupabaseError(
-        "[PitchRusch feed] fetchUserHasLiked",
-        new Error(error),
-        { videoId },
-      );
+      if (!isTransientNetworkError(error)) {
+        logFullSupabaseError(
+          "[PitchRusch feed] fetchUserHasLiked",
+          new Error(error),
+          { videoId },
+        );
+      }
       setLiked(false);
-      setLikedStatusError(error);
+      setLikedStatusError(isTransientNetworkError(error) ? null : error);
     } else {
       setLiked(l);
       setLikedStatusError(null);
