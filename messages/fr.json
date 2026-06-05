@@ -683,7 +683,7 @@
   },
   "challenges": {
     "title": "Défis",
-    "subtitle": "Participez à un défi et identifiez vos vidéos. Découvrez les campagnes tendance et les meilleurs clips.",
+    "subtitle": "Tap a challenge to view rules, leaderboard, and submit your clip.",
     "trending": "Tendance du moment",
     "trendingDesc": "Les défis avec le plus de participations en ce moment.",
     "all": "Tous les défis",
