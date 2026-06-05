@@ -138,7 +138,7 @@ export async function fetchAllChallengesOrdered(): Promise<{
       .select(cols)
       .in("status", ["active", "ended"])
       .order("status", { ascending: true })
-      .order("expires_at", { ascending: true, nullsFirst: false })
+      .order("created_at", { ascending: false })
       .order("title", { ascending: true }),
   );
 

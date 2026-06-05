@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ChallengeDetailView } from "@/components/challenges/ChallengeDetailView";
+import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -20,7 +21,7 @@ export default async function ChallengeDetailPage({ params }: Props) {
   const decoded = decodeURIComponent(slug);
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-5 sm:py-8">
+    <AppMobileTabPageShell data-challenges-page>
       <Suspense
         fallback={
           <div
@@ -33,6 +34,6 @@ export default async function ChallengeDetailPage({ params }: Props) {
       >
         <ChallengeDetailView slug={decoded} />
       </Suspense>
-    </div>
+    </AppMobileTabPageShell>
   );
 }
