@@ -15,7 +15,7 @@ export function AppMobileTabPageShell({
     <div
       className={[
         APP_MOBILE_TAB_PAGE_SHELL_CLASS,
-        "box-border w-full min-w-0 max-w-full max-lg:px-4",
+        "box-border w-full min-w-0 max-w-full",
         className,
       ]
         .filter(Boolean)

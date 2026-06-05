@@ -6,6 +6,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  type ReactNode,
   type SyntheticEvent,
 } from "react";
 import Image from "next/image";
@@ -415,7 +416,7 @@ export function ExploreVideoCard({
   );
 }
 
-export function ExploreView() {
+export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
   const t = useTranslations("explore");
   const ts = useTranslations("search");
 
@@ -487,17 +488,13 @@ export function ExploreView() {
 
   return (
     <div className="box-border w-full min-w-0 max-w-full space-y-5 overflow-x-clip sm:space-y-6">
-      <header className="box-border min-w-0 max-w-full space-y-1 overflow-x-clip">
-        <h1 className="break-words text-xl font-bold tracking-tight text-gn-text sm:text-2xl lg:text-3xl">
-          {t("title")}
-        </h1>
-        <p className="text-xs text-gn-text-secondary sm:text-sm">{t("subtitle")}</p>
-      </header>
-
       <section
+        data-pitchrusch-explore-frame
         className="box-border w-full min-w-0 max-w-full space-y-4 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-3 sm:p-5"
-        aria-label={t("filtersAria")}
+        aria-labelledby="explore-page-title"
       >
+        {frameHeader}
+
         <label htmlFor="explore-player-name" className="block text-sm font-medium text-gn-text">
           {ts("nameLabel")}
         </label>
