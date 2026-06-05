@@ -458,22 +458,43 @@ export function HomeFeed() {
     };
   }, []);
 
-  /** Hide in-page feed title on mobile when clips are showing (shell header/nav stay visible). */
-  const hideFeedPageHeader =
-    scoutLoaded &&
-    !loading &&
-    !feedLoadFailed &&
-    items.length > 0;
+  const v2HomeMobile = isMobileLayoutStableV2Enabled();
 
-  const showUploadFirstBanner =
+  /**
+   * V2 mobile — fullscreen feed only (no "Otkrij" title band on return navigation).
+   * V1 — hide title once clips are on screen.
+   */
+  const hideFeedPageHeader = v2HomeMobile
+    ? true
+    : scoutLoaded && !loading && !feedLoadFailed && items.length > 0;
+
+  const uploadFirstEligible =
     uploadEligibility === "player" &&
     myVideos.state === "ready" &&
     myVideos.count === 0 &&
-    !uploadFirstDismissed &&
-    !hideFeedPageHeader;
+    !uploadFirstDismissed;
+
+  /** Header band only — never while feed is loading (fixes return-navigation flash). */
+  const showUploadFirstBannerInHeader =
+    scoutLoaded && !loading && uploadFirstEligible && !hideFeedPageHeader;
+
+  /** Empty feed body — after load completes, even when V2 hides the page header. */
+  const showUploadFirstBannerInEmpty =
+    scoutLoaded && !loading && uploadFirstEligible;
 
   function renderFeedBody() {
     if (!scoutLoaded || loading) {
+      if (v2HomeMobile) {
+        return (
+          <div
+            className="flex h-full min-h-0 flex-1 flex-col items-center justify-center gap-3 bg-black text-sm text-gn-text-secondary"
+            role="status"
+            aria-busy="true"
+          >
+            <FeedSpinner />
+          </div>
+        );
+      }
       return (
         <div
           className="flex min-h-[12rem] flex-col items-center justify-center gap-3 rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-12 text-sm text-gn-text-secondary"
@@ -508,7 +529,7 @@ export function HomeFeed() {
         myVideos.state === "ready" && myVideos.count === 0;
       return (
         <div className="flex w-full min-w-0 max-w-full flex-col gap-4">
-          {showUploadFirstBanner ? (
+          {showUploadFirstBannerInEmpty ? (
             <UploadFirstVideoBanner variant="compact" onLater={dismissUploadFirst} />
           ) : null}
           <div className="flex flex-col items-center gap-5 rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-12 text-center">
@@ -584,7 +605,7 @@ export function HomeFeed() {
             {tFeed("adminSupportInboxHint", { count: adminSupportUnread })}
           </Link>
         ) : null}
-        {showUploadFirstBanner ? (
+        {showUploadFirstBannerInHeader ? (
           <UploadFirstVideoBanner variant="compact" onLater={dismissUploadFirst} />
         ) : null}
       </header>
