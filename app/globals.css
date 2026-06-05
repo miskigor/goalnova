@@ -624,11 +624,13 @@ main,
    * /explore — filters live above the grid; inner flex band must grow with content
    * so [data-app-main] can scroll all the way to the top (touch-pan-y removed on ExploreView).
    */
-  [data-app-main]:has([data-pitchrusch-explore-page]) {
+  [data-app-main]:has([data-pitchrusch-explore-page]),
+  [data-app-main]:has([data-challenges-page]) {
     scroll-padding-top: var(--gn-page-content-scroll-padding-top);
   }
 
-  [data-app-main-inner]:has([data-pitchrusch-explore-page]) {
+  [data-app-main-inner]:has([data-pitchrusch-explore-page]),
+  [data-app-main-inner]:has([data-challenges-page]) {
     flex: 0 1 auto;
     height: auto;
     min-height: min-content;

@@ -25,4 +25,14 @@ html[data-mobile-layout-stable-v2] [data-pitchrusch-explore-frame] p {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-bottom-nav] {
+  position: fixed !important;
+  inset-inline: 0 !important;
+  bottom: 0 !important;
+  z-index: 50 !important;
+}
+html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-scroll] {
+  overflow-y: auto !important;
+  min-height: 0 !important;
+}
 `.trim();

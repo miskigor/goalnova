@@ -459,6 +459,60 @@
     min-width: 0;
   }
 
+  /*
+   * /challenges — bottom nav fixed to viewport (outside scroll); only [data-mlv2-scroll] scrolls.
+   */
+  html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-column] {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-scroll] {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: clip !important;
+    overscroll-behavior: none !important;
+    overscroll-behavior-y: none !important;
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-bottom-nav] {
+    position: fixed !important;
+    inset-inline: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    z-index: 50 !important;
+    width: 100% !important;
+    max-width: var(--mlv2-content-max, min(100%, 390px)) !important;
+    margin-inline: auto !important;
+    flex: none !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-content] {
+    padding-bottom: calc(
+      1rem + var(--mlv2-bottom-nav-height, calc(3.5rem + env(safe-area-inset-bottom, 0px)))
+    ) !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-challenges-page],
+  html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-pitchrusch-explore-frame] {
+    height: auto;
+    min-height: min-content;
+    max-height: none;
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
   [data-mobile-layout-stable-v2] [data-own-profile-page] {
     box-sizing: border-box;
     width: 100%;

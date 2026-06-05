@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ChallengesHub } from "@/components/challenges/ChallengesHub";
+import { ChallengesPageView } from "@/components/challenges/ChallengesPageView";
 import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
 import { GuestPublicCallout } from "@/components/layout/GuestPublicCallout";
-import { ChallengesPageHeader } from "./ChallengesPageHeader";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -18,10 +17,9 @@ export default async function ChallengesPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <AppMobileTabPageShell data-challenges-page>
+    <AppMobileTabPageShell data-pitchrusch-explore-page data-challenges-page>
       <GuestPublicCallout />
-      <ChallengesPageHeader />
-      <ChallengesHub />
+      <ChallengesPageView />
     </AppMobileTabPageShell>
   );
 }

@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/gnButtonClasses";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 import { withLocalizedChallengeContent } from "@/lib/challenges/challengeContent";
+import { resetMlv2ScrollPosition } from "@/lib/layout/mlv2ScrollReset";
 
 function sortByNewestFirst(rows: ChallengeRow[]): ChallengeRow[] {
   return [...rows].sort((a, b) => {
@@ -77,7 +78,7 @@ export function ChallengesHub() {
   if (loading) {
     return (
       <div
-        className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-gn-text-secondary"
+        className="flex flex-col items-center justify-center gap-3 py-10 text-sm text-gn-text-secondary"
         role="status"
       >
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-gn-accent border-t-transparent" />
@@ -136,7 +137,7 @@ export function ChallengesHub() {
   }
 
   return (
-    <div className="box-border min-w-0 w-full max-w-full space-y-8 overflow-x-clip sm:space-y-10">
+    <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip sm:space-y-8">
       {activeSorted.length > 0 ? (
         <section
           className="box-border min-w-0 w-full max-w-full space-y-3 overflow-x-clip"

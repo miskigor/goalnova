@@ -22,6 +22,7 @@ import {
 import { supabase } from "@/lib/supabase/client";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import type { ExploreFeedItem, ExploreSort } from "@/lib/supabase/exploreFeed";
+import { ChallengesPageScrollLock } from "@/components/challenges/ChallengesPageScrollLock";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import {
   GN_VIDEO_MEDIA_ELEMENT_CLASS,
@@ -288,7 +289,7 @@ export function ChallengeDetailView({ slug }: Props) {
   if (challenge === undefined && !metaLoadFailed) {
     return (
       <div
-        className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-gn-text-secondary"
+        className="flex flex-col items-center justify-center gap-3 py-10 text-sm text-gn-text-secondary"
         role="status"
       >
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-gn-accent border-t-transparent" />
@@ -342,7 +343,9 @@ export function ChallengeDetailView({ slug }: Props) {
   const scoringRows = toScoringRows(ch.scoring);
 
   return (
-    <div className="min-w-0 max-w-full space-y-5 sm:space-y-6">
+    <>
+      <ChallengesPageScrollLock />
+      <div className="box-border w-full min-w-0 max-w-full space-y-5 overflow-x-clip sm:space-y-6">
       <header className="min-w-0 space-y-3">
         <Link
           href="/challenges"
@@ -575,7 +578,7 @@ export function ChallengeDetailView({ slug }: Props) {
 
       {feedLoading ? (
         <div
-          className="flex min-h-[30vh] flex-col items-center justify-center gap-3 text-sm text-gn-text-secondary"
+          className="flex flex-col items-center justify-center gap-3 py-10 text-sm text-gn-text-secondary"
           role="status"
         >
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-gn-accent border-t-transparent" />
@@ -616,18 +619,15 @@ export function ChallengeDetailView({ slug }: Props) {
 
       {!feedLoading && !feedLoadFailed && items.length > 0 && sort !== "leaderboard" ? (
         <div className="min-w-0">
-          <div className="mx-auto w-full max-w-[560px]" style={{ height: "calc(100vh - 220px)" }}>
-            <div className="h-full overflow-y-auto overscroll-contain snap-y snap-mandatory space-y-4 pb-4">
-              {items.map((item) => (
-                <div
-                  key={item.video.id ?? `${item.video.user_id}-${item.video.created_at}`}
-                  className="snap-start"
-                  style={{ height: "calc(100vh - 220px)" }}
-                >
-                  <ChallengeTikTokCard item={item} />
-                </div>
-              ))}
-            </div>
+          <div className="mx-auto w-full max-w-[560px] space-y-4 pb-4">
+            {items.map((item) => (
+              <div
+                key={item.video.id ?? `${item.video.user_id}-${item.video.created_at}`}
+                className="aspect-[9/16] w-full min-h-0"
+              >
+                <ChallengeTikTokCard item={item} />
+              </div>
+            ))}
           </div>
           <div className="mt-4 hidden">
             {/* kept as reference: grid view */}
@@ -642,5 +642,6 @@ export function ChallengeDetailView({ slug }: Props) {
         </div>
       ) : null}
     </div>
+    </>
   );
 }

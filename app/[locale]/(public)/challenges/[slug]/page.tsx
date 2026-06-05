@@ -21,11 +21,11 @@ export default async function ChallengeDetailPage({ params }: Props) {
   const decoded = decodeURIComponent(slug);
 
   return (
-    <AppMobileTabPageShell data-challenges-page>
+    <AppMobileTabPageShell data-pitchrusch-explore-page data-challenges-page>
       <Suspense
         fallback={
           <div
-            className="flex min-h-[40vh] items-center justify-center"
+            className="flex flex-col items-center justify-center py-10"
             role="status"
           >
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-gn-accent border-t-transparent" />
