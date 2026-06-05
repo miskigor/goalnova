@@ -13,6 +13,10 @@ import {
   urlHasPendingAuthRedirect,
 } from "@/lib/auth/consumeAuthRedirectFromUrl";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
+import {
+  recoverIfInvalidRefreshToken,
+  recoverStaleSupabaseSession,
+} from "@/lib/auth/staleSessionRecovery";
 import { AppChromeLayout } from "@/components/layout/AppChromeLayout";
 import { PitchruschLoadingScreen } from "@/components/loading/PitchruschLoadingScreen";
 import { devError } from "@/lib/devLog";
@@ -26,16 +30,6 @@ type AuthGateProps = {
   redirectTo: string;
   children: React.ReactNode;
 };
-
-function isInvalidRefreshTokenError(err: unknown): boolean {
-  if (!err || typeof err !== "object") return false;
-  const rawMessage =
-    "message" in err && typeof (err as { message?: unknown }).message === "string"
-      ? (err as { message: string }).message
-      : "";
-  const lower = rawMessage.toLowerCase();
-  return lower.includes("invalid refresh token") || lower.includes("refresh token not found");
-}
 
 /** OAuth redirect (PKCE `code` or legacy implicit hash tokens) — session exchange can outpace a short `getSession` timeout. */
 function oauthReturnLikely(): boolean {
@@ -114,14 +108,26 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
           );
           // Fallback for slow auth initialization: verify auth via getUser before redirecting.
           const { data: userData, error: userErr } = await supabase.auth.getUser();
-          if (userErr) {
-            devError("AuthGate: getUser fallback error", userErr);
+          if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
+            if (!mounted) return;
+            setSession(null);
+            setIsAuthenticated(false);
+            setEmailConfirmed(null);
+          } else {
+            if (userErr) {
+              devError("AuthGate: getUser fallback error", userErr);
+            }
+            const user = userData.user;
+            const hasUser = Boolean(user?.id);
+            setSession(null);
+            setIsAuthenticated(hasUser);
+            setEmailConfirmed(hasUser ? isEmailConfirmed(user) : null);
           }
-          const user = userData.user;
-          const hasUser = Boolean(user?.id);
+        } else if (result.error && (await recoverIfInvalidRefreshToken(result.error))) {
+          if (!mounted) return;
           setSession(null);
-          setIsAuthenticated(hasUser);
-          setEmailConfirmed(hasUser ? isEmailConfirmed(user) : null);
+          setIsAuthenticated(false);
+          setEmailConfirmed(null);
         } else {
           const nextSession = result.data.session ?? null;
           setSession(nextSession);
@@ -131,11 +137,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
           );
         }
       } catch (err) {
-        if (isInvalidRefreshTokenError(err)) {
-          // Common on mobile Safari/dev LAN after stale auth cache.
-          // Clear local Supabase session so user can log in normally.
-          clearFreshLogin();
-          await supabase.auth.signOut({ scope: "local" });
+        if (await recoverIfInvalidRefreshToken(err)) {
           if (!mounted) return;
           setSession(null);
           setIsAuthenticated(false);
@@ -146,18 +148,30 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
         if (!mounted) return;
         try {
           const { data: userData, error: userErr } = await supabase.auth.getUser();
-          if (userErr) {
-            devError("AuthGate: getUser fallback-after-error failed", userErr);
+          if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
+            setSession(null);
+            setIsAuthenticated(false);
+            setEmailConfirmed(null);
+          } else {
+            if (userErr) {
+              devError("AuthGate: getUser fallback-after-error failed", userErr);
+            }
+            const user = userData.user;
+            setSession(null);
+            setIsAuthenticated(Boolean(user?.id));
+            setEmailConfirmed(user ? isEmailConfirmed(user) : null);
           }
-          const user = userData.user;
-          setSession(null);
-          setIsAuthenticated(Boolean(user?.id));
-          setEmailConfirmed(user ? isEmailConfirmed(user) : null);
         } catch (fallbackErr) {
-          devError("AuthGate: getUser fallback-after-error exception", fallbackErr);
-          setSession(null);
-          setIsAuthenticated(false);
-          setEmailConfirmed(null);
+          if (await recoverIfInvalidRefreshToken(fallbackErr)) {
+            setSession(null);
+            setIsAuthenticated(false);
+            setEmailConfirmed(null);
+          } else {
+            devError("AuthGate: getUser fallback-after-error exception", fallbackErr);
+            setSession(null);
+            setIsAuthenticated(false);
+            setEmailConfirmed(null);
+          }
         }
       } finally {
         if (!mounted) return;
@@ -168,9 +182,17 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     init();
 
     const { data: subscription } = supabase.auth.onAuthStateChange(
-      (event, nextSession) => {
+      async (event, nextSession) => {
         if (event === "SIGNED_IN") {
           setFreshLogin();
+        }
+        if (event === "SIGNED_OUT" && !nextSession) {
+          await recoverStaleSupabaseSession();
+          if (!mounted) return;
+          setSession(null);
+          setIsAuthenticated(false);
+          setEmailConfirmed(null);
+          return;
         }
         setSession(nextSession);
         setIsAuthenticated(Boolean(nextSession));

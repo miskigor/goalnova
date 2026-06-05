@@ -1,4 +1,5 @@
 import { devError } from "@/lib/devLog";
+import { recoverIfInvalidRefreshToken } from "@/lib/auth/staleSessionRecovery";
 import { supabase } from "@/lib/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
 
@@ -61,6 +62,9 @@ export async function readGateSessionSnapshot(
     ]);
 
     if (result !== "timeout") {
+      if (result.error && (await recoverIfInvalidRefreshToken(result.error))) {
+        return writeCache({ session: null, user: null });
+      }
       const session = result.data.session ?? null;
       return writeCache(snapshotFromSession(session));
     }
@@ -69,6 +73,9 @@ export async function readGateSessionSnapshot(
       `${gateLabel}: getSession did not resolve within ${GATE_SESSION_TIMEOUT_MS}ms; falling back to getUser`,
     );
     const { data: userData, error: userErr } = await supabase.auth.getUser();
+    if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
+      return writeCache({ session: null, user: null });
+    }
     if (userErr) {
       devError(`${gateLabel}: getUser fallback failed`, userErr);
     }

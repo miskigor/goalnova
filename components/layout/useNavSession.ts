@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { hasPersistedSupabaseSession } from "@/lib/auth/hasPersistedSupabaseSession";
+import {
+  recoverIfInvalidRefreshToken,
+  recoverStaleSupabaseSession,
+} from "@/lib/auth/staleSessionRecovery";
 import { supabase } from "@/lib/supabase/client";
 
 /**
@@ -50,16 +54,25 @@ async function resolveNavAuth(): Promise<{
   ]);
 
   if (result !== "timeout") {
+    if (result.error && (await recoverIfInvalidRefreshToken(result.error))) {
+      return { session: null, user: null };
+    }
     const session = result.data.session ?? null;
     if (session) {
       return { session, user: session.user };
     }
-    const { data: userData } = await supabase.auth.getUser();
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
+      return { session: null, user: null };
+    }
     const user = userData.user ?? null;
     return { session: null, user };
   }
 
-  const { data: userData } = await supabase.auth.getUser();
+  const { data: userData, error: userErr } = await supabase.auth.getUser();
+  if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
+    return { session: null, user: null };
+  }
   return { session: null, user: userData.user ?? null };
 }
 
@@ -105,14 +118,23 @@ function startNavSessionSync() {
       if (!hasPersistedSupabaseSession()) {
         applyNavGuest();
       }
-    } catch {
+    } catch (err) {
+      if (await recoverIfInvalidRefreshToken(err)) {
+        applyNavGuest(true);
+        return;
+      }
       if (!hasPersistedSupabaseSession()) {
         applyNavGuest();
       }
     }
   })();
 
-  supabase.auth.onAuthStateChange((_event, session) => {
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === "SIGNED_OUT" && !session) {
+      await recoverStaleSupabaseSession();
+      applyNavGuest(true);
+      return;
+    }
     applyNavSession(session, session?.user ?? null);
   });
 
@@ -120,28 +142,52 @@ function startNavSessionSync() {
     if (navSessionInitSettled) return;
 
     try {
-      const { data: userData } = await supabase.auth.getUser();
+      const { data: userData, error: userErr } = await supabase.auth.getUser();
+      if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
+        applyNavGuest(true);
+        return;
+      }
       if (userData.user?.id) {
         applyNavSession(null, userData.user);
         return;
       }
-    } catch {
+    } catch (err) {
+      if (await recoverIfInvalidRefreshToken(err)) {
+        applyNavGuest(true);
+        return;
+      }
       /* try getSession below */
     }
 
     if (navSessionInitSettled) return;
 
     try {
-      const { data } = await supabase.auth.getSession();
+      const { data, error } = await supabase.auth.getSession();
+      if (error && (await recoverIfInvalidRefreshToken(error))) {
+        applyNavGuest(true);
+        return;
+      }
       if (data.session) {
         applyNavSession(data.session);
         return;
       }
-    } catch {
+    } catch (err) {
+      if (await recoverIfInvalidRefreshToken(err)) {
+        applyNavGuest(true);
+        return;
+      }
       /* fall through */
     }
 
-    if (!navSessionInitSettled && !hasPersistedSupabaseSession()) {
+    if (!navSessionInitSettled) {
+      if (hasPersistedSupabaseSession()) {
+        try {
+          const { error } = await supabase.auth.getSession();
+          if (error) await recoverIfInvalidRefreshToken(error);
+        } catch (err) {
+          await recoverIfInvalidRefreshToken(err);
+        }
+      }
       applyNavGuest(true);
     }
   }, NAV_SESSION_FAILSAFE_MS);
