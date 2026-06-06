@@ -16,6 +16,161 @@ import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { devLog } from "@/lib/devLog";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 
+function userDisplayName(row: AdminUserListRow): string {
+  return row.full_name?.trim() || "—";
+}
+
+function userAvatarLabel(row: AdminUserListRow): string {
+  return row.full_name?.trim() || row.username?.trim() || row.email || "—";
+}
+
+function userFlagsLabel(
+  row: AdminUserListRow,
+  t: (key: string) => string,
+): string {
+  const parts: string[] = [];
+  if (row.is_suspended) parts.push(t("flagSuspended"));
+  if (row.is_deleted) parts.push(t("flagDeleted"));
+  return parts.length > 0 ? parts.join(", ") : t("none");
+}
+
+type RowActionsProps = {
+  row: AdminUserListRow;
+  busyId: string | null;
+  isSuperAdmin: boolean;
+  isModerator: boolean;
+  t: (key: string, values?: Record<string, string>) => string;
+  tc: (key: string) => string;
+  onToggleSuspend: (row: AdminUserListRow) => void;
+  onToggleDeleted: (row: AdminUserListRow) => void;
+  onHardDelete: (row: AdminUserListRow) => void;
+  onAssignIssue: (row: AdminUserListRow) => void;
+  onToggleModerator: (row: AdminUserListRow) => void;
+};
+
+function AdminUserRowActions({
+  row,
+  busyId,
+  isSuperAdmin,
+  isModerator,
+  t,
+  tc,
+  onToggleSuspend,
+  onToggleDeleted,
+  onHardDelete,
+  onAssignIssue,
+  onToggleModerator,
+}: RowActionsProps) {
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      <Link
+        href={`/admin/users/${row.id}`}
+        className="rounded bg-orange-500/20 px-2 py-1 text-xs font-medium text-orange-200 hover:bg-orange-500/30"
+      >
+        {t("open")}
+      </Link>
+      {isSuperAdmin || isModerator ? (
+        <button
+          type="button"
+          disabled={busyId === row.id}
+          onClick={() => onToggleSuspend(row)}
+          className="rounded bg-white/10 px-2 py-1 text-xs text-zinc-200 hover:bg-white/15 disabled:opacity-50"
+        >
+          {row.is_suspended ? t("unsuspend") : t("suspend")}
+        </button>
+      ) : null}
+      {isSuperAdmin ? (
+        <button
+          type="button"
+          disabled={busyId === row.id}
+          onClick={() => onToggleDeleted(row)}
+          className="rounded bg-white/10 px-2 py-1 text-xs text-zinc-200 hover:bg-white/15 disabled:opacity-50"
+        >
+          {row.is_deleted ? t("restore") : t("softDelete")}
+        </button>
+      ) : null}
+      {isSuperAdmin ? (
+        <button
+          type="button"
+          disabled={busyId === row.id}
+          onClick={() => onHardDelete(row)}
+          className="rounded bg-red-500/20 px-2 py-1 text-xs font-medium text-red-200 hover:bg-red-500/30 disabled:opacity-50"
+        >
+          {t("hardDelete")}
+        </button>
+      ) : null}
+      <button
+        type="button"
+        disabled={busyId === row.id}
+        onClick={() => onAssignIssue(row)}
+        className="rounded bg-white/10 px-2 py-1 text-xs text-zinc-200 hover:bg-white/15 disabled:opacity-50"
+      >
+        {t("assignIssue")}
+      </button>
+      {isSuperAdmin ? (
+        <button
+          type="button"
+          disabled={busyId === row.id}
+          onClick={() => onToggleModerator(row)}
+          className="rounded bg-white/10 px-2 py-1 text-xs text-zinc-200 hover:bg-white/15 disabled:opacity-50"
+        >
+          {row.admin_role === "moderator" ? t("removeModerator") : t("makeModerator")}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function AdminUserMobileCard(props: RowActionsProps) {
+  const { row, t, tc } = props;
+
+  return (
+    <article className="box-border min-w-0 rounded-xl border border-white/10 bg-black/30 p-3">
+      <div className="flex min-w-0 items-start gap-3">
+        <ProfileAvatar
+          name={userAvatarLabel(row)}
+          imageUrl={row.avatar_url?.trim() || undefined}
+          sizeClassName="h-10 w-10 text-xs"
+        />
+        <div className="min-w-0 flex-1 [overflow-wrap:anywhere]">
+          <p className="font-medium text-zinc-100">{userDisplayName(row)}</p>
+          <p className="text-xs text-zinc-500">@{row.username?.trim() || "—"}</p>
+          {row.email ? (
+            <p className="mt-1 text-xs leading-snug text-zinc-400 [overflow-wrap:anywhere]">
+              {row.email}
+            </p>
+          ) : null}
+        </div>
+      </div>
+      <dl className="mt-3 grid min-w-0 grid-cols-2 gap-x-3 gap-y-2 text-xs">
+        <div className="min-w-0">
+          <dt className="text-zinc-500">{t("usersColRole")}</dt>
+          <dd className="text-zinc-300 [overflow-wrap:anywhere]">{row.role ?? "—"}</dd>
+        </div>
+        <div className="min-w-0">
+          <dt className="text-zinc-500">{t("usersColScout")}</dt>
+          <dd className="text-zinc-300 [overflow-wrap:anywhere]">
+            {row.scout_verification_status ?? "—"}
+          </dd>
+        </div>
+        <div className="min-w-0">
+          <dt className="text-zinc-500">{t("usersColPremium")}</dt>
+          <dd className="text-zinc-300">{row.is_premium ? tc("yes") : tc("no")}</dd>
+        </div>
+        <div className="min-w-0">
+          <dt className="text-zinc-500">{t("usersColFlags")}</dt>
+          <dd className="text-zinc-300 [overflow-wrap:anywhere]">
+            {userFlagsLabel(row, t)}
+          </dd>
+        </div>
+      </dl>
+      <div className="mt-3 border-t border-white/10 pt-3">
+        <AdminUserRowActions {...props} />
+      </div>
+    </article>
+  );
+}
+
 export function AdminUsersPage() {
   const t = useTranslations("adminDashboard");
   const tc = useTranslations("common");
@@ -174,22 +329,35 @@ export function AdminUsersPage() {
     void load();
   }
 
+  const rowActionProps: Omit<RowActionsProps, "row"> = {
+    busyId,
+    isSuperAdmin,
+    isModerator,
+    t,
+    tc,
+    onToggleSuspend: (row) => void toggleSuspend(row),
+    onToggleDeleted: (row) => void toggleDeleted(row),
+    onHardDelete: (row) => void hardDeleteUser(row),
+    onAssignIssue: (row) => void assignIssue(row),
+    onToggleModerator: (row) => void toggleModerator(row),
+  };
+
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold text-white">{t("usersTitle")}</h1>
-      <div className="flex flex-wrap gap-2">
+    <div className="box-border min-w-0 space-y-4 overflow-x-clip">
+      <h1 className="text-xl font-semibold text-white md:text-2xl">{t("usersTitle")}</h1>
+      <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap">
         <input
           suppressHydrationWarning
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t("searchPlaceholder")}
-          className="min-w-[200px] flex-1 rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-zinc-500"
+          className="box-border min-w-0 w-full flex-1 rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-zinc-500 sm:min-w-[200px]"
         />
         <button
           type="button"
           onClick={() => void load()}
           disabled={loading}
-          className="rounded-lg border border-white/15 px-4 py-2 text-sm font-medium text-zinc-200 hover:bg-white/5 disabled:opacity-50"
+          className="w-full shrink-0 rounded-lg border border-white/15 px-4 py-2 text-sm font-medium text-zinc-200 hover:bg-white/5 disabled:opacity-50 sm:w-auto"
         >
           {tc("search")}
         </button>
@@ -204,7 +372,22 @@ export function AdminUsersPage() {
           {actionError}
         </p>
       ) : null}
-      <div className="overflow-x-auto rounded-xl border border-white/10">
+
+      <div className="md:hidden">
+        {loading ? (
+          <p className="py-8 text-center text-sm text-zinc-500">{tc("loadingEllipsis")}</p>
+        ) : (
+          <ul className="min-w-0 space-y-3">
+            {rows.map((row) => (
+              <li key={row.id} className="min-w-0">
+                <AdminUserMobileCard row={row} {...rowActionProps} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto rounded-xl border border-white/10 md:block">
         <table className="w-full min-w-[720px] text-left text-sm">
           <thead className="border-b border-white/10 bg-black/40 text-xs uppercase text-zinc-500">
             <tr>
@@ -233,14 +416,12 @@ export function AdminUsersPage() {
                   <td className="px-3 py-2 text-zinc-200">
                     <div className="flex min-w-0 items-center gap-2.5">
                       <ProfileAvatar
-                        name={row.full_name?.trim() || row.username?.trim() || row.email || "—"}
+                        name={userAvatarLabel(row)}
                         imageUrl={row.avatar_url?.trim() || undefined}
                         sizeClassName="h-9 w-9 text-xs"
                       />
                       <div className="min-w-0">
-                        <div className="font-medium">
-                          {row.full_name?.trim() || "—"}
-                        </div>
+                        <div className="font-medium">{userDisplayName(row)}</div>
                         <div className="text-xs text-zinc-500">
                           @{row.username?.trim() || "—"}
                         </div>
@@ -258,69 +439,10 @@ export function AdminUsersPage() {
                     {row.is_premium ? tc("yes") : tc("no")}
                   </td>
                   <td className="px-3 py-2 text-xs text-zinc-500">
-                    {row.is_suspended ? `${t("flagSuspended")} ` : ""}
-                    {row.is_deleted ? t("flagDeleted") : ""}
-                    {!row.is_suspended && !row.is_deleted ? t("none") : ""}
+                    {userFlagsLabel(row, t)}
                   </td>
                   <td className="px-3 py-2">
-                    <div className="flex flex-wrap gap-1">
-                      <Link
-                        href={`/admin/users/${row.id}`}
-                        className="rounded bg-orange-500/20 px-2 py-1 text-xs font-medium text-orange-200 hover:bg-orange-500/30"
-                      >
-                        {t("open")}
-                      </Link>
-                      {isSuperAdmin || isModerator ? (
-                        <button
-                          type="button"
-                          disabled={busyId === row.id}
-                          onClick={() => void toggleSuspend(row)}
-                          className="rounded bg-white/10 px-2 py-1 text-xs text-zinc-200 hover:bg-white/15 disabled:opacity-50"
-                        >
-                          {row.is_suspended ? t("unsuspend") : t("suspend")}
-                        </button>
-                      ) : null}
-                      {isSuperAdmin ? (
-                        <button
-                          type="button"
-                          disabled={busyId === row.id}
-                          onClick={() => void toggleDeleted(row)}
-                          className="rounded bg-white/10 px-2 py-1 text-xs text-zinc-200 hover:bg-white/15 disabled:opacity-50"
-                        >
-                          {row.is_deleted ? t("restore") : t("softDelete")}
-                        </button>
-                      ) : null}
-                      {isSuperAdmin ? (
-                        <button
-                          type="button"
-                          disabled={busyId === row.id}
-                          onClick={() => void hardDeleteUser(row)}
-                          className="rounded bg-red-500/20 px-2 py-1 text-xs font-medium text-red-200 hover:bg-red-500/30 disabled:opacity-50"
-                        >
-                          {t("hardDelete")}
-                        </button>
-                      ) : null}
-                      <button
-                        type="button"
-                        disabled={busyId === row.id}
-                        onClick={() => void assignIssue(row)}
-                        className="rounded bg-white/10 px-2 py-1 text-xs text-zinc-200 hover:bg-white/15 disabled:opacity-50"
-                      >
-                        {t("assignIssue")}
-                      </button>
-                      {isSuperAdmin ? (
-                        <button
-                          type="button"
-                          disabled={busyId === row.id}
-                          onClick={() => void toggleModerator(row)}
-                          className="rounded bg-white/10 px-2 py-1 text-xs text-zinc-200 hover:bg-white/15 disabled:opacity-50"
-                        >
-                          {row.admin_role === "moderator"
-                            ? t("removeModerator")
-                            : t("makeModerator")}
-                        </button>
-                      ) : null}
-                    </div>
+                    <AdminUserRowActions row={row} {...rowActionProps} />
                   </td>
                 </tr>
               ))

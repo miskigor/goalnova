@@ -61,11 +61,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-dvh min-w-0 w-full overflow-x-clip bg-[#0a0a0c] text-zinc-100">
       <div className="mx-auto flex min-w-0 max-w-[1600px] flex-col md:flex-row">
-        <aside className="min-w-0 border-b border-white/10 bg-black/60 md:sticky md:top-0 md:h-dvh md:w-56 md:shrink-0 md:border-b-0 md:border-r md:px-3 md:py-6">
-          <div className="flex gap-2 overflow-x-auto px-3 py-3 md:flex-col md:gap-1 md:overflow-visible md:px-0 md:py-0">
+        <aside
+          data-admin-nav
+          className="min-w-0 overflow-x-clip border-b border-white/10 bg-black/60 md:sticky md:top-0 md:h-dvh md:w-56 md:shrink-0 md:overflow-visible md:border-b-0 md:border-r md:px-3 md:py-6"
+        >
+          <div className="flex flex-nowrap gap-2 overflow-x-auto overscroll-x-contain px-3 py-3 [-webkit-overflow-scrolling:touch] md:flex-col md:flex-wrap md:gap-1 md:overflow-visible md:px-0 md:py-0">
             <Link
               href="/home"
-              className="shrink-0 rounded-lg px-2 py-1.5 text-xs font-medium text-orange-400 hover:bg-white/5 md:mb-4 md:px-3"
+              className="shrink-0 whitespace-nowrap rounded-lg px-2 py-1.5 text-xs font-medium text-orange-400 hover:bg-white/5 md:mb-4 md:px-3"
             >
               {t("backToApp")}
             </Link>
@@ -74,13 +77,13 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={[
-                  "shrink-0 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   navActive(pathname, item.href)
                     ? "bg-orange-500/15 text-orange-300 ring-1 ring-orange-500/35"
                     : "text-zinc-400 hover:bg-white/[0.06] hover:text-zinc-100",
                 ].join(" ")}
               >
-                <span className="inline-flex items-center gap-2">
+                <span className="inline-flex items-center gap-2 whitespace-nowrap">
                   <span>{t(item.labelKey)}</span>
                   {item.href === "/admin/support" && supportUnread > 0 ? (
                     <span className="rounded-full bg-orange-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-orange-300">
