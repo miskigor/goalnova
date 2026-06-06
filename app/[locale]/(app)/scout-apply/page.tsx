@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
 import { ScoutApplyForm } from "@/components/scout/ScoutApplyForm";
-import { SCOUT_APPLY_PAGE_SHELL_CLASS } from "@/lib/layout/appShellClasses";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -17,9 +17,9 @@ export default async function ScoutApplyPage({ params }: Props) {
   const t = await getTranslations("scoutVerification");
 
   return (
-    <div
+    <AppMobileTabPageShell
       data-scout-apply-page
-      className={`${SCOUT_APPLY_PAGE_SHELL_CLASS} space-y-4 pb-8 sm:space-y-6 sm:pb-10`}
+      className="sm:max-w-lg"
     >
       <header className="min-w-0 max-w-full">
         <h1 className="break-words text-lg font-semibold leading-snug tracking-tight text-gn-text sm:text-2xl sm:leading-tight">
@@ -30,6 +30,6 @@ export default async function ScoutApplyPage({ params }: Props) {
         </p>
       </header>
       <ScoutApplyForm />
-    </div>
+    </AppMobileTabPageShell>
   );
 }

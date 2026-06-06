@@ -158,6 +158,8 @@
   html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-content][data-mlv2-route="tab"] .space-y-6.overflow-x-clip,
   html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-content][data-mlv2-route="tab"] [data-pitchrusch-explore-page],
   html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-content][data-mlv2-route="tab"] [data-challenges-page],
+  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-content][data-mlv2-route="tab"] [data-scout-apply-page],
+  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-content][data-mlv2-route="tab"] [data-scout-dashboard-page],
   html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-content][data-mlv2-route="profile"] [data-profile-shell],
   html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-content][data-mlv2-route="public-player"] [data-profile-shell] {
     padding-top: 0 !important;
@@ -435,6 +437,8 @@
    */
   [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] [data-pitchrusch-explore-page],
   [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] [data-challenges-page],
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] [data-scout-apply-page],
+  [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] [data-scout-dashboard-page],
   [data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="tab"] div.space-y-6.overflow-x-clip {
     padding-top: 0 !important;
     padding-inline: 0 !important;
@@ -511,6 +515,59 @@
     max-height: none;
     overflow-x: clip;
     overflow-y: visible;
+  }
+
+  /*
+   * /scout-apply + /scout-dashboard — scroll only in [data-mlv2-scroll]; bottom nav stays in-flow below.
+   */
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-mlv2-column],
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-mlv2-column] {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-mlv2-scroll],
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-mlv2-scroll] {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: clip !important;
+    overscroll-behavior: none !important;
+    overscroll-behavior-y: none !important;
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-mlv2-bottom-nav],
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-mlv2-bottom-nav] {
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
+    position: static !important;
+    transform: none !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-scout-apply-page],
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-scout-dashboard-page],
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-scout-apply-form] {
+    height: auto;
+    min-height: min-content;
+    max-height: none;
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-scout-apply-page] > header,
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-scout-dashboard-page] h1,
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-scout-dashboard-page] > header p {
+    position: static !important;
+    top: auto !important;
+    margin-top: 0 !important;
+    transform: none !important;
   }
 
   [data-mobile-layout-stable-v2] [data-own-profile-page] {

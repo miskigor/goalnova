@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
 import { ScoutDashboardView } from "@/components/scout/ScoutDashboardView";
-import { SCOUT_DASHBOARD_PAGE_SHELL_CLASS } from "@/lib/layout/appShellClasses";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -16,8 +16,11 @@ export default async function ScoutDashboardPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <div data-scout-dashboard-page className={SCOUT_DASHBOARD_PAGE_SHELL_CLASS}>
+    <AppMobileTabPageShell
+      data-scout-dashboard-page
+      className="sm:max-w-lg lg:max-w-4xl"
+    >
       <ScoutDashboardView />
-    </div>
+    </AppMobileTabPageShell>
   );
 }

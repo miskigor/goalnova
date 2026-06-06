@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
@@ -17,6 +17,7 @@ import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { SCOUT_APPLY_SECTION_CLASS } from "@/lib/layout/appShellClasses";
 import { ScoutApplyOverflowDebug } from "@/components/scout/ScoutApplyOverflowDebug";
 import { isApprovedScoutUser } from "@/lib/scoutVerification";
+import { scheduleMlv2ScrollReset } from "@/lib/layout/mlv2ScrollReset";
 import {
   handleProfileFieldPaste,
   sanitizeEmailForStorage,
@@ -47,6 +48,7 @@ export function ScoutApplyForm() {
 }
 
 function ScoutApplyFormInner() {
+  const pathname = usePathname() ?? "/scout-apply";
   const t = useTranslations("scoutVerification");
   const tCommon = useTranslations("authCommon");
   const router = useRouter();
@@ -134,6 +136,11 @@ function ScoutApplyFormInner() {
       sub.subscription.unsubscribe();
     };
   }, [tCommon]);
+
+  useLayoutEffect(() => {
+    if (booting) return;
+    return scheduleMlv2ScrollReset(pathname);
+  }, [booting, pathname]);
 
   useEffect(() => {
     if (

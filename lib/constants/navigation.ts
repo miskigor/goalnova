@@ -114,8 +114,11 @@ export type ShellMobileNavItem = {
     | "discover"
     | "rankings"
     | "messages"
-    | "adminPanel";
+    | "adminPanel"
+    | "savedPlayers";
   icon: NavIconName;
+  /** Scout mobile: opens dashboard saved tab (`?tab=saved`) instead of plain href. */
+  scoutDashboardSection?: "saved";
 };
 
 export const APP_SHELL_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
@@ -131,7 +134,12 @@ export const APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
   { href: "/scout-dashboard", labelKey: "dashboard", icon: "scoutDashboard" },
   { href: "/discover", labelKey: "discover", icon: "discover" },
   { href: "/messages", labelKey: "messages", icon: "messages" },
-  { href: "/premium", labelKey: "premium", icon: "premium" },
+  {
+    href: "/scout-dashboard",
+    labelKey: "savedPlayers",
+    icon: "scoutDashboard",
+    scoutDashboardSection: "saved",
+  },
   { href: "/profile", labelKey: "profile", icon: "profile" },
 ];
 

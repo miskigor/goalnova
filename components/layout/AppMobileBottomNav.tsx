@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { NavIcon } from "@/components/icons/NavIcons";
@@ -80,15 +81,42 @@ function profileMenuPathActive(pathname: string): boolean {
     navItemActive(pathname, "/premium") ||
     navItemActive(pathname, "/benefits") ||
     navItemActive(pathname, "/notifications") ||
-    navItemActive(pathname, "/messages") ||
     navItemActive(pathname, "/settings") ||
-    pathname.startsWith("/settings/") ||
-    pathname.startsWith("/messages/")
+    pathname.startsWith("/settings/")
   );
+}
+
+function scoutDashboardSavedTabActive(searchParams: Pick<URLSearchParams, "get">): boolean {
+  const tab = searchParams.get("tab");
+  if (tab === "saved") return true;
+  return searchParams.get("section") === "saved";
+}
+
+function shellNavItemHref(item: ShellMobileNavItem): string {
+  if (item.scoutDashboardSection === "saved") {
+    return "/scout-dashboard?tab=saved";
+  }
+  return item.href;
+}
+
+function shellNavItemActive(
+  pathname: string,
+  searchParams: Pick<URLSearchParams, "get">,
+  item: ShellMobileNavItem,
+): boolean {
+  const savedTabActive = scoutDashboardSavedTabActive(searchParams);
+  if (item.scoutDashboardSection === "saved") {
+    return pathname === "/scout-dashboard" && savedTabActive;
+  }
+  if (item.href === "/scout-dashboard") {
+    return pathname === "/scout-dashboard" && !savedTabActive;
+  }
+  return navItemActive(pathname, item.href);
 }
 
 export function AppMobileBottomNav() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const tNav = useTranslations("nav");
   const { user } = useNavSession();
   const { loaded: adminLoaded, isAdmin } = useAdminAccess();
@@ -114,10 +142,13 @@ export function AppMobileBottomNav() {
   }, [adminLoaded, isAdmin, loaded, row?.role, isApprovedScout, pathname]);
 
   const usePlayerEmojis = items === APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV;
-  const usePlayerProfileMenu = usePlayerEmojis;
+  const isScoutBottomNav =
+    items === APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV ||
+    items === APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED;
+  const useProfileAccountMenu = usePlayerEmojis || isScoutBottomNav;
 
   useEffect(() => {
-    if (!usePlayerProfileMenu || !user?.id) {
+    if (!useProfileAccountMenu || !user?.id) {
       setProfileAvatarUrl(null);
       return;
     }
@@ -135,7 +166,7 @@ export function AppMobileBottomNav() {
     return () => {
       cancelled = true;
     };
-  }, [usePlayerProfileMenu, user?.id]);
+  }, [useProfileAccountMenu, user?.id]);
 
   return (
     <nav
@@ -146,13 +177,15 @@ export function AppMobileBottomNav() {
       <div className={APP_MOBILE_BOTTOM_NAV_INNER_CLASS}>
         {items.map((item) => {
           const label = mobileBottomNavDisplayLabel(tNav(item.labelKey));
-          const active = navItemActive(pathname, item.href);
+          const href = shellNavItemHref(item);
+          const active = shellNavItemActive(pathname, searchParams, item);
           const title = tNav(item.labelKey);
+          const itemKey = `${item.labelKey}-${item.scoutDashboardSection ?? item.href}`;
 
           if (item.href === "/upload") {
             return (
               <Link
-                key={`${item.href}-${item.labelKey}`}
+                key={itemKey}
                 href={item.href}
                 className={APP_MOBILE_BOTTOM_NAV_UPLOAD_LINK_CLASS}
                 aria-current={active ? "page" : undefined}
@@ -173,12 +206,12 @@ export function AppMobileBottomNav() {
             );
           }
 
-          if (item.href === "/profile" && usePlayerProfileMenu && user) {
+          if (item.href === "/profile" && useProfileAccountMenu && user) {
             const profileActive = profileMenuPathActive(pathname);
             const hasAvatar = Boolean(profileAvatarUrl?.trim());
             return (
               <div
-                key={`${item.href}-${item.labelKey}`}
+                key={itemKey}
                 className={[
                   APP_MOBILE_BOTTOM_NAV_PROFILE_CELL_CLASS,
                   profileActive ? "text-gn-accent" : "text-gn-text-secondary",
@@ -215,10 +248,10 @@ export function AppMobileBottomNav() {
             );
           }
 
-          if (item.href === "/profile" && usePlayerProfileMenu && !user) {
+          if (item.href === "/profile" && useProfileAccountMenu && !user) {
             return (
               <Link
-                key={`${item.href}-${item.labelKey}`}
+                key={itemKey}
                 href={item.href}
                 className={bottomItemClass(pathname, item.href)}
                 aria-current={active ? "page" : undefined}
@@ -241,9 +274,15 @@ export function AppMobileBottomNav() {
 
           return (
             <Link
-              key={`${item.href}-${item.labelKey}`}
-              href={item.href}
-              className={bottomItemClass(pathname, item.href)}
+              key={itemKey}
+              href={href}
+              className={[
+                APP_MOBILE_BOTTOM_NAV_ITEM_CLASS,
+                "transition-[color,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors",
+                active
+                  ? "border-gn-accent/35 bg-gn-accent/10 text-gn-accent"
+                  : "text-gn-text-secondary hover:border-gn-border-subtle hover:bg-gn-surface/40 hover:text-gn-text",
+              ].join(" ")}
               aria-current={active ? "page" : undefined}
               aria-label={title}
             >

@@ -146,9 +146,14 @@ export const PUBLIC_PLAYER_PROFILE_PAGE_SHELL =
 export const PUBLIC_PLAYER_PROFILE_SECTION_CLASS =
   "box-border w-full min-w-0 max-w-full overflow-x-clip";
 
-/** `/scout-apply` — centered column; main shell already applies horizontal padding. */
-export const SCOUT_APPLY_PAGE_SHELL_CLASS =
-  "mx-auto box-border w-full min-w-0 max-w-lg overflow-x-clip";
+/**
+ * Scout tab pages — same bounded column as `/benefits` inside V2 `[data-mlv2-content]`.
+ * Top inset and horizontal padding come from the V2 content frame, not this shell.
+ */
+export const SCOUT_TAB_PAGE_SHELL_CLASS = APP_MOBILE_TAB_PAGE_SHELL_CLASS;
+
+/** `/scout-apply` — use via {@link AppMobileTabPageShell} + `data-scout-apply-page`. */
+export const SCOUT_APPLY_PAGE_SHELL_CLASS = SCOUT_TAB_PAGE_SHELL_CLASS;
 
 /** `/settings/profile` — outer shell (horizontal inset on {@link SETTINGS_PROFILE_MOBILE_INSET_CLASS}). */
 export const SETTINGS_PROFILE_PAGE_SHELL_CLASS =
@@ -168,9 +173,8 @@ export const SETTINGS_PROFILE_MOBILE_INSET_CLASS = [
 export const SCOUT_APPLY_SECTION_CLASS =
   "box-border w-full min-w-0 max-w-full overflow-x-clip";
 
-/** `/scout-dashboard` — centered column; main shell already applies horizontal padding. */
-export const SCOUT_DASHBOARD_PAGE_SHELL_CLASS =
-  "mx-auto box-border w-full min-w-0 max-w-lg overflow-x-clip lg:max-w-4xl";
+/** `/scout-dashboard` — use via {@link AppMobileTabPageShell} + `data-scout-dashboard-page`. */
+export const SCOUT_DASHBOARD_PAGE_SHELL_CLASS = SCOUT_TAB_PAGE_SHELL_CLASS;
 
 /** `/discover` — bounded column inside main shell padding (no extra horizontal px). */
 export const DISCOVER_PAGE_SHELL_CLASS =
