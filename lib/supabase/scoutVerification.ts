@@ -26,11 +26,7 @@ export type ScoutAccessRow = {
 export async function fetchScoutAccessForUser(
   userId: string,
 ): Promise<{ row: ScoutAccessRow | null; errorMessage: string | null }> {
-  const { data, error } = await supabase
-    .from("users")
-    .select("role, scout_verification_status")
-    .eq("id", userId)
-    .maybeSingle();
+  const { data, error } = await supabase.rpc("get_my_scout_access");
 
   if (error) {
     if (isLikelyTransientNetworkFailure(error)) {
@@ -43,14 +39,17 @@ export async function fetchScoutAccessForUser(
     logFullSupabaseError("[scoutVerification] fetch access", error, { userId });
     return { row: null, errorMessage: error.message };
   }
-  if (!data) {
+
+  const accessRow = Array.isArray(data) ? data[0] : data;
+  if (!accessRow) {
     return { row: null, errorMessage: null };
   }
+
   return {
     row: {
-      role: String(data.role ?? "player"),
+      role: String(accessRow.role ?? "player"),
       scout_verification_status: parseScoutVerificationStatus(
-        data.scout_verification_status,
+        accessRow.scout_verification_status,
       ),
     },
     errorMessage: null,

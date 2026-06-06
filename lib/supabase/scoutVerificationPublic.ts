@@ -4,7 +4,7 @@ import { logFullSupabaseError } from "@/lib/supabase/logError";
 
 /**
  * For each user id, whether they count as a trusted (verified) scout in the product.
- * Uses `users.role` and `users.scout_verification_status` — not role alone.
+ * Uses `get_scout_verification_flags` RPC — role + scout_verification_status, not role alone.
  */
 export async function fetchVerifiedScoutFlagsForUserIds(
   userIds: string[],
@@ -13,10 +13,9 @@ export async function fetchVerifiedScoutFlagsForUserIds(
   const out = new Map<string, boolean>();
   if (unique.length === 0) return out;
 
-  const { data, error } = await supabase
-    .from("users")
-    .select("id, role, scout_verification_status")
-    .in("id", unique);
+  const { data, error } = await supabase.rpc("get_scout_verification_flags", {
+    p_user_ids: unique,
+  });
 
   if (error) {
     logFullSupabaseError(

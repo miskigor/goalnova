@@ -1144,6 +1144,21 @@ export type Database = {
           verification_status: string;
         }[];
       };
+      get_my_scout_access: {
+        Args: Record<string, never>;
+        Returns: {
+          role: string;
+          scout_verification_status: string;
+        }[];
+      };
+      get_scout_verification_flags: {
+        Args: { p_user_ids: string[] };
+        Returns: {
+          id: string;
+          role: string;
+          scout_verification_status: string;
+        }[];
+      };
       submit_scout_verification_application: {
         Args: {
           p_business_email: string;
