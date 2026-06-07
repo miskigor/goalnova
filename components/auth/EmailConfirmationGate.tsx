@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { resolveGateAuthEventAction } from "@/lib/auth/gateAuthEvent";
+import { hasFreshLogin } from "@/lib/auth/freshLogin";
 import { readGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
-import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 
@@ -86,16 +86,15 @@ export function EmailConfirmationGate({ children }: Props) {
       trackedUserIdRef.current =
         sessionUser?.id ?? session?.user?.id ?? null;
 
-      let user = sessionUser;
-      if (!user) {
-        const { data: userData, error: userErr } = await supabase.auth.getUser();
-        if (userErr) {
-          devError("EmailConfirmationGate: getUser failed", userErr);
-        }
-        user = userData.user ?? session?.user ?? null;
+      const user = sessionUser ?? session?.user ?? null;
+
+      if (hasFreshLogin() && (session?.access_token || user?.id)) {
+        didRedirectRef.current = false;
+        if (!cancelled) setAllowed(true);
+        return;
       }
 
-      if (isEmailConfirmed(user)) {
+      if (user && isEmailConfirmed(user)) {
         didRedirectRef.current = false;
         if (!cancelled) setAllowed(true);
         return;

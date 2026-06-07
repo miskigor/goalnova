@@ -13,22 +13,27 @@ export async function roleOnboardingHref(): Promise<string> {
 }
 
 /** Where to send users who already finished role onboarding. */
-export async function resolvePostOnboardingHomePath(): Promise<string> {
-  const { data: auth } = await supabase.auth.getUser();
-  const userId = auth.user?.id;
-  if (!userId) return "/home";
+export async function resolvePostOnboardingHomePath(
+  userId?: string | null,
+): Promise<string> {
+  let resolvedUserId = userId?.trim() || null;
+  if (!resolvedUserId) {
+    const { data: auth } = await supabase.auth.getUser();
+    resolvedUserId = auth.user?.id ?? null;
+  }
+  if (!resolvedUserId) return "/home";
 
   const { data: userRow } = await supabase
     .from("users")
     .select("role, is_admin, admin_role")
-    .eq("id", userId)
+    .eq("id", resolvedUserId)
     .maybeSingle();
 
   if (isRoleOnboardingExempt(userRow)) return "/admin";
   if (userRow?.role === "scout") return "/scout-dashboard";
   if (userRow?.role === "player") {
-    if (!hasCompletedPostAuthProfileLanding(userId)) {
-      markPostAuthProfileLandingComplete(userId);
+    if (!hasCompletedPostAuthProfileLanding(resolvedUserId)) {
+      markPostAuthProfileLandingComplete(resolvedUserId);
       return "/profile";
     }
     return "/home";

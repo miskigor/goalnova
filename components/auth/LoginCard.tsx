@@ -1,26 +1,20 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useRouter } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { devError } from "@/lib/devLog";
 import {
   consumeAuthRedirectFromUrl,
   urlHasPendingAuthRedirect,
 } from "@/lib/auth/consumeAuthRedirectFromUrl";
-import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
-import { hasFreshLogin, setFreshLogin } from "@/lib/auth/freshLogin";
-import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
+import { readGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
+import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
+import { setFreshLogin } from "@/lib/auth/freshLogin";
 import { signInWithEmailPassword } from "@/lib/supabase/auth";
-import { supabase } from "@/lib/supabase/client";
 import {
-  resolvePostOnboardingHomePath,
-  roleOnboardingHref,
-} from "@/lib/onboarding/roleOnboardingPaths";
-import {
-  needsRoleOnboardingPage,
   rememberReferralCodeFromQuery,
   syncPendingReferralCodeToUserMetadata,
-  tryConsumePendingReferralWhenPlayerReady,
 } from "@/lib/supabase/referrals";
 import { Logo } from "@/components/brand/Logo";
 
@@ -211,7 +205,7 @@ function detailForLoginFailure(
 type Props = { labels: LoginFormLabels };
 
 export function LoginCard({ labels }: Props) {
-  const router = useRouter();
+  const locale = useLocale();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -233,56 +227,23 @@ export function LoginCard({ labels }: Props) {
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const oauthReturn =
-        typeof window !== "undefined" &&
-        (() => {
-          const url = new URL(window.location.href);
-          if (url.searchParams.has("code")) return true;
-          const hash = url.hash.replace(/^#/, "");
-          if (!hash) return false;
-          const params = new URLSearchParams(hash);
-          return Boolean(params.get("access_token") && params.get("refresh_token"));
-        })();
-
       if (urlHasPendingAuthRedirect()) {
         await consumeAuthRedirectFromUrl();
       }
       if (cancelled) return;
 
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (sessionData.session) {
-        const { data: userData } = await supabase.auth.getUser();
-        if (isEmailConfirmed(userData.user)) {
-          if (oauthReturn) {
-            setFreshLogin();
-            setRedirecting(true);
-            router.replace("/home");
-            setRedirecting(false);
-            return;
-          }
-          setFreshLogin();
-          setRedirecting(true);
-          const needsRole = await needsRoleOnboardingPage();
-          if (needsRole) {
-            router.replace(await roleOnboardingHref());
-          } else {
-            void tryConsumePendingReferralWhenPlayerReady();
-            router.replace(await resolvePostOnboardingHomePath());
-          }
-          setRedirecting(false);
-          return;
-        }
-      }
-
-      if (hasFreshLogin()) return;
-      if (sessionData.session) {
-        await supabase.auth.signOut({ scope: "local" });
+      const { session, user: sessionUser } = await readGateSessionSnapshot("LoginCard");
+      if (session?.access_token || sessionUser?.id) {
+        setFreshLogin();
+        setRedirecting(true);
+        navigateAfterAuth("/home", locale);
+        return;
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [router]);
+  }, [locale]);
 
   const canSubmit = useMemo(() => {
     return email.trim().length > 0 && password.length > 0 && !loading && !redirecting;
@@ -305,7 +266,7 @@ export function LoginCard({ labels }: Props) {
     setLoading(true);
     signInFlowRef.current = true;
     try {
-      const signInData = await Promise.race([
+      await Promise.race([
         signInWithEmailPassword({ email: trimmedEmail, password }),
         new Promise<never>((_, reject) => {
           window.setTimeout(() => {
@@ -315,18 +276,9 @@ export function LoginCard({ labels }: Props) {
       ]);
       setFreshLogin();
       setRedirecting(true);
-      const userId =
-        signInData.user?.id ?? signInData.session?.user?.id ?? null;
-      await syncPendingReferralCodeToUserMetadata();
-      const needsRole = await needsRoleOnboardingPage(userId);
-      if (needsRole) {
-        router.replace(await roleOnboardingHref());
-      } else {
-        void tryConsumePendingReferralWhenPlayerReady();
-        router.replace(await resolvePostOnboardingHomePath());
-      }
-      setRedirecting(false);
-      setLoading(false);
+      void syncPendingReferralCodeToUserMetadata();
+      navigateAfterAuth("/home", locale);
+      return;
     } catch (err) {
       signInFlowRef.current = false;
       const { kind, raw, code } = classifyLoginError(err);

@@ -1,17 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { resolveGateAuthEventAction } from "@/lib/auth/gateAuthEvent";
+import { hasFreshLogin } from "@/lib/auth/freshLogin";
 import { readGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
+import { needsRoleOnboardingWithTimeout } from "@/lib/auth/needsRoleOnboardingWithTimeout";
+import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
 import {
   resolvePostOnboardingHomePath,
   roleOnboardingHref,
 } from "@/lib/onboarding/roleOnboardingPaths";
 import {
-  needsRoleOnboardingPage,
   syncPendingReferralCodeToUserMetadata,
+  tryConsumePendingReferralWhenPlayerReady,
 } from "@/lib/supabase/referrals";
 import { supabase } from "@/lib/supabase/client";
 import type { Session } from "@supabase/supabase-js";
@@ -60,8 +62,8 @@ function GateSpinner({ label }: { label: string }) {
  * - require-complete: block /role when onboarding is already done
  */
 export function RoleOnboardingGate({ mode, children }: Props) {
+  const locale = useLocale();
   const tCommon = useTranslations("authCommon");
-  const router = useRouter();
   const [allowed, setAllowed] = useState(false);
   const didRedirectRef = useRef(false);
   const allowedRef = useRef(false);
@@ -95,19 +97,36 @@ export function RoleOnboardingGate({ mode, children }: Props) {
       trackedUserIdRef.current =
         sessionUser?.id ?? session?.user?.id ?? null;
 
-      await syncPendingReferralCodeToUserMetadata();
-      const needsRole = await needsRoleOnboardingPage();
+      const userId = trackedUserIdRef.current;
+      const freshLogin = hasFreshLogin();
+
+      if (freshLogin && mode === "require-onboarding") {
+        if (!cancelled) setAllowed(true);
+        void syncPendingReferralCodeToUserMetadata();
+        void tryConsumePendingReferralWhenPlayerReady();
+        void (async () => {
+          const needsRole = await needsRoleOnboardingWithTimeout(userId);
+          if (cancelled || !needsRole || didRedirectRef.current) return;
+          didRedirectRef.current = true;
+          navigateAfterAuth(await roleOnboardingHref(), locale);
+        })();
+        return;
+      }
+
+      void syncPendingReferralCodeToUserMetadata();
+      const needsRole = await needsRoleOnboardingWithTimeout(userId);
       if (cancelled) return;
 
       if (mode === "require-onboarding") {
         if (needsRole) {
           if (!didRedirectRef.current) {
             didRedirectRef.current = true;
-            router.replace(await roleOnboardingHref());
+            navigateAfterAuth(await roleOnboardingHref(), locale);
           }
           return;
         }
         didRedirectRef.current = false;
+        void tryConsumePendingReferralWhenPlayerReady();
         if (!cancelled) setAllowed(true);
         return;
       }
@@ -116,7 +135,10 @@ export function RoleOnboardingGate({ mode, children }: Props) {
       if (!needsRole) {
         if (!didRedirectRef.current) {
           didRedirectRef.current = true;
-          router.replace(await resolvePostOnboardingHomePath());
+          navigateAfterAuth(
+            await resolvePostOnboardingHomePath(userId),
+            locale,
+          );
         }
         return;
       }
@@ -146,7 +168,7 @@ export function RoleOnboardingGate({ mode, children }: Props) {
       cancelled = true;
       subscription.unsubscribe();
     };
-  }, [mode, router]);
+  }, [locale, mode]);
 
   if (!allowed) {
     return <GateSpinner label={tCommon("loading")} />;
