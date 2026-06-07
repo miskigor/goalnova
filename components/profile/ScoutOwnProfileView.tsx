@@ -10,6 +10,14 @@ import {
 import { VerifiedScoutBadge } from "@/components/scout/VerifiedScoutBadge";
 import type { Database } from "@/lib/supabase/client";
 import { APP_PROFILE_SHELL_CLASS } from "@/lib/layout/appShellClasses";
+import {
+  SCOUT_MOBILE_BODY_CLASS,
+  SCOUT_MOBILE_BODY_MUTED_CLASS,
+  SCOUT_MOBILE_PAGE_SUBTITLE_CLASS,
+  SCOUT_MOBILE_PAGE_TITLE_CLASS,
+  SCOUT_MOBILE_SECTION_TITLE_CLASS,
+} from "@/components/scout/scoutMobileTypography";
+import { ScoutMobileLayoutCheck } from "@/components/scout/ScoutMobileLayoutCheck";
 
 const FREE_SCOUT_FEATURE_KEYS = ["f1", "f2", "f3", "f4", "f5"] as const;
 
@@ -41,10 +49,8 @@ function DetailRow({
   if (!v) return null;
   return (
     <div className="min-w-0">
-      <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary sm:text-xs">
-        {label}
-      </p>
-      <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gn-text">{v}</p>
+      <p className={SCOUT_MOBILE_BODY_MUTED_CLASS}>{label}</p>
+      <p className={`mt-1 whitespace-pre-wrap break-words ${SCOUT_MOBILE_BODY_CLASS}`}>{v}</p>
     </div>
   );
 }
@@ -84,7 +90,9 @@ export function ScoutOwnProfileView({
   const avatarUrl = user.avatar_url?.trim() || null;
 
   const inner = (
-    <div
+    <>
+      <ScoutMobileLayoutCheck />
+      <div
       data-scout-own-profile-page
       className="box-border w-full min-w-0 max-w-full space-y-6 overflow-x-clip"
     >
@@ -93,7 +101,7 @@ export function ScoutOwnProfileView({
           <ProfileAvatar name={displayName} imageUrl={avatarUrl || undefined} className="shrink-0" />
           <div className="min-w-0 flex-1 overflow-hidden space-y-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="min-w-0 max-w-full break-words text-2xl font-semibold tracking-tight text-gn-text-primary">
+              <h1 className={`min-w-0 max-w-full break-words ${SCOUT_MOBILE_PAGE_TITLE_CLASS}`}>
                 {displayName}
               </h1>
               {approved ? (
@@ -102,11 +110,11 @@ export function ScoutOwnProfileView({
                 </span>
               ) : null}
             </div>
-            <p className="text-sm text-gn-text-secondary">{subtitle}</p>
+            <p className={SCOUT_MOBILE_PAGE_SUBTITLE_CLASS}>{subtitle}</p>
           </div>
         </div>
         {!approved && scoutStatus === "pending" ? (
-          <p className="rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3 text-sm text-gn-text-secondary">
+          <p className={`rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3 ${SCOUT_MOBILE_BODY_CLASS}`}>
             {tSv("pendingBody")}
           </p>
         ) : null}
@@ -128,15 +136,15 @@ export function ScoutOwnProfileView({
         <DetailRow label={tFields("country")} value={profile.country} />
         {profile.bio?.trim() ? (
           <div className="min-w-0">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary sm:text-xs">
+            <p className={`${SCOUT_MOBILE_BODY_MUTED_CLASS}`}>
               {tFields("bio")}
             </p>
-            <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gn-text">
+            <p className={`mt-1 whitespace-pre-wrap break-words ${SCOUT_MOBILE_BODY_CLASS}`}>
               {profile.bio.trim()}
             </p>
           </div>
         ) : (
-          <p className="text-sm text-gn-text-tertiary">{tPlayer("bioEmpty")}</p>
+          <p className={SCOUT_MOBILE_BODY_CLASS}>{tPlayer("bioEmpty")}</p>
         )}
       </section>
 
@@ -145,18 +153,18 @@ export function ScoutOwnProfileView({
         className="box-border w-full min-w-0 max-w-full space-y-3 overflow-x-clip rounded-2xl border border-gn-border-subtle bg-gn-surface/25 p-4 sm:p-5"
       >
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gn-text-tertiary">
+          <h2 className={SCOUT_MOBILE_SECTION_TITLE_CLASS}>
             {isPremiumPlan ? tPremium("scoutPlans.pro.title") : tPremium("scoutPlans.free.title")}
           </h2>
-          <span className="text-sm font-semibold text-gn-text">
+          <span className={`font-semibold text-gn-text ${SCOUT_MOBILE_BODY_CLASS}`}>
             {isPremiumPlan ? tPremium("scoutPlans.pro.price") : tPremium("scoutPlans.free.price")}
           </span>
         </div>
-        <p className="text-sm text-gn-text-secondary">
+        <p className={SCOUT_MOBILE_BODY_CLASS}>
           {isPremiumPlan ? tProfile("scoutPlanProIntro") : tProfile("scoutPlanFreeIntro")}
         </p>
         {!isPremiumPlan ? (
-          <ul className="list-disc space-y-1.5 ps-5 text-sm text-gn-text-secondary">
+          <ul className={`list-disc space-y-1.5 ps-5 ${SCOUT_MOBILE_BODY_CLASS}`}>
             {FREE_SCOUT_FEATURE_KEYS.map((key) => (
               <li key={key} className="break-words">
                 {tPremium(`scoutPlans.free.${key}`)}
@@ -164,9 +172,10 @@ export function ScoutOwnProfileView({
             ))}
           </ul>
         ) : null}
-        <p className="text-xs leading-relaxed text-gn-text-tertiary">{tProfile("scoutPlanLimitsNote")}</p>
+        <p className={SCOUT_MOBILE_BODY_MUTED_CLASS}>{tProfile("scoutPlanLimitsNote")}</p>
       </section>
     </div>
+    </>
   );
 
   if (embedded) return inner;

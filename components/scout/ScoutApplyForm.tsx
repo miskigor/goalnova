@@ -15,6 +15,11 @@ import {
 } from "@/lib/supabase/scoutVerificationUpload";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { SCOUT_APPLY_SECTION_CLASS } from "@/lib/layout/appShellClasses";
+import {
+  SCOUT_MOBILE_BODY_CLASS,
+  SCOUT_MOBILE_PAGE_SUBTITLE_CLASS,
+  SCOUT_MOBILE_SECTION_TITLE_CLASS,
+} from "@/components/scout/scoutMobileTypography";
 import { ScoutApplyOverflowDebug } from "@/components/scout/ScoutApplyOverflowDebug";
 import { isApprovedScoutUser } from "@/lib/scoutVerification";
 import { scheduleMlv2ScrollReset } from "@/lib/layout/mlv2ScrollReset";
@@ -270,7 +275,7 @@ function ScoutApplyFormInner() {
         role="status"
       >
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-gn-accent border-t-transparent" />
-        <p className="text-sm text-gn-text-secondary">{tCommon("loading")}</p>
+        <p className={SCOUT_MOBILE_BODY_CLASS}>{tCommon("loading")}</p>
       </div>
     );
   }
@@ -278,7 +283,7 @@ function ScoutApplyFormInner() {
   if (!userId) {
     return (
       <div className={`${cardClass} p-6`}>
-        <p className="break-words text-sm text-gn-text-secondary">{t("signInRequired")}</p>
+        <p className={SCOUT_MOBILE_BODY_CLASS}>{t("signInRequired")}</p>
         <Link
           href="/login"
           className={`${GN_PRIMARY_BUTTON_CLASS} mt-4 flex h-11 w-full min-w-0 max-w-full items-center justify-center truncate px-6 text-sm`}
@@ -292,7 +297,7 @@ function ScoutApplyFormInner() {
   if (role !== "scout") {
     return (
       <div className={`${cardClass} p-6`}>
-        <p className="break-words text-sm text-gn-text-secondary">{t("notScoutRole")}</p>
+        <p className={SCOUT_MOBILE_BODY_CLASS}>{t("notScoutRole")}</p>
         <Link
           href="/profile"
           className="mt-4 inline-block break-words text-sm font-medium text-gn-accent hover:underline"
@@ -305,7 +310,7 @@ function ScoutApplyFormInner() {
 
   if (status === "approved") {
     return (
-      <div className={`${cardClass} break-words p-6 text-sm text-gn-text-secondary`}>
+      <div className={`${cardClass} break-words p-6 ${SCOUT_MOBILE_BODY_CLASS}`}>
         {t("redirecting")}
       </div>
     );
@@ -317,13 +322,13 @@ function ScoutApplyFormInner() {
         className={`${cardClass} px-3 py-5 text-center sm:px-6 sm:py-7`}
         role="status"
       >
-        <h2 className="text-base font-semibold leading-snug tracking-tight text-gn-text break-words sm:text-lg">
+        <h2 className={SCOUT_MOBILE_SECTION_TITLE_CLASS}>
           {t("pendingTitle")}
         </h2>
-        <p className="mt-3 text-xs leading-relaxed text-gn-text-secondary break-words sm:mt-4 sm:text-sm">
+        <p className={`mt-3 break-words ${SCOUT_MOBILE_BODY_CLASS} sm:mt-4`}>
           {t("pendingBody")}
         </p>
-        <p className="mt-2 text-xs leading-relaxed text-gn-text-secondary break-words sm:text-sm">
+        <p className={`mt-2 break-words ${SCOUT_MOBILE_BODY_CLASS}`}>
           {t("pendingNotify")}
         </p>
         <Link
@@ -393,12 +398,12 @@ function ScoutApplyFormInner() {
     return (
       <div className={`${SCOUT_APPLY_SECTION_CLASS} space-y-6`}>
         <div role="status" className={`${cardClass} p-6`}>
-          <p className="break-words text-sm font-medium text-gn-text">{t("rejectedTitle")}</p>
-          <p className="mt-2 break-words text-sm text-gn-text-secondary">{t("rejectedBody")}</p>
+          <p className={`break-words font-medium text-gn-text ${SCOUT_MOBILE_BODY_CLASS}`}>{t("rejectedTitle")}</p>
+          <p className={`mt-2 break-words ${SCOUT_MOBILE_BODY_CLASS}`}>{t("rejectedBody")}</p>
         </div>
         <div className="min-w-0 max-w-full">
-          <h2 className="break-words text-lg font-semibold text-gn-text">{t("reapplyTitle")}</h2>
-          <p className="mt-1 break-words text-sm text-gn-text-secondary">{t("reapplySubtitle")}</p>
+          <h2 className={SCOUT_MOBILE_SECTION_TITLE_CLASS}>{t("reapplyTitle")}</h2>
+          <p className={`mt-1 break-words ${SCOUT_MOBILE_PAGE_SUBTITLE_CLASS}`}>{t("reapplySubtitle")}</p>
         </div>
         <form
           data-scout-apply-form

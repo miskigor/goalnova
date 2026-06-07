@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
 import { ScoutApplyForm } from "@/components/scout/ScoutApplyForm";
+import { ScoutApplyPageHeader } from "@/components/scout/ScoutApplyPageHeader";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -14,21 +15,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ScoutApplyPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("scoutVerification");
 
   return (
     <AppMobileTabPageShell
       data-scout-apply-page
       className="sm:max-w-lg"
     >
-      <header className="min-w-0 max-w-full">
-        <h1 className="break-words text-lg font-semibold leading-snug tracking-tight text-gn-text sm:text-2xl sm:leading-tight">
-          {t("pageTitle")}
-        </h1>
-        <p className="mt-1.5 break-words text-xs leading-relaxed text-gn-text-secondary sm:text-sm">
-          {t("pageSubtitle")}
-        </p>
-      </header>
+      <ScoutApplyPageHeader />
       <ScoutApplyForm />
     </AppMobileTabPageShell>
   );

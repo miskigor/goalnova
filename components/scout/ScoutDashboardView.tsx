@@ -23,7 +23,18 @@ import { ExploreVideoCard } from "@/components/explore/ExploreView";
 import type { ExploreFeedItem } from "@/lib/supabase/exploreFeed";
 import { VerifiedScoutBadge } from "@/components/scout/VerifiedScoutBadge";
 import { ScoutDashboardOverflowDebug } from "@/components/scout/ScoutDashboardOverflowDebug";
+import { ScoutMobileLayoutCheck } from "@/components/scout/ScoutMobileLayoutCheck";
 import { SCOUT_DASHBOARD_SECTION_CLASS } from "@/lib/layout/appShellClasses";
+import {
+  SCOUT_MOBILE_BODY_CLASS,
+  SCOUT_MOBILE_CARD_HINT_CLASS,
+  SCOUT_MOBILE_CARD_META_CLASS,
+  SCOUT_MOBILE_CARD_NAME_CLASS,
+  SCOUT_MOBILE_PAGE_SUBTITLE_CLASS,
+  SCOUT_MOBILE_PAGE_TITLE_CLASS,
+  SCOUT_MOBILE_SECTION_TITLE_CLASS,
+  SCOUT_MOBILE_TAB_CLASS,
+} from "@/components/scout/scoutMobileTypography";
 import { scheduleMlv2ScrollReset } from "@/lib/layout/mlv2ScrollReset";
 import { formatPlayerPositionLabel } from "@/lib/profile/formatPlayerPositionLabel";
 
@@ -146,8 +157,8 @@ function SliceBody<T>({
         <div
           className={`${SCOUT_DASHBOARD_SECTION_CLASS} rounded-xl border border-gn-border-subtle bg-gn-bg/20 px-4 py-8 text-center`}
         >
-          <p className="break-words text-sm font-medium text-gn-text">{emptyState.title}</p>
-          <p className="mt-2 break-words text-sm text-gn-text-secondary">{emptyState.body}</p>
+          <p className={`break-words font-medium text-gn-text ${SCOUT_MOBILE_BODY_CLASS}`}>{emptyState.title}</p>
+          <p className={`mt-2 break-words ${SCOUT_MOBILE_BODY_CLASS}`}>{emptyState.body}</p>
           {emptyState.ctaHref && emptyState.ctaLabel ? (
             <Link href={emptyState.ctaHref} className={`${scoutPrimaryCtaClass} mt-6`}>
               {emptyState.ctaLabel}
@@ -157,7 +168,7 @@ function SliceBody<T>({
       );
     }
     return (
-      <p className="text-sm text-gn-text-secondary">{emptyLabel ?? ""}</p>
+      <p className={SCOUT_MOBILE_BODY_CLASS}>{emptyLabel ?? ""}</p>
     );
   }
   return <>{children(slice.data)}</>;
@@ -177,10 +188,10 @@ function ScoutDashboardVideoCard({ item }: { item: ExploreFeedItem }) {
       <ExploreVideoCard item={item} showChallengeTag={false} />
       <div className="box-border min-w-0 max-w-full space-y-1 px-1.5 pb-2 sm:px-2">
         {displayName ? (
-          <p className="truncate text-sm font-medium text-gn-text">{displayName}</p>
+          <p className={`truncate ${SCOUT_MOBILE_CARD_NAME_CLASS}`}>{displayName}</p>
         ) : null}
         {position ? (
-          <p className="truncate text-xs text-gn-text-secondary">{position}</p>
+          <p className={`truncate ${SCOUT_MOBILE_CARD_META_CLASS}`}>{position}</p>
         ) : null}
         {aiScore != null && Number.isFinite(aiScore) ? (
           <span
@@ -190,7 +201,7 @@ function ScoutDashboardVideoCard({ item }: { item: ExploreFeedItem }) {
             {th("scoutAiScore", { score: Math.round(aiScore) })}
           </span>
         ) : (
-          <span className="block truncate text-xs text-gn-text-tertiary">
+          <span className={`block truncate ${SCOUT_MOBILE_CARD_HINT_CLASS}`}>
             {th("scoutAiPending")}
           </span>
         )}
@@ -222,10 +233,10 @@ function SavedPlayerCard({ row }: { row: ScoutSavedPlayerDashboardRow }) {
         href={playerProfileHref(profile)}
         className="block min-w-0 outline-none ring-gn-accent focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg"
       >
-        <h3 className="truncate text-base font-semibold text-gn-text">{name}</h3>
-        <p className="mt-0.5 truncate text-sm text-gn-text-secondary">@{username}</p>
+        <h3 className={SCOUT_MOBILE_CARD_NAME_CLASS}>{name}</h3>
+        <p className={`mt-0.5 ${SCOUT_MOBILE_CARD_META_CLASS}`}>@{username}</p>
       </Link>
-      <dl className="mt-3 grid gap-1.5 text-sm text-gn-text-secondary">
+      <dl className={`mt-3 grid gap-1.5 ${SCOUT_MOBILE_BODY_CLASS}`}>
         <div className="flex flex-wrap gap-x-2">
           <dt className="text-gn-text-tertiary">{t("colAge")}</dt>
           <dd>{age}</dd>
@@ -275,7 +286,7 @@ function ScoutDashboardTabs({
                 href={scoutDashboardTabHref(tab.id)}
                 aria-current={active ? "page" : undefined}
                 className={[
-                  "inline-flex min-h-10 max-w-full items-center justify-center truncate rounded-xl border px-3 py-2 text-sm font-medium transition",
+                  SCOUT_MOBILE_TAB_CLASS,
                   active
                     ? "border-gn-accent/40 bg-gn-accent/15 text-gn-accent"
                     : "border-gn-border-subtle bg-gn-surface/30 text-gn-text-secondary hover:border-gn-border-subtle hover:bg-gn-surface/50 hover:text-gn-text",
@@ -294,6 +305,7 @@ function ScoutDashboardTabs({
 export function ScoutDashboardView() {
   return (
     <>
+      <ScoutMobileLayoutCheck />
       <ScoutDashboardOverflowDebug />
       <ScoutDashboardBody />
     </>
@@ -429,10 +441,10 @@ function ScoutDashboardBody() {
   if (!isApprovedScout) {
     return (
       <div className={`${dashboardContentClass} space-y-6`}>
-        <h1 className="break-words text-2xl font-semibold tracking-tight text-gn-text">
+        <h1 className={SCOUT_MOBILE_PAGE_TITLE_CLASS}>
           {t("accessDeniedTitle")}
         </h1>
-        <p className="break-words text-sm text-gn-text-secondary">{t("accessDeniedBody")}</p>
+        <p className={SCOUT_MOBILE_BODY_CLASS}>{t("accessDeniedBody")}</p>
         <div className="flex min-w-0 max-w-full flex-col gap-3 sm:flex-row sm:flex-wrap">
           <Link href="/scout-apply" className={scoutPrimaryCtaClass}>
             {t("applyCta")}
@@ -450,12 +462,12 @@ function ScoutDashboardBody() {
       <header className="flex min-w-0 max-w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <h1 className="break-words text-2xl font-semibold tracking-tight text-gn-text">
+            <h1 className={SCOUT_MOBILE_PAGE_TITLE_CLASS}>
               {t("pageTitle")}
             </h1>
             <VerifiedScoutBadge withTooltip={false} className="shrink-0" />
           </div>
-          <p className="mt-1 break-words text-sm text-gn-text-secondary">{t("pageSubtitle")}</p>
+          <p className={`mt-1 break-words ${SCOUT_MOBILE_PAGE_SUBTITLE_CLASS}`}>{t("pageSubtitle")}</p>
         </div>
         <button
           type="button"
@@ -547,12 +559,12 @@ function ScoutDashboardBody() {
                       className="flex min-w-0 max-w-full items-center justify-between gap-3 rounded-xl px-2 py-2 transition hover:bg-white/[0.04]"
                     >
                       <div className="min-w-0">
-                        <p className="truncate font-medium text-gn-text">
+                        <p className={SCOUT_MOBILE_CARD_NAME_CLASS}>
                           {row.profile.full_name?.trim() ||
                             row.profile.username?.trim() ||
                             t("unknownPlayer")}
                         </p>
-                        <p className="truncate text-sm text-gn-text-secondary">
+                        <p className={`truncate ${SCOUT_MOBILE_CARD_META_CLASS}`}>
                           @{row.profile.username?.trim() || t("noUsername")}
                         </p>
                       </div>
@@ -575,11 +587,11 @@ function ScoutDashboardBody() {
         <section className={tabPanelClass} aria-labelledby="scout-tab-search">
           <h2
             id="scout-tab-search"
-            className="mb-4 break-words text-lg font-semibold tracking-tight text-gn-text"
+            className={`mb-4 ${SCOUT_MOBILE_SECTION_TITLE_CLASS}`}
           >
             {t("detailedSearchTitle")}
           </h2>
-          <p className="break-words text-sm text-gn-text-secondary">{t("detailedSearchBody")}</p>
+          <p className={SCOUT_MOBILE_BODY_CLASS}>{t("detailedSearchBody")}</p>
           <Link href="/discover" className={`${scoutPrimaryCtaClass} mt-4`}>
             {t("detailedSearchCta")}
           </Link>

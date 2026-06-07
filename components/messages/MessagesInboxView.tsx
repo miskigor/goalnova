@@ -118,7 +118,7 @@ export function MessagesInboxView() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[40vh] min-w-0 max-w-full flex-col items-center justify-center gap-2 text-sm text-gn-text-secondary">
+      <div className="flex min-h-[30vh] min-w-0 max-w-full flex-col items-center justify-center gap-2 text-sm text-gn-text-secondary">
         <Spinner />
         {t("loadingInbox")}
       </div>
