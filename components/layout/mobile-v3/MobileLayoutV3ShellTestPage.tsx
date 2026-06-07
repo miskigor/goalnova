@@ -86,6 +86,12 @@ export function MobileLayoutV3ShellTestPage() {
       >
         Open Home V3 mock feed →
       </Link>
+      <Link
+        href="/debug/mobile-layout-v3/home-feed"
+        className="inline-flex rounded-lg border border-gn-accent/40 bg-gn-accent/10 px-3 py-2 text-sm font-medium text-gn-text"
+      >
+        Open Home V3 real feed →
+      </Link>
       {Array.from({ length: 12 }, (_, i) => (
         <div
           key={i}

@@ -17,12 +17,17 @@ export function isMobileLayoutV3ShellRoute(pathname: string): boolean {
   const path = normalizePathname(pathname);
   return (
     path === "/debug/mobile-layout-v3" ||
-    path === "/debug/mobile-layout-v3/home-mock"
+    path === "/debug/mobile-layout-v3/home-mock" ||
+    path === "/debug/mobile-layout-v3/home-feed"
   );
 }
 
 export function isMobileLayoutV3HomeMockRoute(pathname: string): boolean {
   return normalizePathname(pathname) === "/debug/mobile-layout-v3/home-mock";
+}
+
+export function isMobileLayoutV3HomeFeedRoute(pathname: string): boolean {
+  return normalizePathname(pathname) === "/debug/mobile-layout-v3/home-feed";
 }
 
 function normalizePathname(pathname: string): string {

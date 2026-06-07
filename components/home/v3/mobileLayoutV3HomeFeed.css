@@ -1,0 +1,138 @@
+/**
+ * Home feed V3 — shared mock shell + real-feed inner layers only.
+ */
+@import "./mobileLayoutV3HomeShared.css";
+
+/* Real feed — hard-lock visible card to mock iPhone target (240×427). */
+html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-home-mock-card] {
+  box-sizing: border-box;
+  width: 240px !important;
+  height: 427px !important;
+  max-width: 240px !important;
+  max-height: 427px !important;
+  min-width: 240px !important;
+  min-height: 427px !important;
+  flex: 0 0 240px !important;
+}
+
+html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-home-feed-status] {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  text-align: center;
+}
+
+/* Real content inside the shared mock card frame */
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] [data-mlv3-home-feed-video] {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] [data-mlv3-home-feed-video] [data-mlv3-home-feed-native-video] {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] [data-mlv3-home-feed-video] [data-mlv3-home-feed-native-video] video {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] [data-mlv3-home-feed-vignette] {
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] [data-mlv3-home-feed-rail] {
+  pointer-events: auto;
+  position: absolute;
+  z-index: 20;
+  inset-inline-end: 0.5rem;
+  bottom: 4.5rem;
+  display: flex;
+  width: 2.75rem;
+  min-width: 0;
+  max-width: 2.75rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  max-height: calc(100% - 5rem);
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] [data-mlv3-home-feed-meta] {
+  pointer-events: none;
+  position: absolute;
+  z-index: 10;
+  inset-inline: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0.75rem 3.5rem 0.875rem 0.875rem;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] [data-mlv3-home-feed-meta] p {
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] [data-mlv3-home-feed-meta] .mlv3-feed-meta-name {
+  white-space: nowrap;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] [data-mlv3-home-feed-meta] .mlv3-feed-meta-caption {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] [data-mlv3-home-feed-challenge] {
+  pointer-events: auto;
+  position: absolute;
+  z-index: 15;
+  inset-inline-start: 0.5rem;
+  top: 0.5rem;
+  max-width: calc(100% - 1rem);
+  overflow: hidden;
+}

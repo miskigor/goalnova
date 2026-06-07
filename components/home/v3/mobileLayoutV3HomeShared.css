@@ -1,0 +1,185 @@
+/**
+ * Shared home V3 mock + real feed shell — identical DOM attrs and card sizing.
+ * Imported by mobileLayoutV3HomeMock.css and mobileLayoutV3HomeFeed.css.
+ */
+
+@media (max-width: 1023px) {
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]),
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]),
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) body,
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) body {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-column],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-column] {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-inline: 0;
+    overflow-x: hidden;
+  }
+
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-root],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-root],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-main],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-main],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-scroll],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-scroll],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-home-mock-feed],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-home-mock-feed],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-home-mock-scroll-root],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-home-mock-scroll-root],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-home-mock-items],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-home-mock-items],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-home-mock-item],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-home-mock-item] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-bottom-nav],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-bottom-nav] {
+    overflow: hidden;
+    contain: layout paint;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-bottom-nav] [data-app-bottom-nav],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-bottom-nav] [data-app-bottom-nav] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    contain: layout paint;
+  }
+
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-bottom-nav] [data-app-bottom-nav] > div,
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-feed"]) [data-mlv3-bottom-nav] [data-app-bottom-nav] > div {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+}
+
+html[data-mobile-layout-v3] [data-mlv3-route="home-mock"] [data-mlv3-scroll],
+html[data-mobile-layout-v3] [data-mlv3-route="home-feed"] [data-mlv3-scroll] {
+  overflow: hidden;
+  overflow-x: hidden;
+  padding: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  max-width: 100%;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-feed] {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  overflow-x: hidden;
+  background-color: #000;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-scroll-root] {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-scroll-root]::-webkit-scrollbar {
+  display: none;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-items] {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-item] {
+  box-sizing: border-box;
+  flex: 0 0 var(--mlv3-mock-item-height, 100%);
+  height: var(--mlv3-mock-item-height, 100%);
+  max-height: var(--mlv3-mock-item-height, 100%);
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+  overflow-x: hidden;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-item-stage] {
+  box-sizing: border-box;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--mlv3-mock-top-gap, 24px);
+  padding-bottom: var(--mlv3-mock-bottom-gap, 24px);
+  overflow: hidden;
+  overflow-x: hidden;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] {
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  contain: layout style paint;
+  width: var(--mlv3-mock-card-width, auto);
+  height: var(--mlv3-mock-card-height, auto);
+  max-width: 100%;
+  min-width: 0;
+  flex: 0 0 auto;
+  overflow: hidden;
+  overflow-x: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  margin-inline: auto;
+  transform: none;
+  box-shadow: none;
+}

@@ -4,6 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import "@/components/home/v3/mobileLayoutV3HomeMock.css";
 import {
+  HomeFeedCardFrameV3,
+  HomeFeedV3ItemStage,
+  HomeFeedV3SnapItem,
+  HomeFeedV3SnapItems,
+  HomeFeedV3SnapShell,
+  logHomeV3FrameCompare,
+} from "@/components/home/v3/HomeFeedCardFrameV3";
+import {
   applyHomeMockMetrics,
   resetHomeMockV3HorizontalScroll,
   useMobileShellV3HomeMockMetrics,
@@ -177,7 +185,7 @@ function MockCard({
   to: string;
 }) {
   return (
-    <article data-mlv3-home-mock-card>
+    <HomeFeedCardFrameV3>
       <div
         data-mlv3-home-mock-card-bg
         style={{
@@ -202,7 +210,7 @@ function MockCard({
         <p className="text-[11px] text-white/75">@mockplayer</p>
         <p className="mt-1 text-[12px] text-white/88">Placeholder caption inside card</p>
       </div>
-    </article>
+    </HomeFeedCardFrameV3>
   );
 }
 
@@ -234,6 +242,7 @@ export function HomeFeedMockV3() {
     const id = window.requestAnimationFrame(() => {
       resetHomeMockV3HorizontalScroll();
       logHomeMockMetrics(0);
+      logHomeV3FrameCompare("home-mock", 0);
     });
     return () => window.cancelAnimationFrame(id);
   }, [onMockRoute]);
@@ -253,6 +262,7 @@ export function HomeFeedMockV3() {
 
   useEffect(() => {
     logHomeMockMetrics(activeIndex);
+    logHomeV3FrameCompare("home-mock", activeIndex);
   }, [activeIndex]);
 
   if (!enabled) {
@@ -285,22 +295,16 @@ export function HomeFeedMockV3() {
   }
 
   return (
-    <div data-mlv3-home-mock-feed>
-      <div
-        ref={scrollRef}
-        data-mlv3-home-mock-scroll-root
-        aria-label="Mock home feed"
-      >
-        <ul data-mlv3-home-mock-items>
-          {MOCK_CARDS.map((card) => (
-            <li key={card.id} data-mlv3-home-mock-item>
-              <div data-mlv3-home-mock-item-stage>
-                <MockCard label={card.label} from={card.from} to={card.to} />
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    <HomeFeedV3SnapShell scrollRef={scrollRef} ariaLabel="Mock home feed">
+      <HomeFeedV3SnapItems>
+        {MOCK_CARDS.map((card) => (
+          <HomeFeedV3SnapItem key={card.id}>
+            <HomeFeedV3ItemStage>
+              <MockCard label={card.label} from={card.from} to={card.to} />
+            </HomeFeedV3ItemStage>
+          </HomeFeedV3SnapItem>
+        ))}
+      </HomeFeedV3SnapItems>
+    </HomeFeedV3SnapShell>
   );
 }
