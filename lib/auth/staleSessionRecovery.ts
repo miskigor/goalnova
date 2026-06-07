@@ -4,7 +4,8 @@ import { supabase } from "@/lib/supabase/client";
 
 let recoveryInFlight: Promise<void> | null = null;
 
-function clearSupabaseAuthStorage(): void {
+/** Clears Supabase auth keys from localStorage (after local sign-out). */
+export function clearSupabaseAuthStorage(): void {
   if (typeof window === "undefined") return;
   try {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

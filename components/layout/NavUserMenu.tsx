@@ -253,6 +253,7 @@ export function NavUserMenu({
       setOpen(false);
       onNavigate?.();
       router.replace("/login");
+      router.refresh();
     } catch (e) {
       devError("Nav logout error:", e);
       showError(tErr("generic"));

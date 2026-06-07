@@ -1,4 +1,8 @@
 import { clearFreshLogin, setFreshLogin } from "@/lib/auth/freshLogin";
+import { invalidateGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
+import {
+  clearSupabaseAuthStorage,
+} from "@/lib/auth/staleSessionRecovery";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import { supabase, assertSupabaseConfigured, type Database } from "./client";
 import {
@@ -492,12 +496,27 @@ export async function signOut() {
   assertSupabaseConfigured();
 
   clearFreshLogin();
+  invalidateGateSessionSnapshot();
 
-  const { error } = await supabase.auth.signOut();
+  try {
+    await supabase.auth.signOut({ scope: "local" });
+  } catch (err) {
+    logSupabaseError("Supabase: local signOut error", err);
+  }
 
-  if (error) {
-    logSupabaseError("Supabase: signOut error", error);
-    throw error;
+  clearSupabaseAuthStorage();
+
+  try {
+    const { error } = await withTimeout(
+      supabase.auth.signOut(),
+      8000,
+      "Supabase global signOut",
+    );
+    if (error) {
+      logSupabaseError("Supabase: global signOut error", error);
+    }
+  } catch (err) {
+    logSupabaseError("Supabase: global signOut timed out or failed", err);
   }
 }
 

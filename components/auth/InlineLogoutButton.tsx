@@ -30,6 +30,7 @@ export function InlineLogoutButton({ className = defaultClassName }: Props) {
     try {
       await signOut();
       router.replace("/login");
+      router.refresh();
     } catch (e) {
       devError("Inline logout error:", e);
       showError(tErr("generic"));

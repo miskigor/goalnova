@@ -187,11 +187,11 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
           setFreshLogin();
         }
         if (event === "SIGNED_OUT" && !nextSession) {
-          await recoverStaleSupabaseSession();
           if (!mounted) return;
           setSession(null);
           setIsAuthenticated(false);
           setEmailConfirmed(null);
+          void recoverStaleSupabaseSession();
           return;
         }
         setSession(nextSession);
