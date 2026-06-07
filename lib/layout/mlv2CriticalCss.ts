@@ -35,4 +35,21 @@ html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-scroll
   overflow-y: auto !important;
   min-height: 0 !important;
 }
+html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-mlv2-column] > [data-mlv2-bottom-nav],
+html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-mlv2-column] > [data-mlv2-bottom-nav],
+html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-mlv2-column] > [data-mlv2-bottom-nav],
+html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) [data-mlv2-column] > [data-mlv2-bottom-nav] {
+  position: fixed !important;
+  inset-inline: 0 !important;
+  bottom: 0 !important;
+  top: auto !important;
+  z-index: 50 !important;
+}
+html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-mlv2-scroll],
+html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-mlv2-scroll],
+html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-mlv2-scroll],
+html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) [data-mlv2-scroll] {
+  overflow-y: auto !important;
+  min-height: 0 !important;
+}
 `.trim();

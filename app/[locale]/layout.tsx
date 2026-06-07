@@ -20,6 +20,7 @@ import { MLV2_CRITICAL_NON_HOME_CSS } from "@/lib/layout/mlv2CriticalCss";
 import { MLV2_ROOT_ATTR } from "@/components/layout/mobile-v2/mobileLayoutStableV2.tokens";
 import "@/components/layout/mobile-v2/mobileLayoutStableV2.css";
 import "@/components/layout/mobile-v2/mobileLayoutStableV2Content.css";
+import "@/components/scout/scoutPageLayout.css";
 
 /** Sets V2 html flag on app routes before first paint (avoids hydration size flash). */
 const MLV2_HTML_ATTRIBUTE_SYNC_SCRIPT = `(function(){var p=location.pathname,re=/(?:^|\\/)(?:home|explore|profile|upload|challenges|scout-dashboard|scout-apply|admin|notifications|messages|settings|premium|benefits|rankings|discover|player)(?:\\/|$)/;if(!re.test(p))return;document.documentElement.setAttribute("${MLV2_ROOT_ATTR}","");})();`;

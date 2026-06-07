@@ -1,0 +1,109 @@
+/**
+ * Scout-only V2 scroll + bottom nav (imported from MobileLayoutStableV2RouteFrame).
+ * Mirrors /challenges: [data-mlv2-scroll] scrolls, bottom nav fixed to viewport.
+ *
+ * Selectors use [data-mlv2-column] > [data-mlv2-bottom-nav] so they beat the legacy
+ * in-flow scout rules in mobileLayoutStableV2.css (position: static).
+ */
+@media (max-width: 1023px) {
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]),
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]),
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]),
+  html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) {
+    --mlv2-bottom-nav-height: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-mlv2-column],
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-mlv2-column],
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-mlv2-column],
+  html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) [data-mlv2-column] {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-mlv2-scroll],
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-mlv2-scroll],
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-mlv2-scroll],
+  html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) [data-mlv2-scroll] {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: clip !important;
+    overscroll-behavior: none !important;
+    overscroll-behavior-y: none !important;
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-mlv2-column] > [data-mlv2-bottom-nav],
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-mlv2-column] > [data-mlv2-bottom-nav],
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-mlv2-column] > [data-mlv2-bottom-nav],
+  html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) [data-mlv2-column] > [data-mlv2-bottom-nav] {
+    position: fixed !important;
+    inset-inline: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 50 !important;
+    width: 100% !important;
+    max-width: var(--mlv2-content-max, min(100%, 390px)) !important;
+    margin-inline: auto !important;
+    flex: none !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-mlv2-column] > [data-mlv2-bottom-nav] [data-app-bottom-nav],
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-mlv2-column] > [data-mlv2-bottom-nav] [data-app-bottom-nav],
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-mlv2-column] > [data-mlv2-bottom-nav] [data-app-bottom-nav],
+  html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) [data-mlv2-column] > [data-mlv2-bottom-nav] [data-app-bottom-nav] {
+    position: static !important;
+    transform: none !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-mlv2-content],
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-mlv2-content],
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-mlv2-content],
+  html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) [data-mlv2-content] {
+    padding-bottom: calc(
+      1rem + var(--mlv2-bottom-nav-height, calc(3.5rem + env(safe-area-inset-bottom, 0px)))
+    ) !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-mlv2-content][data-mlv2-route="profile"],
+  html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) [data-mlv2-content][data-mlv2-route="profile"] {
+    overflow-y: visible !important;
+    height: auto !important;
+    min-height: min-content !important;
+    max-height: none !important;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-scout-dashboard-page],
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-scout-apply-page],
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-scout-apply-form],
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-own-profile-page],
+  html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-scout-own-profile-page],
+  html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-scout-dashboard-page],
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-scout-apply-page],
+  html[data-mobile-layout-stable-v2]:has([data-scout-apply-page]) [data-scout-apply-form],
+  html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) [data-own-profile-page],
+  html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) [data-scout-own-profile-page] {
+    height: auto;
+    min-height: min-content;
+    max-height: none;
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
+  html[data-mobile-layout-stable-v2]:has([data-scout-own-profile-page]) [data-profile-avatar] {
+    transform: none !important;
+  }
+}

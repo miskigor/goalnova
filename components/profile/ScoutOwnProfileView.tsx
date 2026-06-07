@@ -84,7 +84,10 @@ export function ScoutOwnProfileView({
   const avatarUrl = user.avatar_url?.trim() || null;
 
   const inner = (
-    <div className="box-border w-full min-w-0 max-w-full space-y-6 overflow-x-clip">
+    <div
+      data-scout-own-profile-page
+      className="box-border w-full min-w-0 max-w-full space-y-6 overflow-x-clip"
+    >
       <header className="min-w-0 max-w-full space-y-3 overflow-x-clip">
         <div className="flex min-w-0 max-w-full items-center gap-3">
           <ProfileAvatar name={displayName} imageUrl={avatarUrl || undefined} className="shrink-0" />
