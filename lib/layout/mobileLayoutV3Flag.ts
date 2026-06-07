@@ -12,8 +12,19 @@ export function isMobileLayoutV3Enabled(): boolean {
   return raw === "true" || raw === "1" || raw === "yes";
 }
 
-/** Phase 1: V3 shell is limited to the debug route until explicitly expanded. */
+/** V3 shell debug routes only — not /home or other app routes. */
 export function isMobileLayoutV3ShellRoute(pathname: string): boolean {
-  const path = (pathname.split("?")[0] ?? "/").replace(/\/+$/, "") || "/";
-  return path === "/debug/mobile-layout-v3";
+  const path = normalizePathname(pathname);
+  return (
+    path === "/debug/mobile-layout-v3" ||
+    path === "/debug/mobile-layout-v3/home-mock"
+  );
+}
+
+export function isMobileLayoutV3HomeMockRoute(pathname: string): boolean {
+  return normalizePathname(pathname) === "/debug/mobile-layout-v3/home-mock";
+}
+
+function normalizePathname(pathname: string): string {
+  return (pathname.split("?")[0] ?? "/").replace(/\/+$/, "") || "/";
 }

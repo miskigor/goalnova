@@ -5,7 +5,7 @@ import {
   isMobileLayoutV3Enabled,
   isMobileLayoutV3ShellRoute,
 } from "@/lib/layout/mobileLayoutV3Flag";
-import { usePathname } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { MLV3_LAYOUT_TEST_ATTR } from "@/components/layout/mobile-v3/mobileLayoutV3.tokens";
 
 /**
@@ -80,6 +80,12 @@ export function MobileLayoutV3ShellTestPage() {
         Scroll the blue area — blocks below should move; green bottom nav stays pinned at the bottom
         of the red frame and must not drift while scrolling.
       </p>
+      <Link
+        href="/debug/mobile-layout-v3/home-mock"
+        className="inline-flex rounded-lg border border-gn-accent/40 bg-gn-accent/10 px-3 py-2 text-sm font-medium text-gn-text"
+      >
+        Open Home V3 mock feed →
+      </Link>
       {Array.from({ length: 12 }, (_, i) => (
         <div
           key={i}

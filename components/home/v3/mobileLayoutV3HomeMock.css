@@ -1,0 +1,256 @@
+/**
+ * Home mock V3 — scoped under html[data-mobile-layout-v3] only.
+ */
+
+@media (max-width: 1023px) {
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]),
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) body {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Full-width column — avoids 390px centering bleed with bottom nav */
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-column] {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-inline: 0;
+    overflow-x: hidden;
+  }
+
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-root],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-main],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-scroll],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-home-mock-feed],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-home-mock-scroll-root],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-home-mock-items],
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-home-mock-item] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  /* Bottom nav slot — clip in wrapper only (not nav component) */
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-bottom-nav] {
+    overflow: hidden;
+    contain: layout paint;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-bottom-nav] [data-app-bottom-nav] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    contain: layout paint;
+  }
+
+  html[data-mobile-layout-v3]:has([data-mlv3-route="home-mock"]) [data-mlv3-bottom-nav] [data-app-bottom-nav] > div {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+}
+
+html[data-mobile-layout-v3] [data-mlv3-route="home-mock"] [data-mlv3-scroll] {
+  overflow: hidden;
+  overflow-x: hidden;
+  padding: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  max-width: 100%;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-feed] {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  overflow-x: hidden;
+  background-color: #000;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-scroll-root] {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-scroll-root]::-webkit-scrollbar {
+  display: none;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-items] {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-item] {
+  box-sizing: border-box;
+  flex: 0 0 var(--mlv3-mock-item-height, 100%);
+  height: var(--mlv3-mock-item-height, 100%);
+  max-height: var(--mlv3-mock-item-height, 100%);
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+  overflow-x: hidden;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-item-stage] {
+  box-sizing: border-box;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--mlv3-mock-top-gap, 24px);
+  padding-bottom: var(--mlv3-mock-bottom-gap, 24px);
+  overflow: hidden;
+  overflow-x: hidden;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card] {
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  contain: layout style paint;
+  width: var(--mlv3-mock-card-width, auto);
+  height: var(--mlv3-mock-card-height, auto);
+  max-width: 100%;
+  min-width: 0;
+  flex: 0 0 auto;
+  overflow: hidden;
+  overflow-x: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  margin-inline: auto;
+  transform: none;
+  box-shadow: none;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-card-bg] {
+  position: absolute;
+  inset: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-rail] {
+  pointer-events: none;
+  position: absolute;
+  z-index: 20;
+  inset-inline-end: 0.5rem;
+  bottom: 4.5rem;
+  display: flex;
+  width: 2.75rem;
+  min-width: 0;
+  max-width: 2.75rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  max-height: calc(100% - 5rem);
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-rail] button {
+  box-sizing: border-box;
+  display: flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  min-width: 0;
+  max-width: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgb(255 255 255 / 0.25);
+  background-color: rgb(0 0 0 / 0.45);
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: none;
+  transform: none;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-meta] {
+  pointer-events: none;
+  position: absolute;
+  z-index: 10;
+  inset-inline: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0.75rem 3.5rem 0.875rem 0.875rem;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-meta] p {
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-mobile-layout-v3] [data-mlv3-home-mock-label] {
+  position: absolute;
+  z-index: 30;
+  inset-inline-start: 0.75rem;
+  top: 0.75rem;
+  max-width: calc(100% - 1.5rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 0.5rem;
+  background-color: rgb(0 0 0 / 0.55);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #fff;
+}
