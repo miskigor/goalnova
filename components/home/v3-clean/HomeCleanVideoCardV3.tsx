@@ -12,6 +12,11 @@ import { FeedVideoEngagement } from "@/components/home/FeedVideoEngagement";
 import { FeedSoundRailButton } from "@/components/home/FeedSoundRailButton";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { VideoShareButton } from "@/components/share/VideoShareButton";
+import { ChallengeTagPill } from "@/components/challenges/ChallengeTagPill";
+import {
+  challengeDisplayTitle,
+  challengeLinkSegment,
+} from "@/lib/challenges/challengeRowUtils";
 import { feedItemVideoKey } from "@/lib/feed/feedItemVideoKey";
 import type { AugmentedHomeFeedItem } from "@/lib/supabase/homeFeed";
 import {
@@ -33,7 +38,8 @@ export function HomeCleanVideoCardV3({
   const t = useTranslations("homeFeed");
   const cardRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<PlaybackVideoHandle>(null);
-  const { video, profile, userDisplayName, userAvatarUrl, scoutMetrics } = item;
+  const { video, profile, userDisplayName, userAvatarUrl, scoutMetrics, challenge } =
+    item;
 
   const playbackSources = useMemo(
     () => homeFeedPlaybackCandidates(video),
@@ -188,6 +194,15 @@ export function HomeCleanVideoCardV3({
             onPlaying={retryAudiblePlay}
             className="block h-full w-full object-cover object-top [color-scheme:dark]"
           />
+        ) : null}
+
+        {challenge ? (
+          <div data-home-clean-v3-challenge>
+            <ChallengeTagPill
+              routeSegment={challengeLinkSegment(challenge)}
+              displayTitle={challengeDisplayTitle(challenge)}
+            />
+          </div>
         ) : null}
 
         {video.id ? (
