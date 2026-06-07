@@ -3,7 +3,7 @@
  * V1/V2 legacy home feeds must not define competing measures.
  */
 [data-home-clean-v3] {
-  --home-clean-v3-card-width: 204px;
-  --home-clean-v3-card-height: 364px;
-  --home-clean-v3-top-offset: 208px;
+  --home-clean-v3-card-width: 228px;
+  --home-clean-v3-card-height: 404px;
+  --home-clean-v3-top-offset: 160px;
 }
