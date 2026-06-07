@@ -6,6 +6,11 @@ import { HomeCleanFeedScroll } from "@/components/home/v3-clean/HomeCleanFeedScr
 import {
   HomeFeedSoundProvider,
 } from "@/components/home/HomeFeedSoundContext";
+import {
+  hasHomeCleanV3FeedCache,
+  readHomeCleanV3FeedCache,
+  writeHomeCleanV3FeedCache,
+} from "@/components/home/v3-clean/homeCleanV3FeedCache";
 import { feedItemVideoKey } from "@/lib/feed/feedItemVideoKey";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
@@ -16,13 +21,16 @@ import {
 } from "@/lib/supabase/homeFeed";
 import { supabase } from "@/lib/supabase/client";
 import "@/components/home/v3-clean/homeCleanV3.css";
+import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 
 /** Production `/home` — canonical clean feed for all users. Layout locked in homeCleanV3.tokens.css. */
 export function HomeCleanV3() {
   const t = useTranslations("homeFeed");
   const { loaded: scoutLoaded } = useScoutVerification();
-  const [items, setItems] = useState<AugmentedHomeFeedItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<AugmentedHomeFeedItem[]>(() =>
+    readHomeCleanV3FeedCache(),
+  );
+  const [loading, setLoading] = useState(() => !hasHomeCleanV3FeedCache());
   const [feedLoadFailed, setFeedLoadFailed] = useState(false);
 
   const loadFeed = useCallback(async () => {
@@ -36,24 +44,29 @@ export function HomeCleanV3() {
         new Error(error),
       );
       setFeedLoadFailed(true);
-      setItems([]);
+      setItems((prev) => (prev.length > 0 ? prev : []));
       return;
     }
     setFeedLoadFailed(false);
-    setItems(next as AugmentedHomeFeedItem[]);
+    const augmented = next as AugmentedHomeFeedItem[];
+    writeHomeCleanV3FeedCache(augmented);
+    setItems(augmented);
   }, []);
 
   useEffect(() => {
     if (!scoutLoaded) return;
     let cancelled = false;
-    setLoading(true);
-    setFeedLoadFailed(false);
+    const hadCache = hasHomeCleanV3FeedCache();
+    if (!hadCache) {
+      setLoading(true);
+      setFeedLoadFailed(false);
+    }
     void loadFeed()
       .catch((err) => {
         logFullSupabaseError("[Home clean V3] feed unexpected error", err);
         if (!cancelled) {
           setFeedLoadFailed(true);
-          setItems([]);
+          setItems((prev) => (prev.length > 0 ? prev : []));
         }
       })
       .finally(() => {
@@ -67,16 +80,21 @@ export function HomeCleanV3() {
   const bootstrapActiveVideoId =
     items[0] != null ? feedItemVideoKey(items[0]) : null;
 
+  const showInitialLoading = loading && items.length === 0;
+
   return (
     <HomeFeedSoundProvider
       bootstrapActiveVideoId={bootstrapActiveVideoId}
       defaultSoundEnabled
     >
       <div data-home-clean-v3>
-        {loading ? (
+        {showInitialLoading ? (
           <div data-home-clean-v3-page>
-            <div data-home-clean-v3-card data-home-clean-v3-loading>
-              <div data-home-clean-v3-fake aria-hidden />
+            <div
+              data-home-clean-v3-card
+              data-home-clean-v3-loading
+              style={HOME_CLEAN_V3_CARD_LOCK_STYLE}
+            >
               <div data-home-clean-v3-loading-spinner role="status" aria-busy>
                 <span className="sr-only">{t("loadingFeed")}</span>
               </div>
@@ -86,8 +104,11 @@ export function HomeCleanV3() {
           <HomeCleanFeedScroll items={items} />
         ) : (
           <div data-home-clean-v3-page>
-            <div data-home-clean-v3-card data-home-clean-v3-empty>
-              <div data-home-clean-v3-fake aria-hidden />
+            <div
+              data-home-clean-v3-card
+              data-home-clean-v3-empty
+              style={HOME_CLEAN_V3_CARD_LOCK_STYLE}
+            >
               <p data-home-clean-v3-empty-text>
                 {feedLoadFailed ? t("errorBody") : t("empty")}
               </p>

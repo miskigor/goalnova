@@ -21,7 +21,6 @@ export function FeedVideoHeadPreloads({
 
     let cancelled = false;
     let link: HTMLLinkElement | null = null;
-    let raf2 = 0;
 
     const inject = () => {
       if (cancelled || link) return;
@@ -34,15 +33,10 @@ export function FeedVideoHeadPreloads({
       document.head.appendChild(link);
     };
 
-    // Wait for first paint before competing with document/CSS/JS on cold opens.
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(inject);
-    });
+    inject();
 
     return () => {
       cancelled = true;
-      cancelAnimationFrame(raf1);
-      if (raf2) cancelAnimationFrame(raf2);
       link?.remove();
       link = null;
     };

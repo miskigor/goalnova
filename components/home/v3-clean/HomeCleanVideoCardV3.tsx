@@ -23,6 +23,8 @@ import {
   homeFeedPlaybackCandidates,
   videoPlaybackUrl,
 } from "@/lib/video/videoPlaybackUrl";
+import { exploreTileVideoPosterAttribute } from "@/lib/video/exploreTileMedia";
+import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 
 type Props = {
   item: AugmentedHomeFeedItem;
@@ -48,6 +50,10 @@ export function HomeCleanVideoCardV3({
   const feedVideoKey = feedItemVideoKey(item);
   const hasUrl =
     (playbackSources[0] ?? videoPlaybackUrl(video)).trim().length > 0;
+  const posterUrl = useMemo(
+    () => exploreTileVideoPosterAttribute(video, userAvatarUrl),
+    [video, userAvatarUrl],
+  );
 
   const userId = (video.user_id ?? "").trim();
   const profilePath = useMemo(() => {
@@ -171,19 +177,23 @@ export function HomeCleanVideoCardV3({
     <ProfileAvatar
       name={displayName}
       imageUrl={userAvatarUrl?.trim() || undefined}
-      sizeClassName="h-full w-full shrink-0 text-[11px] font-semibold"
+      sizeClassName="h-8 w-8 shrink-0 text-[11px] font-semibold"
       className="overflow-hidden rounded-full ring-1 ring-white/30"
     />
   );
 
   return (
     <div data-home-clean-v3-item>
-      <div ref={cardRef} data-home-clean-v3-card>
-        {!hasUrl ? <div data-home-clean-v3-fake aria-hidden /> : null}
-        {hasUrl ? (
+      <div
+        ref={cardRef}
+        data-home-clean-v3-card
+        style={HOME_CLEAN_V3_CARD_LOCK_STYLE}
+      >
+        {!hasUrl ? null : (
           <PlaybackVideo
             ref={videoRef}
             sources={playbackSources}
+            poster={posterUrl}
             preload={preload}
             fetchPriority={fetchPriority}
             controls={false}
@@ -192,9 +202,9 @@ export function HomeCleanVideoCardV3({
             volume={1}
             onCanPlay={retryAudiblePlay}
             onPlaying={retryAudiblePlay}
-            className="block h-full w-full object-cover object-top [color-scheme:dark]"
+            className="absolute inset-0 h-full w-full max-h-full max-w-full object-cover object-center [color-scheme:dark]"
           />
-        ) : null}
+        )}
 
         {challenge ? (
           <div data-home-clean-v3-challenge>

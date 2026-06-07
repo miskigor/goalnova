@@ -46,6 +46,8 @@ type PlaybackVideoProps = {
   onPlaying?: () => void;
   /** Hint for the browser when competing for network (feed active clip). */
   fetchPriority?: "high" | "low" | "auto";
+  /** Still frame while the clip buffers (feed return / cold start). */
+  poster?: string;
 };
 
 export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVideoProps>(
@@ -65,6 +67,7 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
       onCanPlayThrough,
       onPlaying,
       fetchPriority,
+      poster,
     },
     ref,
   ) {
@@ -173,6 +176,7 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
         loop={loop}
         autoPlay={autoPlay}
         muted={muted}
+        poster={poster}
         {...(fetchPriority ? { fetchPriority } : {})}
         onLoadedData={() => {
           clearLoadWatchdog();

@@ -1,16 +1,7 @@
 /**
- * Production `/home` layout contract — fixed for all users on every visit.
- * Change values here only; do not wire legacy HomeFeed sizing into `/home`.
+ * Production `/home` — only the video card size is locked.
  */
 [data-home-clean-v3] {
   --home-clean-v3-card-width: 280px;
   --home-clean-v3-card-height: 498px;
-  --home-clean-v3-item-width: 280px;
-  --home-clean-v3-top-offset: 48px;
-  --home-clean-v3-inline-pad: 16px;
-  --home-clean-v3-meta-gap: 10px;
-  --home-clean-v3-avatar-size: 32px;
-  --home-clean-v3-rail-right: 8px;
-  --home-clean-v3-rail-bottom: 72px;
-  --home-clean-v3-rail-width: 44px;
 }
