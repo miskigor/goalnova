@@ -15,6 +15,16 @@ export const PRIVATE_ROUTE_PATHS = [
   "/messages",
   "/scout-dashboard",
   "/admin",
+  "/discover",
+  "/premium",
+  "/notifications",
+  "/settings",
+  "/scout-apply",
+  "/benefits",
+  "/support",
+  "/payment/success",
+  "/payment/cancel",
+  "/role",
 ] as const;
 
 /** Next.js page metadata for private/auth/app routes. */

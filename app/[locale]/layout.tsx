@@ -10,6 +10,7 @@ import { LocaleRouteFallback } from "@/components/loading/LocaleRouteFallback";
 import type { AppLocale } from "@/i18n/routing";
 import { RTL_LOCALES, routing } from "@/i18n/routing";
 import { buildBrandLinkPreviewMetadata } from "@/lib/seo/englishLinkPreview";
+import { buildLocaleAlternates, localizedCanonicalPath } from "@/lib/seo/alternates";
 import {
   PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS,
   PITCHRUSCH_CRITICAL_FIRST_PAINT_SCRIPT,
@@ -62,7 +63,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "metadata" });
   const origin = getServerSiteOrigin();
   const metadataBase = siteMetadataBase(origin);
-  const canonicalPath = locale === routing.defaultLocale ? "/" : `/${locale}`;
+  const canonicalPath = localizedCanonicalPath(locale, "/");
   const linkPreview = buildBrandLinkPreviewMetadata({ canonicalPath, origin });
 
   return {
@@ -73,10 +74,8 @@ export async function generateMetadata({
     },
     description: t("rootDescription"),
     alternates: {
+      ...buildLocaleAlternates("/"),
       canonical: canonicalPath,
-      languages: Object.fromEntries(
-        routing.locales.map((l) => [l, l === routing.defaultLocale ? "/" : `/${l}`]),
-      ),
     },
     openGraph: linkPreview.openGraph,
     twitter: linkPreview.twitter,

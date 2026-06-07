@@ -4,13 +4,19 @@ import { ExplorePageHeader } from "@/components/explore/ExplorePageHeader";
 import { ExploreView } from "@/components/explore/ExploreView";
 import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
 import { GuestPublicCallout } from "@/components/layout/GuestPublicCallout";
+import { buildPublicPageMetadata } from "@/lib/seo/buildPublicPageMetadata";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "metadata" });
-  return { title: t("exploreTitle") };
+  const t = await getTranslations({ locale, namespace: "explore" });
+  return buildPublicPageMetadata({
+    locale,
+    pathname: "/explore",
+    title: `${t("title")} · PitchRusch`,
+    description: t("subtitle"),
+  });
 }
 
 export default async function ExplorePage({ params }: Props) {

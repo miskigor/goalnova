@@ -1,27 +1,22 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
+import { localizedPath } from "@/lib/seo/alternates";
 import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 import { createAnonSupabaseServerClient } from "@/lib/supabase/anonServerClient";
 import { hasVideoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 
+/** Public marketing and discovery pages only — no auth-gated app routes. */
 const INDEXABLE_PATHS = [
   "/",
   "/explore",
-  "/discover",
   "/search",
   "/rankings",
   "/challenges",
-  "/premium",
   "/contact",
   "/privacy",
   "/terms",
   "/content-policy",
 ] as const;
-
-function localizedPath(pathname: string, locale: string): string {
-  if (locale === routing.defaultLocale) return pathname;
-  return pathname === "/" ? `/${locale}` : `/${locale}${pathname}`;
-}
 
 type SitemapItem = {
   path: string;
@@ -48,7 +43,7 @@ async function collectAllItems(): Promise<SitemapItem[]> {
   const supabase = createAnonSupabaseServerClient();
   if (!supabase) return items;
 
-  const [profilesRes, videosRes] = await Promise.all([
+  const [profilesRes, videosRes, challengesRes] = await Promise.all([
     supabase
       .from("player_profiles")
       .select("username, created_at")
@@ -60,6 +55,13 @@ async function collectAllItems(): Promise<SitemapItem[]> {
       .select("id, created_at, video_url, processed_video_url, source_video_url")
       .order("created_at", { ascending: false })
       .limit(5000),
+    supabase
+      .from("challenges")
+      .select("slug, created_at")
+      .in("status", ["active", "ended"])
+      .not("slug", "is", null)
+      .order("created_at", { ascending: false })
+      .limit(500),
   ]);
 
   const profileSlugs = (profilesRes.data ?? [])
@@ -71,26 +73,38 @@ async function collectAllItems(): Promise<SitemapItem[]> {
     return Boolean(id) && hasVideoPlaybackUrl(row);
   });
 
-  for (const locale of routing.locales) {
-    for (const slug of profileSlugs) {
-      items.push({
-        path: localizedPath(`/player/${encodeURIComponent(slug)}`, locale),
-        lastModified: now,
-        changeFrequency: "weekly",
-        priority: 0.6,
-      });
-    }
+  const challengeSlugs = (challengesRes.data ?? [])
+    .map((row) => (row.slug ?? "").trim())
+    .filter(Boolean);
 
-    for (const video of publicVideos) {
-      const id = (video.id ?? "").trim();
-      if (!id) continue;
-      items.push({
-        path: localizedPath(`/video/${encodeURIComponent(id)}`, locale),
-        lastModified: video.created_at ? new Date(video.created_at) : now,
-        changeFrequency: "weekly",
-        priority: 0.7,
-      });
-    }
+  // One canonical URL per entity (default locale) — hreflang lives in page metadata.
+  for (const slug of profileSlugs) {
+    items.push({
+      path: `/player/${encodeURIComponent(slug)}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.6,
+    });
+  }
+
+  for (const video of publicVideos) {
+    const id = (video.id ?? "").trim();
+    if (!id) continue;
+    items.push({
+      path: `/video/${encodeURIComponent(id)}`,
+      lastModified: video.created_at ? new Date(video.created_at) : now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    });
+  }
+
+  for (const slug of challengeSlugs) {
+    items.push({
+      path: `/challenges/${encodeURIComponent(slug)}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.65,
+    });
   }
 
   return items;

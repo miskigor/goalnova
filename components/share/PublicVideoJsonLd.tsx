@@ -8,6 +8,7 @@ type Props = {
   description: string;
   videoContentUrl: string;
   uploadDateIso: string | null | undefined;
+  thumbnailUrl?: string | null;
 };
 
 /**
@@ -20,6 +21,7 @@ export function PublicVideoJsonLd({
   description,
   videoContentUrl,
   uploadDateIso,
+  thumbnailUrl,
 }: Props) {
   const base = getServerSiteOrigin();
   const pageUrl =
@@ -33,7 +35,10 @@ export function PublicVideoJsonLd({
     contentUrl: videoContentUrl,
     embedUrl: pageUrl,
     url: pageUrl,
+    thumbnailUrl: thumbnailUrl?.trim() || undefined,
     inLanguage: locale,
+    genre: "Sports",
+    sport: "Soccer",
     author: {
       "@type": "Person",
       name: displayName,

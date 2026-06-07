@@ -3,15 +3,55 @@ import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ChallengeDetailView } from "@/components/challenges/ChallengeDetailView";
 import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
+import { parseChallengeRowLoose, withChallengeSelectFallback } from "@/lib/challenges/challengeRowUtils";
+import { buildPublicPageMetadata } from "@/lib/seo/buildPublicPageMetadata";
+import { createAnonSupabaseServerClient } from "@/lib/supabase/anonServerClient";
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
+const CHALLENGE_UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+async function getChallengeForMetadata(param: string) {
+  const s = param.trim();
+  if (!s) return null;
+
+  const supabase = createAnonSupabaseServerClient();
+  if (!supabase) return null;
+
+  const byId = CHALLENGE_UUID_RE.test(s);
+  const { data } = await withChallengeSelectFallback((cols) =>
+    supabase
+      .from("challenges")
+      .select(cols)
+      .eq(byId ? "id" : "slug", s)
+      .in("status", ["active", "ended"])
+      .maybeSingle(),
+  );
+
+  return parseChallengeRowLoose(data);
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
-  return { title: t("challengeDetailTitle") };
+  const decoded = decodeURIComponent(slug);
+  const challenge = await getChallengeForMetadata(decoded);
+  const title = challenge?.title?.trim()
+    ? `${challenge.title.trim()} · PitchRusch`
+    : `${t("challengeDetailTitle")} · PitchRusch`;
+  const description =
+    challenge?.description?.trim() ||
+    (await getTranslations({ locale, namespace: "challenges" }))("subtitle");
+
+  return buildPublicPageMetadata({
+    locale,
+    pathname: `/challenges/${encodeURIComponent(decoded)}`,
+    title,
+    description,
+  });
 }
 
 export default async function ChallengeDetailPage({ params }: Props) {

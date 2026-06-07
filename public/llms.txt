@@ -1,0 +1,20 @@
+# PitchRusch
+
+> Football talent discovery platform where players upload highlights, join skill challenges, and build profiles scouts can discover.
+
+PitchRusch (https://pitchrusch.com) is a mobile-first social video app for youth and amateur football talent. Public pages include player profiles, highlight videos, weekly challenges, rankings, and explore feeds. The app supports English, Croatian, German, and nine other locales.
+
+## Public pages
+
+- Home / marketing: https://pitchrusch.com/
+- Explore highlights: https://pitchrusch.com/explore
+- Rankings: https://pitchrusch.com/rankings
+- Challenges: https://pitchrusch.com/challenges
+- Search players: https://pitchrusch.com/search
+- Contact: https://pitchrusch.com/contact
+- Privacy: https://pitchrusch.com/privacy
+- Terms: https://pitchrusch.com/terms
+
+## Optional
+
+- Content policy: https://pitchrusch.com/content-policy

@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { RankingsView } from "@/components/rankings/RankingsView";
+import { buildPublicPageMetadata } from "@/lib/seo/buildPublicPageMetadata";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "rankings" });
-  return { title: t("title") };
+  return buildPublicPageMetadata({
+    locale,
+    pathname: "/rankings",
+    title: `${t("title")} · PitchRusch`,
+    description: t("globalRanking"),
+  });
 }
 
 export default async function RankingsPage({ params }: Props) {

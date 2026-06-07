@@ -8,10 +8,10 @@ import { LandingFoundingPlayer } from "@/components/landing/LandingFoundingPlaye
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { hrefWithLocale } from "@/i18n/routing";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
-import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
 import { buildBrandLinkPreviewMetadata } from "@/lib/seo/englishLinkPreview";
+import { buildLocaleAlternates, localizedCanonicalPath } from "@/lib/seo/alternates";
+import { buildLandingJsonLd } from "@/lib/seo/buildLandingJsonLd";
 import { SITE_SEO_DESCRIPTION, SITE_SEO_KEYWORDS, SITE_SEO_TITLE } from "@/lib/seo/brandMetadata";
-import { routing } from "@/i18n/routing";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -21,21 +21,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const origin = getServerSiteOrigin();
   const metadataBase = siteMetadataBase(origin);
-  const localePrefix = locale === routing.defaultLocale ? "" : `/${locale}`;
-  const canonicalPath = localePrefix || "/";
+  const canonicalPath = localizedCanonicalPath(locale, "/");
   const linkPreview = buildBrandLinkPreviewMetadata({ canonicalPath, origin });
 
   return {
     metadataBase,
     title: SITE_SEO_TITLE,
     description: SITE_SEO_DESCRIPTION,
-    applicationName: APP_DISPLAY_NAME,
+    applicationName: "PitchRusch",
     keywords: [...SITE_SEO_KEYWORDS],
     alternates: {
+      ...buildLocaleAlternates("/"),
       canonical: canonicalPath,
-      languages: Object.fromEntries(
-        routing.locales.map((l) => [l, l === routing.defaultLocale ? "/" : `/${l}`]),
-      ),
     },
     robots: {
       index: true,
@@ -57,27 +54,21 @@ export default async function LandingPage({ params }: Props) {
   const year = new Date().getFullYear();
   const h = (path: string) => hrefWithLocale(path, locale);
   const origin = getServerSiteOrigin();
-  const localePrefix = locale === routing.defaultLocale ? "" : `/${locale}`;
-  const pageUrl = origin ? `${origin.replace(/\/$/, "")}${localePrefix || "/"}` : undefined;
+  const pageUrl = origin
+    ? `${origin.replace(/\/$/, "")}${localizedCanonicalPath(locale, "/")}`
+    : undefined;
 
-  const siteJsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        name: APP_DISPLAY_NAME,
-        alternateName: ["pitchrusch", "Pitch Rusch"],
-        ...(origin ? { url: origin } : {}),
-      },
-      {
-        "@type": "WebSite",
-        name: APP_DISPLAY_NAME,
-        alternateName: "pitchrusch",
-        description: meta("landingDescription"),
-        ...(pageUrl ? { url: pageUrl } : {}),
-      },
+  const siteJsonLd = buildLandingJsonLd({
+    origin,
+    pageUrl,
+    siteDescription: meta("landingDescription"),
+    faq: [
+      { question: t("step1Title"), answer: t("step1Desc") },
+      { question: t("step2Title"), answer: t("step2Desc") },
+      { question: t("step3Title"), answer: t("step3Desc") },
+      { question: t("foundingTitle"), answer: t("foundingBody") },
     ],
-  };
+  });
 
   const steps: [{ title: string; description: string }, { title: string; description: string }, { title: string; description: string }] = [
     { title: t("step1Title"), description: t("step1Desc") },
