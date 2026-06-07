@@ -1,8 +1,8 @@
 import type { CSSProperties } from "react";
 
 /** Production home card size — single source of truth (px only, no vw/dvh). */
-export const HOME_CLEAN_V3_CARD_WIDTH_PX = 252;
-export const HOME_CLEAN_V3_CARD_HEIGHT_PX = 448;
+export const HOME_CLEAN_V3_CARD_WIDTH_PX = 204;
+export const HOME_CLEAN_V3_CARD_HEIGHT_PX = 364;
 
 /** Inline lock so global V3 scroll rules cannot grow the card. */
 export const HOME_CLEAN_V3_CARD_LOCK_STYLE: CSSProperties = {
