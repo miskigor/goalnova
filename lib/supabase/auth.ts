@@ -506,18 +506,13 @@ export async function signOut() {
 
   clearSupabaseAuthStorage();
 
-  try {
-    const { error } = await withTimeout(
-      supabase.auth.signOut(),
-      8000,
-      "Supabase global signOut",
-    );
-    if (error) {
-      logSupabaseError("Supabase: global signOut error", error);
-    }
-  } catch (err) {
+  void withTimeout(
+    supabase.auth.signOut(),
+    8000,
+    "Supabase global signOut",
+  ).catch((err) => {
     logSupabaseError("Supabase: global signOut timed out or failed", err);
-  }
+  });
 }
 
 export type RequestPasswordResetEmailResult =

@@ -1,5 +1,8 @@
-import { devError } from "@/lib/devLog";
-import { recoverIfInvalidRefreshToken } from "@/lib/auth/staleSessionRecovery";
+import { devError, devWarn } from "@/lib/devLog";
+import {
+  hasSupabaseAuthStorage,
+  recoverIfInvalidRefreshToken,
+} from "@/lib/auth/staleSessionRecovery";
 import { supabase } from "@/lib/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
 
@@ -54,6 +57,10 @@ export async function readGateSessionSnapshot(
   }
 
   inFlight = (async (): Promise<GateSessionSnapshot> => {
+    if (!hasSupabaseAuthStorage()) {
+      return writeCache({ session: null, user: null });
+    }
+
     const result = await Promise.race([
       supabase.auth.getSession(),
       new Promise<"timeout">((resolve) => {
@@ -69,7 +76,7 @@ export async function readGateSessionSnapshot(
       return writeCache(snapshotFromSession(session));
     }
 
-    devError(
+    devWarn(
       `${gateLabel}: getSession did not resolve within ${GATE_SESSION_TIMEOUT_MS}ms; falling back to getUser`,
     );
     const { data: userData, error: userErr } = await supabase.auth.getUser();

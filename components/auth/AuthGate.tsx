@@ -16,10 +16,11 @@ import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import {
   recoverIfInvalidRefreshToken,
   recoverStaleSupabaseSession,
+  hasSupabaseAuthStorage,
 } from "@/lib/auth/staleSessionRecovery";
 import { AppChromeLayout } from "@/components/layout/AppChromeLayout";
 import { PitchruschLoadingScreen } from "@/components/loading/PitchruschLoadingScreen";
-import { devError } from "@/lib/devLog";
+import { devError, devWarn } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 
@@ -90,6 +91,15 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
         await consumeAuthRedirectFromUrl();
       }
 
+      if (!oauthReturnLikely() && !hasSupabaseAuthStorage()) {
+        if (!mounted) return;
+        setSession(null);
+        setIsAuthenticated(false);
+        setEmailConfirmed(null);
+        setChecking(false);
+        return;
+      }
+
       // Slow mobile/WLAN auth init must not fall through to getUser() too early (felt “broken”).
       const sessionTimeoutMs = oauthReturnLikely() ? 20_000 : 10_000;
       try {
@@ -103,7 +113,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
         if (!mounted) return;
 
         if (result === "timeout") {
-          devError(
+          devWarn(
             `AuthGate: getSession did not resolve within ${sessionTimeoutMs}ms; falling back to getUser`,
           );
           // Fallback for slow auth initialization: verify auth via getUser before redirecting.

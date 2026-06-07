@@ -2,8 +2,6 @@ import { clearFreshLogin } from "@/lib/auth/freshLogin";
 import { invalidateGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
 import { supabase } from "@/lib/supabase/client";
 
-let recoveryInFlight: Promise<void> | null = null;
-
 /** Clears Supabase auth keys from localStorage (after local sign-out). */
 export function clearSupabaseAuthStorage(): void {
   if (typeof window === "undefined") return;
@@ -46,6 +44,32 @@ export function isInvalidRefreshTokenError(err: unknown): boolean {
 
   return false;
 }
+
+/** True when a Supabase auth token is present in browser storage. */
+export function hasSupabaseAuthStorage(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    for (let i = 0; i < window.localStorage.length; i += 1) {
+      const key = window.localStorage.key(i);
+      if (!key?.startsWith("sb-") || !key.endsWith("-auth-token")) continue;
+      const raw = window.localStorage.getItem(key);
+      if (!raw || raw === "null") continue;
+      try {
+        const parsed = JSON.parse(raw) as { access_token?: string | null } | null;
+        if (typeof parsed?.access_token === "string" && parsed.access_token.length > 0) {
+          return true;
+        }
+      } catch {
+        if (raw.length > 10) return true;
+      }
+    }
+  } catch {
+    // private mode / quota
+  }
+  return false;
+}
+
+let recoveryInFlight: Promise<void> | null = null;
 
 /** Clears broken Supabase auth from browser storage (local sign-out). */
 export async function recoverStaleSupabaseSession(): Promise<void> {
