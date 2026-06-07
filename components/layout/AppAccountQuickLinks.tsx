@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { useScoutVerification } from "@/hooks/useScoutVerification";
 
 const rowClass =
   "flex w-full items-center justify-between rounded-xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-3.5 text-left text-xs font-medium text-gn-text transition-colors hover:border-gn-border hover:bg-gn-surface/60 max-lg:px-2 max-lg:py-1.5";
@@ -14,6 +15,8 @@ export function AppAccountQuickLinks() {
   const tNav = useTranslations("nav");
   const tInvite = useTranslations("inviteFriends");
   const tSettings = useTranslations("settings");
+  const scoutGate = useScoutVerification();
+  const isScoutAccount = scoutGate.loaded && scoutGate.row?.role === "scout";
 
   return (
     <section
@@ -24,12 +27,14 @@ export function AppAccountQuickLinks() {
         {tNav("quickLinksSection")}
       </p>
       <ul className="space-y-2 max-lg:space-y-1.5">
-        <li>
-          <Link href="/benefits" className={rowClass}>
-            <span>{tNav("myBenefits")}</span>
-            <span className="text-gn-text-tertiary">→</span>
-          </Link>
-        </li>
+        {!isScoutAccount ? (
+          <li>
+            <Link href="/benefits" className={rowClass}>
+              <span>{tNav("myBenefits")}</span>
+              <span className="text-gn-text-tertiary">→</span>
+            </Link>
+          </li>
+        ) : null}
         <li>
           <Link href="/settings#invite-friends" className={rowClass}>
             <span>{tInvite("inviteFriendsTitle")}</span>

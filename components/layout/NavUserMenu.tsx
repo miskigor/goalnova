@@ -21,6 +21,7 @@ import {
 } from "@/lib/avatar/avatarClientEvents";
 import { supabase } from "@/lib/supabase/client";
 import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadContext";
+import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { countMyUnreadSupportReplies } from "@/lib/supabase/supportTickets";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { logAppShellPageOverflowOffenders } from "@/lib/layout/detectHorizontalOverflow";
@@ -114,6 +115,8 @@ export function NavUserMenu({
   const uploadEligibility = useVideoUploadEligibility();
   const { loaded: adminLoaded, isAdmin } = useAdminAccess();
   const adminSupportUnread = useAdminSupportUnread();
+  const scoutGate = useScoutVerification();
+  const isScoutAccount = scoutGate.loaded && scoutGate.row?.role === "scout";
   const [userSupportUnread, setUserSupportUnread] = useState(0);
   const { showError } = useAppFeedback();
 
@@ -313,18 +316,20 @@ export function NavUserMenu({
             <NavIcon name="premium" className="size-4 shrink-0 opacity-90" />
             {tNav("premium")}
           </Link>
-          <Link
-            href="/benefits"
-            role="menuitem"
-            className={linkClass}
-            onClick={() => {
-              setOpen(false);
-              onNavigate?.();
-            }}
-          >
-            <NavIcon name="benefits" className="size-4 shrink-0 opacity-90" />
-            {tNav("myBenefits")}
-          </Link>
+          {!isScoutAccount ? (
+            <Link
+              href="/benefits"
+              role="menuitem"
+              className={linkClass}
+              onClick={() => {
+                setOpen(false);
+                onNavigate?.();
+              }}
+            >
+              <NavIcon name="benefits" className="size-4 shrink-0 opacity-90" />
+              {tNav("myBenefits")}
+            </Link>
+          ) : null}
           <Link
             href="/discover"
             role="menuitem"
