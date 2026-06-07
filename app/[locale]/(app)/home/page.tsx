@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
 import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
-import dynamic from "next/dynamic";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { HomeFeedSkeleton } from "@/components/home/HomeFeedSkeleton";
-
-const HomeFeed = dynamic(
-  () => import("@/components/home/HomeFeed").then((m) => ({ default: m.HomeFeed })),
-  { loading: () => <HomeFeedSkeleton /> },
-);
+import { HomeCleanV3 } from "@/components/home/v3-clean/HomeCleanV3";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -17,9 +11,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: t("homeTitle"), robots: PRIVATE_PAGE_ROBOTS };
 }
 
+/** Production `/home` — clean feed layout for all users (see homeCleanV3.tokens.css). */
 export default async function HomeFeedPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <HomeFeed />;
+  return <HomeCleanV3 />;
 }

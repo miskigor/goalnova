@@ -18,11 +18,10 @@ import {
   APP_SHELL_ROOT_CLASS,
   APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS,
 } from "@/lib/layout/appShellClasses";
-import { isMobileLayoutStableV2Enabled } from "@/lib/layout/mobileLayoutStableV2Flag";
 import {
-  isMobileLayoutV3Enabled,
-  isMobileLayoutV3ShellRoute,
-} from "@/lib/layout/mobileLayoutV3Flag";
+  isMobileLayoutStableV2Enabled,
+} from "@/lib/layout/mobileLayoutStableV2Flag";
+import { isMobileLayoutV3ShellRoute } from "@/lib/layout/mobileLayoutV3Flag";
 
 function AppMainColumn({ children }: { children: React.ReactNode }) {
   return (
@@ -64,8 +63,7 @@ function AppChromeLayoutV1({ children }: { children: React.ReactNode }) {
  */
 export function AppChromeLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const useV3Shell =
-    isMobileLayoutV3Enabled() && isMobileLayoutV3ShellRoute(pathname);
+  const useV3Shell = isMobileLayoutV3ShellRoute(pathname);
 
   return (
     <FeedbackProvider>

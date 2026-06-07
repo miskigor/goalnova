@@ -60,12 +60,15 @@ export function HomeFeedSoundProvider({
   children,
   /** First visible clip key until IntersectionObserver reports ratios (instant play on home entry). */
   bootstrapActiveVideoId = null,
+  /** When no session preference exists — clean home defaults to audible. */
+  defaultSoundEnabled = false,
 }: {
   children: ReactNode;
   bootstrapActiveVideoId?: string | null;
+  defaultSoundEnabled?: boolean;
 }) {
   const [isSoundEnabled, setSoundEnabledState] = useState(() => {
-    if (typeof window === "undefined") return false;
+    if (typeof window === "undefined") return defaultSoundEnabled;
     try {
       const v = sessionStorage.getItem(HOME_FEED_SOUND_SESSION_KEY);
       if (v === "0") return false;
@@ -73,8 +76,7 @@ export function HomeFeedSoundProvider({
     } catch {
       /* ignore */
     }
-    /** Default off: muted autoplay works on iOS/Android; user enables sound from the rail. */
-    return false;
+    return defaultSoundEnabled;
   });
   const [visibility, setVisibility] = useState<Record<string, number>>({});
   /** Scroll-snap center row wins `activeVideoId` briefly so playback beats slow IntersectionObserver updates. */

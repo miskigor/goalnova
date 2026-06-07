@@ -9,6 +9,7 @@ import { MLV3_HTML_ATTR } from "@/components/layout/mobile-v3/mobileLayoutV3.tok
 import {
   isMobileLayoutV3HomeFeedRoute,
   isMobileLayoutV3HomeMockRoute,
+  isMobileLayoutV3HomeRoute,
 } from "@/lib/layout/mobileLayoutV3Flag";
 import "@/components/layout/mobile-v3/mobileLayoutV3.css";
 
@@ -20,12 +21,15 @@ export function AppChromeLayoutV3({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isHomeMock = isMobileLayoutV3HomeMockRoute(pathname);
   const isHomeFeed = isMobileLayoutV3HomeFeedRoute(pathname);
-  const isHomeV3Feed = isHomeMock || isHomeFeed;
+  const isHomeProduction = isMobileLayoutV3HomeRoute(pathname);
+  const isHomeV3ShellHome = isHomeMock || isHomeFeed || isHomeProduction;
   const routeAttr = isHomeMock
     ? "home-mock"
     : isHomeFeed
       ? "home-feed"
-      : "debug";
+      : isHomeProduction
+        ? "home"
+        : "debug";
 
   useLayoutEffect(() => {
     document.documentElement.setAttribute(MLV3_HTML_ATTR, "");
@@ -37,7 +41,7 @@ export function AppChromeLayoutV3({ children }: { children: ReactNode }) {
   return (
     <div
       data-mlv3-root
-      className={`bg-gn-bg text-gn-text lg:flex lg:min-h-dvh lg:flex-row${isHomeV3Feed ? " max-lg:overflow-x-hidden max-lg:max-w-full" : ""}`}
+      className={`bg-gn-bg text-gn-text lg:flex lg:min-h-dvh lg:flex-row${isHomeV3ShellHome ? " max-lg:overflow-x-hidden max-lg:max-w-full" : ""}`}
     >
       <AppSidebar />
       <div data-mlv3-column>
