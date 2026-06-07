@@ -1,7 +1,9 @@
 /**
- * Production `/home` — only the video card size is locked.
+ * Production `/home` — single source of truth for card size and top offset.
+ * V1/V2 legacy home feeds must not define competing measures.
  */
 [data-home-clean-v3] {
-  --home-clean-v3-card-width: 280px;
-  --home-clean-v3-card-height: 498px;
+  --home-clean-v3-card-width: 252px;
+  --home-clean-v3-card-height: 448px;
+  --home-clean-v3-top-offset: 96px;
 }

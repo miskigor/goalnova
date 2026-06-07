@@ -14,7 +14,6 @@
   --mlv2-profile-top: var(--mlv2-non-home-top);
   --mlv2-viewport-max: 390px;
   --mlv2-content-max: min(100%, 390px);
-  --mlv2-home-card-max: min(79vw, 338px);
   --mlv2-inline-pad: 16px;
   --mlv2-top: calc(var(--mlv2-page-top) + env(safe-area-inset-top, 0px));
   --mlv2-bottom-nav-height: calc(4.5rem + env(safe-area-inset-bottom, 0px));
@@ -312,10 +311,6 @@
     padding-top: 0 !important;
     scroll-padding-top: 0 !important;
   }
-
-  /*
-   * Home card size — owned only by mobileLayoutStableV2Content.css (do not set width/height here).
-   */
 }
 
 /* Shell: flag on html, structure on [data-mlv2-root] (last child = bottom nav) */

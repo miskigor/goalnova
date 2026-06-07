@@ -32,21 +32,21 @@ import { isMobileLayoutStableV2Enabled } from "@/lib/layout/mobileLayoutStableV2
 const DASHBOARD_SLIDE =
   "min-h-[26rem] w-full overflow-hidden rounded-2xl border border-white/[0.06] bg-black sm:min-h-[28rem] lg:min-h-[30rem]";
 
-/** Mobile home feed tile — fixed 9:16 frame (globals enforce size; not media-driven). */
+/** Legacy V1 mobile home tile — no fixed card measures (production /home uses homeCleanV3.tokens.css). */
 const HOME_FEED_MOBILE_FRAME =
-  "relative isolate mx-auto mt-2 box-border flex h-[min(56cqh,440px)] w-auto min-w-0 max-w-[min(82vw,320px)] aspect-[9/16] shrink-0 grow-0 flex-none flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
+  "relative isolate mx-auto mt-2 box-border flex w-auto min-w-0 shrink-0 grow-0 flex-none flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
 
 /** V2 /home — bottom-anchored snap stage; one compact card per page (overlays inside card). */
 const HOME_FEED_V2_SLIDE_STACK =
   "mx-auto flex h-full min-h-0 w-full max-w-full flex-col items-center justify-end overflow-hidden max-lg:bg-black max-lg:gap-0 max-lg:pt-0 max-lg:pb-0 lg:contents";
 
-/** V2 /home — 9:16 frame; mobile size from mobileLayoutStableV2Content.css (stable vw cap). */
+/** Legacy V2 /home card shell — no fixed card measures. */
 const HOME_FEED_V2_CARD =
-  "relative isolate mx-auto box-border flex w-auto min-w-0 shrink-0 grow-0 flex-none flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black aspect-[9/16] max-lg:flex max-lg:shrink-0 lg:contents";
+  "relative isolate mx-auto box-border flex w-auto min-w-0 shrink-0 grow-0 flex-none flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-black max-lg:flex max-lg:shrink-0 lg:contents";
 
-/** Profile + caption — aligned with video frame width, safe gap above bottom nav. */
+/** Profile + caption below legacy home video. */
 const HOME_FEED_MOBILE_META_BELOW =
-  "pointer-events-none relative z-[1] mx-auto box-border w-auto min-w-0 max-w-[min(88vw,360px)] shrink-0 grow-0 px-1.5 pb-0 pt-0 max-lg:max-h-[12rem] max-lg:overflow-y-auto lg:hidden";
+  "pointer-events-none relative z-[1] mx-auto box-border w-full min-w-0 max-w-full shrink-0 grow-0 px-1.5 pb-0 pt-0 max-lg:max-h-[12rem] max-lg:overflow-y-auto lg:hidden";
 
 /** Mobile home snap column — fixed video frame + meta; frame must not shrink when meta loads. */
 const HOME_FEED_MOBILE_SLIDE_STACK =

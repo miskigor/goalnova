@@ -401,19 +401,14 @@ main,
   }
 
   /*
-   * Početna: fixed portrait frame — identical for every account/video (not intrinsic media size).
+   * Legacy V1 home feed — layout only; card size lives in homeCleanV3.tokens.css (production /home).
    */
   [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-video-frame] {
     box-sizing: border-box;
     flex: none !important;
     flex-grow: 0 !important;
     flex-shrink: 0 !important;
-    width: auto !important;
     min-width: 0 !important;
-    max-width: min(82vw, 320px) !important;
-    height: min(56cqh, 440px) !important;
-    max-height: min(56cqh, 440px) !important;
-    aspect-ratio: 9 / 16 !important;
     margin-inline: auto !important;
   }
 

@@ -74,7 +74,7 @@ html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-mlv3-
   max-height: var(--home-clean-v3-slide-height, 100%);
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  padding: calc(48px + env(safe-area-inset-top, 0px)) 16px 16px;
+  padding: calc(var(--home-clean-v3-top-offset, 48px) + env(safe-area-inset-top, 0px)) 16px 16px;
 }
 
 [data-home-clean-v3-item] {
@@ -148,7 +148,7 @@ a[data-home-clean-v3-meta-name]:hover {
   justify-content: center;
   width: 100%;
   min-height: 0;
-  padding: calc(48px + env(safe-area-inset-top, 0px)) 16px 16px;
+  padding: calc(var(--home-clean-v3-top-offset, 48px) + env(safe-area-inset-top, 0px)) 16px 16px;
 }
 
 [data-home-clean-v3-card] {

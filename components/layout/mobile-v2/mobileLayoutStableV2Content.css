@@ -175,7 +175,7 @@
   }
 
   /*
-   * V2 home card — fixed width; height fills feed band (9:16 capped by viewport gaps).
+   * Legacy V2 home card — layout only; production /home size is homeCleanV3.tokens.css.
    */
   html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-v2-card],
   html[data-mobile-layout-stable-v2] [data-mlv2-root] [data-pitchrusch-home-feed] [data-pitchrusch-home-feed-video-frame][data-pitchrusch-home-feed-v2-card],
@@ -189,15 +189,10 @@
     flex-shrink: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    width: min(79vw, 338px) !important;
-    max-width: 338px !important;
-    height: min(calc(100% - 20px), calc(min(79vw, 338px) * 16 / 9)) !important;
-    max-height: calc(100% - 20px) !important;
     min-height: 0 !important;
     margin-inline: auto !important;
     margin-top: 0 !important;
     margin-bottom: 8px !important;
-    aspect-ratio: 9 / 16 !important;
     overflow: hidden !important;
     border-radius: 16px !important;
   }
