@@ -305,7 +305,7 @@ export function LoginCard({ labels }: Props) {
     setLoading(true);
     signInFlowRef.current = true;
     try {
-      await Promise.race([
+      const signInData = await Promise.race([
         signInWithEmailPassword({ email: trimmedEmail, password }),
         new Promise<never>((_, reject) => {
           window.setTimeout(() => {
@@ -313,17 +313,12 @@ export function LoginCard({ labels }: Props) {
           }, 20000);
         }),
       ]);
-      const { data: userData } = await supabase.auth.getUser();
-      if (!isEmailConfirmed(userData.user)) {
-        rememberPendingConfirmEmail(trimmedEmail);
-        await supabase.auth.signOut({ scope: "local" });
-        router.replace("/confirm-email");
-        return;
-      }
       setFreshLogin();
       setRedirecting(true);
+      const userId =
+        signInData.user?.id ?? signInData.session?.user?.id ?? null;
       await syncPendingReferralCodeToUserMetadata();
-      const needsRole = await needsRoleOnboardingPage();
+      const needsRole = await needsRoleOnboardingPage(userId);
       if (needsRole) {
         router.replace(await roleOnboardingHref());
       } else {

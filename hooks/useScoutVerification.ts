@@ -15,6 +15,7 @@ import {
   isApprovedScoutUser,
   isUnverifiedScoutUser,
 } from "@/lib/scoutVerification";
+import type { Session } from "@supabase/supabase-js";
 
 export type ScoutVerificationState = {
   loaded: boolean;
@@ -58,15 +59,18 @@ export function useScoutVerification(): ScoutVerificationState & {
     row: null,
   });
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (sessionOverride?: Session | null) => {
     try {
-      const { data: sessionData, error: sessionError } =
-        await getSessionOrTimeout();
-      if (sessionError) {
-        setState({ loaded: true, userId: null, row: null });
-        return;
+      let uid = sessionOverride?.user?.id ?? null;
+      if (!uid) {
+        const { data: sessionData, error: sessionError } =
+          await getSessionOrTimeout();
+        if (sessionError) {
+          setState({ loaded: true, userId: null, row: null });
+          return;
+        }
+        uid = sessionData.session?.user?.id ?? null;
       }
-      const uid = sessionData.session?.user?.id ?? null;
       if (!uid) {
         setState({ loaded: true, userId: null, row: null });
         return;
@@ -87,8 +91,8 @@ export function useScoutVerification(): ScoutVerificationState & {
     const tid = window.setTimeout(() => {
       void refresh();
     }, 0);
-    const { data: sub } = supabase.auth.onAuthStateChange(() => {
-      void refresh();
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      void refresh(session);
     });
     return () => {
       window.clearTimeout(tid);

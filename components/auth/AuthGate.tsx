@@ -85,111 +85,26 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
 
   useEffect(() => {
     let mounted = true;
+    let initSettled = false;
 
-    async function init() {
-      if (urlHasPendingAuthRedirect()) {
-        await consumeAuthRedirectFromUrl();
-      }
+    const applyAuthSnapshot = (
+      nextSession: Session | null,
+      authed: boolean,
+      userOverride?: Session["user"] | null,
+    ) => {
+      const user = userOverride ?? nextSession?.user ?? null;
+      setSession(nextSession);
+      setIsAuthenticated(authed);
+      setEmailConfirmed(
+        authed && user ? isEmailConfirmed(user) : null,
+      );
+    };
 
-      if (!oauthReturnLikely() && !hasSupabaseAuthStorage()) {
-        if (!mounted) return;
-        setSession(null);
-        setIsAuthenticated(false);
-        setEmailConfirmed(null);
-        setChecking(false);
-        return;
-      }
-
-      // Slow mobile/WLAN auth init must not fall through to getUser() too early (felt “broken”).
-      const sessionTimeoutMs = oauthReturnLikely() ? 20_000 : 10_000;
-      try {
-        const result = await Promise.race([
-          supabase.auth.getSession(),
-          new Promise<"timeout">((resolve) => {
-            window.setTimeout(() => resolve("timeout"), sessionTimeoutMs);
-          }),
-        ]);
-
-        if (!mounted) return;
-
-        if (result === "timeout") {
-          devWarn(
-            `AuthGate: getSession did not resolve within ${sessionTimeoutMs}ms; falling back to getUser`,
-          );
-          // Fallback for slow auth initialization: verify auth via getUser before redirecting.
-          const { data: userData, error: userErr } = await supabase.auth.getUser();
-          if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
-            if (!mounted) return;
-            setSession(null);
-            setIsAuthenticated(false);
-            setEmailConfirmed(null);
-          } else {
-            if (userErr) {
-              devError("AuthGate: getUser fallback error", userErr);
-            }
-            const user = userData.user;
-            const hasUser = Boolean(user?.id);
-            setSession(null);
-            setIsAuthenticated(hasUser);
-            setEmailConfirmed(hasUser ? isEmailConfirmed(user) : null);
-          }
-        } else if (result.error && (await recoverIfInvalidRefreshToken(result.error))) {
-          if (!mounted) return;
-          setSession(null);
-          setIsAuthenticated(false);
-          setEmailConfirmed(null);
-        } else {
-          const nextSession = result.data.session ?? null;
-          setSession(nextSession);
-          setIsAuthenticated(Boolean(nextSession));
-          setEmailConfirmed(
-            nextSession ? isEmailConfirmed(nextSession.user) : null,
-          );
-        }
-      } catch (err) {
-        if (await recoverIfInvalidRefreshToken(err)) {
-          if (!mounted) return;
-          setSession(null);
-          setIsAuthenticated(false);
-          setEmailConfirmed(null);
-          return;
-        }
-        devError("AuthGate: getSession error", err);
-        if (!mounted) return;
-        try {
-          const { data: userData, error: userErr } = await supabase.auth.getUser();
-          if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
-            setSession(null);
-            setIsAuthenticated(false);
-            setEmailConfirmed(null);
-          } else {
-            if (userErr) {
-              devError("AuthGate: getUser fallback-after-error failed", userErr);
-            }
-            const user = userData.user;
-            setSession(null);
-            setIsAuthenticated(Boolean(user?.id));
-            setEmailConfirmed(user ? isEmailConfirmed(user) : null);
-          }
-        } catch (fallbackErr) {
-          if (await recoverIfInvalidRefreshToken(fallbackErr)) {
-            setSession(null);
-            setIsAuthenticated(false);
-            setEmailConfirmed(null);
-          } else {
-            devError("AuthGate: getUser fallback-after-error exception", fallbackErr);
-            setSession(null);
-            setIsAuthenticated(false);
-            setEmailConfirmed(null);
-          }
-        }
-      } finally {
-        if (!mounted) return;
-        setChecking(false);
-      }
-    }
-
-    init();
+    const finishInit = () => {
+      if (!mounted || initSettled) return;
+      initSettled = true;
+      setChecking(false);
+    };
 
     const { data: subscription } = supabase.auth.onAuthStateChange(
       async (event, nextSession) => {
@@ -204,6 +119,13 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
           void recoverStaleSupabaseSession();
           return;
         }
+
+        if (!initSettled && event === "INITIAL_SESSION") {
+          applyAuthSnapshot(nextSession, Boolean(nextSession));
+          finishInit();
+          return;
+        }
+
         setSession(nextSession);
         setIsAuthenticated(Boolean(nextSession));
         setEmailConfirmed(
@@ -211,6 +133,90 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
         );
       },
     );
+
+    async function init() {
+      if (urlHasPendingAuthRedirect()) {
+        await consumeAuthRedirectFromUrl();
+      }
+
+      if (!oauthReturnLikely() && !hasSupabaseAuthStorage()) {
+        if (!mounted) return;
+        applyAuthSnapshot(null, false);
+        finishInit();
+        return;
+      }
+
+      // Fresh sign-in: session is in storage; INITIAL_SESSION usually beats a slow getSession().
+      const sessionTimeoutMs = oauthReturnLikely()
+        ? 20_000
+        : hasFreshLogin()
+          ? 3_500
+          : 10_000;
+      try {
+        const result = await Promise.race([
+          supabase.auth.getSession(),
+          new Promise<"timeout">((resolve) => {
+            window.setTimeout(() => resolve("timeout"), sessionTimeoutMs);
+          }),
+        ]);
+
+        if (!mounted || initSettled) return;
+
+        if (result === "timeout") {
+          devWarn(
+            `AuthGate: getSession did not resolve within ${sessionTimeoutMs}ms; falling back to getUser`,
+          );
+          const { data: userData, error: userErr } = await supabase.auth.getUser();
+          if (!mounted || initSettled) return;
+          if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
+            applyAuthSnapshot(null, false);
+          } else {
+            if (userErr) {
+              devError("AuthGate: getUser fallback error", userErr);
+            }
+            const user = userData.user;
+            const hasUser = Boolean(user?.id);
+            applyAuthSnapshot(null, hasUser, user);
+          }
+        } else if (result.error && (await recoverIfInvalidRefreshToken(result.error))) {
+          applyAuthSnapshot(null, false);
+        } else {
+          const nextSession = result.data.session ?? null;
+          applyAuthSnapshot(nextSession, Boolean(nextSession));
+        }
+      } catch (err) {
+        if (!mounted || initSettled) return;
+        if (await recoverIfInvalidRefreshToken(err)) {
+          applyAuthSnapshot(null, false);
+          return;
+        }
+        devError("AuthGate: getSession error", err);
+        try {
+          const { data: userData, error: userErr } = await supabase.auth.getUser();
+          if (!mounted || initSettled) return;
+          if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
+            applyAuthSnapshot(null, false);
+          } else {
+            if (userErr) {
+              devError("AuthGate: getUser fallback-after-error failed", userErr);
+            }
+            const user = userData.user;
+            applyAuthSnapshot(null, Boolean(user?.id), user);
+          }
+        } catch (fallbackErr) {
+          if (await recoverIfInvalidRefreshToken(fallbackErr)) {
+            applyAuthSnapshot(null, false);
+          } else {
+            devError("AuthGate: getUser fallback-after-error exception", fallbackErr);
+            applyAuthSnapshot(null, false);
+          }
+        }
+      } finally {
+        finishInit();
+      }
+    }
+
+    void init();
 
     return () => {
       mounted = false;

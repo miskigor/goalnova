@@ -1,5 +1,5 @@
 import { clearFreshLogin, setFreshLogin } from "@/lib/auth/freshLogin";
-import { invalidateGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
+import { invalidateGateSessionSnapshot, seedGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
 import {
   clearSupabaseAuthStorage,
 } from "@/lib/auth/staleSessionRecovery";
@@ -412,13 +412,7 @@ export async function signInWithEmailPassword({
     throw error;
   }
 
-  const { data: userData, error: userError } = await supabase.auth.getUser();
-  if (userError) {
-    logSupabaseError("Supabase: getUser after signIn", userError);
-    throw userError;
-  }
-
-  const signedInUser = userData.user ?? data.user ?? data.session?.user;
+  const signedInUser = data.user ?? data.session?.user ?? null;
   if (!isEmailConfirmed(signedInUser)) {
     await supabase.auth.signOut({ scope: "local" });
     const notConfirmed = Object.assign(new Error("Email not confirmed"), {
@@ -426,6 +420,9 @@ export async function signInWithEmailPassword({
     });
     throw notConfirmed;
   }
+
+  // Warm gate cache before navigation so EmailConfirmation/Role gates skip getSession().
+  seedGateSessionSnapshot(data.session ?? null);
 
   // Do not block navigation on profile sync (multiple DB round-trips + getUser); runs in background.
   void withTimeout(ensureUserRow({}), 20000, "Post-login user row sync")

@@ -12,7 +12,6 @@ import {
   writeHomeCleanV3FeedCache,
 } from "@/components/home/v3-clean/homeCleanV3FeedCache";
 import { feedItemVideoKey } from "@/lib/feed/feedItemVideoKey";
-import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
   fetchHomeFeedData,
@@ -26,7 +25,6 @@ import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCl
 /** Production `/home` — canonical clean feed for all users. Layout locked in homeCleanV3.tokens.css. */
 export function HomeCleanV3() {
   const t = useTranslations("homeFeed");
-  const { loaded: scoutLoaded } = useScoutVerification();
   const [items, setItems] = useState<AugmentedHomeFeedItem[]>(() =>
     readHomeCleanV3FeedCache(),
   );
@@ -54,7 +52,6 @@ export function HomeCleanV3() {
   }, []);
 
   useEffect(() => {
-    if (!scoutLoaded) return;
     let cancelled = false;
     const hadCache = hasHomeCleanV3FeedCache();
     if (!hadCache) {
@@ -75,7 +72,7 @@ export function HomeCleanV3() {
     return () => {
       cancelled = true;
     };
-  }, [loadFeed, scoutLoaded]);
+  }, [loadFeed]);
 
   const bootstrapActiveVideoId =
     items[0] != null ? feedItemVideoKey(items[0]) : null;

@@ -25,6 +25,11 @@ export function invalidateGateSessionSnapshot(): void {
   inFlight = null;
 }
 
+/** After sign-in, warm cache so post-AuthGate guards skip a slow getSession(). */
+export function seedGateSessionSnapshot(session: Session | null): void {
+  writeCache(snapshotFromSession(session));
+}
+
 function writeCache(snapshot: GateSessionSnapshot): GateSessionSnapshot {
   cachedSnapshot = snapshot;
   cachedAt = Date.now();

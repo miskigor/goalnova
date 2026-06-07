@@ -42,16 +42,22 @@ export function isScoutOnboardingComplete(
 
 /**
  * True when the signed-in user still needs to finish /role.
+ * Pass `userId` after sign-in to skip an extra `getUser()` round trip.
  */
-export async function needsRoleOnboardingPage(): Promise<boolean> {
-  const { data: auth } = await supabase.auth.getUser();
-  const userId = auth.user?.id;
-  if (!userId) return false;
+export async function needsRoleOnboardingPage(
+  userId?: string | null,
+): Promise<boolean> {
+  let resolvedUserId = userId?.trim() || null;
+  if (!resolvedUserId) {
+    const { data: auth } = await supabase.auth.getUser();
+    resolvedUserId = auth.user?.id ?? null;
+  }
+  if (!resolvedUserId) return false;
 
   const { data: userRow } = await supabase
     .from("users")
     .select("role, is_admin, admin_role")
-    .eq("id", userId)
+    .eq("id", resolvedUserId)
     .maybeSingle();
 
   if (isRoleOnboardingExempt(userRow)) {
@@ -67,7 +73,7 @@ export async function needsRoleOnboardingPage(): Promise<boolean> {
     const { data: scoutProfile } = await supabase
       .from("scout_profiles")
       .select("id")
-      .eq("id", userId)
+      .eq("id", resolvedUserId)
       .maybeSingle();
     return !isScoutOnboardingComplete(role, scoutProfile?.id);
   }
@@ -75,7 +81,7 @@ export async function needsRoleOnboardingPage(): Promise<boolean> {
   const { data: playerProfile } = await supabase
     .from("player_profiles")
     .select("id")
-    .eq("id", userId)
+    .eq("id", resolvedUserId)
     .maybeSingle();
 
   return !isPlayerOnboardingComplete(role, playerProfile?.id);
