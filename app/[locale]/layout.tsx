@@ -16,7 +16,12 @@ import {
 } from "@/lib/loading/criticalFirstPaint";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 import { isMobileLayoutStableV2Enabled } from "@/lib/layout/mobileLayoutStableV2Flag";
+import { isMobileLayoutV3Enabled } from "@/lib/layout/mobileLayoutV3Flag";
 import { MLV2_CRITICAL_NON_HOME_CSS } from "@/lib/layout/mlv2CriticalCss";
+import {
+  MLV3_CRITICAL_CSS,
+  MLV3_HTML_ATTRIBUTE_SYNC_SCRIPT,
+} from "@/lib/layout/mlv3CriticalCss";
 import { MLV2_ROOT_ATTR } from "@/components/layout/mobile-v2/mobileLayoutStableV2.tokens";
 import "@/components/layout/mobile-v2/mobileLayoutStableV2.css";
 import "@/components/layout/mobile-v2/mobileLayoutStableV2Content.css";
@@ -121,6 +126,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   const dir = RTL_LOCALES.includes(locale as AppLocale) ? "rtl" : "ltr";
   const mobileLayoutStableV2 = isMobileLayoutStableV2Enabled();
+  const mobileLayoutV3 = isMobileLayoutV3Enabled();
 
   return (
     <html
@@ -150,6 +156,18 @@ export default async function LocaleLayout({ children, params }: Props) {
             <script
               id="mlv2-html-attribute-sync"
               dangerouslySetInnerHTML={{ __html: MLV2_HTML_ATTRIBUTE_SYNC_SCRIPT }}
+            />
+          </>
+        ) : null}
+        {mobileLayoutV3 ? (
+          <>
+            <style
+              id="mlv3-critical"
+              dangerouslySetInnerHTML={{ __html: MLV3_CRITICAL_CSS }}
+            />
+            <script
+              id="mlv3-html-attribute-sync"
+              dangerouslySetInnerHTML={{ __html: MLV3_HTML_ATTRIBUTE_SYNC_SCRIPT }}
             />
           </>
         ) : null}

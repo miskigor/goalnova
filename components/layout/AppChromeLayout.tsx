@@ -9,6 +9,8 @@ import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBa
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
 import { AppMobileChromeMetrics } from "@/components/layout/AppMobileChromeMetrics";
 import { AppChromeLayoutStableV2 } from "@/components/layout/mobile-v2/AppChromeLayoutStableV2";
+import { AppChromeLayoutV3 } from "@/components/layout/mobile-v3/AppChromeLayoutV3";
+import { usePathname } from "@/i18n/navigation";
 import {
   APP_SHELL_COLUMN_CLASS,
   APP_SHELL_MAIN_CLASS,
@@ -17,6 +19,10 @@ import {
   APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS,
 } from "@/lib/layout/appShellClasses";
 import { isMobileLayoutStableV2Enabled } from "@/lib/layout/mobileLayoutStableV2Flag";
+import {
+  isMobileLayoutV3Enabled,
+  isMobileLayoutV3ShellRoute,
+} from "@/lib/layout/mobileLayoutV3Flag";
 
 function AppMainColumn({ children }: { children: React.ReactNode }) {
   return (
@@ -57,10 +63,16 @@ function AppChromeLayoutV1({ children }: { children: React.ReactNode }) {
  * V2 rebuild is opt-in via `NEXT_PUBLIC_MOBILE_LAYOUT_STABLE_V2=true`.
  */
 export function AppChromeLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const useV3Shell =
+    isMobileLayoutV3Enabled() && isMobileLayoutV3ShellRoute(pathname);
+
   return (
     <FeedbackProvider>
       <AdminSupportUnreadProvider>
-        {isMobileLayoutStableV2Enabled() ? (
+        {useV3Shell ? (
+          <AppChromeLayoutV3>{children}</AppChromeLayoutV3>
+        ) : isMobileLayoutStableV2Enabled() ? (
           <AppChromeLayoutStableV2>{children}</AppChromeLayoutStableV2>
         ) : (
           <AppChromeLayoutV1>{children}</AppChromeLayoutV1>
