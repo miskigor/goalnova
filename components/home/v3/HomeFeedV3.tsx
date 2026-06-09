@@ -40,6 +40,7 @@ import {
   challengeLinkSegment,
 } from "@/lib/challenges/challengeRowUtils";
 import { feedItemVideoKey } from "@/lib/feed/feedItemVideoKey";
+import { buildPlayerProfilePath } from "@/lib/player/buildPlayerProfilePath";
 import { isDev } from "@/lib/devLog";
 import {
   isMobileLayoutV3Enabled,
@@ -439,12 +440,10 @@ function HomeFeedV3Card({
     slideOffset === 0 ? "high" : "low";
 
   const userId = (video.user_id ?? "").trim();
-  const profilePath = useMemo(() => {
-    if (!userId) return null;
-    const un = profile?.username?.trim();
-    const segment = un && un.length > 0 ? un : userId;
-    return `/player/${encodeURIComponent(segment)}` as const;
-  }, [userId, profile?.username]);
+  const profilePath = useMemo(
+    () => buildPlayerProfilePath(userId, profile?.username),
+    [userId, profile?.username],
+  );
 
   const displayName =
     profile?.full_name?.trim() ||

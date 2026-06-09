@@ -112,11 +112,10 @@ export const APP_MOBILE_BOTTOM_NAV_PROFILE_AVATAR_CLASS =
 export const APP_MESSAGES_INBOX_PAGE_CLASS =
   "mx-auto box-border w-full min-w-0 max-w-lg overflow-x-clip lg:max-w-2xl";
 
-/** `/messages/[id]` — full-height thread between mobile chrome (no extra page pb). */
+/** `/messages/[id]` — full-height thread; outer shell scroll locked via [data-messages-thread] CSS. */
 export const APP_MESSAGES_THREAD_PAGE_CLASS = [
-  "mx-auto box-border flex w-full min-w-0 max-w-full flex-col overflow-x-clip",
-  "min-h-[calc(100dvh-var(--gn-app-header-offset)-var(--gn-app-bottom-nav-offset))]",
-  "max-lg:pb-0 lg:max-w-2xl",
+  "mx-auto box-border flex h-full min-h-0 w-full min-w-0 max-w-full flex-1 flex-col overflow-hidden",
+  "lg:max-w-2xl",
 ].join(" ");
 
 /** Stable profile column — same width on loading skeleton and loaded content (mobile-first). */

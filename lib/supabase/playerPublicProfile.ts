@@ -1,9 +1,13 @@
 import type { Database } from "./client";
 import { supabase } from "./client";
 import { logFullSupabaseError, supabaseErrorToUserMessage } from "./logError";
+import {
+  normalizePlayerProfileSlug,
+  rpcResolvePublicPlayerProfileBySlug,
+  type PlayerProfileRow,
+} from "@/lib/supabase/publicPlayerProfiles";
 
-export type PlayerProfileRow =
-  Database["public"]["Tables"]["player_profiles"]["Row"];
+export type { PlayerProfileRow };
 export type VideoRow = Database["public"]["Tables"]["videos"]["Row"];
 
 /** Loose UUID v4-style check for routing (id vs username). */
@@ -14,13 +18,6 @@ export function isUuidLike(value: string): boolean {
   );
 }
 
-function escapeIlikeExact(value: string): string {
-  return value
-    .replace(/\\/g, "\\\\")
-    .replace(/%/g, "\\%")
-    .replace(/_/g, "\\_");
-}
-
 export async function fetchPlayerProfileBySlug(
   slug: string
 ): Promise<{
@@ -29,52 +26,50 @@ export async function fetchPlayerProfileBySlug(
   userAvatarUrl: string | null;
   errorMessage: string | null;
 }> {
-  const trimmed = slug.trim();
+  const trimmed = normalizePlayerProfileSlug(slug);
   if (!trimmed) {
     return { profile: null, userAvatarUrl: null, errorMessage: null };
   }
 
-  let query = supabase.from("player_profiles").select("*");
+  const { row: profile, errorMessage } = await rpcResolvePublicPlayerProfileBySlug(
+    supabase,
+    trimmed,
+  );
 
-  if (isUuidLike(trimmed)) {
-    query = query.eq("id", trimmed);
-  } else {
-    query = query.ilike("username", escapeIlikeExact(trimmed));
+  if (errorMessage) {
+    logFullSupabaseError(
+      "playerPublicProfile: fetchPlayerProfileBySlug",
+      new Error(errorMessage),
+      { slug: trimmed, byId: isUuidLike(trimmed) },
+    );
+    return { profile: null, userAvatarUrl: null, errorMessage };
   }
-
-  const { data, error } = await query.maybeSingle();
-
-  if (error) {
-    logFullSupabaseError("playerPublicProfile: fetchPlayerProfileBySlug", error, {
-      slug: trimmed,
-      byId: isUuidLike(trimmed),
-    });
-    return {
-      profile: null,
-      userAvatarUrl: null,
-      errorMessage: supabaseErrorToUserMessage(error),
-    };
-  }
-
-  const profile = data ?? null;
   if (profile?.id) {
+    const profileAvatar =
+      typeof profile.avatar_url === "string" ? profile.avatar_url.trim() : "";
+
     const { data: u, error: uErr } = await supabase
       .from("users")
       .select("id,is_deleted,avatar_url")
       .eq("id", profile.id)
       .maybeSingle();
+
     if (uErr) {
       logFullSupabaseError("playerPublicProfile: users by id", uErr, {
         userId: profile.id,
       });
-      return { profile: null, userAvatarUrl: null, errorMessage: supabaseErrorToUserMessage(uErr) };
+      return {
+        profile,
+        userAvatarUrl: profileAvatar || null,
+        errorMessage: null,
+      };
     }
+
     if (u?.is_deleted) {
       return { profile: null, userAvatarUrl: null, errorMessage: null };
     }
+
     const avatar = typeof u?.avatar_url === "string" ? u.avatar_url.trim() : "";
-    const profileAvatar =
-      typeof profile.avatar_url === "string" ? profile.avatar_url.trim() : "";
     return {
       profile,
       userAvatarUrl: avatar || profileAvatar || null,

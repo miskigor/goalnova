@@ -12,6 +12,7 @@ import {
   selectedMusicTrackIdFromVideo,
   type MusicTrackSummary,
 } from "@/lib/supabase/videoMusicSummary";
+import { rpcFetchPublicPlayerProfilesByIds } from "@/lib/supabase/publicPlayerProfiles";
 
 export type HomeFeedVideo = Database["public"]["Tables"]["videos"]["Row"];
 export type HomeFeedPlayerProfile =
@@ -285,19 +286,17 @@ export async function fetchHomeFeedData(
   const profileByUserId = new Map<string, HomeFeedPlayerProfile>();
 
   if (userIds.length > 0) {
-    const { data: profiles, error: profilesError } = await supabase
-      .from("player_profiles")
-      .select("*")
-      .in("id", userIds);
+    const { rows: profiles, errorMessage: profilesError } =
+      await rpcFetchPublicPlayerProfilesByIds(supabase, userIds);
 
     if (profilesError) {
       logFullSupabaseError(
-        "[PitchRusch home feed] player_profiles select error",
-        profilesError,
+        "[PitchRusch home feed] player_profiles RPC error",
+        new Error(profilesError),
         { userIdsCount: userIds.length },
       );
     } else {
-      for (const p of profiles ?? []) {
+      for (const p of profiles) {
         profileByUserId.set(p.id, p);
       }
     }

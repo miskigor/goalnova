@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { hasPersistedSupabaseSession } from "@/lib/auth/hasPersistedSupabaseSession";
 import { supabase } from "@/lib/supabase/client";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
@@ -76,6 +77,13 @@ export function PremiumProvider({ children }: { children: React.ReactNode }) {
   }, [loadPremiumForUser]);
 
   useEffect(() => {
+    if (!hasPersistedSupabaseSession()) {
+      setUserId(null);
+      setIsPremium(false);
+      setPremiumLoaded(true);
+      return;
+    }
+
     let cancelled = false;
 
     const { data: authListener } = supabase.auth.onAuthStateChange(

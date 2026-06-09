@@ -1,54 +1,62 @@
-import { supabase, type Database } from "./client";
+import { supabase } from "./client";
 import { sortPlayersForScouts } from "@/lib/premium/playerPremium";
 import {
   logFullSupabaseError,
   supabaseErrorToUserMessage,
 } from "./logError";
+import {
+  rpcFetchPublicPlayerProfilesDiscover,
+  rpcFetchPublicPlayerProfilesSearch,
+  type PlayerProfileRow,
+  type PublicPlayerProfileSearchFilters,
+} from "@/lib/supabase/publicPlayerProfiles";
 
-export type PlayerProfileRow =
-  Database["public"]["Tables"]["player_profiles"]["Row"];
+export type { PlayerProfileRow };
 
 /**
- * Load all rows once; filtering/search runs on the client.
+ * Load active player profiles via safe RPC; filtering/search runs on the client.
  */
 export async function fetchAllPlayerProfilesForDiscover(): Promise<{
   rows: PlayerProfileRow[];
   errorMessage: string | null;
 }> {
-  const { data, error } = await supabase
-    .from("player_profiles")
-    .select("*")
-    .limit(300);
+  const { rows, errorMessage } = await rpcFetchPublicPlayerProfilesDiscover(supabase, 300);
 
-  if (error) {
-    logFullSupabaseError("Discover: fetchAllPlayerProfiles", error);
+  if (errorMessage) {
+    logFullSupabaseError("Discover: fetchAllPlayerProfiles", new Error(errorMessage));
     return {
       rows: [],
-      errorMessage: supabaseErrorToUserMessage(error),
+      errorMessage,
     };
   }
 
-  const rows = (data ?? []) as PlayerProfileRow[];
-  const ids = [...new Set(rows.map((r) => r.id).filter(Boolean))];
-  if (ids.length === 0) return { rows, errorMessage: null };
-
-  const { data: users, error: usersErr } = await supabase
-    .from("users")
-    .select("id,is_deleted")
-    .in("id", ids);
-  if (usersErr) {
-    logFullSupabaseError("Discover: users(is_deleted) filter", usersErr, {
-      idsCount: ids.length,
-    });
-    return { rows: [], errorMessage: supabaseErrorToUserMessage(usersErr) };
-  }
-  const active = new Set(
-    (users ?? [])
-      .filter((u) => !u.is_deleted)
-      .map((u) => u.id),
-  );
   return {
-    rows: sortPlayersForScouts(rows.filter((r) => active.has(r.id))),
+    rows: sortPlayersForScouts(rows),
+    errorMessage: null,
+  };
+}
+
+/** Scout discover search with server-side filters (name/username ilike + profile fields). */
+export async function fetchPlayerProfilesForDiscoverSearch(
+  filters: PublicPlayerProfileSearchFilters,
+  limit = 100,
+): Promise<{
+  rows: PlayerProfileRow[];
+  errorMessage: string | null;
+}> {
+  const { rows, errorMessage } = await rpcFetchPublicPlayerProfilesSearch(
+    supabase,
+    filters,
+    limit,
+  );
+
+  if (errorMessage) {
+    logFullSupabaseError("Discover: search players", new Error(errorMessage));
+    return { rows: [], errorMessage };
+  }
+
+  return {
+    rows: sortPlayersForScouts(rows),
     errorMessage: null,
   };
 }

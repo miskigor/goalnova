@@ -13,6 +13,7 @@ import {
   supabaseErrorToUserMessage,
 } from "@/lib/supabase/logError";
 import { sortVideosForScouts } from "@/lib/premium/playerPremium";
+import { rpcFetchScoutPlayerProfilesByIds } from "@/lib/supabase/publicPlayerProfiles";
 
 export type ScoutDiscoverySort = "discovery" | "newest" | "most_liked" | "highest_ai";
 
@@ -147,13 +148,7 @@ export async function fetchScoutDiscoveryFeed(
   let mapped = rows.map(mapRpcRowToAugmentedItem);
   if (mapped.length > 0) {
     const userIds = [...new Set(mapped.map((m) => m.video.user_id).filter(Boolean))];
-    const { data: premiumProfiles } = await client
-      .from("player_profiles")
-      .select(
-        "id,subscription_plan,subscription_status,profile_completeness,ai_overall_score,featured_player_until",
-      )
-      .in("id", userIds);
-    const premiumById = new Map((premiumProfiles ?? []).map((p) => [p.id, p]));
+    const { premiumById } = await rpcFetchScoutPlayerProfilesByIds(client, userIds);
     const sorted = sortVideosForScouts(
       mapped.map((m) => ({
         item: m,

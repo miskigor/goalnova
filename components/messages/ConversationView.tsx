@@ -758,7 +758,7 @@ export function ConversationView({ otherUserId }: Props) {
     : messages;
 
   return (
-    <div className="flex h-full min-h-0 min-w-0 max-w-full flex-1 flex-col overflow-x-clip">
+    <div className="flex h-full min-h-0 min-w-0 max-w-full flex-1 flex-col overflow-hidden">
       <div className="mb-3 flex min-w-0 max-w-full flex-wrap items-center gap-2 border-b border-gn-border-subtle pb-3">
         <Link
           href="/notifications"
@@ -801,7 +801,8 @@ export function ConversationView({ otherUserId }: Props) {
 
       <div
         ref={scrollRef}
-        className="flex min-h-0 min-w-0 max-w-full flex-1 flex-col gap-2 overflow-x-clip overflow-y-auto overscroll-y-contain pb-4"
+        data-messages-scroll
+        className="flex min-h-0 min-w-0 max-w-full flex-1 flex-col gap-2 overflow-x-clip overflow-y-auto overscroll-y-contain pb-2"
       >
         {visibleMessages.length === 0 ? (
           <p className="py-8 text-center text-sm text-gn-text-tertiary">
@@ -865,13 +866,16 @@ export function ConversationView({ otherUserId }: Props) {
         <div ref={endRef} className="h-px w-full shrink-0" aria-hidden />
       </div>
 
-      <div className="shrink-0 border-t border-gn-border-subtle bg-gn-bg pt-3">
+      <div
+        data-messages-composer
+        className="w-full min-w-0 max-w-full shrink-0 overflow-x-clip border-t border-gn-border-subtle bg-gn-bg pt-3"
+      >
         {scoutGate.loaded && scoutGate.isUnverifiedScout ? (
           <p className="mb-2 rounded-xl border border-gn-border-subtle bg-gn-surface/40 px-3 py-3 text-sm text-gn-text-secondary">
             {tSv("messagingComposerLocked")}
             <Link
               href="/scout-apply"
-              className="ms-1 font-medium text-gn-accent hover:underline"
+              className="relative z-10 ms-1 inline touch-manipulation font-medium text-gn-accent hover:underline"
             >
               {tSv("applyCta")}
             </Link>
@@ -890,7 +894,7 @@ export function ConversationView({ otherUserId }: Props) {
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder={t("messagePlaceholder")}
-            className="min-w-0 max-w-full flex-1 rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-3 py-2.5 text-sm text-gn-text placeholder:text-gn-text-tertiary focus:border-gn-accent focus:outline-none focus:ring-1 focus:ring-gn-accent/40"
+            className="min-w-0 max-w-full flex-1 rounded-xl border border-gn-border-subtle bg-gn-surface/50 px-3 py-2.5 text-base text-gn-text placeholder:text-gn-text-tertiary focus:border-gn-accent focus:outline-none focus:ring-1 focus:ring-gn-accent/40"
             disabled={
               sending ||
               !currentUserId ||

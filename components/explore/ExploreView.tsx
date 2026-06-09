@@ -38,6 +38,8 @@ import {
 } from "@/lib/video/videoMediaDisplayClasses";
 import { devWarn } from "@/lib/devLog";
 import { PlayerProfileFiltersModal } from "@/components/search/PlayerProfileFiltersModal";
+import { PlayerDiscoverCard } from "@/components/discover/PlayerDiscoverCard";
+import type { PlayerProfileRow } from "@/lib/supabase/discoverPlayers";
 import { PremiumBadge } from "@/components/premium/PremiumBadges";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
 import {
@@ -430,6 +432,7 @@ export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
   const [sort, setSort] = useState<ExploreSort>("newest");
 
   const [items, setItems] = useState<ExploreFeedItem[]>([]);
+  const [playerMatches, setPlayerMatches] = useState<PlayerProfileRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
 
@@ -458,7 +461,7 @@ export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
     setLoadFailed(false);
     const ageMin = parseAgeInput(extraFilters.ageMinStr);
     const ageMax = parseAgeInput(extraFilters.ageMaxStr);
-    const { items: next, error: err } = await fetchExploreFeed({
+    const { items: next, playerMatches: nextPlayers, error: err } = await fetchExploreFeed({
       search: debouncedName,
       position: extraFilters.position,
       country: extraFilters.country,
@@ -475,8 +478,10 @@ export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
       logFullSupabaseError("[PitchRusch explore] feed load", new Error(err));
       setLoadFailed(true);
       setItems([]);
+      setPlayerMatches([]);
     } else {
       setItems(next);
+      setPlayerMatches(nextPlayers);
       setLoadFailed(false);
     }
     setLoading(false);
@@ -605,11 +610,21 @@ export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
         </div>
       ) : null}
 
-      {!loading && !loadFailed && items.length === 0 ? (
+      {!loading && !loadFailed && items.length === 0 && playerMatches.length === 0 ? (
         <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/25 px-4 py-16 text-center">
           <p className="text-sm font-medium text-gn-text">{t("noResults")}</p>
           <p className="mt-2 text-sm text-gn-text-secondary">{t("noResultsHint")}</p>
         </div>
+      ) : null}
+
+      {!loading && !loadFailed && playerMatches.length > 0 ? (
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {playerMatches.map((row) => (
+            <li key={row.id}>
+              <PlayerDiscoverCard row={row} />
+            </li>
+          ))}
+        </ul>
       ) : null}
 
       {!loading && !loadFailed && items.length > 0 ? (

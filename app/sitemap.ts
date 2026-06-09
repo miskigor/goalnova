@@ -3,6 +3,7 @@ import { routing } from "@/i18n/routing";
 import { localizedPath } from "@/lib/seo/alternates";
 import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 import { createAnonSupabaseServerClient } from "@/lib/supabase/anonServerClient";
+import { rpcFetchPublicPlayerProfilesDiscover } from "@/lib/supabase/publicPlayerProfiles";
 import { hasVideoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 
 /** Public marketing and discovery pages only — no auth-gated app routes. */
@@ -44,12 +45,7 @@ async function collectAllItems(): Promise<SitemapItem[]> {
   if (!supabase) return items;
 
   const [profilesRes, videosRes, challengesRes] = await Promise.all([
-    supabase
-      .from("player_profiles")
-      .select("username, created_at")
-      .not("username", "is", null)
-      .order("created_at", { ascending: false })
-      .limit(5000),
+    rpcFetchPublicPlayerProfilesDiscover(supabase, 500),
     supabase
       .from("videos")
       .select("id, created_at, video_url, processed_video_url, source_video_url")
@@ -64,7 +60,7 @@ async function collectAllItems(): Promise<SitemapItem[]> {
       .limit(500),
   ]);
 
-  const profileSlugs = (profilesRes.data ?? [])
+  const profileSlugs = profilesRes.rows
     .map((row) => (row.username ?? "").trim())
     .filter(Boolean);
 

@@ -1134,6 +1134,210 @@ export type Database = {
         Args: { p_is_premium: boolean };
         Returns: null;
       };
+      goalnova_public_player_profile_row: {
+        Args: { p_user_id: string };
+        Returns: {
+          id: string;
+          full_name: string | null;
+          username: string | null;
+          age: number | null;
+          bio: string | null;
+          position: string | null;
+          preferred_foot: string | null;
+          height: number | null;
+          weight: number | null;
+          city: string | null;
+          country: string | null;
+          club: string | null;
+          avatar_url: string | null;
+          profile_completeness: number | null;
+          ai_overall_score: number | null;
+          is_available_for_trials: boolean | null;
+          is_looking_for_club: boolean | null;
+          achievements: string[] | null;
+          career_history: Json | null;
+          profile_highlight: string | null;
+          created_at: string | null;
+          featured_player_until: string | null;
+          founding_player: boolean | null;
+        }[];
+      };
+      goalnova_public_player_profile_by_username: {
+        Args: { p_username: string };
+        Returns: {
+          id: string;
+          full_name: string | null;
+          username: string | null;
+          age: number | null;
+          bio: string | null;
+          position: string | null;
+          preferred_foot: string | null;
+          height: number | null;
+          weight: number | null;
+          city: string | null;
+          country: string | null;
+          club: string | null;
+          avatar_url: string | null;
+          profile_completeness: number | null;
+          ai_overall_score: number | null;
+          is_available_for_trials: boolean | null;
+          is_looking_for_club: boolean | null;
+          achievements: string[] | null;
+          career_history: Json | null;
+          profile_highlight: string | null;
+          created_at: string | null;
+          featured_player_until: string | null;
+          founding_player: boolean | null;
+        }[];
+      };
+      goalnova_public_player_profiles_by_ids: {
+        Args: { p_user_ids: string[] };
+        Returns: {
+          id: string;
+          full_name: string | null;
+          username: string | null;
+          age: number | null;
+          bio: string | null;
+          position: string | null;
+          preferred_foot: string | null;
+          height: number | null;
+          weight: number | null;
+          city: string | null;
+          country: string | null;
+          club: string | null;
+          avatar_url: string | null;
+          profile_completeness: number | null;
+          ai_overall_score: number | null;
+          is_available_for_trials: boolean | null;
+          is_looking_for_club: boolean | null;
+          achievements: string[] | null;
+          career_history: Json | null;
+          profile_highlight: string | null;
+          created_at: string | null;
+          featured_player_until: string | null;
+          founding_player: boolean | null;
+        }[];
+      };
+      goalnova_public_player_profiles_search: {
+        Args: {
+          p_q?: string | null;
+          p_position?: string | null;
+          p_country?: string | null;
+          p_city?: string | null;
+          p_age_min?: number | null;
+          p_age_max?: number | null;
+          p_preferred_foot?: string | null;
+          p_club?: string | null;
+          p_limit?: number;
+        };
+        Returns: {
+          id: string;
+          full_name: string | null;
+          username: string | null;
+          age: number | null;
+          bio: string | null;
+          position: string | null;
+          preferred_foot: string | null;
+          height: number | null;
+          weight: number | null;
+          city: string | null;
+          country: string | null;
+          club: string | null;
+          avatar_url: string | null;
+          profile_completeness: number | null;
+          ai_overall_score: number | null;
+          is_available_for_trials: boolean | null;
+          is_looking_for_club: boolean | null;
+          achievements: string[] | null;
+          career_history: Json | null;
+          profile_highlight: string | null;
+          created_at: string | null;
+          featured_player_until: string | null;
+          founding_player: boolean | null;
+        }[];
+      };
+      goalnova_public_player_profiles_discover: {
+        Args: { p_limit?: number };
+        Returns: {
+          id: string;
+          full_name: string | null;
+          username: string | null;
+          age: number | null;
+          bio: string | null;
+          position: string | null;
+          preferred_foot: string | null;
+          height: number | null;
+          weight: number | null;
+          city: string | null;
+          country: string | null;
+          club: string | null;
+          avatar_url: string | null;
+          profile_completeness: number | null;
+          ai_overall_score: number | null;
+          is_available_for_trials: boolean | null;
+          is_looking_for_club: boolean | null;
+          achievements: string[] | null;
+          career_history: Json | null;
+          profile_highlight: string | null;
+          created_at: string | null;
+          featured_player_until: string | null;
+          founding_player: boolean | null;
+        }[];
+      };
+      goalnova_public_ai_scores_for_videos: {
+        Args: { p_video_ids: string[] };
+        Returns: {
+          video_id: string;
+          overall_score: number | null;
+          created_at: string | null;
+          valid_for_football_analysis: boolean | null;
+        }[];
+      };
+      goalnova_public_top_rated_ai_videos: {
+        Args: { p_limit?: number };
+        Returns: {
+          video_id: string;
+          overall_score: number | null;
+          created_at: string | null;
+          valid_for_football_analysis: boolean | null;
+        }[];
+      };
+      goalnova_public_follow_counts: {
+        Args: { p_user_id: string };
+        Returns: {
+          followers_count: number;
+          following_count: number;
+        }[];
+      };
+      goalnova_scout_player_profiles_by_ids: {
+        Args: { p_user_ids: string[] };
+        Returns: {
+          id: string;
+          full_name: string | null;
+          username: string | null;
+          age: number | null;
+          bio: string | null;
+          position: string | null;
+          preferred_foot: string | null;
+          height: number | null;
+          weight: number | null;
+          city: string | null;
+          country: string | null;
+          club: string | null;
+          avatar_url: string | null;
+          profile_completeness: number | null;
+          ai_overall_score: number | null;
+          is_available_for_trials: boolean | null;
+          is_looking_for_club: boolean | null;
+          achievements: string[] | null;
+          career_history: Json | null;
+          profile_highlight: string | null;
+          created_at: string | null;
+          featured_player_until: string | null;
+          founding_player: boolean | null;
+          is_player_premium: boolean | null;
+        }[];
+      };
       get_scout_profile_display_names: {
         Args: { p_user_ids: string[] };
         Returns: {

@@ -85,6 +85,10 @@ type Props = {
   i18nPathname?: string;
   /** Optional avatar URL from parent (e.g. own profile load) before slug fetch completes. */
   prefetchedAvatarUrl?: string | null;
+  /** Server-hydrated profile (skips client profile RPC on first paint). */
+  initialProfile?: PlayerProfileRow | null;
+  initialUserAvatarUrl?: string | null;
+  initialVideos?: VideoRow[];
 };
 
 export function PlayerPublicProfile({
@@ -93,6 +97,9 @@ export function PlayerPublicProfile({
   publicProfile = false,
   i18nPathname = "",
   prefetchedAvatarUrl = null,
+  initialProfile,
+  initialUserAvatarUrl = null,
+  initialVideos,
 }: Props) {
   const t = useTranslations("playerProfile");
   const tProfile = useTranslations("profile");
@@ -108,14 +115,16 @@ export function PlayerPublicProfile({
   const unknownPlayer = td("unknownPlayer");
 
   const [profile, setProfile] = useState<PlayerProfileRow | null | undefined>(
-    undefined
+    initialProfile !== undefined ? initialProfile : undefined,
   );
-  const [videos, setVideos] = useState<VideoRow[]>([]);
+  const [videos, setVideos] = useState<VideoRow[]>(initialVideos ?? []);
   const [videosNote, setVideosNote] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deletingVideoId, setDeletingVideoId] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [userAvatarUrl, setUserAvatarUrl] = useState<string | null>(null);
+  const [userAvatarUrl, setUserAvatarUrl] = useState<string | null>(
+    initialUserAvatarUrl ?? prefetchedAvatarUrl,
+  );
 
   useEffect(() => {
     if (!publicProfile) return;
@@ -142,45 +151,73 @@ export function PlayerPublicProfile({
       setVideosNote(null);
       setDeleteError(null);
       setDeletingVideoId(null);
-      setProfile(undefined);
-      setVideos([]);
 
-      const {
-        profile: p,
-        userAvatarUrl: av,
-        errorMessage: profileErr,
-      } = await fetchPlayerProfileBySlug(playerSlug);
+      const hydrateProfileOnly = initialProfile !== undefined;
+      const hydrateVideosToo = hydrateProfileOnly && initialVideos !== undefined;
 
-      if (cancelled) return;
-
-      if (profileErr) {
-        profileVideosDebug("fetch profile error", { playerSlug, profileErr });
-        setLoadError(profileErr);
-        setProfile(null);
-        setUserAvatarUrl(null);
+      if (hydrateVideosToo) {
         return;
       }
 
-      if (!p) {
-        profileVideosDebug("fetch profile empty", { playerSlug });
-        setProfile(null);
-        setUserAvatarUrl(null);
+      if (!hydrateProfileOnly) {
+        setProfile(undefined);
+        setVideos([]);
+      }
+
+      let resolvedProfile = hydrateProfileOnly ? initialProfile : null;
+      let resolvedAvatar = hydrateProfileOnly
+        ? initialUserAvatarUrl ?? prefetchedAvatarUrl
+        : null;
+
+      if (!hydrateProfileOnly) {
+        const {
+          profile: p,
+          userAvatarUrl: av,
+          errorMessage: profileErr,
+        } = await fetchPlayerProfileBySlug(playerSlug);
+
+        if (cancelled) return;
+
+        if (profileErr) {
+          profileVideosDebug("fetch profile error", { playerSlug, profileErr });
+          setLoadError(profileErr);
+          setProfile(null);
+          setUserAvatarUrl(null);
+          return;
+        }
+
+        if (!p) {
+          profileVideosDebug("fetch profile empty", { playerSlug });
+          setProfile(null);
+          setUserAvatarUrl(null);
+          return;
+        }
+
+        resolvedProfile = p;
+        resolvedAvatar = av;
+        setProfile(p);
+        setUserAvatarUrl(av);
+      }
+
+      if (!resolvedProfile?.id) {
         return;
       }
 
-      setProfile(p);
-      setUserAvatarUrl(av);
-
-      const { videos: v, errorMessage: vErr } = await fetchVideosForPlayer(p.id);
+      const { videos: v, errorMessage: vErr } = await fetchVideosForPlayer(
+        resolvedProfile.id,
+      );
       if (cancelled) return;
       setVideos(v);
+      if (resolvedAvatar) {
+        setUserAvatarUrl(resolvedAvatar);
+      }
       if (publicProfile) {
         publicProfileDebug("videos query done", {
           i18nPathname,
           playerSlug,
           videosCount: v.length,
           extra: {
-            userId: p.id,
+            userId: resolvedProfile.id,
             fetchError: vErr ?? null,
             query: "fetchVideosForPlayer",
           },
@@ -188,7 +225,7 @@ export function PlayerPublicProfile({
       } else {
         profileVideosDebug("fetch videos done", {
           count: v.length,
-          userId: p.id,
+          userId: resolvedProfile.id,
           fetchError: vErr ?? null,
         });
       }
@@ -200,7 +237,15 @@ export function PlayerPublicProfile({
     return () => {
       cancelled = true;
     };
-  }, [playerSlug, publicProfile, i18nPathname]);
+  }, [
+    playerSlug,
+    publicProfile,
+    i18nPathname,
+    initialProfile,
+    initialVideos,
+    initialUserAvatarUrl,
+    prefetchedAvatarUrl,
+  ]);
 
   const profileSectionClass = PUBLIC_PLAYER_PROFILE_SECTION_CLASS;
   const profileInnerClass = `${profileSectionClass} space-y-6 max-lg:space-y-1.5`;

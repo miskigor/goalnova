@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { consumeAuthRedirectFromUrl } from "@/lib/auth/consumeAuthRedirectFromUrl";
 import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
 import { Logo } from "@/components/brand/Logo";
@@ -55,47 +56,11 @@ export function ResetPasswordCard() {
       setChecking(false);
     };
 
-    async function consumeAuthRedirect() {
-      if (typeof window === "undefined") return;
-      const url = new URL(window.location.href);
-      const code = url.searchParams.get("code");
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error) devError("[reset-password] exchangeCodeForSession", error);
-        url.searchParams.delete("code");
-        const qs = url.searchParams.toString();
-        window.history.replaceState(
-          null,
-          "",
-          `${url.pathname}${qs ? `?${qs}` : ""}${url.hash}`,
-        );
-      }
-
-      const rawHash = window.location.hash?.replace(/^#/, "") ?? "";
-      if (rawHash) {
-        const p = new URLSearchParams(rawHash);
-        const at = p.get("access_token");
-        const rt = p.get("refresh_token");
-        if (at && rt) {
-          const { error } = await supabase.auth.setSession({
-            access_token: at,
-            refresh_token: rt,
-          });
-          if (error) devError("[reset-password] setSession from hash", error);
-          window.history.replaceState(
-            null,
-            "",
-            `${window.location.pathname}${window.location.search}`,
-          );
-        }
-      }
-    }
-
     const clearTimers: number[] = [];
     let unsubscribe: (() => void) | null = null;
 
     void (async () => {
-      await consumeAuthRedirect();
+      await consumeAuthRedirectFromUrl();
       if (cancelled) return;
 
       const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {

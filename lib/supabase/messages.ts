@@ -11,6 +11,7 @@ import {
 } from "./logError";
 import { scheduleMessageNotification } from "./notifications";
 import { fetchVerifiedScoutFlagsForUserIds } from "./scoutVerificationPublic";
+import { rpcFetchPublicPlayerProfilesByIds } from "@/lib/supabase/publicPlayerProfiles";
 
 /** `public.messages` row shape from `Database` (regenerate `database.types.ts` from Supabase when DDL changes). */
 export type MessageRow = PublicMessagesRow;
@@ -448,18 +449,16 @@ export async function fetchDisplayNamesForUserIds(
 
   if (unique.length === 0) return out;
 
-  const { data: players, error: playersError } = await supabase
-    .from("player_profiles")
-    .select("id, full_name, username")
-    .in("id", unique);
+  const { rows: players, errorMessage: playersError } =
+    await rpcFetchPublicPlayerProfilesByIds(supabase, unique);
 
   if (playersError) {
-    logFullSupabaseError("[messages] fetchDisplayNames player_profiles", playersError, {
+    logFullSupabaseError("[messages] fetchDisplayNames player_profiles RPC", new Error(playersError), {
       count: unique.length,
     });
   }
 
-  for (const row of players ?? []) {
+  for (const row of players) {
     const name =
       row.full_name?.trim() ||
       row.username?.trim() ||

@@ -4,6 +4,7 @@ import { devLog, isDev } from "@/lib/devLog";
 import { fetchScoutDiscoveryFeed } from "@/lib/supabase/scoutDiscoveryFeed";
 import type { AugmentedHomeFeedItem } from "@/lib/supabase/homeFeed";
 import { logFullSupabaseError, supabaseErrorToUserMessage } from "@/lib/supabase/logError";
+import { rpcFetchScoutPlayerProfilesByIds } from "@/lib/supabase/publicPlayerProfiles";
 
 type Client = SupabaseClient<Database>;
 
@@ -148,20 +149,20 @@ export async function fetchScoutSavedPlayersForDashboard(
   debug.playerIds = ids;
   debug.livePlayerIds = ids;
 
-  const { data: profiles, error: profErr } = await client
-    .from("player_profiles")
-    .select("*")
-    .in("id", ids);
+  const { rows: profiles, errorMessage: profErr } = await rpcFetchScoutPlayerProfilesByIds(
+    client,
+    ids,
+  );
 
   if (profErr) {
-    debug.errors.profiles = supabaseErrorToUserMessage(profErr);
-    logFullSupabaseError("[scout dashboard] saved profiles select", profErr, {
+    debug.errors.profiles = profErr;
+    logFullSupabaseError("[scout dashboard] saved profiles RPC", new Error(profErr), {
       scoutUserId: effectiveScoutUserId,
       count: ids.length,
     });
   }
 
-  const profileById = new Map((profiles ?? []).map((p) => [p.id, p]));
+  const profileById = new Map(profiles.map((p) => [p.id, p]));
   debug.profilesCount = profileById.size;
   debug.missingProfileIds = ids.filter((id) => !profileById.has(id));
 
@@ -279,19 +280,19 @@ export async function fetchScoutRecentContacts(
     return { rows: [], error: null };
   }
 
-  const { data: profiles, error: profErr } = await client
-    .from("player_profiles")
-    .select("*")
-    .in("id", topIds);
+  const { rows: profiles, errorMessage: profErr } = await rpcFetchScoutPlayerProfilesByIds(
+    client,
+    topIds,
+  );
 
   if (profErr) {
-    logFullSupabaseError("[scout dashboard] contact profiles", profErr, {
+    logFullSupabaseError("[scout dashboard] contact profiles RPC", new Error(profErr), {
       scoutUserId,
     });
     return { rows: [], error: supabaseErrorToUserMessage(profErr) };
   }
 
-  const pmap = new Map((profiles ?? []).map((p) => [p.id, p]));
+  const pmap = new Map(profiles.map((p) => [p.id, p]));
 
   const rows: ScoutRecentContactRow[] = [];
   for (const oid of topIds) {

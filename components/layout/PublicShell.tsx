@@ -9,6 +9,7 @@ import { PublicTopNav } from "@/components/layout/PublicTopNav";
 import { AppChromeLayout } from "@/components/layout/AppChromeLayout";
 import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { useNavSession } from "@/components/layout/useNavSession";
+import { hasPersistedSupabaseSession } from "@/lib/auth/hasPersistedSupabaseSession";
 import { navItemActive } from "@/lib/navigation/navItemActive";
 
 function sidebarLinkClass(pathname: string, href: string) {
@@ -31,23 +32,8 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
     return <AppChromeLayout>{children}</AppChromeLayout>;
   }
 
-  if (authed === null) {
-    return (
-      <>
-        <AppShellDebugOverlay />
-        <div
-          className="flex min-h-dvh min-w-0 w-full items-center justify-center overflow-x-clip bg-gn-bg text-gn-text"
-          role="status"
-          aria-busy
-          aria-live="polite"
-        >
-          <div
-            className="h-8 w-8 animate-spin rounded-full border-2 border-gn-accent border-t-transparent"
-            aria-hidden
-          />
-        </div>
-      </>
-    );
+  if (authed === null && hasPersistedSupabaseSession()) {
+    return <AppChromeLayout>{children}</AppChromeLayout>;
   }
 
   return (

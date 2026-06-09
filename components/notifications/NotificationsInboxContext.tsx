@@ -16,6 +16,7 @@ import {
   logNotificationsRealtimeStatus,
   NOTIFICATIONS_UNREAD_POLL_MS,
 } from "@/lib/notifications/realtimeChannelUtils";
+import { hasPersistedSupabaseSession } from "@/lib/auth/hasPersistedSupabaseSession";
 import { supabase } from "@/lib/supabase/client";
 import {
   isLikelyTransientNetworkFailure,
@@ -103,6 +104,13 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
   }, [realtimeHealthy, refreshUnreadCount]);
 
   useEffect(() => {
+    if (!hasPersistedSupabaseSession()) {
+      userIdRef.current = null;
+      setUnreadCount(0);
+      setRealtimeHealthy(true);
+      return;
+    }
+
     let cancelled = false;
     const channelRef = { current: null as ReturnType<typeof supabase.channel> | null };
     let attachGen = 0;

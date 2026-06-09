@@ -32,7 +32,7 @@ function ScoutInboxNotice() {
       {tSv("inboxScoutNotice")}
       <Link
         href="/scout-apply"
-        className="ms-1 font-medium text-gn-accent hover:underline"
+        className="relative z-10 ms-1 inline touch-manipulation font-medium text-gn-accent hover:underline"
       >
         {tSv("applyCta")}
       </Link>

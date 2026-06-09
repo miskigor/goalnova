@@ -9,6 +9,7 @@ import { DISCOVER_PAGE_SHELL_CLASS } from "@/lib/layout/appShellClasses";
 import { filterPlayerProfiles } from "@/lib/discover/filterPlayerProfiles";
 import {
   fetchAllPlayerProfilesForDiscover,
+  fetchPlayerProfilesForDiscoverSearch,
   type PlayerProfileRow,
 } from "@/lib/supabase/discoverPlayers";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
@@ -80,19 +81,36 @@ export function DiscoverView() {
   const ageMinN = useMemo(() => parseAgeInput(ageMin), [ageMin]);
   const ageMaxN = useMemo(() => parseAgeInput(ageMax), [ageMax]);
 
+  const hasActiveFilters = useMemo(
+    () =>
+      Boolean(
+        debouncedSearch ||
+          country.trim() ||
+          city.trim() ||
+          position.trim() ||
+          preferredFoot.trim() ||
+          ageMinN !== null ||
+          ageMaxN !== null,
+      ),
+    [debouncedSearch, country, city, position, preferredFoot, ageMinN, ageMaxN],
+  );
+
   const filteredRows = useMemo(
     () =>
-      filterPlayerProfiles(allRows, {
-        search: debouncedSearch,
-        country,
-        city,
-        ageMin: ageMinN,
-        ageMax: ageMaxN,
-        position,
-        preferredFoot,
-      }),
+      hasActiveFilters
+        ? allRows
+        : filterPlayerProfiles(allRows, {
+            search: debouncedSearch,
+            country,
+            city,
+            ageMin: ageMinN,
+            ageMax: ageMaxN,
+            position,
+            preferredFoot,
+          }),
     [
       allRows,
+      hasActiveFilters,
       debouncedSearch,
       country,
       city,
@@ -100,7 +118,7 @@ export function DiscoverView() {
       ageMaxN,
       position,
       preferredFoot,
-    ]
+    ],
   );
 
   async function loadFromServer() {
@@ -112,8 +130,17 @@ export function DiscoverView() {
     }
     setErrorMessage(null);
 
-    const { rows: next, errorMessage: err } =
-      await fetchAllPlayerProfilesForDiscover();
+    const { rows: next, errorMessage: err } = hasActiveFilters
+      ? await fetchPlayerProfilesForDiscoverSearch({
+          q: debouncedSearch,
+          country,
+          city,
+          ageMin: ageMinN,
+          ageMax: ageMaxN,
+          position,
+          preferredFoot,
+        })
+      : await fetchAllPlayerProfilesForDiscover();
 
     fetchCompletedOnce.current = true;
 
@@ -136,7 +163,16 @@ export function DiscoverView() {
 
   useEffect(() => {
     void loadFromServer();
-  }, []);
+  }, [
+    debouncedSearch,
+    country,
+    city,
+    ageMinN,
+    ageMaxN,
+    position,
+    preferredFoot,
+    hasActiveFilters,
+  ]);
 
   const showInitialSpinner = loading && allRows.length === 0 && !errorMessage;
 

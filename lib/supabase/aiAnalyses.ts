@@ -3,27 +3,50 @@ import { supabase } from "./client";
 import { logFullSupabaseError, supabaseErrorToUserMessage } from "./logError";
 import type { VideoAnalysisScores } from "@/lib/ai/types";
 import { toStoredVisibilityAnalysis } from "@/lib/ai/toStoredVisibilityAnalysis";
+import {
+  publicAiScoreToMinimalRow,
+  rpcFetchPublicAiScoresForVideos,
+} from "@/lib/supabase/publicAiAnalyses";
 
 export type AiAnalysisRow = Database["public"]["Tables"]["ai_analyses"]["Row"];
 
-/** Loads the single analysis row for this video (unique `video_id` in DB). RLS still applies. */
+/**
+ * Loads analysis for a video: full row when RLS allows (owner / video owner / scout / staff),
+ * otherwise public-safe score projection via RPC (anon and other viewers).
+ */
 export async function fetchAiAnalysisForVideo(
   videoId: string,
 ): Promise<{ row: AiAnalysisRow | null; errorMessage: string | null }> {
+  const vid = videoId.trim();
+  if (!vid) return { row: null, errorMessage: null };
+
   const { data, error } = await supabase
     .from("ai_analyses")
     .select("*")
-    .eq("video_id", videoId)
+    .eq("video_id", vid)
     .maybeSingle();
 
   if (error) {
-    logFullSupabaseError("[ai_analyses] fetchAiAnalysisForVideo", error, {
-      videoId,
+    logFullSupabaseError("[ai_analyses] fetchAiAnalysisForVideo privileged", error, {
+      videoId: vid,
     });
-    return { row: null, errorMessage: supabaseErrorToUserMessage(error) };
   }
 
-  return { row: data ?? null, errorMessage: null };
+  if (data) {
+    return { row: data, errorMessage: null };
+  }
+
+  const { rows, errorMessage } = await rpcFetchPublicAiScoresForVideos(supabase, [vid]);
+  if (errorMessage) {
+    return { row: null, errorMessage };
+  }
+
+  const safe = rows[0];
+  if (!safe) {
+    return { row: null, errorMessage: null };
+  }
+
+  return { row: publicAiScoreToMinimalRow(safe), errorMessage: null };
 }
 
 /**

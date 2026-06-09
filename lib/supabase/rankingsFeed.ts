@@ -1,4 +1,6 @@
 import { devWarn } from "@/lib/devLog";
+import { rpcFetchPublicPlayerProfilesByIds } from "@/lib/supabase/publicPlayerProfiles";
+import { rpcFetchPublicTopRatedAiVideos } from "@/lib/supabase/publicAiAnalyses";
 import { supabase } from "@/lib/supabase/client";
 import type { Database } from "@/lib/supabase/database.types";
 import { fetchLikeCountsByVideoId } from "@/lib/supabase/exploreFeed";
@@ -45,9 +47,6 @@ const OUT_LIMIT = 50;
 /** Columns needed for rankings (avoids wide `*` rows). */
 const VIDEO_COLUMNS =
   "id,user_id,video_url,processed_video_url,source_video_url,city,country,created_at,selected_music_track_id" as const;
-const PROFILE_COLUMNS =
-  "id,username,full_name,position,city,country" as const;
-
 const FALLBACK_PLAYER_NAME = "Player";
 const FALLBACK_USERNAME_LABEL = "player";
 
@@ -217,19 +216,16 @@ async function loadProfilesForUserIds(
   const unique = dedupeUserIds(userIds);
   if (unique.length === 0) return map;
 
-  const { data, error } = await supabase
-    .from("player_profiles")
-    .select(PROFILE_COLUMNS)
-    .in("id", unique);
+  const { rows, errorMessage } = await rpcFetchPublicPlayerProfilesByIds(supabase, unique);
 
-  if (error) {
-    logFullSupabaseError("[rankings] player_profiles", error, {
+  if (errorMessage) {
+    logFullSupabaseError("[rankings] player_profiles RPC", new Error(errorMessage), {
       count: unique.length,
     });
-    devWarn("[rankings] profiles fetch failed", supabaseErrorToUserMessage(error));
+    devWarn("[rankings] profiles fetch failed", errorMessage);
     return map;
   }
-  for (const p of (data ?? []) as PlayerProfileRow[]) {
+  for (const p of rows) {
     const id = nonEmptyString(p.id);
     if (id) map.set(id, p);
   }
@@ -497,22 +493,26 @@ export async function fetchTopRatedRankings(): Promise<{
   rows: RankingsListItem[];
   error: string | null;
 }> {
-  const { data: analysisRows, error: aErr } = await supabase
-    .from("ai_analyses")
-    .select("video_id, overall_score, created_at")
-    .eq("valid_for_football_analysis", true)
-    .order("overall_score", { ascending: false, nullsFirst: false })
-    .limit(180);
+  const { rows: analysisRows, errorMessage: aErr } = await rpcFetchPublicTopRatedAiVideos(
+    supabase,
+    180,
+  );
 
   if (aErr) {
-    logFullSupabaseError("[rankings] top_rated ai_analyses", aErr, {
+    logFullSupabaseError("[rankings] top_rated ai RPC", new Error(aErr), {
       limit: 180,
     });
-    return { rows: [], error: supabaseErrorToUserMessage(aErr) };
+    return { rows: [], error: aErr };
   }
 
   const normalized = sortAnalysesForTopRated(
-    normalizeAnalysisRows((analysisRows ?? []) as AnalysisRow[]),
+    normalizeAnalysisRows(
+      analysisRows.map((row) => ({
+        video_id: row.video_id,
+        overall_score: row.overall_score,
+        created_at: row.created_at,
+      })) as AnalysisRow[],
+    ),
   );
 
   const seen = new Set<string>();

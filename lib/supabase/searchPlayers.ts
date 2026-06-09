@@ -1,10 +1,13 @@
 import { devError } from "@/lib/devLog";
 import { sortPlayersForScouts } from "@/lib/premium/playerPremium";
 import { supabase } from "@/lib/supabase/client";
-import type { Database } from "@/lib/supabase/database.types";
 import { logFullSupabaseError, supabaseErrorToUserMessage } from "@/lib/supabase/logError";
+import {
+  rpcFetchPublicPlayerProfilesSearch,
+  type PlayerProfileRow,
+} from "@/lib/supabase/publicPlayerProfiles";
 
-export type SearchPlayerRow = Database["public"]["Tables"]["player_profiles"]["Row"];
+export type SearchPlayerRow = PlayerProfileRow;
 
 export type SearchPlayerResult = SearchPlayerRow & {
   /** Canonical avatar from `public.users.avatar_url`. */
@@ -12,10 +15,6 @@ export type SearchPlayerResult = SearchPlayerRow & {
 };
 
 const RESULT_LIMIT = 40;
-
-function escapeIlike(value: string): string {
-  return value.replace(/\\/g, "\\\\").replace(/%/g, "\\%").replace(/_/g, "\\_");
-}
 
 export type PlayerSearchFilters = {
   /** Name or username (ilike on full_name OR username). */
@@ -57,64 +56,44 @@ export async function searchPlayersWithFilters(
     return { rows: [], error: null };
   }
 
-  let query = supabase.from("player_profiles").select("*");
+  const { rows: filtered, errorMessage } = await rpcFetchPublicPlayerProfilesSearch(
+    supabase,
+    {
+      q,
+      position,
+      country,
+      city,
+      preferredFoot: foot,
+      club,
+      ageMin: filters.ageMin,
+      ageMax: filters.ageMax,
+    },
+    RESULT_LIMIT,
+  );
 
-  if (hasName) {
-    const pattern = escapeIlike(q);
-    query = query.or(`username.ilike.%${pattern}%,full_name.ilike.%${pattern}%`);
-  }
-  if (position.length > 0) {
-    query = query.ilike("position", `%${escapeIlike(position)}%`);
-  }
-  if (country.length > 0) {
-    query = query.ilike("country", `%${escapeIlike(country)}%`);
-  }
-  if (city.length > 0) {
-    query = query.ilike("city", `%${escapeIlike(city)}%`);
-  }
-  if (foot.length > 0) {
-    query = query.ilike("preferred_foot", `%${escapeIlike(foot)}%`);
-  }
-  if (club.length > 0) {
-    query = query.ilike("club", `%${escapeIlike(club)}%`);
-  }
-  if (filters.ageMin != null && Number.isFinite(filters.ageMin)) {
-    query = query.gte("age", filters.ageMin);
-  }
-  if (filters.ageMax != null && Number.isFinite(filters.ageMax)) {
-    query = query.lte("age", filters.ageMax);
-  }
-
-  const { data, error } = await query.limit(RESULT_LIMIT);
-
-  if (error) {
-    logFullSupabaseError("[search] searchPlayersWithFilters", error, {
+  if (errorMessage) {
+    logFullSupabaseError("[search] searchPlayersWithFilters", new Error(errorMessage), {
       hasName,
       hasExtra,
     });
-    devError("[search] player_profiles query failed", {
-      message: supabaseErrorToUserMessage(error),
-    });
-    return { rows: [], error: supabaseErrorToUserMessage(error) };
+    devError("[search] player profile search RPC failed", { message: errorMessage });
+    return { rows: [], error: errorMessage };
   }
 
-  const rows = (data ?? []) as SearchPlayerRow[];
-  const ids = [...new Set(rows.map((r) => r.id).filter(Boolean))];
+  const ids = [...new Set(filtered.map((r) => r.id).filter(Boolean))];
   if (ids.length === 0) {
     return {
-      rows: rows.map((r) => ({ ...r, userAvatarUrl: null })),
+      rows: filtered.map((r) => ({ ...r, userAvatarUrl: r.avatar_url ?? null })),
       error: null,
     };
   }
 
   const { data: users, error: uErr } = await supabase
     .from("users")
-    .select("id,is_deleted,avatar_url")
+    .select("id,avatar_url")
     .in("id", ids);
   if (uErr) {
-    logFullSupabaseError("[search] users(is_deleted) filter", uErr, {
-      idsCount: ids.length,
-    });
+    logFullSupabaseError("[search] users avatar_url", uErr, { idsCount: ids.length });
     return { rows: [], error: supabaseErrorToUserMessage(uErr) };
   }
   const avatarByUserId = new Map<string, string | null>();
@@ -122,17 +101,12 @@ export async function searchPlayersWithFilters(
     const v = typeof u.avatar_url === "string" ? u.avatar_url.trim() : "";
     avatarByUserId.set(u.id, v || null);
   }
-  const active = new Set(
-    (users ?? []).filter((u) => !u.is_deleted).map((u) => u.id),
+  const visible = filtered.map(
+    (r): SearchPlayerResult => ({
+      ...r,
+      userAvatarUrl: avatarByUserId.get(r.id) ?? r.avatar_url ?? null,
+    }),
   );
-  const visible = rows
-    .filter((r) => active.has(r.id))
-    .map(
-      (r): SearchPlayerResult => ({
-        ...r,
-        userAvatarUrl: avatarByUserId.get(r.id) ?? null,
-      }),
-    );
   return { rows: sortPlayersForScouts(visible), error: null };
 }
 

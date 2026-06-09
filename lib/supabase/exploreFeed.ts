@@ -14,6 +14,14 @@ import {
   type MusicTrackSummary,
 } from "@/lib/supabase/videoMusicSummary";
 import { sortVideosForScouts } from "@/lib/premium/playerPremium";
+import {
+  rpcFetchPublicPlayerProfilesByIds,
+  rpcFetchPublicPlayerProfilesSearch,
+} from "@/lib/supabase/publicPlayerProfiles";
+import {
+  publicAiScoresToMap,
+  rpcFetchPublicAiScoresForVideos,
+} from "@/lib/supabase/publicAiAnalyses";
 
 export type ExploreVideoRow = Database["public"]["Tables"]["videos"]["Row"];
 export type ExploreProfileRow =
@@ -42,11 +50,7 @@ export type ExploreSort = "newest" | "most_liked" | "leaderboard";
 const OUT_LIMIT = 48;
 const POOL_NEWEST = 72;
 const POOL_MOST_LIKED = 160;
-const PROFILE_MATCH_LIMIT = 200;
-
-function escapeIlike(value: string): string {
-  return value.replace(/\\/g, "\\\\").replace(/%/g, "\\%").replace(/_/g, "\\_");
-}
+const PROFILE_MATCH_LIMIT = 100;
 
 function recentSinceIso(days: number): string {
   return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
@@ -85,48 +89,32 @@ async function resolveProfileFilterIds(params: {
     return { ids: null, error: null };
   }
 
-  let q = supabase.from("player_profiles").select("id").limit(PROFILE_MATCH_LIMIT);
+  const { rows: filtered, errorMessage } = await rpcFetchPublicPlayerProfilesSearch(
+    supabase,
+    {
+      q: searchT,
+      position: posT,
+      country: countryT,
+      city: cityT,
+      preferredFoot: footT,
+      club: clubT,
+      ageMin: params.ageMin,
+      ageMax: params.ageMax,
+    },
+    PROFILE_MATCH_LIMIT,
+  );
 
-  if (searchT) {
-    const s = escapeIlike(searchT);
-    q = q.or(`full_name.ilike.%${s}%,username.ilike.%${s}%`);
-  }
-  if (posT) {
-    const p = escapeIlike(posT);
-    q = q.ilike("position", `%${p}%`);
-  }
-  if (countryT) {
-    q = q.ilike("country", `%${escapeIlike(countryT)}%`);
-  }
-  if (cityT) {
-    q = q.ilike("city", `%${escapeIlike(cityT)}%`);
-  }
-  if (footT) {
-    q = q.ilike("preferred_foot", `%${escapeIlike(footT)}%`);
-  }
-  if (clubT) {
-    q = q.ilike("club", `%${escapeIlike(clubT)}%`);
-  }
-  if (params.ageMin != null && Number.isFinite(params.ageMin)) {
-    q = q.gte("age", params.ageMin);
-  }
-  if (params.ageMax != null && Number.isFinite(params.ageMax)) {
-    q = q.lte("age", params.ageMax);
-  }
-
-  const { data, error } = await q;
-
-  if (error) {
-    logFullSupabaseError("[explore] resolveProfileFilterIds", error, {
+  if (errorMessage) {
+    logFullSupabaseError("[explore] resolveProfileFilterIds", new Error(errorMessage), {
       search: searchT,
       position: posT,
       country: countryT,
       city: cityT,
     });
-    return { ids: [], error: supabaseErrorToUserMessage(error) };
+    return { ids: [], error: errorMessage };
   }
 
-  const ids = [...new Set((data ?? []).map((r) => r.id).filter(Boolean))] as string[];
+  const ids = [...new Set(filtered.map((r) => r.id).filter(Boolean))] as string[];
   return { ids, error: null };
 }
 
@@ -168,24 +156,16 @@ export async function fetchAiOverallScoresByVideoId(
   const chunk = 120;
   for (let i = 0; i < videoIds.length; i += chunk) {
     const slice = videoIds.slice(i, i + chunk);
-    const { data, error } = await supabase
-      .from("ai_analyses")
-      .select("video_id, overall_score, valid_for_football_analysis")
-      .in("video_id", slice);
+    const { rows, errorMessage } = await rpcFetchPublicAiScoresForVideos(supabase, slice);
 
-    if (error) {
-      logFullSupabaseError("[explore] fetchAiOverallScoresByVideoId", error, {
+    if (errorMessage) {
+      logFullSupabaseError("[explore] fetchAiOverallScoresByVideoId RPC", new Error(errorMessage), {
         chunk: slice.length,
       });
       continue;
     }
-    for (const row of data ?? []) {
-      const vid = row.video_id as string | undefined;
-      if (row.valid_for_football_analysis === false) continue;
-      const sc = Number(row.overall_score);
-      if (typeof vid === "string" && vid.length > 0 && Number.isFinite(sc)) {
-        map.set(vid, sc);
-      }
+    for (const [vid, sc] of publicAiScoresToMap(rows)) {
+      map.set(vid, sc);
     }
   }
   return map;
@@ -206,7 +186,12 @@ export async function fetchExploreFeed(params: {
   club: string;
   recentVideosOnly: boolean;
   sort: ExploreSort;
-}): Promise<{ items: ExploreFeedItem[]; error: string | null }> {
+}): Promise<{
+  items: ExploreFeedItem[];
+  /** Matched players with no playable videos in the current result set. */
+  playerMatches: ExploreProfileRow[];
+  error: string | null;
+}> {
   const { ids: profileIds, error: profileErr } = await resolveProfileFilterIds({
     search: params.search,
     position: params.position,
@@ -219,11 +204,24 @@ export async function fetchExploreFeed(params: {
   });
 
   if (profileErr) {
-    return { items: [], error: profileErr };
+    return { items: [], playerMatches: [], error: profileErr };
   }
 
   if (profileIds !== null && profileIds.length === 0) {
-    return { items: [], error: null };
+    return { items: [], playerMatches: [], error: null };
+  }
+
+  let matchedProfiles: ExploreProfileRow[] = [];
+  if (profileIds !== null && profileIds.length > 0) {
+    const { rows: profRows, errorMessage: matchErr } =
+      await rpcFetchPublicPlayerProfilesByIds(supabase, profileIds);
+    if (matchErr) {
+      logFullSupabaseError("[explore] matched profile preload", new Error(matchErr), {
+        profileIdsCount: profileIds.length,
+      });
+    } else {
+      matchedProfiles = profRows;
+    }
   }
 
   const pool =
@@ -257,7 +255,11 @@ export async function fetchExploreFeed(params: {
     devError("[explore] videos query failed", {
       message: supabaseErrorToUserMessage(vErr),
     });
-    return { items: [], error: supabaseErrorToUserMessage(vErr) };
+    return {
+      items: [],
+      playerMatches: matchedProfiles,
+      error: supabaseErrorToUserMessage(vErr),
+    };
   }
 
   let videos = (videoRows ?? []) as ExploreVideoRow[];
@@ -274,7 +276,11 @@ export async function fetchExploreFeed(params: {
       logFullSupabaseError("[explore] users(is_deleted) filter", usersErr, {
         userIdsCount: userIds.length,
       });
-      return { items: [], error: supabaseErrorToUserMessage(usersErr) };
+      return {
+        items: [],
+        playerMatches: matchedProfiles,
+        error: supabaseErrorToUserMessage(usersErr),
+      };
     }
     for (const u of users ?? []) {
       const v = typeof u.avatar_url === "string" ? u.avatar_url.trim() : "";
@@ -292,20 +298,20 @@ export async function fetchExploreFeed(params: {
   const filteredUserIds = [...new Set(videos.map((v) => v.user_id).filter(Boolean))];
   const profileByUserId = new Map<string, ExploreProfileRow>();
   if (filteredUserIds.length > 0) {
-    const { data: profRows, error: pErr } = await supabase
-      .from("player_profiles")
-      .select("*")
-      .in("id", filteredUserIds);
+    const { rows: profRows, errorMessage: pErr } = await rpcFetchPublicPlayerProfilesByIds(
+      supabase,
+      filteredUserIds,
+    );
 
     if (pErr) {
-      logFullSupabaseError("[explore] fetchExploreFeed player_profiles", pErr, {
+      logFullSupabaseError("[explore] fetchExploreFeed player_profiles RPC", new Error(pErr), {
         userIdsCount: filteredUserIds.length,
       });
       devWarn("[explore] profiles fetch failed — cards may lack usernames", {
-        message: supabaseErrorToUserMessage(pErr),
+        message: pErr,
       });
     } else {
-      for (const p of (profRows ?? []) as ExploreProfileRow[]) {
+      for (const p of profRows) {
         profileByUserId.set(p.id, p);
       }
     }
@@ -457,5 +463,11 @@ export async function fetchExploreFeed(params: {
     };
   });
 
-  return { items: withMusic, error: null };
+  const usersWithVideos = new Set(videos.map((v) => v.user_id).filter(Boolean));
+  const playerMatches =
+    profileIds !== null
+      ? matchedProfiles.filter((p) => !usersWithVideos.has(p.id))
+      : [];
+
+  return { items: withMusic, playerMatches, error: null };
 }

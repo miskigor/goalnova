@@ -7,6 +7,7 @@ import {
 import { devError } from "@/lib/devLog";
 import type { Database } from "@/lib/supabase/database.types";
 import { createAnonSupabaseServerClient } from "@/lib/supabase/anonServerClient";
+import { rpcFetchPublicPlayerProfileById } from "@/lib/supabase/publicPlayerProfiles";
 import {
   fetchMusicTrackSummariesByIds,
   selectedMusicTrackIdFromVideo,
@@ -55,14 +56,13 @@ export const getPublicVideoPageData = cache(
     const url = video ? videoPlaybackUrl(video) : "";
     if (!video || !url) return null;
 
-    const { data: profile, error: profileError } = await supabase
-      .from("player_profiles")
-      .select("*")
-      .eq("id", video.user_id)
-      .maybeSingle();
+    const ownerIdForProfile = video.user_id?.trim() ?? "";
+    const { row: profile, errorMessage: profileErrorMessage } = ownerIdForProfile
+      ? await rpcFetchPublicPlayerProfileById(supabase, ownerIdForProfile)
+      : { row: null, errorMessage: null };
 
-    if (profileError) {
-      devError("[PitchRusch public video] player_profiles select failed", profileError);
+    if (profileErrorMessage) {
+      devError("[PitchRusch public video] player profile RPC failed", profileErrorMessage);
     }
 
     let userAvatarUrl: string | null = null;
@@ -102,7 +102,7 @@ export const getPublicVideoPageData = cache(
 
     return {
       video,
-      profile: profile ?? null,
+      profile,
       userAvatarUrl,
       challenge,
       musicTrack,

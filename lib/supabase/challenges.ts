@@ -14,6 +14,11 @@ import {
   type ExploreSort,
 } from "@/lib/supabase/exploreFeed";
 import { competitionScore as computeCompetitionScore } from "@/lib/challenges/challengeCompetitionScore";
+import { rpcFetchPublicPlayerProfilesByIds } from "@/lib/supabase/publicPlayerProfiles";
+import {
+  publicAiScoresToMap,
+  rpcFetchPublicAiScoresForVideos,
+} from "@/lib/supabase/publicAiAnalyses";
 import { hasVideoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 
 export type { ChallengeRow } from "@/lib/challenges/challengeRowUtils";
@@ -327,8 +332,7 @@ export type ChallengeAiHighlight = {
 };
 
 /**
- * Highest `overall_score` per challenge among analyzed public challenge clips.
- * Requires RLS policy allowing read on `ai_analyses` for those videos (see migration).
+ * Highest `overall_score` per challenge among analyzed public challenge clips (safe RPC).
  */
 export async function fetchBestAiHighlightsForChallenges(
   challengeIds: string[],
@@ -364,25 +368,21 @@ export async function fetchBestAiHighlightsForChallenges(
   const chunk = 120;
   for (let i = 0; i < videoIds.length; i += chunk) {
     const slice = videoIds.slice(i, i + chunk);
-    const { data: arows, error: aErr } = await supabase
-      .from("ai_analyses")
-      .select("video_id, overall_score, valid_for_football_analysis")
-      .in("video_id", slice);
+    const { rows: arows, errorMessage: aErr } = await rpcFetchPublicAiScoresForVideos(
+      supabase,
+      slice,
+    );
 
     if (aErr) {
-      logFullSupabaseError("[challenges] fetchBestAiHighlights ai_analyses", aErr, {
+      logFullSupabaseError("[challenges] fetchBestAiHighlights ai RPC", new Error(aErr), {
         chunk: slice.length,
       });
       continue;
     }
 
-    for (const row of arows ?? []) {
-      const vid = row.video_id as string;
+    for (const [vid, score] of publicAiScoresToMap(arows)) {
       const cid = videoIdToChallenge.get(vid);
       if (!cid) continue;
-      if (row.valid_for_football_analysis === false) continue;
-      const score = Number(row.overall_score);
-      if (!Number.isFinite(score)) continue;
       const prev = result.get(cid);
       if (!prev || score > prev.overallScore) {
         result.set(cid, {
@@ -448,15 +448,15 @@ export async function fetchChallengeFeed(params: {
       }
     }
 
-    const { data: profRows, error: pErr } = await supabase
-      .from("player_profiles")
-      .select("*")
-      .in("id", userIds);
+    const { rows: profRows, errorMessage: pErr } = await rpcFetchPublicPlayerProfilesByIds(
+      supabase,
+      userIds,
+    );
 
     if (pErr) {
-      logFullSupabaseError("[challenges] fetchChallengeFeed player_profiles", pErr);
+      logFullSupabaseError("[challenges] fetchChallengeFeed player_profiles RPC", new Error(pErr));
     } else {
-      for (const p of (profRows ?? []) as Database["public"]["Tables"]["player_profiles"]["Row"][]) {
+      for (const p of profRows) {
         profileByUserId.set(p.id, p);
       }
     }

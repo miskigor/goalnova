@@ -804,6 +804,86 @@ main,
   [data-premium-fit-viewport] [data-premium-scout-carousel] {
     touch-action: pan-x;
   }
+
+  /*
+   * /messages/[id] — lock outer scroll; only the message list scrolls; composer stays visible.
+   */
+  html:has([data-messages-thread]) {
+    overscroll-behavior: none !important;
+  }
+
+  body:has([data-messages-thread]) {
+    overscroll-behavior: none !important;
+    touch-action: manipulation;
+  }
+
+  [data-app-main]:has([data-messages-thread]) {
+    overflow: hidden !important;
+    overflow-x: clip !important;
+    overflow-y: hidden !important;
+    overscroll-behavior: none !important;
+    touch-action: manipulation;
+    padding-bottom: 0 !important;
+  }
+
+  [data-app-main-inner]:has([data-messages-thread]) {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  [data-messages-thread] {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  [data-messages-scroll] {
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+
+  [data-messages-composer] {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+    touch-action: manipulation;
+  }
+
+  [data-messages-composer] input {
+    font-size: 1rem;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  [data-messages-thread] a,
+  [data-messages-composer] a {
+    touch-action: manipulation !important;
+    pointer-events: auto !important;
+  }
 }
 
 [data-app-bottom-nav] {

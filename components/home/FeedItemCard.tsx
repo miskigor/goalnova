@@ -21,6 +21,7 @@ import {
   feedVideoProps,
 } from "@/lib/feed/feedScrollContract";
 import { feedItemVideoKey } from "@/lib/feed/feedItemVideoKey";
+import { buildPlayerProfilePath } from "@/lib/player/buildPlayerProfilePath";
 import {
   homeFeedPlaybackCandidates,
   videoPlaybackUrl,
@@ -132,12 +133,10 @@ export function FeedItemCard({
 
   const userId = (video.user_id ?? "").trim();
 
-  const profilePath = useMemo(() => {
-    if (!userId) return null;
-    const un = profile?.username?.trim();
-    const segment = un && un.length > 0 ? un : userId;
-    return `/player/${encodeURIComponent(segment)}` as const;
-  }, [userId, profile?.username]);
+  const profilePath = useMemo(
+    () => buildPlayerProfilePath(userId, profile?.username),
+    [userId, profile?.username],
+  );
 
   const displayName =
     profile?.full_name?.trim() ||

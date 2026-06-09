@@ -25,45 +25,44 @@ function isUniqueOrDuplicateFollowError(error: unknown): boolean {
 }
 
 /**
- * Loads follower and following counts independently so one failing request
- * does not discard the other.
+ * Loads follower and following counts via safe RPC (anon + authenticated).
  */
 export async function fetchFollowCountsForUser(
   userId: string
 ): Promise<FollowCountsResult> {
-  const [followersRes, followingRes] = await Promise.all([
-    supabase
-      .from("follows")
-      .select("id", { count: "exact", head: true })
-      .eq("following_id", userId),
-    supabase
-      .from("follows")
-      .select("id", { count: "exact", head: true })
-      .eq("follower_id", userId),
-  ]);
-
-  let followersError: string | null = null;
-  let followingError: string | null = null;
-
-  if (followersRes.error) {
-    logFullSupabaseError("Follows: count followers", followersRes.error, {
-      following_id: userId,
-    });
-    followersError = supabaseErrorToUserMessage(followersRes.error);
+  const uid = userId.trim();
+  if (!uid) {
+    return {
+      followers: 0,
+      following: 0,
+      followersError: null,
+      followingError: null,
+    };
   }
 
-  if (followingRes.error) {
-    logFullSupabaseError("Follows: count following", followingRes.error, {
-      follower_id: userId,
+  const { data, error } = await supabase.rpc("goalnova_public_follow_counts", {
+    p_user_id: uid,
+  });
+
+  if (error) {
+    logFullSupabaseError("Follows: public follow counts RPC", error, {
+      user_id: uid,
     });
-    followingError = supabaseErrorToUserMessage(followingRes.error);
+    const message = supabaseErrorToUserMessage(error);
+    return {
+      followers: null,
+      following: null,
+      followersError: message,
+      followingError: message,
+    };
   }
 
+  const row = Array.isArray(data) ? data[0] : null;
   return {
-    followers: followersRes.error ? null : (followersRes.count ?? 0),
-    following: followingRes.error ? null : (followingRes.count ?? 0),
-    followersError,
-    followingError,
+    followers: row?.followers_count ?? 0,
+    following: row?.following_count ?? 0,
+    followersError: null,
+    followingError: null,
   };
 }
 

@@ -9,16 +9,28 @@ import {
   PUBLIC_PLAYER_PROFILE_PAGE_SHELL,
   PUBLIC_PLAYER_PROFILE_SECTION_CLASS,
 } from "@/lib/layout/appShellClasses";
+import type {
+  PlayerProfileRow,
+  VideoRow,
+} from "@/lib/supabase/playerPublicProfile";
 
 type Props = {
   playerSlug: string;
+  initialProfile?: PlayerProfileRow | null;
+  initialUserAvatarUrl?: string | null;
+  initialVideos?: VideoRow[];
 };
 
 /**
  * Public `/player/[slug]` route shell — single bounded column (mobile-first).
  * Route file: app/[locale]/(public)/player/[playerSlug]/page.tsx
  */
-export function PlayerPublicProfilePage({ playerSlug }: Props) {
+export function PlayerPublicProfilePage({
+  playerSlug,
+  initialProfile,
+  initialUserAvatarUrl = null,
+  initialVideos,
+}: Props) {
   const i18nPathname = usePathname();
   const [browserPathname, setBrowserPathname] = useState<string | null>(null);
 
@@ -48,6 +60,9 @@ export function PlayerPublicProfilePage({ playerSlug }: Props) {
           embedded
           publicProfile
           i18nPathname={i18nPathname}
+          initialProfile={initialProfile}
+          initialUserAvatarUrl={initialUserAvatarUrl}
+          initialVideos={initialVideos}
         />
       </div>
     </div>

@@ -108,6 +108,10 @@ function startNavSessionSync() {
   if (navSessionSyncStarted || typeof window === "undefined") return;
   navSessionSyncStarted = true;
 
+  if (!hasPersistedSupabaseSession()) {
+    applyNavGuest(true);
+  }
+
   void (async () => {
     try {
       const { session, user: resolvedUser } = await resolveNavAuthOnce();

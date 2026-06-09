@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import {
   PlaybackVideo,
   type PlaybackVideoHandle,
@@ -25,6 +24,7 @@ import {
 } from "@/lib/video/videoPlaybackUrl";
 import { exploreTileVideoPosterAttribute } from "@/lib/video/exploreTileMedia";
 import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
+import { PlayerProfileNavLink } from "@/components/player/PlayerProfileNavLink";
 
 type Props = {
   item: AugmentedHomeFeedItem;
@@ -56,13 +56,6 @@ export function HomeCleanVideoCardV3({
   );
 
   const userId = (video.user_id ?? "").trim();
-  const profilePath = useMemo(() => {
-    if (!userId) return null;
-    const username = profile?.username?.trim();
-    const segment = username && username.length > 0 ? username : userId;
-    return `/player/${encodeURIComponent(segment)}` as const;
-  }, [profile?.username, userId]);
-
   const displayName =
     profile?.full_name?.trim() ||
     profile?.username?.trim() ||
@@ -235,28 +228,30 @@ export function HomeCleanVideoCardV3({
 
       <div data-home-clean-v3-meta>
         <div data-home-clean-v3-meta-row>
-          {profilePath ? (
-            <Link
-              href={profilePath}
+          {userId ? (
+            <PlayerProfileNavLink
+              userId={userId}
+              username={profile?.username}
               className="shrink-0"
               data-home-clean-v3-avatar
               aria-label={t("viewPlayerProfileAria", { name: displayName })}
             >
               {avatar}
-            </Link>
+            </PlayerProfileNavLink>
           ) : (
             <span data-home-clean-v3-avatar className="shrink-0">
               {avatar}
             </span>
           )}
-          {profilePath ? (
-            <Link
-              href={profilePath}
+          {userId ? (
+            <PlayerProfileNavLink
+              userId={userId}
+              username={profile?.username}
               data-home-clean-v3-meta-name
               aria-label={t("viewPlayerProfileAria", { name: displayName })}
             >
               {displayName}
-            </Link>
+            </PlayerProfileNavLink>
           ) : (
             <p data-home-clean-v3-meta-name>{displayName}</p>
           )}
