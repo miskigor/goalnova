@@ -459,21 +459,20 @@
   }
 
   /*
-   * /challenges — bottom nav fixed to viewport (outside scroll); only [data-mlv2-scroll] scrolls.
+   * /challenges — same shell as scout tabs: scroll only in [data-mlv2-scroll]; bottom nav in-flow.
    */
   html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-column] {
     display: flex !important;
     flex-direction: column !important;
     height: 100% !important;
     max-height: 100% !important;
+    min-height: 0 !important;
     overflow: hidden !important;
-    position: relative !important;
   }
 
   html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-scroll] {
     flex: 1 1 auto !important;
     min-height: 0 !important;
-    height: 100% !important;
     max-height: 100% !important;
     overflow-y: auto !important;
     overflow-x: clip !important;
@@ -484,23 +483,15 @@
   }
 
   html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-bottom-nav] {
-    position: fixed !important;
-    inset-inline: 0 !important;
-    bottom: 0 !important;
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
+    position: static !important;
+    inset: auto !important;
     top: auto !important;
-    z-index: 50 !important;
-    width: 100% !important;
-    max-width: var(--mlv2-content-max, min(100%, 390px)) !important;
-    margin-inline: auto !important;
-    flex: none !important;
+    bottom: auto !important;
     transform: none !important;
+    z-index: 1 !important;
     pointer-events: auto !important;
-  }
-
-  html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-content] {
-    padding-bottom: calc(
-      1rem + var(--mlv2-bottom-nav-height, calc(3.5rem + env(safe-area-inset-bottom, 0px)))
-    ) !important;
   }
 
   html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-challenges-page],

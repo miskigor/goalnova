@@ -26,14 +26,14 @@ html[data-mobile-layout-stable-v2] [data-pitchrusch-explore-frame] p {
   word-break: break-word;
 }
 html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-bottom-nav] {
-  position: fixed !important;
-  inset-inline: 0 !important;
-  bottom: 0 !important;
-  z-index: 50 !important;
+  flex: 0 0 auto !important;
+  position: static !important;
+  transform: none !important;
 }
 html[data-mobile-layout-stable-v2]:has([data-challenges-page]) [data-mlv2-scroll] {
   overflow-y: auto !important;
   min-height: 0 !important;
+  flex: 1 1 auto !important;
 }
 html[data-mobile-layout-stable-v2]:has([data-scout-shell-page]) [data-mlv2-column] > [data-mlv2-bottom-nav],
 html[data-mobile-layout-stable-v2]:has([data-scout-dashboard-page]) [data-mlv2-column] > [data-mlv2-bottom-nav],
