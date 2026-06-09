@@ -11,6 +11,8 @@ import {
   type PlayerProfileRow,
   type VideoRow,
 } from "@/lib/supabase/playerPublicProfile";
+import { rpcAdminDeleteVideo } from "@/lib/supabase/adminSystem";
+import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { usePremium } from "@/components/premium/PremiumProvider";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { userMayMessagePlayers } from "@/lib/scoutVerification";
@@ -106,7 +108,9 @@ export function PlayerPublicProfile({
   const tFields = useTranslations("profileEditor");
   const tSv = useTranslations("scoutVerification");
   const td = useTranslations("discover");
+  const tAdmin = useTranslations("adminDashboard");
   const { userId } = usePremium();
+  const { loaded: adminLoaded, isSuperAdmin, isModerator } = useAdminAccess();
   const scoutGate = useScoutVerification();
   const uploadEligibility = useVideoUploadEligibility();
   const { dismissed: uploadFirstDismissed, dismiss: dismissUploadFirst } =
@@ -319,6 +323,9 @@ export function PlayerPublicProfile({
     !scoutGate.row ||
     userMayMessagePlayers(scoutGate.row);
   const isOwnProfile = Boolean(userId && profile.id === userId);
+  const canAdminDeleteVideo =
+    adminLoaded && (isSuperAdmin || isModerator) && !isOwnProfile;
+  const canDeleteVideos = isOwnProfile || canAdminDeleteVideo;
 
   const playerHeight =
     typeof profile.height === "number" && Number.isFinite(profile.height)
@@ -349,12 +356,19 @@ export function PlayerPublicProfile({
     !uploadFirstDismissed;
 
   async function onDeleteVideo(videoId: string) {
-    if (!isOwnProfile) return;
-    const confirmed = window.confirm(t("deleteVideoConfirm"));
+    if (!canDeleteVideos) return;
+    const confirmed = window.confirm(
+      isOwnProfile ? t("deleteVideoConfirm") : tAdmin("confirmDeleteVideo"),
+    );
     if (!confirmed) return;
     setDeleteError(null);
     setDeletingVideoId(videoId);
-    const result = await deleteOwnVideoById(videoId);
+    const result = isOwnProfile
+      ? await deleteOwnVideoById(videoId)
+      : await rpcAdminDeleteVideo(videoId).then((res) => ({
+          ok: res.ok,
+          errorMessage: res.error,
+        }));
     setDeletingVideoId(null);
     if (!result.ok) {
       setDeleteError(result.errorMessage || t("deleteVideoFailed"));
@@ -517,7 +531,7 @@ export function PlayerPublicProfile({
         ) : (
           <ProfileVideoGrid
             videos={videos}
-            canDelete={isOwnProfile}
+            canDelete={canDeleteVideos}
             deletingVideoId={deletingVideoId}
             onDelete={onDeleteVideo}
             publicProfile={publicProfile}
