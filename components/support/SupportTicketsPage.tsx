@@ -14,6 +14,10 @@ import {
 } from "@/lib/supabase/supportTickets";
 import { supabase } from "@/lib/supabase/client";
 
+function formatDateTime(iso: string): string {
+  return new Date(iso).toLocaleString();
+}
+
 const CATEGORY_OPTIONS: { value: SupportTicketCategory; label: string }[] = [
   { value: "account_issue", label: "Account issue" },
   { value: "verification_issue", label: "Verification issue" },
@@ -250,7 +254,14 @@ export function SupportTicketsPage() {
                       : "me-auto max-w-[90%] bg-gn-surface-elevated text-gn-text-secondary"
                   }`}
                 >
-                  {m.message}
+                  <p className="whitespace-pre-wrap">{m.message}</p>
+                  <p
+                    className={`mt-1 text-[10px] ${
+                      m.sender_user_id ? "text-gn-text-secondary/80" : "text-gn-text-secondary/60"
+                    }`}
+                  >
+                    {formatDateTime(m.created_at)}
+                  </p>
                 </div>
               ))}
             </div>

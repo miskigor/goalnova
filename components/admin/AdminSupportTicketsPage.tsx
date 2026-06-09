@@ -31,6 +31,10 @@ const TICKET_STATUS_KEYS = [
 
 const PRIORITY_KEYS = ["low", "normal", "high", "urgent"] as const;
 
+function formatDateTime(iso: string): string {
+  return new Date(iso).toLocaleString();
+}
+
 export function AdminSupportTicketsPage() {
   const t = useTranslations("adminDashboard");
   const tc = useTranslations("common");
@@ -167,40 +171,82 @@ export function AdminSupportTicketsPage() {
       {loading ? (
         <p className="text-zinc-500">{tc("loadingEllipsis")}</p>
       ) : (
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.25fr),minmax(0,1fr)]">
-          <div className="overflow-x-auto rounded-xl border border-white/10 bg-black/30">
-            <table className="min-w-full text-left text-sm">
+        <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.25fr),minmax(0,1fr)]">
+          <div className="min-w-0 space-y-2 lg:hidden">
+            {rows.map((row) => (
+              <button
+                key={row.id}
+                type="button"
+                onClick={() => setSelectedId(row.id)}
+                className={`w-full rounded-xl border p-3 text-left transition-colors ${
+                  selectedId === row.id
+                    ? "border-orange-500/50 bg-orange-500/10"
+                    : "border-white/10 bg-black/30 hover:bg-white/5"
+                }`}
+              >
+                <p className="text-sm font-semibold text-white">{row.subject}</p>
+                <p className="mt-1 text-xs text-zinc-400">
+                  <Link
+                    href={`/admin/users/${row.user_id}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-orange-300 hover:underline"
+                  >
+                    {t("supportTicketUserLink")}
+                  </Link>
+                </p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  <span className="rounded-md border border-white/15 bg-black/40 px-2 py-0.5 text-[11px] text-zinc-300">
+                    {row.category}
+                  </span>
+                  <span className="rounded-md border border-white/15 bg-black/40 px-2 py-0.5 text-[11px] text-zinc-300">
+                    {row.status}
+                  </span>
+                  <span className="rounded-md border border-white/15 bg-black/40 px-2 py-0.5 text-[11px] text-zinc-300">
+                    {row.priority}
+                  </span>
+                </div>
+                <p className="mt-2 text-[11px] text-zinc-500">{formatDateTime(row.created_at)}</p>
+              </button>
+            ))}
+          </div>
+
+          <div className="hidden min-w-0 overflow-x-auto rounded-xl border border-white/10 bg-black/30 lg:block">
+            <table className="w-full min-w-[48rem] text-left text-sm">
               <thead className="bg-white/5 text-xs uppercase tracking-wide text-zinc-400">
                 <tr>
-                  <th className="px-3 py-2">User</th>
-                  <th className="px-3 py-2">Subject</th>
-                  <th className="px-3 py-2">Category</th>
-                  <th className="px-3 py-2">Status</th>
-                  <th className="px-3 py-2">Priority</th>
-                  <th className="px-3 py-2">Created at</th>
-                  <th className="px-3 py-2">Open</th>
+                  <th className="whitespace-nowrap px-3 py-2">User</th>
+                  <th className="whitespace-nowrap px-3 py-2">Subject</th>
+                  <th className="whitespace-nowrap px-3 py-2">Category</th>
+                  <th className="whitespace-nowrap px-3 py-2">Status</th>
+                  <th className="whitespace-nowrap px-3 py-2">Priority</th>
+                  <th className="whitespace-nowrap px-3 py-2">Created at</th>
+                  <th className="whitespace-nowrap px-3 py-2">Open</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((row) => (
                   <tr key={row.id} className="border-t border-white/10 text-zinc-200">
-                    <td className="px-3 py-2">
+                    <td className="whitespace-nowrap px-3 py-2">
                       <Link href={`/admin/users/${row.user_id}`} className="text-orange-300 hover:underline">
                         {t("supportTicketUserLink")}
                       </Link>
                     </td>
                     <td className="max-w-[16rem] truncate px-3 py-2">{row.subject}</td>
-                    <td className="px-3 py-2">{row.category}</td>
-                    <td className="px-3 py-2">{row.status}</td>
-                    <td className="px-3 py-2">{row.priority}</td>
-                    <td className="px-3 py-2 text-xs text-zinc-400">
-                      {new Date(row.created_at).toLocaleString()}
+                    <td className="whitespace-nowrap px-3 py-2">{row.category}</td>
+                    <td className="whitespace-nowrap px-3 py-2">{row.status}</td>
+                    <td className="whitespace-nowrap px-3 py-2">{row.priority}</td>
+                    <td className="whitespace-nowrap px-3 py-2 text-xs text-zinc-400">
+                      {formatDateTime(row.created_at)}
                     </td>
-                    <td className="px-3 py-2">
+                    <td className="whitespace-nowrap px-3 py-2">
                       <button
                         type="button"
                         onClick={() => setSelectedId(row.id)}
-                        className="rounded border border-white/20 px-2 py-1 text-xs hover:bg-white/10"
+                        className={`rounded border px-2 py-1 text-xs hover:bg-white/10 ${
+                          selectedId === row.id
+                            ? "border-orange-500/50 bg-orange-500/20"
+                            : "border-white/20"
+                        }`}
                       >
                         Open
                       </button>
@@ -302,7 +348,16 @@ export function AdminSupportTicketsPage() {
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="whitespace-pre-wrap">{m.message}</span>
+                        <div className="min-w-0 flex-1">
+                          <p className="whitespace-pre-wrap">{m.message}</p>
+                          <p
+                            className={`mt-1 text-[10px] ${
+                              m.sender_admin_id ? "text-orange-200/70" : "text-zinc-500"
+                            }`}
+                          >
+                            {formatDateTime(m.created_at)}
+                          </p>
+                        </div>
                         <button
                           type="button"
                           disabled={deletingMessageId === m.id}
@@ -317,7 +372,7 @@ export function AdminSupportTicketsPage() {
                             }
                             setDeletingMessageId(null);
                           }}
-                          className="rounded border border-white/20 px-2 py-0.5 text-[10px] font-medium text-zinc-200 hover:bg-white/10 disabled:opacity-50"
+                          className="shrink-0 rounded border border-white/20 px-2 py-0.5 text-[10px] font-medium text-zinc-200 hover:bg-white/10 disabled:opacity-50"
                         >
                           {deletingMessageId === m.id ? "Deleting..." : "Delete"}
                         </button>
