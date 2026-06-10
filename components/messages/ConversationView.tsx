@@ -33,6 +33,8 @@ import {
   deleteMessageForCurrentUser,
   isMessageVisibleForUser,
 } from "@/lib/messages/deleteMessage";
+import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
+import { rpcFetchPublicPlayerProfileById } from "@/lib/supabase/publicPlayerProfiles";
 
 type Props = {
   otherUserId: string;
@@ -67,6 +69,20 @@ function mergeRealtimeInsert(
   });
 
   return [...filtered, incoming].sort(byCreatedAt);
+}
+
+async function resolveOtherUserAvatarUrl(userId: string): Promise<string | null> {
+  const { row } = await rpcFetchPublicPlayerProfileById(supabase, userId);
+  const fromProfile = row?.avatar_url?.trim();
+  if (fromProfile) return fromProfile;
+
+  const { data } = await supabase
+    .from("users")
+    .select("avatar_url")
+    .eq("id", userId)
+    .maybeSingle();
+  const fromUser = typeof data?.avatar_url === "string" ? data.avatar_url.trim() : "";
+  return fromUser || null;
 }
 
 function toMessageDebugRow(
@@ -105,6 +121,7 @@ export function ConversationView({ otherUserId }: Props) {
 
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [otherName, setOtherName] = useState<string>("");
+  const [otherAvatarUrl, setOtherAvatarUrl] = useState<string | null>(null);
   const [messages, setMessages] = useState<UiThreadMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [threadError, setThreadError] = useState<string | null>(null);
@@ -167,6 +184,7 @@ export function ConversationView({ otherUserId }: Props) {
       );
       const baseName = names.get(otherUserId) ?? t("unknownUser");
       setOtherName(baseName);
+      setOtherAvatarUrl(await resolveOtherUserAvatarUrl(otherUserId));
 
       const { rows, errorMessage } = await fetchConversationMessages(
         me,
@@ -759,29 +777,39 @@ export function ConversationView({ otherUserId }: Props) {
 
   return (
     <div className="flex h-full min-h-0 min-w-0 max-w-full flex-1 flex-col overflow-hidden">
-      <div className="mb-3 flex min-w-0 max-w-full flex-wrap items-center gap-2 border-b border-gn-border-subtle pb-3">
-        <Link
-          href="/notifications"
-          className="shrink-0 text-sm font-medium text-gn-accent hover:underline"
-        >
-          ← {t("backToInbox")}
-        </Link>
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-          <h1 className="min-w-0 truncate text-lg font-semibold text-gn-text">
-            {otherName}
-          </h1>
-          {otherIsVerifiedScout ? (
-            <VerifiedScoutBadge className="shrink-0" />
-          ) : null}
+      <div className="mb-3 min-w-0 max-w-full space-y-2.5 border-b border-gn-border-subtle pb-3">
+        <div className="flex min-w-0 items-center justify-between gap-2">
+          <Link
+            href="/notifications"
+            className="min-w-0 shrink text-sm font-medium text-gn-accent hover:underline"
+          >
+            ← {t("backToInbox")}
+          </Link>
+          <button
+            type="button"
+            onClick={() => void manualRefresh()}
+            disabled={refreshing || sending}
+            className="shrink-0 rounded-lg border border-gn-border-subtle px-3 py-1.5 text-xs font-medium text-gn-text-secondary transition-colors hover:border-gn-border hover:text-gn-text disabled:opacity-50"
+          >
+            {refreshing ? t("refreshing") : t("refreshMessages")}
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => void manualRefresh()}
-          disabled={refreshing || sending}
-          className="shrink-0 rounded-lg border border-gn-border-subtle px-3 py-1.5 text-xs font-medium text-gn-text-secondary transition-colors hover:border-gn-border hover:text-gn-text disabled:opacity-50"
-        >
-          {refreshing ? t("refreshing") : t("refreshMessages")}
-        </button>
+        <div className="flex min-w-0 items-center gap-2.5">
+          <ProfileAvatar
+            name={otherName}
+            imageUrl={otherAvatarUrl}
+            sizeClassName="size-10"
+            className="!rounded-full shrink-0 ring-2 ring-gn-border-subtle"
+          />
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <h1 className="min-w-0 truncate text-base font-semibold text-gn-text sm:text-lg">
+              {otherName}
+            </h1>
+            {otherIsVerifiedScout ? (
+              <VerifiedScoutBadge className="shrink-0" />
+            ) : null}
+          </div>
+        </div>
       </div>
 
       {realtimeOk === false ? (
