@@ -39,10 +39,14 @@ function sidebarLinkClass(pathname: string, href: string) {
   ].join(" ");
 }
 
+const SIDEBAR_SHELL_CLASS =
+  "fixed inset-y-0 start-0 z-40 hidden w-[15.5rem] flex-col border-e border-gn-border-subtle bg-gn-bg/95 shadow-[4px_0_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:flex";
+
 export function AppSidebar() {
   const pathname = usePathname();
   const tNav = useTranslations("nav");
   const tSettings = useTranslations("settings");
+  const [hydrated, setHydrated] = useState(false);
   const { authed, user } = useNavSession();
   const uploadEligibility = useVideoUploadEligibility();
   const scoutGate = useScoutVerification();
@@ -61,6 +65,10 @@ export function AppSidebar() {
       ? "/scout-dashboard"
       : "/scout-apply"
     : "/home";
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     if (!authed || !user || isAdmin) {
@@ -92,10 +100,47 @@ export function AppSidebar() {
     };
   }, [authed, user, isAdmin]);
 
+  if (!hydrated) {
+    return (
+      <aside
+        className={SIDEBAR_SHELL_CLASS}
+        aria-label={tNav("sections")}
+        suppressHydrationWarning
+      >
+        <div className="flex h-16 shrink-0 items-center border-b border-gn-border-subtle px-4">
+          <Logo href="/home" variant="header" className="min-w-0" />
+        </div>
+        <nav
+          className="flex flex-1 flex-col gap-1 overflow-y-auto overscroll-contain p-3"
+          aria-label={tNav("primary")}
+        >
+          {APP_SHELL_MAIN_NAV.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={sidebarLinkClass(pathname, item.href)}
+              aria-current={navItemActive(pathname, item.href) ? "page" : undefined}
+            >
+              <NavIcon
+                name={item.icon}
+                className="size-5 shrink-0 transition-transform duration-300 ease-gn-smooth motion-safe:group-hover:scale-110"
+              />
+              <span className="min-w-0 truncate">{tNav(item.labelKey)}</span>
+            </Link>
+          ))}
+        </nav>
+        <div className="space-y-2 border-t border-gn-border-subtle p-3">
+          <div className="h-10 animate-pulse rounded-xl bg-gn-surface/40" />
+        </div>
+      </aside>
+    );
+  }
+
   return (
     <aside
-      className="fixed inset-y-0 start-0 z-40 hidden w-[15.5rem] flex-col border-e border-gn-border-subtle bg-gn-bg/95 shadow-[4px_0_32px_rgba(0,0,0,0.2)] backdrop-blur-xl supports-[backdrop-filter]:bg-gn-bg/90 lg:flex"
+      className={SIDEBAR_SHELL_CLASS}
       aria-label={tNav("sections")}
+      suppressHydrationWarning
     >
       <div className="flex h-16 shrink-0 items-center border-b border-gn-border-subtle px-4">
         <Logo href={logoHref} variant="header" className="min-w-0" />

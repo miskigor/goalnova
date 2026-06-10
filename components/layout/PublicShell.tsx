@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
@@ -27,12 +28,18 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const tNav = useTranslations("nav");
   const tExplore = useTranslations("explore");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (authed) {
     return <AppChromeLayout>{children}</AppChromeLayout>;
   }
 
-  if (authed === null && hasPersistedSupabaseSession()) {
+  // hasPersistedSupabaseSession() uses localStorage — false on SSR, true on client → hydration mismatch.
+  if (authed === null && mounted && hasPersistedSupabaseSession()) {
     return <AppChromeLayout>{children}</AppChromeLayout>;
   }
 

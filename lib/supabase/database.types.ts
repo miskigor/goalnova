@@ -784,6 +784,69 @@ export type Database = {
         };
         Relationships: [];
       };
+      quiz_questions: {
+        Row: {
+          id: string;
+          category: string;
+          question_text: Json;
+          options: Json;
+          correct_option_index: number;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          category: string;
+          question_text: Json;
+          options: Json;
+          correct_option_index: number;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          category?: string;
+          question_text?: Json;
+          options?: Json;
+          correct_option_index?: number;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      quiz_user_answers: {
+        Row: {
+          id: string;
+          user_id: string;
+          quiz_date: string;
+          question_id: string;
+          selected_option_index: number;
+          is_correct: boolean;
+          xp_awarded: number;
+          answered_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          quiz_date: string;
+          question_id: string;
+          selected_option_index: number;
+          is_correct: boolean;
+          xp_awarded?: number;
+          answered_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          quiz_date?: string;
+          question_id?: string;
+          selected_option_index?: number;
+          is_correct?: boolean;
+          xp_awarded?: number;
+          answered_at?: string;
+        };
+        Relationships: [];
+      };
       challenge_entries: {
         Row: {
           id: string;
@@ -1567,6 +1630,25 @@ export type Database = {
       goalnova_admin_reply_support_ticket: {
         Args: { p_ticket_id: string; p_message: string };
         Returns: string;
+      };
+      goalnova_quiz_get_today: {
+        Args: { p_locale?: string };
+        Returns: Json;
+      };
+      goalnova_quiz_submit_answer: {
+        Args: { p_selected_option_index: number; p_locale?: string };
+        Returns: Json;
+      };
+      goalnova_quiz_weekly_leaderboard: {
+        Args: { p_locale?: string; p_limit?: number };
+        Returns: {
+          rank: number;
+          user_id: string;
+          display_name: string;
+          username: string;
+          country: string | null;
+          weekly_xp: number;
+        }[];
       };
       goalnova_admin_delete_video: {
         Args: { p_video_id: string };

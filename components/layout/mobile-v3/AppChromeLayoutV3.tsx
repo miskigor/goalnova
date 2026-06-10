@@ -40,7 +40,8 @@ export function AppChromeLayoutV3({ children }: { children: ReactNode }) {
 
   return (
     <div
-      data-mlv3-root
+      data-mlv3-root="true"
+      suppressHydrationWarning
       className={`bg-gn-bg text-gn-text lg:flex lg:min-h-dvh lg:flex-row${isHomeV3ShellHome ? " max-lg:overflow-x-hidden max-lg:max-w-full" : ""}`}
     >
       <AppSidebar />

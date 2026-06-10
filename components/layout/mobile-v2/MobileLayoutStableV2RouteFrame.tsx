@@ -93,10 +93,11 @@ export function MobileLayoutStableV2RouteFrame({
 
   return (
     <div
-      {...{ [MLV2_CONTENT_ATTR]: "" }}
+      {...{ [MLV2_CONTENT_ATTR]: "true" }}
       {...{ [MLV2_ROUTE_ATTR]: route }}
-      {...(scoutShellActive ? { "data-scout-shell-page": "" } : {})}
-      {...(isScoutProfile || scoutProfileDomReady ? { "data-scout-own-profile-page": "" } : {})}
+      {...(scoutShellActive ? { "data-scout-shell-page": "true" } : {})}
+      {...(isScoutProfile || scoutProfileDomReady ? { "data-scout-own-profile-page": "true" } : {})}
+      suppressHydrationWarning
       className={[
         MLV2_CONTENT_MAX_CLASS,
         route === "home"

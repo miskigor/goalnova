@@ -29,16 +29,20 @@ export function AppChromeLayoutStableV2({ children }: { children: ReactNode }) {
     <>
       <AppLayoutDebugProbe />
       <AppShellDebugOverlay />
-      <div data-mlv2-root className="bg-gn-bg text-gn-text lg:flex lg:min-h-dvh lg:flex-row">
+      <div
+        data-mlv2-root="true"
+        suppressHydrationWarning
+        className="bg-gn-bg text-gn-text lg:flex lg:min-h-dvh lg:flex-row"
+      >
         <AppSidebar />
-        <div data-mlv2-column>
-          <div data-mlv2-scroll>
+        <div data-mlv2-column="true" suppressHydrationWarning>
+          <div data-mlv2-scroll="true" suppressHydrationWarning>
             <MobileLayoutStableV2RouteFrame>
               <ScoutVerificationBanner />
               {children}
             </MobileLayoutStableV2RouteFrame>
           </div>
-          <div data-mlv2-bottom-nav className="max-lg:block lg:hidden">
+          <div data-mlv2-bottom-nav="true" suppressHydrationWarning className="max-lg:block lg:hidden">
             <AppMobileBottomNav />
           </div>
         </div>
