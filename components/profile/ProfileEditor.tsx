@@ -46,6 +46,7 @@ import {
 import { fetchMyPlayerPremiumProfile, setFeaturedVideo } from "@/lib/supabase/playerPremium";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
 import { resetAppShellHorizontalScroll } from "@/lib/feed/feedScrollContract";
+import { resetMobileBrowserZoom } from "@/lib/layout/resetMobileBrowserZoom";
 import {
   SETTINGS_PROFILE_MOBILE_INSET_CLASS,
   SETTINGS_PROFILE_PAGE_SHELL_CLASS,
@@ -83,7 +84,8 @@ const fieldBlockClass = "min-w-0 max-w-full";
 const inputClass = [
   fieldBlockClass,
   "mt-0.5 w-full max-w-full rounded-xl border border-gn-border bg-gn-surface text-sm text-gn-text",
-  "max-lg:mt-0 max-lg:h-8 max-lg:min-h-8 max-lg:rounded-lg max-lg:px-2.5 max-lg:py-1 max-lg:text-xs max-lg:leading-snug",
+  // 16px on mobile — iOS Safari auto-zooms inputs below 16px and can leave the whole app zoomed in.
+  "max-lg:mt-0 max-lg:min-h-10 max-lg:rounded-lg max-lg:px-3 max-lg:py-2 max-lg:text-base max-lg:leading-snug",
   "lg:px-3 lg:py-2.5",
   "placeholder:text-gn-text-tertiary outline-none transition-[border-color,box-shadow]",
   "focus:border-gn-accent/60 focus:ring-2 focus:ring-gn-accent/25 max-lg:focus:ring-1 max-lg:focus:ring-inset",
@@ -190,6 +192,12 @@ export function ProfileEditor() {
     history.scrollRestoration = "manual";
     return () => {
       history.scrollRestoration = prev;
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      resetMobileBrowserZoom();
     };
   }, []);
 
@@ -463,6 +471,7 @@ export function ProfileEditor() {
       }
 
       dispatchAvatarUrlUpdated(avatarUrl?.trim() || null);
+      resetMobileBrowserZoom();
       router.replace("/profile?saved=1");
     } catch (e) {
       logFullSupabaseError("[ProfileEditor] save", e);
