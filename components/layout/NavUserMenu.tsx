@@ -60,7 +60,10 @@ function newRealtimeChannelSuffix(): string {
 }
 
 const ACCOUNT_MENU_PANEL_BASE_CLASS =
-  "box-border overflow-x-hidden overflow-y-auto overscroll-y-contain rounded-xl border border-gn-border-subtle bg-gn-surface-elevated/95 py-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.45)] backdrop-blur-xl";
+  "box-border flex max-h-[inherit] flex-col overflow-hidden rounded-xl border border-gn-border-subtle bg-gn-surface-elevated/95 shadow-[0_16px_48px_rgba(0,0,0,0.45)] backdrop-blur-xl";
+
+const ACCOUNT_MENU_SCROLL_CLASS =
+  "box-border min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain py-1.5 [-webkit-overflow-scrolling:touch] [touch-action:pan-y]";
 
 /** Mobile header account menu: fixed inside viewport (portal), never wider than screen. */
 const ACCOUNT_MENU_PANEL_MOBILE_CLASS = [
@@ -226,9 +229,11 @@ export function NavUserMenu({
     const prevBodyOverflow = body.style.overflow;
     html.style.overflow = "hidden";
     body.style.overflow = "hidden";
+    body.setAttribute("data-account-menu-open", "true");
     return () => {
       html.style.overflow = prevHtmlOverflow;
       body.style.overflow = prevBodyOverflow;
+      body.removeAttribute("data-account-menu-open");
     };
   }, [open, useMobileFixedMenu]);
 
@@ -290,7 +295,7 @@ export function NavUserMenu({
       className={menuPanelPositionClass}
     >
       {bottomNavTrigger ? (
-        <div className="flex min-w-0 items-center gap-3 border-b border-gn-border-subtle px-3 py-3">
+        <div className="flex shrink-0 min-w-0 items-center gap-3 border-b border-gn-border-subtle px-3 py-3">
           <ProfileAvatar
             name={displayNameFromUser(user)}
             imageUrl={avatarUrl}
@@ -303,6 +308,7 @@ export function NavUserMenu({
         </div>
       ) : null}
 
+      <div data-account-menu-scroll className={ACCOUNT_MENU_SCROLL_CLASS}>
       {bottomNavTrigger ? (
         <>
           <Link
@@ -499,21 +505,23 @@ export function NavUserMenu({
 
       {mobileMoreInMenu ? (
         <div className="box-border min-w-0 max-w-full overflow-x-hidden border-t border-gn-border-subtle px-2 py-2">
-          <LanguageSwitcher className="w-full min-w-0 max-w-full [&_select]:w-full [&_select]:max-w-full" />
+          <LanguageSwitcher className="w-full min-w-0 max-w-full [&_select]:min-h-10 [&_select]:text-base [&_select]:w-full [&_select]:max-w-full" />
         </div>
       ) : null}
+      </div>
 
-      <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
-      <button
-        type="button"
-        role="menuitem"
-        disabled={logoutBusy}
-        aria-busy={logoutBusy}
-        className={`${linkClass} text-gn-text-secondary hover:text-gn-text disabled:pointer-events-none disabled:opacity-50`}
-        onClick={() => void onLogout()}
-      >
-        {logoutBusy ? tAuth("loading") : tAuth("logout")}
-      </button>
+      <div className="shrink-0 border-t border-gn-border-subtle bg-gn-surface-elevated/95 px-1.5 py-1.5">
+        <button
+          type="button"
+          role="menuitem"
+          disabled={logoutBusy}
+          aria-busy={logoutBusy}
+          className={`${linkClass} text-gn-text-secondary hover:text-gn-text disabled:pointer-events-none disabled:opacity-50`}
+          onClick={() => void onLogout()}
+        >
+          {logoutBusy ? tAuth("loading") : tAuth("logout")}
+        </button>
+      </div>
     </div>
   );
 

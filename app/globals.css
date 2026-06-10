@@ -925,6 +925,17 @@ body {
   body:not(:has([data-app-root])) {
     touch-action: pan-y;
   }
+
+  /* Account overflow menu (bottom nav profile) — scroll middle, logout pinned. */
+  [data-account-menu] {
+    touch-action: auto;
+  }
+
+  [data-account-menu-scroll] {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    overscroll-behavior: contain;
+  }
 }
 
 html[dir="rtl"] body {
