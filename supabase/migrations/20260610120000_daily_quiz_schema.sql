@@ -314,6 +314,7 @@ declare
   v_q record;
   v_answer record;
   v_viewer record;
+  v_has_answered boolean := false;
   v_options text[];
   v_result jsonb;
 begin
@@ -359,6 +360,7 @@ begin
   where user_id = v_uid
     and quiz_date = v_date
   limit 1;
+  v_has_answered := found;
 
   select
     coalesce(nullif(trim(pp.full_name), ''), nullif(trim(pp.username), ''), 'Player') as display_name,
@@ -380,7 +382,7 @@ begin
     )
   );
 
-  if found then
+  if v_has_answered then
     v_result := v_result || jsonb_build_object(
       'already_answered', true,
       'answer', jsonb_build_object(

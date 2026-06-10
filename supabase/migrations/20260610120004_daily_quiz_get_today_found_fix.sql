@@ -1,4 +1,5 @@
--- Add player country to quiz leaderboard + viewer profile in get_today (display only).
+-- Fix: goalnova_quiz_get_today used `if found` after player_profiles SELECT, so every
+-- user with a profile was marked already_answered (wrong result before playing).
 
 create or replace function public.goalnova_quiz_get_today(p_locale text default 'en')
 returns jsonb
@@ -99,56 +100,3 @@ begin
   return v_result;
 end;
 $$;
-
--- Return type adds `country`; must drop before recreate (PostgreSQL 42P13).
-drop function if exists public.goalnova_quiz_weekly_leaderboard(text, int);
-
-create or replace function public.goalnova_quiz_weekly_leaderboard(
-  p_locale text default 'en',
-  p_limit int default 10
-)
-returns table (
-  rank bigint,
-  user_id uuid,
-  display_name text,
-  username text,
-  country text,
-  weekly_xp bigint
-)
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  with bounds as (
-    select week_start, week_end
-    from public.goalnova_quiz_zagreb_week_bounds(public.goalnova_quiz_zagreb_today())
-  ),
-  weekly as (
-    select
-      a.user_id,
-      sum(a.xp_awarded)::bigint as weekly_xp
-    from public.quiz_user_answers a
-    cross join bounds b
-    where a.quiz_date between b.week_start and b.week_end
-    group by a.user_id
-  ),
-  ranked as (
-    select
-      rank() over (order by w.weekly_xp desc, w.user_id asc) as rank,
-      w.user_id,
-      coalesce(nullif(trim(pp.full_name), ''), nullif(trim(pp.username), ''), 'Player') as display_name,
-      coalesce(nullif(trim(pp.username), ''), '') as username,
-      nullif(trim(pp.country), '') as country,
-      w.weekly_xp
-    from weekly w
-    left join public.player_profiles pp on pp.id = w.user_id
-    where w.weekly_xp > 0
-  )
-  select rank, user_id, display_name, username, country, weekly_xp
-  from ranked
-  order by rank asc
-  limit greatest(least(coalesce(p_limit, 10), 50), 1);
-$$;
-
-grant execute on function public.goalnova_quiz_weekly_leaderboard(text, int) to authenticated;
