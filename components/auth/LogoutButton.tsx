@@ -25,7 +25,6 @@ export function LogoutButton() {
     try {
       await signOut();
       router.replace("/login");
-      router.refresh();
     } catch (err) {
       devError("Logout error:", err);
       const msg =

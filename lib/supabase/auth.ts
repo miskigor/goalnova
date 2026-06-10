@@ -494,22 +494,25 @@ export async function signOut() {
 
   clearFreshLogin();
   invalidateGateSessionSnapshot();
-
-  try {
-    await supabase.auth.signOut({ scope: "local" });
-  } catch (err) {
-    logSupabaseError("Supabase: local signOut error", err);
-  }
-
+  // Clear storage first so the app treats the user as signed out even if Supabase hangs (common on mobile Safari).
   clearSupabaseAuthStorage();
 
-  void withTimeout(
-    supabase.auth.signOut(),
-    8000,
-    "Supabase global signOut",
-  ).catch((err) => {
-    logSupabaseError("Supabase: global signOut timed out or failed", err);
-  });
+  try {
+    await withTimeout(
+      supabase.auth.signOut({ scope: "local" }),
+      2500,
+      "Supabase local signOut",
+    );
+  } catch (err) {
+    logSupabaseError("Supabase: local signOut error", err);
+    clearSupabaseAuthStorage();
+  }
+
+  void withTimeout(supabase.auth.signOut(), 5000, "Supabase global signOut").catch(
+    (err) => {
+      logSupabaseError("Supabase: global signOut timed out or failed", err);
+    },
+  );
 }
 
 export type RequestPasswordResetEmailResult =

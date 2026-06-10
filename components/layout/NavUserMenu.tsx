@@ -253,18 +253,18 @@ export function NavUserMenu({
   async function onLogout() {
     if (logoutBusy) return;
     setLogoutBusy(true);
+    setOpen(false);
+    onNavigate?.();
     try {
       await signOut();
-      setOpen(false);
-      onNavigate?.();
       router.replace("/login");
-      router.refresh();
     } catch (e) {
       devError("Nav logout error:", e);
       showError(tErr("generic"));
-    } finally {
       setLogoutBusy(false);
+      return;
     }
+    setLogoutBusy(false);
   }
 
   const linkClass =
