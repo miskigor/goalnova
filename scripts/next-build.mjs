@@ -7,7 +7,7 @@
 import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const nextBin = path.join(root, "node_modules", "next", "dist", "bin", "next");
@@ -154,6 +154,17 @@ const child = spawn(process.execPath, [nextBin, "build"], {
   stdio: "inherit",
 });
 
+async function runIndexNowNotify() {
+  try {
+    await import(pathToFileURL(path.join(root, "scripts", "notify-indexnow.mjs")).href);
+  } catch (err) {
+    console.warn(
+      "[next-build] IndexNow notify failed (non-fatal):",
+      err instanceof Error ? err.message : err,
+    );
+  }
+}
+
 child.on("exit", (code) => {
   if (code !== 0) {
     process.exit(code ?? 1);
@@ -161,5 +172,5 @@ child.on("exit", (code) => {
   stripSecretsFromEnvFiles([root]);
   removeStandaloneEnvArtifacts();
   verifyNoSecretsInArtifacts();
-  process.exit(0);
+  void runIndexNowNotify().finally(() => process.exit(0));
 });

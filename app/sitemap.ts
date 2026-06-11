@@ -26,10 +26,18 @@ type SitemapItem = {
   priority: number;
 };
 
-async function collectAllItems(): Promise<SitemapItem[]> {
-  const now = new Date();
-  const items: SitemapItem[] = [];
+/** Cache sitemap for 1h — reduces Supabase load and avoids crawler timeouts. */
+export const revalidate = 3600;
 
+function safeLastModified(value: string | null | undefined, fallback: Date): Date {
+  if (!value) return fallback;
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? fallback : parsed;
+}
+
+/** Static URLs always included — survives Supabase outages. */
+function buildStaticSitemapItems(now = new Date()): SitemapItem[] {
+  const items: SitemapItem[] = [];
   for (const locale of routing.locales) {
     for (const path of INDEXABLE_PATHS) {
       items.push({
@@ -40,80 +48,105 @@ async function collectAllItems(): Promise<SitemapItem[]> {
       });
     }
   }
+  return items;
+}
 
+async function collectDynamicSitemapItems(now: Date): Promise<SitemapItem[]> {
   const supabase = createAnonSupabaseServerClient();
-  if (!supabase) return items;
+  if (!supabase) return [];
 
-  const [profilesRes, videosRes, challengesRes] = await Promise.all([
-    rpcFetchPublicPlayerProfilesDiscover(supabase, 500),
-    supabase
+  const items: SitemapItem[] = [];
+
+  try {
+    const profilesRes = await rpcFetchPublicPlayerProfilesDiscover(supabase, 500);
+    for (const row of profilesRes.rows) {
+      const slug = (row.username ?? "").trim();
+      if (!slug) continue;
+      items.push({
+        path: `/player/${encodeURIComponent(slug)}`,
+        lastModified: now,
+        changeFrequency: "weekly",
+        priority: 0.6,
+      });
+    }
+  } catch (err) {
+    console.error("[sitemap] player profiles failed; skipping dynamic player URLs", err);
+  }
+
+  try {
+    const videosRes = await supabase
       .from("videos")
       .select("id, created_at, video_url, processed_video_url, source_video_url")
       .order("created_at", { ascending: false })
-      .limit(5000),
-    supabase
+      .limit(5000);
+
+    if (videosRes.error) {
+      console.error("[sitemap] videos query failed", videosRes.error);
+    } else {
+      for (const video of videosRes.data ?? []) {
+        const id = (video.id ?? "").trim();
+        if (!id || !hasVideoPlaybackUrl(video)) continue;
+        items.push({
+          path: `/video/${encodeURIComponent(id)}`,
+          lastModified: safeLastModified(video.created_at, now),
+          changeFrequency: "weekly",
+          priority: 0.7,
+        });
+      }
+    }
+  } catch (err) {
+    console.error("[sitemap] videos failed; skipping dynamic video URLs", err);
+  }
+
+  try {
+    const challengesRes = await supabase
       .from("challenges")
       .select("slug, created_at")
       .in("status", ["active", "ended"])
       .not("slug", "is", null)
       .order("created_at", { ascending: false })
-      .limit(500),
-  ]);
+      .limit(500);
 
-  const profileSlugs = profilesRes.rows
-    .map((row) => (row.username ?? "").trim())
-    .filter(Boolean);
-
-  const publicVideos = (videosRes.data ?? []).filter((row) => {
-    const id = (row.id ?? "").trim();
-    return Boolean(id) && hasVideoPlaybackUrl(row);
-  });
-
-  const challengeSlugs = (challengesRes.data ?? [])
-    .map((row) => (row.slug ?? "").trim())
-    .filter(Boolean);
-
-  // One canonical URL per entity (default locale) — hreflang lives in page metadata.
-  for (const slug of profileSlugs) {
-    items.push({
-      path: `/player/${encodeURIComponent(slug)}`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.6,
-    });
-  }
-
-  for (const video of publicVideos) {
-    const id = (video.id ?? "").trim();
-    if (!id) continue;
-    items.push({
-      path: `/video/${encodeURIComponent(id)}`,
-      lastModified: video.created_at ? new Date(video.created_at) : now,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    });
-  }
-
-  for (const slug of challengeSlugs) {
-    items.push({
-      path: `/challenges/${encodeURIComponent(slug)}`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.65,
-    });
+    if (challengesRes.error) {
+      console.error("[sitemap] challenges query failed", challengesRes.error);
+    } else {
+      for (const row of challengesRes.data ?? []) {
+        const slug = (row.slug ?? "").trim();
+        if (!slug) continue;
+        items.push({
+          path: `/challenges/${encodeURIComponent(slug)}`,
+          lastModified: now,
+          changeFrequency: "weekly",
+          priority: 0.65,
+        });
+      }
+    }
+  } catch (err) {
+    console.error("[sitemap] challenges failed; skipping dynamic challenge URLs", err);
   }
 
   return items;
 }
 
-/** Single sitemap at `/sitemap.xml` (robots.txt). Under 50k URLs — no `generateSitemaps` split. */
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const origin = (getServerSiteOrigin() ?? "https://pitchrusch.com").replace(/\/$/, "");
-  const items = await collectAllItems();
+function toSitemapEntries(origin: string, items: SitemapItem[]): MetadataRoute.Sitemap {
   return items.map((item) => ({
     url: `${origin}${item.path.startsWith("/") ? item.path : `/${item.path}`}`,
     lastModified: item.lastModified,
     changeFrequency: item.changeFrequency,
     priority: item.priority,
   }));
+}
+
+/** Single sitemap at `/sitemap.xml` (robots.txt). Under 50k URLs — no `generateSitemaps` split. */
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const origin = (getServerSiteOrigin() ?? "https://pitchrusch.com").replace(/\/$/, "");
+  const now = new Date();
+
+  try {
+    const items = [...buildStaticSitemapItems(now), ...(await collectDynamicSitemapItems(now))];
+    return toSitemapEntries(origin, items);
+  } catch (err) {
+    console.error("[sitemap] unexpected failure; returning static URLs only", err);
+    return toSitemapEntries(origin, buildStaticSitemapItems(now));
+  }
 }

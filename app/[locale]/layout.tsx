@@ -1,16 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Suspense } from "react";
 import { Bebas_Neue, Geist, Noto_Sans_Arabic } from "next/font/google";
 import type { AbstractIntlMessages } from "next-intl";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { LocalePreferenceSync } from "@/components/i18n/LocalePreferenceSync";
-import { LocaleRouteFallback } from "@/components/loading/LocaleRouteFallback";
 import type { AppLocale } from "@/i18n/routing";
 import { RTL_LOCALES, routing } from "@/i18n/routing";
 import { buildBrandLinkPreviewMetadata } from "@/lib/seo/englishLinkPreview";
 import { buildLocaleAlternates, localizedCanonicalPath } from "@/lib/seo/alternates";
+import { PUBLIC_INDEX_ROBOTS } from "@/lib/seo/publicIndexRobots";
+import { buildSiteVerificationMetadata } from "@/lib/seo/siteVerification";
 import {
   PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS,
   PITCHRUSCH_CRITICAL_FIRST_PAINT_SCRIPT,
@@ -77,8 +77,10 @@ export async function generateMetadata({
       ...buildLocaleAlternates("/"),
       canonical: canonicalPath,
     },
+    robots: PUBLIC_INDEX_ROBOTS,
     openGraph: linkPreview.openGraph,
     twitter: linkPreview.twitter,
+    ...buildSiteVerificationMetadata(),
     icons: {
       icon: [
         { url: "/favicon.ico", sizes: "any" },
@@ -177,7 +179,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       >
         <NextIntlClientProvider locale={locale as AppLocale} messages={messages}>
           <LocalePreferenceSync />
-          <Suspense fallback={<LocaleRouteFallback />}>{children}</Suspense>
+          {children}
         </NextIntlClientProvider>
       </body>
     </html>
