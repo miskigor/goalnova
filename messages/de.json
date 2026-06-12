@@ -761,23 +761,23 @@
     "rewardPrizeLabel": "Preis",
     "rewardTypeGear": "Ausrüstung",
     "rewardTypeDigital": "Digital",
-    "rewardTypeCash": "Geld",
+    "rewardTypeCash": "Bargeld",
     "rewardTypeFeature": "Feature",
     "rewardTypeRecognition": "Anerkennung",
     "rewardTypeOther": "Sonstiges",
-    "competitionSortLabel": "Wettbewerbsrang",
-    "competitionScoreLabel": "Wettbewerb",
-    "competitionScoreShort": "Wettb. {score}",
+    "competitionSortLabel": "Wettkampf-Rang",
+    "competitionScoreLabel": "Wettkampf",
+    "competitionScoreShort": "Wett. {score}",
     "winnersHeading": "Gewinner",
     "winnersSourceManual": "Offizielle Auswahl",
     "winnersSourceComputed": "Aus KI + Engagement",
-    "yourRankCompetitionLabel": "Wettbewerb",
-    "activeChallengesHeading": "Aktive Herausforderungen",
+    "yourRankCompetitionLabel": "Wettkampf",
+    "activeChallengesHeading": "Aktive Challenges",
     "pastChallengesHeading": "Vergangene Challenges",
     "timeRemaining": "Noch {time}",
     "deadlinePassed": "Frist abgelaufen",
     "statusEnded": "Beendet",
-    "statusLive": "Aktiv",
+    "statusLive": "Live",
     "sprint20m": {
       "title": "Sprint-20m-Herausforderung",
       "description": "Zeige deine Geschwindigkeit, Explosivität und Sprinttechnik, indem du 20 Meter so schnell wie möglich läufst.",
@@ -787,11 +787,12 @@
       "badgeName": "Sprinter"
     },
     "keepyUps": {
-      "title": "Keepy-Ups Challenge",
+      "title": "Keepy-Ups-Challenge",
       "description": "10 aufeinanderfolgende Ballberührungen ohne dass der Ball den Boden berührt.",
       "rules": "Ziel:\n10 aufeinanderfolgende Ballberührungen ohne dass der Ball den Boden berührt.\n\nRegeln:\n- Start vom Boden oder aus den Händen.\n- Der Ball darf den Boden nicht berühren.\n- Es zählen nur 10 aufeinanderfolgende Berührungen.\n- Das Video muss den ganzen Körper und den Ball durchgehend zeigen.\n- Das Video darf maximal 30 Sekunden lang sein.\n- Spieler können mehrere Versuche einreichen; der beste Versuch zählt.\n\nGrundbelohnung:\n- 50 XP-Punkte\n- \"Keepy-Ups Challenger\"-Abzeichen im Profil\n- Challenge als abgeschlossen markiert ✅\n\nBewertung:\n✅ Erfolgreich abgeschlossen = Challenge beendet\n\nSchwierigkeit:\n⭐ Anfänger\n\nWarum es gut ist:\n- Jeder kann mitmachen.\n- Schnell aufgenommen.\n- Gute erste Challenge für neue Nutzer.\n- Leicht im Video zu überprüfen.",
       "badgeTitle": "50 XP-Punkte",
-      "badgeDetail": "Keepy-Ups Challenger-Abzeichen im Profil + Challenge als abgeschlossen markiert ✅"
+      "badgeDetail": "Keepy-Ups-Challenger-Abzeichen + Challenge abgeschlossen ✅",
+      "badgeName": "Keepy-Ups-Challenger"
     },
     "dribblingSlalom": {
       "title": "Dribbling Slalom Challenge",
@@ -832,6 +833,19 @@
       "badgeTitle": "Bis zu 150 XP-Punkte",
       "badgeDetail": "1 Treffer = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Latten-König-Abzeichen + Challenge abgeschlossen ✅ + Leaderboard + PitchRusch Social Media",
       "rules": "Ziel:\nTriff die Latte so oft wie möglich aus fester Distanz.\n\nKategorie:\nSchuss / Genauigkeit\n\nSchwierigkeit:\n⭐⭐ Mittel\n\nRegeln:\n- Standard-Fußballtor verwenden, falls verfügbar.\n- 10 Schussversuche.\n- Empfohlene Distanz: 16 Meter / Strafraumkante.\n- Ball muss vor jedem Schuss still liegen.\n- Lattentreffer muss klar sichtbar sein.\n- Spieler, Ball, Tor und Latte im Video sichtbar.\n- Video zeigt alle 10 Versuche.\n- Ein durchgehendes Video — keine Schnitte.\n- Pfosten-Treffer zählen nicht.\n- Nur direkte Lattentreffer zählen.\n\nWertung:\nErfolgreiche Lattentreffer von 10.\n\nRangstufen:\n- 5/10+ = Elite · 4/10 = Gold · 3/10 = Silber · 2/10 = Bronze · 1/10 = Abgeschlossen · 0/10 = Eingereicht, nicht abgeschlossen\n\nBelohnung:\n- Challenge abgeschlossen ✅\n- XP: 1 = 50 · 2 = 75 · 3 = 100 · 4 = 125 · 5+ = 150\n- Leaderboard · Social Media · Latten-König-Abzeichen"
+    },
+    "freestyle": {
+      "title": "Freestyle-Challenge",
+      "headline": "Kannst du das Publikum begeistern?",
+      "description": "Nimm eine Freestyle-Einheit auf und zeige Tricks, Ballkontrolle, Kreativität und Technik.",
+      "instructions": "Nimm deine beste Freestyle-Routine in einem Video (15–60 Sekunden) auf. Du und der Ball müssen sichtbar sein.",
+      "cardGoal": "Zeige deine besten Freestyle-Fähigkeiten und beeindrucke die Community.",
+      "cta": "Lade deine Routine hoch und zeig, was dich besonders macht.",
+      "equipment": "Fußball\nHandykamera\nFreier Raum",
+      "badgeName": "Freestyle-König",
+      "badgeTitle": "75 XP-Punkte",
+      "badgeDetail": "75 XP bei gültiger Einreichung · Freestyle-König-Abzeichen + Challenge abgeschlossen ✅ + Leaderboard + Featured Player & Skill of the Week",
+      "rules": "Ziel:\nZeige deine besten Freestyle-Fähigkeiten, Kreativität, Kontrolle und Technik.\n\nKategorie:\nFreestyle / Skill\n\nSchwierigkeit:\n⭐⭐⭐ Fortgeschritten\n\nRegeln:\n- Videolänge: 15–60 Sekunden.\n- Fußball verwenden.\n- Spieler durchgehend sichtbar.\n- Ball meist sichtbar.\n- Freestyle-Tricks erlaubt.\n- Keine gefährlichen Tricks.\n- Kein KI-generierter Inhalt.\n- Echte Fähigkeiten zeigen.\n- Keine täuschende Bearbeitung.\n- Musik/Effekte erlaubt, wenn die Leistung sichtbar bleibt.\n\nWertung:\nCommunity-Engagement und KI-Signale.\n\nBelohnung:\n- Challenge abgeschlossen ✅\n- 75 XP\n- Leaderboard · Featured Player · Skill of the Week · Freestyle-König-Abzeichen"
     }
   },
   "rankings": {

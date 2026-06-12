@@ -5,6 +5,7 @@ const KEEPY_UPS_SLUG = "keepy-ups-challenge";
 const DRIBBLING_SLALOM_SLUG = "dribbling-slalom-challenge";
 const WEAK_FOOT_PASS_SLUG = "weak-foot-pass-challenge";
 const CROSSBAR_SLUG = "crossbar-challenge";
+const FREESTYLE_SLUG = "freestyle-challenge";
 
 type TFn = (key: string) => string;
 
@@ -18,6 +19,42 @@ type LocalizedFields = Partial<{
   reward_detail: string;
   reward: string;
 }>;
+
+type ChallengeI18nConfig = {
+  prefix: string;
+  instructions?: boolean;
+  equipment?: boolean;
+  badge?: boolean;
+};
+
+const CHALLENGE_I18N: Record<string, ChallengeI18nConfig> = {
+  [SPRINT_20M_SLUG]: { prefix: "sprint20m", badge: true },
+  [KEEPY_UPS_SLUG]: { prefix: "keepyUps", badge: true },
+  [DRIBBLING_SLALOM_SLUG]: {
+    prefix: "dribblingSlalom",
+    instructions: true,
+    equipment: true,
+    badge: true,
+  },
+  [WEAK_FOOT_PASS_SLUG]: {
+    prefix: "weakFootPass",
+    instructions: true,
+    equipment: true,
+    badge: true,
+  },
+  [CROSSBAR_SLUG]: {
+    prefix: "crossbar",
+    instructions: true,
+    equipment: true,
+    badge: true,
+  },
+  [FREESTYLE_SLUG]: {
+    prefix: "freestyle",
+    instructions: true,
+    equipment: true,
+    badge: true,
+  },
+};
 
 function linesToEquipmentList(raw: string): string[] {
   return raw
@@ -33,6 +70,28 @@ function withoutDbRuleFragments(challenge: ChallengeRow): ChallengeRow {
     rules_json: [],
     scoring: null,
     equipment: [],
+  };
+}
+
+function applyChallengeI18n(
+  challenge: ChallengeRow,
+  t: TFn,
+  config: ChallengeI18nConfig,
+): ChallengeRow {
+  const p = config.prefix;
+  return {
+    ...withoutDbRuleFragments(challenge),
+    title: t(`${p}.title`),
+    description: t(`${p}.description`),
+    instructions: config.instructions ? t(`${p}.instructions`) : null,
+    equipment: config.equipment
+      ? linesToEquipmentList(t(`${p}.equipment`))
+      : [],
+    rules: t(`${p}.rules`),
+    badge: config.badge ? t(`${p}.badgeName`) : challenge.badge,
+    reward_title: t(`${p}.badgeTitle`),
+    reward_detail: t(`${p}.badgeDetail`),
+    reward: `${t(`${p}.badgeTitle`)} — ${t(`${p}.badgeDetail`)}`,
   };
 }
 
@@ -68,70 +127,8 @@ export function withLocalizedChallengeContent(
   t: TFn,
   locale: string,
 ): ChallengeRow {
-  let base = challenge;
-  if (challenge.slug === SPRINT_20M_SLUG) {
-    base = {
-      ...withoutDbRuleFragments(challenge),
-      title: t("sprint20m.title"),
-      description: t("sprint20m.description"),
-      instructions: null,
-      rules: t("sprint20m.rules"),
-      badge: t("sprint20m.badgeName"),
-      reward_title: t("sprint20m.badgeTitle"),
-      reward_detail: t("sprint20m.badgeDetail"),
-      reward: `${t("sprint20m.badgeTitle")} — ${t("sprint20m.badgeDetail")}`,
-    };
-  } else if (challenge.slug === KEEPY_UPS_SLUG) {
-    base = {
-      ...withoutDbRuleFragments(challenge),
-      title: t("keepyUps.title"),
-      description: t("keepyUps.description"),
-      instructions: null,
-      rules: t("keepyUps.rules"),
-      reward_title: t("keepyUps.badgeTitle"),
-      reward_detail: t("keepyUps.badgeDetail"),
-      reward: `${t("keepyUps.badgeTitle")} — ${t("keepyUps.badgeDetail")}`,
-    };
-  } else if (challenge.slug === DRIBBLING_SLALOM_SLUG) {
-    base = {
-      ...withoutDbRuleFragments(challenge),
-      title: t("dribblingSlalom.title"),
-      description: t("dribblingSlalom.description"),
-      instructions: t("dribblingSlalom.instructions"),
-      equipment: linesToEquipmentList(t("dribblingSlalom.equipment")),
-      rules: t("dribblingSlalom.rules"),
-      badge: t("dribblingSlalom.badgeName"),
-      reward_title: t("dribblingSlalom.badgeTitle"),
-      reward_detail: t("dribblingSlalom.badgeDetail"),
-      reward: `${t("dribblingSlalom.badgeTitle")} — ${t("dribblingSlalom.badgeDetail")}`,
-    };
-  } else if (challenge.slug === WEAK_FOOT_PASS_SLUG) {
-    base = {
-      ...withoutDbRuleFragments(challenge),
-      title: t("weakFootPass.title"),
-      description: t("weakFootPass.description"),
-      instructions: t("weakFootPass.instructions"),
-      equipment: linesToEquipmentList(t("weakFootPass.equipment")),
-      rules: t("weakFootPass.rules"),
-      badge: t("weakFootPass.badgeName"),
-      reward_title: t("weakFootPass.badgeTitle"),
-      reward_detail: t("weakFootPass.badgeDetail"),
-      reward: `${t("weakFootPass.badgeTitle")} — ${t("weakFootPass.badgeDetail")}`,
-    };
-  } else if (challenge.slug === CROSSBAR_SLUG) {
-    base = {
-      ...withoutDbRuleFragments(challenge),
-      title: t("crossbar.title"),
-      description: t("crossbar.description"),
-      instructions: t("crossbar.instructions"),
-      equipment: linesToEquipmentList(t("crossbar.equipment")),
-      rules: t("crossbar.rules"),
-      badge: t("crossbar.badgeName"),
-      reward_title: t("crossbar.badgeTitle"),
-      reward_detail: t("crossbar.badgeDetail"),
-      reward: `${t("crossbar.badgeTitle")} — ${t("crossbar.badgeDetail")}`,
-    };
-  }
+  const config = CHALLENGE_I18N[challenge.slug];
+  let base = config ? applyChallengeI18n(challenge, t, config) : challenge;
   const localized = pickLocaleFields(base, locale);
   if (Object.keys(localized).length === 0) return base;
   return {
@@ -140,4 +137,3 @@ export function withLocalizedChallengeContent(
     badge: localized.badge ?? base.badge,
   };
 }
-

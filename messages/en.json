@@ -854,7 +854,8 @@
       "description": "Complete 10 consecutive touches without dropping the ball.",
       "rules": "Goal:\nComplete 10 consecutive touches without dropping the ball.\n\nRules:\n- Start from the ground or from hands.\n- The ball must not touch the ground.\n- Only 10 consecutive touches count.\n- The video must show your full body and the ball at all times.\n- Video may last up to 30 seconds maximum.\n- Players can submit multiple attempts; the best attempt counts.\n\nBasic reward:\n- 50 XP points\n- \"Keepy-Ups Challenger\" badge on profile\n- Challenge marked as completed ✅\n\nScoring:\n✅ Successfully completed = challenge finished\n\nDifficulty:\n⭐ Beginner\n\nWhy it's good:\n- Everyone can participate.\n- Quick to record.\n- A good first challenge for new users.\n- Easy to verify on video.",
       "badgeTitle": "50 XP points",
-      "badgeDetail": "Keepy-Ups Challenger badge on profile + Challenge marked complete ✅"
+      "badgeDetail": "Keepy-Ups Challenger badge on profile + Challenge marked complete ✅",
+      "badgeName": "Keepy-Ups Challenger"
     },
     "dribblingSlalom": {
       "title": "Dribbling Slalom Challenge",
@@ -895,6 +896,19 @@
       "badgeTitle": "Up to 150 XP points",
       "badgeDetail": "1 hit = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Crossbar King badge on profile + Challenge completed ✅ + Leaderboard position + PitchRusch social media feature eligibility",
       "rules": "Goal:\nHit the crossbar as many times as possible from a fixed distance.\n\nCategory:\nShooting / Accuracy\n\nDifficulty:\n⭐⭐ Intermediate\n\nChallenge:\nTake 10 shots from a fixed distance and try to hit the crossbar.\n\nRules:\n- Use a standard football goal if available.\n- Take 10 shot attempts.\n- Recommended distance: 16 meters / edge of the penalty area.\n- The ball must be stationary before each shot.\n- The crossbar hit must be clearly visible.\n- The player, ball, goal, and crossbar must be visible in the video.\n- The video must show all 10 attempts.\n- The video must be one continuous recording.\n- No cuts, edits, or speed changes.\n- Shots that hit the posts do not count.\n- Only direct crossbar hits count.\n\nScoring:\nPrimary metric: Number of successful crossbar hits out of 10.\n\nRanking tiers:\n- 5/10 or more = Elite\n- 4/10 = Gold\n- 3/10 = Silver\n- 2/10 = Bronze\n- 1/10 = Completed\n- 0/10 = Attempt submitted, but not completed\n\nLeaderboard:\n- Rank by highest number of crossbar hits.\n- If tied, rank by earliest valid submission.\n\nUpload requirements:\n- Full body visible.\n- Ball visible.\n- Goal and crossbar visible.\n- All 10 attempts visible.\n- One continuous video.\n- No edits.\n\nReward:\n- Challenge completed status ✅\n- Tiered XP: 1 hit = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP\n- Leaderboard position\n- Eligible to be featured on PitchRusch social media\n- Crossbar King badge on profile"
+    },
+    "freestyle": {
+      "title": "Freestyle Challenge",
+      "headline": "Can you wow the crowd?",
+      "description": "Record a freestyle football routine and show your most impressive tricks, ball control, creativity, and technical ability. This challenge is designed for players who want to showcase their flair and individual skills.",
+      "instructions": "Record your best freestyle football routine in one continuous video (15–60 seconds). Show your tricks, ball control, and creativity with you and the ball clearly visible.",
+      "cardGoal": "Show your best freestyle football skills and impress the community.",
+      "cta": "Upload your freestyle routine and show what makes you different.",
+      "equipment": "Football\nPhone camera\nOpen space",
+      "badgeName": "Freestyle King",
+      "badgeTitle": "75 XP points",
+      "badgeDetail": "75 XP on valid submission · Freestyle King badge on profile + Challenge completed ✅ + Leaderboard position + PitchRusch Featured Player & Skill of the Week eligibility",
+      "rules": "Goal:\nShow your best football freestyle skills, creativity, control, and technique.\n\nCategory:\nFreestyle / Skill\n\nDifficulty:\n⭐⭐⭐ Advanced\n\nChallenge:\nRecord a freestyle football routine and showcase your most impressive individual skills.\n\nRules:\n- Video length: 15–60 seconds.\n- Use a football.\n- The player must remain visible throughout the attempt.\n- The ball must remain visible for most of the routine.\n- Freestyle tricks, juggling combinations, around-the-worlds, stalls, transitions, and creative skills are allowed.\n- No dangerous or unsafe tricks.\n- No AI-generated content.\n- The video must represent the player's real abilities.\n- No excessive editing that changes the actual performance.\n- Music and visual effects are allowed if they do not hide the performance.\n\nScoring:\nThis challenge is judged by community engagement and AI-assisted performance signals.\n\nEvaluation criteria:\n- Creativity\n- Ball control\n- Difficulty\n- Technique\n- Style\n\nRanking levels (community leaderboard):\n- Bronze · Silver · Gold · Elite — based on competition ranking\n\nLeaderboard:\n- Ranked by competition score (AI + community likes).\n- Higher engagement and stronger performance rank higher.\n\nCompletion:\nAny valid freestyle submission completes the challenge.\n\nUpload requirements:\n- Full body visible.\n- Ball visible.\n- 15–60 second video.\n- Real football freestyle content.\n- No misleading edits.\n\nReward:\n- Challenge completed status ✅\n- 75 XP points on valid submission\n- Leaderboard position\n- Eligible for PitchRusch Featured Player selection\n- Eligible for Skill of the Week selection\n- Top weekly performers may earn bonus XP when supported\n- Freestyle King badge on profile"
     }
   },
   "rankings": {

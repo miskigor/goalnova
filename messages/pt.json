@@ -765,18 +765,18 @@
     "rewardTypeFeature": "Destaque",
     "rewardTypeRecognition": "Reconhecimento",
     "rewardTypeOther": "Outro",
-    "competitionSortLabel": "Ranking de competição",
+    "competitionSortLabel": "Classificação",
     "competitionScoreLabel": "Competição",
     "competitionScoreShort": "Comp. {score}",
     "winnersHeading": "Vencedores",
     "winnersSourceManual": "Seleção oficial",
-    "winnersSourceComputed": "De IA + engagement",
+    "winnersSourceComputed": "De IA + envolvimento",
     "yourRankCompetitionLabel": "Competição",
-    "activeChallengesHeading": "Desafios ao vivo",
-    "pastChallengesHeading": "Desafios anteriores",
+    "activeChallengesHeading": "Desafios ativos",
+    "pastChallengesHeading": "Desafios passados",
     "timeRemaining": "{time} restantes",
-    "deadlinePassed": "Prazo encerrado",
-    "statusEnded": "Encerrado",
+    "deadlinePassed": "Prazo expirado",
+    "statusEnded": "Terminado",
     "statusLive": "Ao vivo",
     "sprint20m": {
       "title": "Desafio Sprint 20m",
@@ -787,11 +787,12 @@
       "badgeName": "Velocista"
     },
     "keepyUps": {
-      "title": "Keepy-Ups Challenge",
+      "title": "Desafio de embaixadinhas",
       "description": "Completa 10 toques consecutivos sem deixar a bola cair.",
       "rules": "Objetivo:\nCompleta 10 toques consecutivos sem deixar a bola cair.\n\nRegras:\n- Começa no chão ou das mãos.\n- A bola não pode tocar o chão.\n- Contam apenas 10 toques consecutivos.\n- O vídeo deve mostrar o corpo inteiro e a bola o tempo todo.\n- O vídeo pode durar no máximo 30 segundos.\n- Os jogadores podem enviar várias tentativas; conta a melhor.\n\nRecompensa base:\n- 50 pontos XP\n- Distintivo \"Keepy-Ups Challenger\" no perfil\n- Challenge marcado como concluído ✅\n\nPontuação:\n✅ Concluído com sucesso = challenge terminado\n\nDificuldade:\n⭐ Iniciante\n\nPorque é bom:\n- Todos podem participar.\n- Gravação rápida.\n- Bom primeiro challenge para novos utilizadores.\n- Fácil de verificar no vídeo.",
       "badgeTitle": "50 pontos XP",
-      "badgeDetail": "Distintivo Keepy-Ups Challenger no perfil + Challenge marcado como concluído ✅"
+      "badgeDetail": "Emblema Desafiador de embaixadinhas + Challenge concluído ✅",
+      "badgeName": "Desafiador de embaixadinhas"
     },
     "dribblingSlalom": {
       "title": "Dribbling Slalom Challenge",
@@ -832,6 +833,19 @@
       "badgeTitle": "Até 150 pontos XP",
       "badgeDetail": "1 acerto = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Emblema Rei da trave + Challenge concluído ✅ + Classificação + PitchRusch",
       "rules": "Objetivo:\nAcertar na trave o máximo de vezes a partir de distância fixa.\n\nCategoria:\nRemate / Precisão\n\nDificuldade:\n⭐⭐ Intermédio\n\nRegras:\n- Baliza padrão se disponível.\n- 10 tentativas de remate.\n- Distância recomendada: 16 metros.\n- Bola parada antes de cada remate.\n- Impacto na trave claramente visível.\n- Jogador, bola, baliza e trave visíveis.\n- Vídeo com as 10 tentativas.\n- Gravação contínua sem edição.\n- Postes não contam.\n- Apenas impactos diretos na trave.\n\nPontuação:\nAcertos na trave de 10.\n\nNíveis:\n- 5/10+ = Elite · 4/10 = Ouro · 3/10 = Prata · 2/10 = Bronze · 1/10 = Concluído · 0/10 = Não concluído\n\nRecompensa:\n- Challenge concluído ✅\n- XP: 1=50 · 2=75 · 3=100 · 4=125 · 5+=150\n- Classificação · redes PitchRusch · Rei da trave"
+    },
+    "freestyle": {
+      "title": "Desafio Freestyle",
+      "headline": "Consegues impressionar a multidão?",
+      "description": "Grava uma rotina freestyle e mostra truques, controlo, criatividade e técnica.",
+      "instructions": "Grava a tua melhor rotina freestyle num vídeo contínuo (15–60 s).",
+      "cardGoal": "Mostra as tuas melhores habilidades freestyle.",
+      "cta": "Carrega a tua rotina e mostra o teu estilo.",
+      "equipment": "Bola\nCâmera do celular\nEspaço aberto",
+      "badgeName": "Rei do freestyle",
+      "badgeTitle": "75 pontos XP",
+      "badgeDetail": "75 XP válido · Emblema Rei do freestyle + Challenge concluído ✅ + Classificação + PitchRusch",
+      "rules": "Objetivo:\nMostra as tuas melhores habilidades freestyle.\n\nCategoria:\nFreestyle / Habilidade\n\nDificuldade:\n⭐⭐⭐ Avançado\n\nRegras:\n- Vídeo de 15–60 segundos.\n- Bola obrigatória.\n- Jogador e bola visíveis.\n- Sem truques perigosos ou conteúdo IA.\n\nRecompensa:\n- Challenge concluído ✅\n- 75 XP\n- Classificação · Featured Player · Rei do freestyle"
     }
   },
   "rankings": {

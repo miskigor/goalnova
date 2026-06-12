@@ -758,22 +758,22 @@
     "joinChallengePickerLabel": "Rejoindre un défi (optionnel)",
     "joinChallengePickerNone": "Aucun défi — envoi général",
     "joinChallengePickerHint": "Choisis une campagne active pour taguer ton clip et apparaître dans son classement.",
-    "rewardPrizeLabel": "Prix",
+    "rewardPrizeLabel": "Récompense",
     "rewardTypeGear": "Équipement",
     "rewardTypeDigital": "Numérique",
     "rewardTypeCash": "Argent",
     "rewardTypeFeature": "Mise en avant",
     "rewardTypeRecognition": "Reconnaissance",
     "rewardTypeOther": "Autre",
-    "competitionSortLabel": "Rang compétition",
+    "competitionSortLabel": "Classement compétition",
     "competitionScoreLabel": "Compétition",
     "competitionScoreShort": "Comp. {score}",
     "winnersHeading": "Gagnants",
     "winnersSourceManual": "Sélection officielle",
-    "winnersSourceComputed": "Selon IA + engagement",
+    "winnersSourceComputed": "IA + engagement",
     "yourRankCompetitionLabel": "Compétition",
-    "activeChallengesHeading": "Défis en direct",
-    "pastChallengesHeading": "Anciens défis",
+    "activeChallengesHeading": "Défis en cours",
+    "pastChallengesHeading": "Défis passés",
     "timeRemaining": "{time} restants",
     "deadlinePassed": "Date limite dépassée",
     "statusEnded": "Terminé",
@@ -787,11 +787,12 @@
       "badgeName": "As du sprint"
     },
     "keepyUps": {
-      "title": "Keepy-Ups Challenge",
+      "title": "Défi jonglage",
       "description": "Réalise 10 touches consécutives sans laisser le ballon tomber.",
       "rules": "Objectif :\nRéalise 10 touches consécutives sans laisser le ballon tomber.\n\nRègles :\n- Départ depuis le sol ou des mains.\n- Le ballon ne doit pas toucher le sol.\n- Seules 10 touches consécutives comptent.\n- La vidéo doit montrer tout le corps et le ballon en permanence.\n- La vidéo peut durer au maximum 30 secondes.\n- Les joueurs peuvent envoyer plusieurs tentatives ; la meilleure compte.\n\nRécompense de base :\n- 50 points XP\n- Badge « Keepy-Ups Challenger » sur le profil\n- Challenge marqué comme terminé ✅\n\nNotation :\n✅ Réussi = challenge terminé\n\nDifficulté :\n⭐ Débutant\n\nPourquoi c'est bien :\n- Tout le monde peut participer.\n- Rapide à filmer.\n- Bon premier challenge pour les nouveaux utilisateurs.\n- Facile à vérifier sur la vidéo.",
       "badgeTitle": "50 points XP",
-      "badgeDetail": "Badge Keepy-Ups Challenger sur le profil + Challenge marqué comme terminé ✅"
+      "badgeDetail": "Badge Challenger jonglage + Challenge terminé ✅",
+      "badgeName": "Challenger jonglage"
     },
     "dribblingSlalom": {
       "title": "Dribbling Slalom Challenge",
@@ -832,6 +833,19 @@
       "badgeTitle": "Jusqu'à 150 points XP",
       "badgeDetail": "1 touche = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Badge Roi de la barre + Challenge terminé ✅ + Classement + PitchRusch",
       "rules": "Objectif :\nToucher la barre transversale le plus souvent possible à distance fixe.\n\nCatégorie :\nTir / Précision\n\nDifficulté :\n⭐⭐ Intermédiaire\n\nRègles :\n- But standard si disponible.\n- 10 tentatives de tir.\n- Distance recommandée : 16 mètres.\n- Ballon immobile avant chaque tir.\n- Impact sur la barre clairement visible.\n- Joueur, ballon, but et barre visibles.\n- Vidéo montrant les 10 tentatives.\n- Enregistrement continu sans montage.\n- Les poteaux ne comptent pas.\n- Seuls les impacts directs sur la barre comptent.\n\nNotation :\nTouches réussies sur 10.\n\nPaliers :\n- 5/10+ = Elite · 4/10 = Or · 3/10 = Argent · 2/10 = Bronze · 1/10 = Terminé · 0/10 = Non terminé\n\nRécompense :\n- Challenge terminé ✅\n- XP : 1=50 · 2=75 · 3=100 · 4=125 · 5+=150\n- Classement · réseaux PitchRusch · badge Roi de la barre"
+    },
+    "freestyle": {
+      "title": "Défi Freestyle",
+      "headline": "Tu peux épater la foule ?",
+      "description": "Enregistre une routine freestyle et montre tes tricks, contrôle, créativité et technique.",
+      "instructions": "Enregistre ta meilleure routine freestyle en une vidéo (15–60 s).",
+      "cardGoal": "Montre tes meilleures compétences freestyle.",
+      "cta": "Envoie ta routine et montre ton style.",
+      "equipment": "Ballon\nCaméra de téléphone\nEspace ouvert",
+      "badgeName": "Roi du freestyle",
+      "badgeTitle": "75 points XP",
+      "badgeDetail": "75 XP si valide · Badge Roi du freestyle + Challenge terminé ✅ + Classement + PitchRusch",
+      "rules": "Objectif :\nMontre tes meilleures compétences freestyle.\n\nCatégorie :\nFreestyle / Skill\n\nDifficulté :\n⭐⭐⭐ Avancé\n\nRègles :\n- Vidéo de 15–60 secondes.\n- Ballon requis.\n- Joueur et ballon visibles.\n- Pas de tricks dangereux ni contenu IA.\n\nRécompense :\n- Challenge terminé ✅\n- 75 XP\n- Classement · Featured Player · Roi du freestyle"
     }
   },
   "rankings": {

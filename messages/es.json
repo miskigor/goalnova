@@ -759,9 +759,9 @@
     "joinChallengePickerNone": "Sin desafío — subida general",
     "joinChallengePickerHint": "Elige una campaña activa para etiquetar tu clip y aparecer en su clasificación.",
     "rewardPrizeLabel": "Premio",
-    "rewardTypeGear": "Equipamiento",
+    "rewardTypeGear": "Equipo",
     "rewardTypeDigital": "Digital",
-    "rewardTypeCash": "Dinero",
+    "rewardTypeCash": "Efectivo",
     "rewardTypeFeature": "Destacado",
     "rewardTypeRecognition": "Reconocimiento",
     "rewardTypeOther": "Otro",
@@ -770,9 +770,9 @@
     "competitionScoreShort": "Comp. {score}",
     "winnersHeading": "Ganadores",
     "winnersSourceManual": "Selección oficial",
-    "winnersSourceComputed": "Por IA + engagement",
+    "winnersSourceComputed": "De IA + interacción",
     "yourRankCompetitionLabel": "Competición",
-    "activeChallengesHeading": "Desafíos en vivo",
+    "activeChallengesHeading": "Desafíos activos",
     "pastChallengesHeading": "Desafíos pasados",
     "timeRemaining": "Quedan {time}",
     "deadlinePassed": "Plazo vencido",
@@ -787,11 +787,12 @@
       "badgeName": "Velocista"
     },
     "keepyUps": {
-      "title": "Keepy-Ups Challenge",
+      "title": "Desafío de dominadas",
       "description": "Completa 10 toques consecutivos sin dejar caer el balón.",
       "rules": "Objetivo:\nCompleta 10 toques consecutivos sin dejar caer el balón.\n\nReglas:\n- Empieza desde el suelo o con las manos.\n- El balón no debe tocar el suelo.\n- Solo cuentan 10 toques consecutivos.\n- El video debe mostrar todo el cuerpo y el balón en todo momento.\n- El video puede durar como máximo 30 segundos.\n- Los jugadores pueden enviar varios intentos; cuenta el mejor.\n\nRecompensa básica:\n- 50 puntos XP\n- Insignia \"Keepy-Ups Challenger\" en el perfil\n- Challenge marcado como completado ✅\n\nPuntuación:\n✅ Completado con éxito = challenge terminado\n\nDificultad:\n⭐ Principiante\n\nPor qué es bueno:\n- Todos pueden participar.\n- Se graba rápido.\n- Buen primer challenge para usuarios nuevos.\n- Fácil de verificar en el video.",
       "badgeTitle": "50 puntos XP",
-      "badgeDetail": "Insignia Keepy-Ups Challenger en el perfil + Challenge marcado como completado ✅"
+      "badgeDetail": "Insignia Retador de dominadas + Challenge completado ✅",
+      "badgeName": "Retador de dominadas"
     },
     "dribblingSlalom": {
       "title": "Dribbling Slalom Challenge",
@@ -832,6 +833,19 @@
       "badgeTitle": "Hasta 150 puntos XP",
       "badgeDetail": "1 acierto = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Insignia Rey del larguero + Challenge completado ✅ + Clasificación + PitchRusch",
       "rules": "Objetivo:\nDar al larguero el máximo de veces desde distancia fija.\n\nCategoría:\nTiro / Precisión\n\nDificultad:\n⭐⭐ Intermedio\n\nReglas:\n- Portería estándar si está disponible.\n- 10 intentos de tiro.\n- Distancia recomendada: 16 metros.\n- Balón quieto antes de cada tiro.\n- Impacto en el larguero claramente visible.\n- Jugador, balón, portería y larguero visibles.\n- Video con los 10 intentos.\n- Grabación continua sin edición.\n- Los postes no cuentan.\n- Solo impactos directos en el larguero.\n\nPuntuación:\nAciertos al larguero de 10.\n\nRangos:\n- 5/10+ = Elite · 4/10 = Oro · 3/10 = Plata · 2/10 = Bronce · 1/10 = Completado · 0/10 = No completado\n\nRecompensa:\n- Challenge completado ✅\n- XP: 1=50 · 2=75 · 3=100 · 4=125 · 5+=150\n- Clasificación · redes PitchRusch · insignia Rey del larguero"
+    },
+    "freestyle": {
+      "title": "Desafío Freestyle",
+      "headline": "¿Puedes impresionar al público?",
+      "description": "Graba una rutina freestyle y muestra trucos, control, creatividad y técnica.",
+      "instructions": "Graba tu mejor rutina freestyle en un video continuo (15–60 s).",
+      "cardGoal": "Muestra tus mejores habilidades freestyle.",
+      "cta": "Sube tu rutina y demuestra tu estilo.",
+      "equipment": "Balón\nCámara del móvil\nEspacio abierto",
+      "badgeName": "Rey del freestyle",
+      "badgeTitle": "75 puntos XP",
+      "badgeDetail": "75 XP válido · Insignia Rey del freestyle + Challenge completado ✅ + Clasificación + PitchRusch",
+      "rules": "Objetivo:\nMuestra tus mejores habilidades freestyle.\n\nCategoría:\nFreestyle / Habilidad\n\nDificultad:\n⭐⭐⭐ Avanzado\n\nReglas:\n- Video de 15–60 segundos.\n- Balón obligatorio.\n- Jugador y balón visibles.\n- Sin trucos peligrosos ni contenido IA.\n\nRecompensa:\n- Challenge completado ✅\n- 75 XP\n- Clasificación · Featured Player · Rey del freestyle"
     }
   },
   "rankings": {

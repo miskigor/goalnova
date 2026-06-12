@@ -761,23 +761,23 @@
     "rewardPrizeLabel": "Premio",
     "rewardTypeGear": "Attrezzatura",
     "rewardTypeDigital": "Digitale",
-    "rewardTypeCash": "Denaro",
+    "rewardTypeCash": "Contanti",
     "rewardTypeFeature": "In evidenza",
     "rewardTypeRecognition": "Riconoscimento",
     "rewardTypeOther": "Altro",
-    "competitionSortLabel": "Classifica competizione",
+    "competitionSortLabel": "Classifica gara",
     "competitionScoreLabel": "Competizione",
     "competitionScoreShort": "Comp. {score}",
     "winnersHeading": "Vincitori",
     "winnersSourceManual": "Selezione ufficiale",
-    "winnersSourceComputed": "Da IA + engagement",
+    "winnersSourceComputed": "Da IA + coinvolgimento",
     "yourRankCompetitionLabel": "Competizione",
     "activeChallengesHeading": "Sfide attive",
     "pastChallengesHeading": "Sfide passate",
     "timeRemaining": "{time} rimanenti",
     "deadlinePassed": "Scadenza superata",
     "statusEnded": "Terminata",
-    "statusLive": "Attiva",
+    "statusLive": "Live",
     "sprint20m": {
       "title": "Sfida Sprint 20m",
       "description": "Mostra la tua velocità, esplosività e tecnica di sprint correndo 20 metri il più velocemente possibile.",
@@ -787,11 +787,12 @@
       "badgeName": "Velocista"
     },
     "keepyUps": {
-      "title": "Keepy-Ups Challenge",
+      "title": "Sfida palleggi",
       "description": "Completa 10 tocchi consecutivi senza far cadere la palla.",
       "rules": "Obiettivo:\nCompleta 10 tocchi consecutivi senza far cadere la palla.\n\nRegole:\n- Parti da terra o dalle mani.\n- La palla non deve toccare il terreno.\n- Contano solo 10 tocchi consecutivi.\n- Il video deve mostrare l'intero corpo e la palla per tutta la durata.\n- Il video può durare al massimo 30 secondi.\n- I giocatori possono inviare più tentativi; vale il migliore.\n\nRicompensa base:\n- 50 punti XP\n- Badge \"Keepy-Ups Challenger\" sul profilo\n- Challenge segnata come completata ✅\n\nPunteggio:\n✅ Completato con successo = challenge terminata\n\nDifficoltà:\n⭐ Principiante\n\nPerché è valida:\n- Tutti possono partecipare.\n- Si registra in fretta.\n- Ottima prima challenge per i nuovi utenti.\n- Facile da verificare sul video.",
       "badgeTitle": "50 punti XP",
-      "badgeDetail": "Badge Keepy-Ups Challenger sul profilo + Challenge segnata come completata ✅"
+      "badgeDetail": "Badge Sfidante palleggi + Challenge completata ✅",
+      "badgeName": "Sfidante palleggi"
     },
     "dribblingSlalom": {
       "title": "Dribbling Slalom Challenge",
@@ -832,6 +833,19 @@
       "badgeTitle": "Fino a 150 punti XP",
       "badgeDetail": "1 colpo = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Badge Re della traversa + Challenge completata ✅ + Classifica + PitchRusch",
       "rules": "Obiettivo:\nColpire la traversa il più possibile da distanza fissa.\n\nCategoria:\nTiro / Precisione\n\nDifficoltà:\n⭐⭐ Intermedio\n\nRegole:\n- Porta standard se disponibile.\n- 10 tentativi di tiro.\n- Distanza consigliata: 16 metri.\n- Palla ferma prima di ogni tiro.\n- Impatto sulla traversa chiaramente visibile.\n- Giocatore, palla, porta e traversa visibili.\n- Video con tutti e 10 i tentativi.\n- Registrazione continua senza montaggio.\n- I pali non contano.\n- Solo impatti diretti sulla traversa.\n\nPunteggio:\nColpi a traversa su 10.\n\nLivelli:\n- 5/10+ = Elite · 4/10 = Oro · 3/10 = Argento · 2/10 = Bronzo · 1/10 = Completato · 0/10 = Non completato\n\nRicompensa:\n- Challenge completata ✅\n- XP: 1=50 · 2=75 · 3=100 · 4=125 · 5+=150\n- Classifica · social PitchRusch · Re della traversa"
+    },
+    "freestyle": {
+      "title": "Sfida Freestyle",
+      "headline": "Riesci a stupire il pubblico?",
+      "description": "Registra una routine freestyle e mostra trick, controllo, creatività e tecnica.",
+      "instructions": "Registra la tua migliore routine freestyle in un video (15–60 s).",
+      "cardGoal": "Mostra le tue migliori abilità freestyle.",
+      "cta": "Carica la tua routine e mostra il tuo stile.",
+      "equipment": "Pallone\nFotocamera del telefono\nSpazio aperto",
+      "badgeName": "Re del freestyle",
+      "badgeTitle": "75 punti XP",
+      "badgeDetail": "75 XP valido · Badge Re del freestyle + Challenge completata ✅ + Classifica + PitchRusch",
+      "rules": "Obiettivo:\nMostra le tue migliori abilità freestyle.\n\nCategoria:\nFreestyle / Abilità\n\nDifficoltà:\n⭐⭐⭐ Avanzato\n\nRegole:\n- Video 15–60 secondi.\n- Pallone obbligatorio.\n- Giocatore e palla visibili.\n- Niente trick pericolosi o contenuti IA.\n\nRicompensa:\n- Challenge completata ✅\n- 75 XP\n- Classifica · Featured Player · Re del freestyle"
     }
   },
   "rankings": {
