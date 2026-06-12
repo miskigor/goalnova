@@ -1184,7 +1184,8 @@
       "savedToast": "Saved to your shortlist",
       "removedToast": "Removed from shortlist"
     },
-    "foundingPlayerBadge": "Oprichtende speler"
+    "foundingPlayerBadge": "Oprichtende speler",
+    "totalXp": "{count} XP"
   },
   "ai": {
     "title": "AI Analysis",

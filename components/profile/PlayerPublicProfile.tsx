@@ -19,7 +19,15 @@ import { userMayMessagePlayers } from "@/lib/scoutVerification";
 import { PlayerFollowSection } from "./PlayerFollowSection";
 import { ScoutShortlistButton } from "./ScoutShortlistButton";
 import { ProfileVideoGrid } from "@/components/profile/ProfileVideoGrid";
-import { FoundingPlayerBadge, PlayerPremiumBadge } from "@/components/premium/PremiumBadges";
+import {
+  ChallengeKingBadge,
+  FoundingPlayerBadge,
+  PlayerPremiumBadge,
+} from "@/components/premium/PremiumBadges";
+import {
+  fetchPlayerProfileGamification,
+  type PlayerProfileGamification,
+} from "@/lib/supabase/playerProfileGamification";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
@@ -104,6 +112,7 @@ export function PlayerPublicProfile({
   initialVideos,
 }: Props) {
   const t = useTranslations("playerProfile");
+  const tChallenges = useTranslations("challenges.freestyle");
   const tProfile = useTranslations("profile");
   const tFields = useTranslations("profileEditor");
   const tSv = useTranslations("scoutVerification");
@@ -129,6 +138,7 @@ export function PlayerPublicProfile({
   const [userAvatarUrl, setUserAvatarUrl] = useState<string | null>(
     initialUserAvatarUrl ?? prefetchedAvatarUrl,
   );
+  const [gamification, setGamification] = useState<PlayerProfileGamification | null>(null);
 
   useEffect(() => {
     if (!publicProfile) return;
@@ -145,6 +155,23 @@ export function PlayerPublicProfile({
       typeof window !== "undefined" ? window.location.pathname : "",
     );
   }, [profile?.id, playerSlug]);
+
+  useEffect(() => {
+    const userId = profile?.id?.trim();
+    if (!userId) {
+      setGamification(null);
+      return;
+    }
+
+    let cancelled = false;
+    void fetchPlayerProfileGamification(userId).then((data) => {
+      if (!cancelled) setGamification(data);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [profile?.id]);
 
   useEffect(() => {
     let cancelled = false;
@@ -405,10 +432,20 @@ export function PlayerPublicProfile({
             <p className="truncate text-sm text-gn-text-secondary max-lg:text-[10px] max-lg:leading-tight">
               @{displayUsername}
             </p>
-            {profile.founding_player === true || isPlayerPremium(profile) ? (
+            {gamification ? (
+              <p className="mt-0.5 text-xs font-medium text-gn-text-secondary max-lg:text-[10px]">
+                {t("totalXp", { count: gamification.total_xp })}
+              </p>
+            ) : null}
+            {profile.founding_player === true ||
+            isPlayerPremium(profile) ||
+            gamification?.freestyle_badge ? (
               <div className="mt-1 flex min-w-0 max-w-full flex-wrap items-center gap-1 max-lg:mt-0.5">
                 {profile.founding_player === true ? <FoundingPlayerBadge /> : null}
                 {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
+                {gamification?.freestyle_badge ? (
+                  <ChallengeKingBadge label={tChallenges("badgeName")} />
+                ) : null}
               </div>
             ) : null}
           </div>

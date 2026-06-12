@@ -1184,7 +1184,8 @@
       "savedToast": "Saved to your shortlist",
       "removedToast": "Removed from shortlist"
     },
-    "foundingPlayerBadge": "Giocatore fondatore"
+    "foundingPlayerBadge": "Giocatore fondatore",
+    "totalXp": "{count} XP"
   },
   "ai": {
     "title": "Analisi AI",

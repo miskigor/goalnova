@@ -1197,6 +1197,10 @@ export type Database = {
         Args: { p_is_premium: boolean };
         Returns: null;
       };
+      goalnova_public_player_profile_gamification: {
+        Args: { p_user_id: string };
+        Returns: Json;
+      };
       goalnova_public_player_profile_row: {
         Args: { p_user_id: string };
         Returns: {

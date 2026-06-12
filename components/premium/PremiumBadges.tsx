@@ -48,3 +48,12 @@ export function ScoutProBadge() {
 export function ClubBadge() {
   return <BaseBadge text="Club" />;
 }
+
+/** Challenge reward badge (e.g. Freestyle King). */
+export function ChallengeKingBadge({ label }: { label: string }) {
+  return (
+    <span className="inline-flex max-w-full items-center rounded-full border border-gn-accent/45 bg-gn-accent/12 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-gn-accent shadow-sm sm:text-[11px]">
+      <span className="truncate">{label}</span>
+    </span>
+  );
+}

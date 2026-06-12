@@ -1184,7 +1184,8 @@
       "savedToast": "Spremljeno na shortlistu",
       "removedToast": "Uklonjeno sa shortliste"
     },
-    "foundingPlayerBadge": "Founding Player"
+    "foundingPlayerBadge": "Founding Player",
+    "totalXp": "{count} XP"
   },
   "ai": {
     "title": "AI analiza",
