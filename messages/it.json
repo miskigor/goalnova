@@ -807,7 +807,18 @@
     "detailMaxVideoDurationLabel": "Durata massima del video",
     "detailEquipmentLabel": "Attrezzatura",
     "detailScoringLabel": "Punteggio",
-    "detailBadgeLabel": "Badge"
+    "detailBadgeLabel": "Badge",
+    "weakFootPass": {
+      "title": "Sfida passaggio con piede debole",
+      "description": "Imposta un bersaglio su muro, recinzione, porta piccola o area segnata. Completa 10 passaggi controllati usando solo il piede debole. Più passaggi precisi, ranking più alto.",
+      "instructions": "Segna un bersaglio chiaro su muro, recinzione, porta piccola o superficie piana. Completa 10 passaggi controllati solo con il piede debole in un video continuo.",
+      "cardGoal": "Colpisci il bersaglio con 10 passaggi controllati usando solo il piede debole.",
+      "equipment": "Pallone da calcio\nMuro, recinzione, porta piccola o bersaglio segnato\nFotocamera del telefono\n~10 m di spazio piatto",
+      "badgeName": "Asso del piede debole",
+      "badgeTitle": "Fino a 100 punti XP",
+      "badgeDetail": "50 XP completamento valido · 100 XP per 10/10 · Badge Asso del piede debole + Challenge completata ✅ + Classifica + social PitchRusch",
+      "rules": "Obiettivo:\nMostra precisione e controllo con il piede debole.\n\nCategoria:\nPassaggio / Tecnica\n\nDifficoltà:\n⭐ Principiante\n\nRegole:\n- Solo piede debole.\n- 10 tentativi di passaggio.\n- Passaggi controllati, non tiri.\n- Bersaglio chiaramente visibile.\n- Giocatore e palla visibili.\n- Video con tutti e 10 i tentativi.\n- Registrazione continua.\n- Nessun montaggio.\n- Piede forte = tentativo non valido.\n\nPunteggio:\nColpi a bersaglio su 10.\n\nLivelli:\n- 10/10 = Elite · 9/10 = Oro · 8/10 = Argento · 7/10 = Bronzo · sotto 7 = Completato\n\nRicompensa:\n- Challenge completata ✅\n- 50 XP valido · 100 XP per 10/10\n- Classifica · social PitchRusch · badge Asso del piede debole"
+    }
   },
   "rankings": {
     "title": "Classifiche",

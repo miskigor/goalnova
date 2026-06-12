@@ -807,7 +807,18 @@
     "detailMaxVideoDurationLabel": "Maximale Videolänge",
     "detailEquipmentLabel": "Ausrüstung",
     "detailScoringLabel": "Bewertung",
-    "detailBadgeLabel": "Abzeichen"
+    "detailBadgeLabel": "Abzeichen",
+    "weakFootPass": {
+      "title": "Schwacher-Fuß-Pass-Challenge",
+      "description": "Richte ein Ziel an einer Wand, einem Zaun, einem kleinen Tor oder einer markierten Fläche ein. Führe 10 kontrollierte Pässe nur mit dem schwächeren Fuß aus. Je genauer, desto höher der Rang.",
+      "instructions": "Markiere ein klares Ziel an Wand, Zaun, kleinem Tor oder ebener Fläche. Führe 10 kontrollierte Pässe nur mit dem schwächeren Fuß in einem durchgehenden Video aus.",
+      "cardGoal": "Triff das Ziel mit 10 kontrollierten Pässen nur mit dem schwächeren Fuß.",
+      "equipment": "Fußball\nWand, Zaun, kleines Tor oder markiertes Ziel\nHandykamera\n~5–10 m ebener Raum",
+      "badgeName": "Schwachfuß-Ass",
+      "badgeTitle": "Bis zu 100 XP-Punkte",
+      "badgeDetail": "50 XP bei gültiger Absolvierung · 100 XP bei 10/10 · Schwachfuß-Ass-Abzeichen + Challenge abgeschlossen ✅ + Leaderboard-Platz + Social-Media-Feature auf PitchRusch",
+      "rules": "Ziel:\nZeige Genauigkeit und Kontrolle mit dem schwächeren Fuß.\n\nKategorie:\nPassspiel / Technik\n\nSchwierigkeit:\n⭐ Anfänger\n\nChallenge:\nRichte ein Ziel an Wand, Zaun, kleinem Tor oder markierter Fläche ein. Führe 10 kontrollierte Pässe nur mit dem schwächeren Fuß aus.\n\nRegeln:\n- Nur der schwächere Fuß.\n- 10 Passversuche absolvieren.\n- Pässe müssen kontrolliert sein, keine Schüsse.\n- Das Ziel muss klar sichtbar sein.\n- Spieler und Ball müssen sichtbar sein.\n- Das Video muss alle 10 Versuche zeigen.\n- Ein durchgehendes Video — keine Schnitte oder Beschleunigung.\n- Stärkerer Fuß = ungültiger Versuch.\n\nWertung:\nHauptmetrik: erfolgreiche Zieltreffer von 10.\n\nRangstufen:\n- 10/10 = Elite\n- 9/10 = Gold\n- 8/10 = Silber\n- 7/10 = Bronze\n- Unter 7/10 = Nur abgeschlossen\n\nBestenliste:\n- Höchste Trefferzahl (von 10).\n- Bei Gleichstand: frühere gültige Einreichung.\n\nUpload-Anforderungen:\n- Ganzkörper sichtbar.\n- Ziel sichtbar.\n- Alle 10 Versuche sichtbar.\n- Ein durchgehendes Video.\n- Keine Bearbeitung.\n\nBelohnung:\n- Challenge abgeschlossen ✅\n- 50 XP bei gültiger Absolvierung\n- 100 XP bei perfektem 10/10\n- Leaderboard-Platz\n- Feature auf PitchRusch Social Media\n- Schwachfuß-Ass-Abzeichen"
+    }
   },
   "rankings": {
     "title": "Rangliste",

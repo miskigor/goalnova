@@ -807,7 +807,18 @@
     "detailMaxVideoDurationLabel": "Duração máxima do vídeo",
     "detailEquipmentLabel": "Equipamento",
     "detailScoringLabel": "Pontuação",
-    "detailBadgeLabel": "Emblema"
+    "detailBadgeLabel": "Emblema",
+    "weakFootPass": {
+      "title": "Desafio de passe com pé fraco",
+      "description": "Coloca um alvo numa parede, vedação, baliza pequena ou área marcada. Completa 10 passes controlados usando só o pé mais fraco. Quanto mais precisos, melhor a classificação.",
+      "instructions": "Marca um alvo claro numa parede, vedação, baliza pequena ou superfície plana. Completa 10 passes controlados só com o pé mais fraco num vídeo contínuo.",
+      "cardGoal": "Acerta o alvo com 10 passes controlados usando só o pé mais fraco.",
+      "equipment": "Bola de futebol\nParede, vedação, baliza pequena ou alvo marcado\nCâmera do celular\n~5–10 m de espaço plano",
+      "badgeName": "As do pé fraco",
+      "badgeTitle": "Até 100 pontos XP",
+      "badgeDetail": "50 XP ao concluir validamente · 100 XP por 10/10 · Emblema As do pé fraco + Challenge concluído ✅ + Classificação + redes PitchRusch",
+      "rules": "Objetivo:\nMostra precisão e controlo com o pé mais fraco.\n\nCategoria:\nPasse / Técnica\n\nDificuldade:\n⭐ Iniciante\n\nRegras:\n- Só o pé mais fraco.\n- 10 tentativas de passe.\n- Passes controlados, não remates.\n- Alvo claramente visível.\n- Jogador e bola visíveis.\n- Vídeo com as 10 tentativas.\n- Gravação contínua.\n- Sem cortes ou edição.\n- Pé forte = tentativa inválida.\n\nPontuação:\nAcertos no alvo de 10.\n\nNíveis:\n- 10/10 = Elite · 9/10 = Ouro · 8/10 = Prata · 7/10 = Bronze · abaixo de 7 = Concluído\n\nRecompensa:\n- Challenge concluído ✅\n- 50 XP válido · 100 XP por 10/10\n- Classificação · redes PitchRusch · emblema As do pé fraco"
+    }
   },
   "rankings": {
     "title": "Classificação",

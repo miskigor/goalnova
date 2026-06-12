@@ -807,7 +807,18 @@
     "detailMaxVideoDurationLabel": "Maximale videoduur",
     "detailEquipmentLabel": "Materiaal",
     "detailScoringLabel": "Score",
-    "detailBadgeLabel": "Badge"
+    "detailBadgeLabel": "Badge",
+    "weakFootPass": {
+      "title": "Zwakke-voet-pass-uitdaging",
+      "description": "Plaats een doel op een muur, hek, klein doel of gemarkeerd gebied. Voltooi 10 gecontroleerde passes met alleen je zwakkere voet. Hoe nauwkeuriger, hoe hoger je rang.",
+      "instructions": "Markeer een duidelijk doel op muur, hek, klein doel of vlakke ondergrond. Voltooi 10 gecontroleerde passes met alleen je zwakkere voet in één doorlopende video.",
+      "cardGoal": "Raak het doel met 10 gecontroleerde passes met alleen je zwakkere voet.",
+      "equipment": "Voetbal\nMuur, hek, klein doel of gemarkeerd doel\nTelefooncamera\n~5–10 m vlakke ruimte",
+      "badgeName": "Zwakke-voet-ass",
+      "badgeTitle": "Tot 100 XP-punten",
+      "badgeDetail": "50 XP bij geldige voltooiing · 100 XP bij 10/10 · Zwakke-voet-ass-badge + Challenge voltooid ✅ + Leaderboard + PitchRusch social media",
+      "rules": "Doel:\nToon nauwkeurigheid en controle met je zwakkere voet.\n\nCategorie:\nPassen / Techniek\n\nMoeilijkheid:\n⭐ Beginner\n\nRegels:\n- Alleen zwakkere voet.\n- 10 passpogingen.\n- Gecontroleerde passes, geen schoten.\n- Doel duidelijk zichtbaar.\n- Speler en bal zichtbaar.\n- Video toont alle 10 pogingen.\n- Doorlopende opname.\n- Geen bewerking.\n- Sterkere voet = ongeldige poging.\n\nScore:\nGeslaagde doelraken van 10.\n\nNiveaus:\n- 10/10 = Elite · 9/10 = Goud · 8/10 = Zilver · 7/10 = Brons · onder 7 = Voltooid\n\nBeloning:\n- Challenge voltooid ✅\n- 50 XP geldig · 100 XP bij 10/10\n- Leaderboard · social PitchRusch · Zwakke-voet-ass-badge"
+    }
   },
   "rankings": {
     "title": "Rankings",

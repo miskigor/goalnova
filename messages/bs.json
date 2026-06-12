@@ -807,7 +807,18 @@
     "detailMaxVideoDurationLabel": "Maks. trajanje videa",
     "detailEquipmentLabel": "Oprema",
     "detailScoringLabel": "Bodovanje",
-    "detailBadgeLabel": "Značka"
+    "detailBadgeLabel": "Značka",
+    "weakFootPass": {
+      "title": "Izazov dodavanja slabom nogom",
+      "description": "Postavi metu na zid, ogradu, mali gol ili označeno područje. Izvedi 10 kontrolisanih dodavanja samo slabom nogom. Što više preciznih dodavanja, bolji rang.",
+      "instructions": "Označi jasnu metu na zidu, ogradi, malom golu ili ravnoj površini. Izvedi 10 kontrolisanih dodavanja samo slabom nogom u jednom neprekinutom videu.",
+      "cardGoal": "Pogodi metu sa 10 kontrolisanih dodavanja samo slabom nogom.",
+      "equipment": "Nogometna lopta\nZid, ograda, mali gol ili označena meta\nMobitel za snimanje\n~5–10 m ravnog prostora",
+      "badgeName": "Majstor slabe noge",
+      "badgeTitle": "Do 100 XP bodova",
+      "badgeDetail": "50 XP za valjano izvršenje · 100 XP za 10/10 · Značka Majstor slabe noge + Challenge završen ✅ + Pozicija na ljestvici + PitchRusch društvene mreže",
+      "rules": "Cilj:\nPokaži preciznost i kontrolu slabom nogom.\n\nKategorija:\nDodavanje / Tehnika\n\nTežina:\n⭐ Početnik\n\nPravila:\n- Samo slabija noga.\n- 10 pokušaja dodavanja.\n- Kontrolisana dodavanja, ne udarci.\n- Meta jasno vidljiva.\n- Igrač i lopta vidljivi.\n- Video prikazuje svih 10 pokušaja.\n- Jedno neprekinuto snimanje.\n- Bez rezanja ili montaže.\n- Jača noga = nevažeći pokušaj.\n\nBodovanje:\nUspješni pogoci mete od 10.\n\nRangiranje:\n- 10/10 = Elite · 9/10 = Zlato · 8/10 = Srebro · 7/10 = Bronca · ispod 7 = Završeno\n\nNagrada:\n- Challenge završen ✅\n- 50 XP valjano · 100 XP za 10/10\n- Ljestvica · društvene mreže · značka Majstor slabe noge"
+    }
   },
   "rankings": {
     "title": "Rankings",

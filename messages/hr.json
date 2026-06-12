@@ -807,7 +807,18 @@
     "detailMaxVideoDurationLabel": "Maks. trajanje videa",
     "detailEquipmentLabel": "Oprema",
     "detailScoringLabel": "Bodovanje",
-    "detailBadgeLabel": "Značka"
+    "detailBadgeLabel": "Značka",
+    "weakFootPass": {
+      "title": "Izazov dodavanja slabom nogom",
+      "description": "Postavi metu na zid, ogradu, mali gol ili označeno područje. Izvedi 10 kontroliranih dodavanja samo slabom nogom. Što više preciznih dodavanja, bolji rang.",
+      "instructions": "Označi jasnu metu na zidu, ogradi, malom golu ili ravnoj površini. Izvedi 10 kontroliranih dodavanja samo slabom nogom u jednom neprekinutom videu.",
+      "cardGoal": "Pogodi metu s 10 kontroliranih dodavanja samo slabom nogom.",
+      "equipment": "Nogometna lopta\nZid, ograda, mali gol ili označena meta\nMobitel za snimanje\n~5–10 m ravnog prostora",
+      "badgeName": "Majstor slabe noge",
+      "badgeTitle": "Do 100 XP bodova",
+      "badgeDetail": "50 XP za valjano izvršenje · 100 XP za 10/10 · Značka Majstor slabe noge na profilu + Izazov završen ✅ + Pozicija na ljestvici + Uvjet za PitchRusch društvene mreže",
+      "rules": "Cilj:\nPokaži preciznost i kontrolu slabom nogom.\n\nKategorija:\nDodavanje / Tehnika\n\nTežina:\n⭐ Početnik\n\nIzazov:\nPostavi metu na zid, ogradu, mali gol ili označeno područje. Izvedi 10 kontroliranih dodavanja samo slabom nogom. Što više preciznih dodavanja, bolji rang.\n\nPravila:\n- Koristi samo slabiju nogu.\n- Izvedi 10 pokušaja dodavanja.\n- Dodavanja moraju biti kontrolirana, ne udarci.\n- Meta mora biti jasno vidljiva.\n- Igrač i lopta moraju biti vidljivi.\n- Video mora prikazati svih 10 pokušaja.\n- Video mora biti jedno neprekinuto snimanje.\n- Bez rezanja, montaže ili ubrzanja.\n- Ako igrač koristi jaču nogu, pokušaj je nevažeći.\n\nBodovanje:\nGlavna metrika: broj uspješnih pogodaka mete od 10.\n\nRazine rangiranja:\n- 10/10 = Elite\n- 9/10 = Zlato\n- 8/10 = Srebro\n- 7/10 = Bronca\n- Ispod 7/10 = Samo završeno\n\nLjestvica:\n- Rang po najvišem rezultatu (pogoci od 10).\n- Kod izjednačenja: raniji valjani upload.\n\nZahtjevi za upload:\n- Cijelo tijelo vidljivo.\n- Meta vidljiva.\n- Svih 10 pokušaja vidljivo.\n- Jedno neprekinuto snimanje.\n- Bez montaže.\n\nNagrada:\n- Izazov označen kao završen ✅\n- 50 XP bodova za valjano izvršenje\n- 100 XP bodova za savršenih 10/10\n- Pozicija na ljestvici\n- Uvjet za istaknuti sadržaj na PitchRusch društvenim mrežama\n- Značka Majstor slabe noge na profilu"
+    }
   },
   "rankings": {
     "title": "Ljestvice",

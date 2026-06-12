@@ -807,7 +807,18 @@
     "detailMaxVideoDurationLabel": "Maks. video süresi",
     "detailEquipmentLabel": "Ekipman",
     "detailScoringLabel": "Puanlama",
-    "detailBadgeLabel": "Rozet"
+    "detailBadgeLabel": "Rozet",
+    "weakFootPass": {
+      "title": "Zayıf Ayak Pas Mücadelesi",
+      "description": "Duvara, çite, küçük kaleye veya işaretli alana bir hedef koy. Sadece zayıf ayağınla 10 kontrollü pas tamamla. Ne kadar isabetli, o kadar yüksek sıra.",
+      "instructions": "Duvar, çit, küçük kale veya düz yüzeyde net bir hedef işaretle. Tek sürekli videoda sadece zayıf ayağınla 10 kontrollü pas yap.",
+      "cardGoal": "Sadece zayıf ayağınla 10 kontrollü pasla hedefi vur.",
+      "equipment": "Futbol topu\nDuvar, çit, küçük kale veya işaretli hedef\nTelefon kamerası\n~5–10 m düz alan",
+      "badgeName": "Zayıf Ayak Ustası",
+      "badgeTitle": "100 XP'ye kadar",
+      "badgeDetail": "Geçerli tamamlama 50 XP · 10/10 için 100 XP · Zayıf Ayak Ustası rozeti + Challenge tamamlandı ✅ + Sıralama + PitchRusch sosyal medya",
+      "rules": "Hedef:\nZayıf ayağınla isabet ve kontrol göster.\n\nKategori:\nPas / Teknik\n\nZorluk:\n⭐ Başlangıç\n\nKurallar:\n- Sadece zayıf ayak.\n- 10 pas denemesi.\n- Kontrollü paslar, şut değil.\n- Hedef net görünür.\n- Oyuncu ve top görünür.\n- Video 10 denemeyi göstermeli.\n- Tek sürekli kayıt.\n- Kesim veya düzenleme yok.\n- Güçlü ayak = geçersiz.\n\nPuanlama:\n10 üzerinden başarılı isabet.\n\nSeviyeler:\n- 10/10 = Elite · 9/10 = Altın · 8/10 = Gümüş · 7/10 = Bronz · 7 altı = Tamamlandı\n\nÖdül:\n- Challenge tamamlandı ✅\n- Geçerli 50 XP · 10/10 için 100 XP\n- Sıralama · PitchRusch sosyal medya · Zayıf Ayak Ustası rozeti"
+    }
   },
   "rankings": {
     "title": "Rankings",

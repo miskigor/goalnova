@@ -807,7 +807,18 @@
     "detailMaxVideoDurationLabel": "Durée max. de la vidéo",
     "detailEquipmentLabel": "Équipement",
     "detailScoringLabel": "Notation",
-    "detailBadgeLabel": "Badge"
+    "detailBadgeLabel": "Badge",
+    "weakFootPass": {
+      "title": "Défi de passe au pied faible",
+      "description": "Place une cible sur un mur, une clôture, un petit but ou une zone marquée. Réalise 10 passes contrôlées en n'utilisant que ton pied faible. Plus tu es précis, meilleur est ton rang.",
+      "instructions": "Marque une cible claire sur un mur, une clôture, un petit but ou une surface plane. Réalise 10 passes contrôlées avec ton pied faible dans une vidéo continue.",
+      "cardGoal": "Touche la cible avec 10 passes contrôlées en n'utilisant que ton pied faible.",
+      "equipment": "Ballon de foot\nMur, clôture, petit but ou cible marquée\nCaméra de téléphone\n~5–10 m d'espace plat",
+      "badgeName": "As du pied faible",
+      "badgeTitle": "Jusqu'à 100 points XP",
+      "badgeDetail": "50 XP si valide · 100 XP pour 10/10 · Badge As du pied faible + Challenge terminé ✅ + Classement + réseaux PitchRusch",
+      "rules": "Objectif:\nMontre précision et contrôle avec ton pied faible.\n\nCatégorie:\nPasse / Technique\n\nDifficulté:\n⭐ Débutant\n\nRègles:\n- Pied faible uniquement.\n- 10 tentatives de passe.\n- Passes contrôlées, pas des tirs.\n- Cible clairement visible.\n- Joueur et ballon visibles.\n- Vidéo montrant les 10 tentatives.\n- Enregistrement continu.\n- Pas de montage.\n- Pied fort = tentative invalide.\n\nNotation:\nTouches réussies sur 10.\n\nPaliers:\n- 10/10 = Elite · 9/10 = Or · 8/10 = Argent · 7/10 = Bronze · moins de 7 = Terminé\n\nRécompense:\n- Challenge terminé ✅\n- 50 XP valide · 100 XP pour 10/10\n- Classement · réseaux PitchRusch · badge As du pied faible"
+    }
   },
   "rankings": {
     "title": "Classements",

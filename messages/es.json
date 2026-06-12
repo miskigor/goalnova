@@ -807,7 +807,18 @@
     "detailMaxVideoDurationLabel": "Duración máxima del video",
     "detailEquipmentLabel": "Equipo",
     "detailScoringLabel": "Puntuación",
-    "detailBadgeLabel": "Insignia"
+    "detailBadgeLabel": "Insignia",
+    "weakFootPass": {
+      "title": "Desafío de pase con pie débil",
+      "description": "Coloca un objetivo en una pared, valla, portería pequeña o zona marcada. Completa 10 pases controlados usando solo tu pie débil. Cuantos más aciertos, mejor ranking.",
+      "instructions": "Marca un objetivo claro en pared, valla, portería pequeña o superficie plana. Completa 10 pases controlados solo con tu pie débil en un video continuo.",
+      "cardGoal": "Acerta el objetivo con 10 pases controlados usando solo tu pie débil.",
+      "equipment": "Balón de fútbol\nPared, valla, portería pequeña u objetivo marcado\nCámara del móvil\n~5–10 m de espacio plano",
+      "badgeName": "As del pie débil",
+      "badgeTitle": "Hasta 100 puntos XP",
+      "badgeDetail": "50 XP al completar válidamente · 100 XP por 10/10 · Insignia As del pie débil + Challenge completado ✅ + Clasificación + redes sociales PitchRusch",
+      "rules": "Objetivo:\nDemuestra precisión y control con tu pie débil.\n\nCategoría:\nPase / Técnica\n\nDificultad:\n⭐ Principiante\n\nReglas:\n- Solo pie débil.\n- 10 intentos de pase.\n- Pases controlados, no tiros.\n- Objetivo claramente visible.\n- Jugador y balón visibles.\n- Video con los 10 intentos.\n- Una grabación continua.\n- Sin cortes ni edición.\n- Pie fuerte = intento inválido.\n\nPuntuación:\nAciertos al objetivo de 10.\n\nRangos:\n- 10/10 = Elite · 9/10 = Oro · 8/10 = Plata · 7/10 = Bronce · menos de 7 = Completado\n\nRecompensa:\n- Challenge completado ✅\n- 50 XP válido · 100 XP por 10/10\n- Clasificación · redes PitchRusch · insignia As del pie débil"
+    }
   },
   "rankings": {
     "title": "Clasificación",

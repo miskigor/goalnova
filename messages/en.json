@@ -870,7 +870,18 @@
     "detailMaxVideoDurationLabel": "Max video duration",
     "detailEquipmentLabel": "Equipment",
     "detailScoringLabel": "Scoring",
-    "detailBadgeLabel": "Badge"
+    "detailBadgeLabel": "Badge",
+    "weakFootPass": {
+      "title": "Weak Foot Pass Challenge",
+      "description": "Set up a target on a wall, fence, small goal, or marked area. Complete 10 controlled passes using only your weaker foot. The more accurate passes you complete, the higher you rank.",
+      "instructions": "Mark a clear target on a wall, fence, small goal, or flat surface. Complete 10 controlled passes using only your weaker foot in one continuous video.",
+      "cardGoal": "Hit the target with 10 controlled passes using only your weaker foot.",
+      "equipment": "Football\nWall, fence, small goal, or marked target\nPhone camera\n~5–10 m flat space",
+      "badgeName": "Off-Foot Ace",
+      "badgeTitle": "Up to 100 XP points",
+      "badgeDetail": "50 XP on valid completion · 100 XP for 10/10 · Off-Foot Ace badge on profile + Challenge completed ✅ + Leaderboard position + PitchRusch social media feature eligibility",
+      "rules": "Goal:\nShow accuracy and control using your weaker foot.\n\nCategory:\nPassing / Technique\n\nDifficulty:\n⭐ Beginner\n\nChallenge:\nSet up a target on a wall, fence, small goal, or marked area. Complete 10 controlled passes using only your weaker foot. The more accurate passes you complete, the higher you rank.\n\nRules:\n- Use only your weaker foot.\n- Complete 10 pass attempts.\n- Passes must be controlled, not shots.\n- The target must be clearly visible.\n- The player and ball must be visible.\n- The video must show all 10 attempts.\n- The video must be one continuous recording.\n- No cuts, edits, or speed changes.\n- If the player uses the stronger foot, the attempt is invalid.\n\nScoring:\nPrimary metric: Number of successful target hits out of 10.\n\nRanking tiers:\n- 10/10 = Elite\n- 9/10 = Gold\n- 8/10 = Silver\n- 7/10 = Bronze\n- Below 7/10 = Completed only\n\nLeaderboard:\n- Rank by highest score (hits out of 10).\n- If tied, rank by earliest valid submission.\n\nUpload requirements:\n- Full body visible.\n- Target visible.\n- All 10 attempts visible.\n- One continuous video.\n- No edits.\n\nReward:\n- Challenge completed status ✅\n- 50 XP points on valid completion\n- 100 XP points for a perfect 10/10\n- Leaderboard position\n- Eligible to be featured on PitchRusch social media\n- Off-Foot Ace badge on profile"
+    }
   },
   "rankings": {
     "title": "Rankings",
