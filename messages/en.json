@@ -844,9 +844,10 @@
     "sprint20m": {
       "title": "Sprint 20m Challenge",
       "description": "Show your speed, explosiveness, and sprint technique by running 20 meters as fast as possible.",
-      "rules": "Instructions:\n- Mark a 20-meter distance with a start and finish line.\n- Start behind the line and sprint to the finish as fast as possible.\n- Record the full attempt from start to finish.\n\nEquipment:\n- 2 cones\n- Phone camera\n- Stopwatch\n- 20 meter space\n\nRules:\n- The player must start behind the start line.\n- The sprint distance must be exactly 20 meters.\n- The full attempt must be visible in the video.\n- Time is measured from the first movement to crossing the finish line.\n- Flying start is not allowed.\n- Edited or cut videos are not allowed.\n- Maximum video length is 15 seconds.\n\nScoring:\n- Sprint time: 60\n- Start explosiveness: 20\n- Running technique: 10\n- Execution validity: 10\n\nAttempts:\n- Free player: 1 attempt\n- Premium player: multiple attempts + choose best attempt + better visibility to scouts",
-      "badgeTitle": "Speedster",
-      "badgeDetail": "Badge for top Sprint 20m performers"
+      "rules": "Instructions:\n- Mark a 20-meter distance with a start and finish line.\n- Start behind the line and sprint to the finish as fast as possible.\n- Record the full attempt from start to finish.\n\nEquipment:\n- 2 cones\n- Phone camera\n- Stopwatch\n- 20 meter space\n\nRules:\n- The player must start behind the start line.\n- The sprint distance must be exactly 20 meters.\n- The full attempt must be visible in the video.\n- Time is measured from the first movement to crossing the finish line.\n- Flying start is not allowed.\n- Edited or cut videos are not allowed.\n- Maximum video length is 15 seconds.\n\nScoring:\n- Sprint time: 60\n- Start explosiveness: 20\n- Running technique: 10\n- Execution validity: 10\n\nAttempts:\n- Free player: 1 attempt\n- Premium player: multiple attempts + choose best attempt + better visibility to scouts\n\nReward:\n- Challenge completed status ✅\n- 50 XP points on valid completion\n- Leaderboard position\n- Speedster badge on profile",
+      "badgeTitle": "50 XP points",
+      "badgeDetail": "50 XP on valid completion · Speedster badge on profile + Challenge completed ✅ + Leaderboard position",
+      "badgeName": "Speedster"
     },
     "keepyUps": {
       "title": "Keepy-Ups Challenge",
@@ -881,6 +882,19 @@
       "badgeTitle": "Up to 100 XP points",
       "badgeDetail": "50 XP on valid completion · 100 XP for 10/10 · Off-Foot Ace badge on profile + Challenge completed ✅ + Leaderboard position + PitchRusch social media feature eligibility",
       "rules": "Goal:\nShow accuracy and control using your weaker foot.\n\nCategory:\nPassing / Technique\n\nDifficulty:\n⭐ Beginner\n\nChallenge:\nSet up a target on a wall, fence, small goal, or marked area. Complete 10 controlled passes using only your weaker foot. The more accurate passes you complete, the higher you rank.\n\nRules:\n- Use only your weaker foot.\n- Complete 10 pass attempts.\n- Passes must be controlled, not shots.\n- The target must be clearly visible.\n- The player and ball must be visible.\n- The video must show all 10 attempts.\n- The video must be one continuous recording.\n- No cuts, edits, or speed changes.\n- If the player uses the stronger foot, the attempt is invalid.\n\nScoring:\nPrimary metric: Number of successful target hits out of 10.\n\nRanking tiers:\n- 10/10 = Elite\n- 9/10 = Gold\n- 8/10 = Silver\n- 7/10 = Bronze\n- Below 7/10 = Completed only\n\nLeaderboard:\n- Rank by highest score (hits out of 10).\n- If tied, rank by earliest valid submission.\n\nUpload requirements:\n- Full body visible.\n- Target visible.\n- All 10 attempts visible.\n- One continuous video.\n- No edits.\n\nReward:\n- Challenge completed status ✅\n- 50 XP points on valid completion\n- 100 XP points for a perfect 10/10\n- Leaderboard position\n- Eligible to be featured on PitchRusch social media\n- Off-Foot Ace badge on profile"
+    },
+    "crossbar": {
+      "title": "Crossbar Challenge",
+      "headline": "Can you hit the bar?",
+      "description": "Take 10 shots from a fixed distance and try to hit the crossbar. This challenge tests shooting accuracy, technique, control, and composure.",
+      "instructions": "From 16 meters (penalty area line), take 10 shots with a stationary ball. Hit the crossbar as many times as possible. Record all attempts in one continuous video with the goal and crossbar clearly visible.",
+      "cardGoal": "Take 10 shots and try to hit the crossbar as many times as possible.",
+      "cta": "Upload your attempt and prove your accuracy.",
+      "equipment": "Football\nStandard goal\nPhone camera\n16 m shooting distance",
+      "badgeName": "Crossbar King",
+      "badgeTitle": "Up to 150 XP points",
+      "badgeDetail": "1 hit = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Crossbar King badge on profile + Challenge completed ✅ + Leaderboard position + PitchRusch social media feature eligibility",
+      "rules": "Goal:\nHit the crossbar as many times as possible from a fixed distance.\n\nCategory:\nShooting / Accuracy\n\nDifficulty:\n⭐⭐ Intermediate\n\nChallenge:\nTake 10 shots from a fixed distance and try to hit the crossbar.\n\nRules:\n- Use a standard football goal if available.\n- Take 10 shot attempts.\n- Recommended distance: 16 meters / edge of the penalty area.\n- The ball must be stationary before each shot.\n- The crossbar hit must be clearly visible.\n- The player, ball, goal, and crossbar must be visible in the video.\n- The video must show all 10 attempts.\n- The video must be one continuous recording.\n- No cuts, edits, or speed changes.\n- Shots that hit the posts do not count.\n- Only direct crossbar hits count.\n\nScoring:\nPrimary metric: Number of successful crossbar hits out of 10.\n\nRanking tiers:\n- 5/10 or more = Elite\n- 4/10 = Gold\n- 3/10 = Silver\n- 2/10 = Bronze\n- 1/10 = Completed\n- 0/10 = Attempt submitted, but not completed\n\nLeaderboard:\n- Rank by highest number of crossbar hits.\n- If tied, rank by earliest valid submission.\n\nUpload requirements:\n- Full body visible.\n- Ball visible.\n- Goal and crossbar visible.\n- All 10 attempts visible.\n- One continuous video.\n- No edits.\n\nReward:\n- Challenge completed status ✅\n- Tiered XP: 1 hit = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP\n- Leaderboard position\n- Eligible to be featured on PitchRusch social media\n- Crossbar King badge on profile"
     }
   },
   "rankings": {

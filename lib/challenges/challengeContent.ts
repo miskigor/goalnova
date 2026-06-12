@@ -4,6 +4,7 @@ const SPRINT_20M_SLUG = "sprint-20m-challenge";
 const KEEPY_UPS_SLUG = "keepy-ups-challenge";
 const DRIBBLING_SLALOM_SLUG = "dribbling-slalom-challenge";
 const WEAK_FOOT_PASS_SLUG = "weak-foot-pass-challenge";
+const CROSSBAR_SLUG = "crossbar-challenge";
 
 type TFn = (key: string) => string;
 
@@ -75,6 +76,7 @@ export function withLocalizedChallengeContent(
       description: t("sprint20m.description"),
       instructions: null,
       rules: t("sprint20m.rules"),
+      badge: t("sprint20m.badgeName"),
       reward_title: t("sprint20m.badgeTitle"),
       reward_detail: t("sprint20m.badgeDetail"),
       reward: `${t("sprint20m.badgeTitle")} — ${t("sprint20m.badgeDetail")}`,
@@ -115,6 +117,19 @@ export function withLocalizedChallengeContent(
       reward_title: t("weakFootPass.badgeTitle"),
       reward_detail: t("weakFootPass.badgeDetail"),
       reward: `${t("weakFootPass.badgeTitle")} — ${t("weakFootPass.badgeDetail")}`,
+    };
+  } else if (challenge.slug === CROSSBAR_SLUG) {
+    base = {
+      ...withoutDbRuleFragments(challenge),
+      title: t("crossbar.title"),
+      description: t("crossbar.description"),
+      instructions: t("crossbar.instructions"),
+      equipment: linesToEquipmentList(t("crossbar.equipment")),
+      rules: t("crossbar.rules"),
+      badge: t("crossbar.badgeName"),
+      reward_title: t("crossbar.badgeTitle"),
+      reward_detail: t("crossbar.badgeDetail"),
+      reward: `${t("crossbar.badgeTitle")} — ${t("crossbar.badgeDetail")}`,
     };
   }
   const localized = pickLocaleFields(base, locale);

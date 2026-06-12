@@ -781,9 +781,10 @@
     "sprint20m": {
       "title": "Sprint 20m izazov",
       "description": "Pokaži svoju brzinu, eksplozivnost i tehniku sprinta trčeći 20 metara što je brže moguće.",
-      "rules": "Upute:\n- Označi 20 metara sa startnom i ciljnom linijom.\n- Kreni iza linije i sprintaj do cilja što je brže moguće.\n- Snimi cijeli pokušaj od starta do cilja.\n\nOprema:\n- 2 čunja\n- Kamera na mobitelu\n- Štoperica\n- Prostor od 20 metara\n\nPravila:\n- Igrač mora startati iza startne linije.\n- Udaljenost sprinta mora biti tačno 20 metara.\n- Cijeli pokušaj mora biti vidljiv u videu.\n- Vrijeme se mjeri od prvog pokreta do prolaska kroz cilj.\n- Leteći start nije dozvoljen.\n- Editovani ili rezani videi nisu dozvoljeni.\n- Maksimalna dužina videa je 15 sekundi.\n\nBodovanje:\n- Vrijeme sprinta: 60\n- Eksplozivnost starta: 20\n- Tehnika trčanja: 10\n- Valjanost izvedbe: 10\n\nPokušaji:\n- Besplatni igrač: 1 pokušaj\n- Premium igrač: više pokušaja + odabir najboljeg pokušaja + bolja vidljivost skautima",
-      "badgeTitle": "Brzojac",
-      "badgeDetail": "Značka za najbolje izvođače sprinta od 20 metara"
+      "rules": "Upute:\n- Označi 20 metara sa startnom i ciljnom linijom.\n- Kreni iza linije i sprintaj do cilja što je brže moguće.\n- Snimi cijeli pokušaj od starta do cilja.\n\nOprema:\n- 2 čunja\n- Kamera na mobitelu\n- Štoperica\n- Prostor od 20 metara\n\nPravila:\n- Igrač mora startati iza startne linije.\n- Udaljenost sprinta mora biti tačno 20 metara.\n- Cijeli pokušaj mora biti vidljiv u videu.\n- Vrijeme se mjeri od prvog pokreta do prolaska kroz cilj.\n- Leteći start nije dozvoljen.\n- Editovani ili rezani videi nisu dozvoljeni.\n- Maksimalna dužina videa je 15 sekundi.\n\nBodovanje:\n- Vrijeme sprinta: 60\n- Eksplozivnost starta: 20\n- Tehnika trčanja: 10\n- Valjanost izvedbe: 10\n\nPokušaji:\n- Besplatni igrač: 1 pokušaj\n- Premium igrač: više pokušaja + odabir najboljeg pokušaja + bolja vidljivost skautima\n\nNagrada:\n- Challenge označen kao završen ✅\n- 50 XP bodova za valjano izvršenje\n- Pozicija na ljestvici\n- Značka Brzojac na profilu",
+      "badgeTitle": "50 XP bodova",
+      "badgeDetail": "50 XP za valjano izvršenje · Značka Brzojac + Challenge završen ✅ + Pozicija na ljestvici",
+      "badgeName": "Brzojac"
     },
     "keepyUps": {
       "title": "Keepy-Ups Challenge",
@@ -818,6 +819,19 @@
       "badgeTitle": "Do 100 XP bodova",
       "badgeDetail": "50 XP za valjano izvršenje · 100 XP za 10/10 · Značka Majstor slabe noge + Challenge završen ✅ + Pozicija na ljestvici + PitchRusch društvene mreže",
       "rules": "Cilj:\nPokaži preciznost i kontrolu slabom nogom.\n\nKategorija:\nDodavanje / Tehnika\n\nTežina:\n⭐ Početnik\n\nPravila:\n- Samo slabija noga.\n- 10 pokušaja dodavanja.\n- Kontrolisana dodavanja, ne udarci.\n- Meta jasno vidljiva.\n- Igrač i lopta vidljivi.\n- Video prikazuje svih 10 pokušaja.\n- Jedno neprekinuto snimanje.\n- Bez rezanja ili montaže.\n- Jača noga = nevažeći pokušaj.\n\nBodovanje:\nUspješni pogoci mete od 10.\n\nRangiranje:\n- 10/10 = Elite · 9/10 = Zlato · 8/10 = Srebro · 7/10 = Bronca · ispod 7 = Završeno\n\nNagrada:\n- Challenge završen ✅\n- 50 XP valjano · 100 XP za 10/10\n- Ljestvica · društvene mreže · značka Majstor slabe noge"
+    },
+    "crossbar": {
+      "title": "Izazov pogađanja letvice",
+      "headline": "Možeš li pogoditi letvicu?",
+      "description": "Izvedi 10 udaraca s fiksne udaljenosti i pokušaj pogoditi letvicu. Testira preciznost šuta, tehniku, kontrolu i hladnokrvnost.",
+      "instructions": "S 16 metara (linija kaznenog prostora) izvedi 10 udaraca s mirnom loptom. Snimi sve pokušaje u jednom neprekinutom videu.",
+      "cardGoal": "Izvedi 10 udaraca i pokušaj pogoditi letvicu što više puta.",
+      "cta": "Učitaj svoj pokušaj i dokaži preciznost.",
+      "equipment": "Nogometna lopta\nStandardni gol\nMobitel za snimanje\nUdaljenost šuta 16 m",
+      "badgeName": "Kralj letvice",
+      "badgeTitle": "Do 150 XP bodova",
+      "badgeDetail": "1 pogodak = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Značka Kralj letvice + Challenge završen ✅ + Ljestvica + PitchRusch",
+      "rules": "Cilj:\nPogodi letvicu što više puta s fiksne udaljenosti.\n\nKategorija:\nŠut / Preciznost\n\nTežina:\n⭐⭐ Srednja\n\nPravila:\n- Standardni gol ako je dostupan.\n- 10 udaraca.\n- Udaljenost: 16 metara.\n- Lopta mirna prije udarca.\n- Pogodak letvice jasno vidljiv.\n- Igrač, lopta, gol i letvica vidljivi.\n- Video sa svih 10 pokušaja.\n- Jedno neprekinuto snimanje.\n- Bez montaže.\n- Stabilovi se ne računaju.\n- Samo direktni pogoci letvice.\n\nBodovanje:\nPogoci letvice od 10.\n\nRangiranje:\n- 5/10+ = Elite · 4/10 = Zlato · 3/10 = Srebro · 2/10 = Bronca · 1/10 = Završeno · 0/10 = Nije završeno\n\nNagrada:\n- Challenge završen ✅\n- XP: 1=50 · 2=75 · 3=100 · 4=125 · 5+=150\n- Ljestvica · društvene mreže · Kralj letvice"
     }
   },
   "rankings": {

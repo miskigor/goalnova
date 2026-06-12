@@ -781,9 +781,10 @@
     "sprint20m": {
       "title": "Desafío Sprint 20m",
       "description": "Muestra tu velocidad, explosividad y técnica de sprint corriendo 20 metros lo más rápido posible.",
-      "rules": "Instrucciones:\n- Marca una distancia de 20 metros con línea de salida y llegada.\n- Comienza detrás de la línea y sprinta hasta la meta lo más rápido posible.\n- Graba el intento completo desde el inicio hasta el final.\n\nEquipo:\n- 2 conos\n- Cámara de móvil\n- Cronómetro\n- Espacio de 20 metros\n\nReglas:\n- El jugador debe iniciar detrás de la línea de salida.\n- La distancia del sprint debe ser exactamente 20 metros.\n- El intento completo debe verse en el video.\n- El tiempo se mide desde el primer movimiento hasta cruzar la meta.\n- No se permite salida lanzada.\n- No se permiten videos editados o recortados.\n- Duración máxima del video: 15 segundos.\n\nPuntuación:\n- Tiempo de sprint: 60\n- Explosividad de salida: 20\n- Técnica de carrera: 10\n- Validez de ejecución: 10\n\nIntentos:\n- Jugador gratis: 1 intento\n- Jugador premium: múltiples intentos + elegir mejor intento + mayor visibilidad para scouts",
-      "badgeTitle": "Velocista",
-      "badgeDetail": "Insignia para los mejores del sprint de 20 metros"
+      "rules": "Instrucciones:\n- Marca una distancia de 20 metros con línea de salida y llegada.\n- Comienza detrás de la línea y sprinta hasta la meta lo más rápido posible.\n- Graba el intento completo desde el inicio hasta el final.\n\nEquipo:\n- 2 conos\n- Cámara de móvil\n- Cronómetro\n- Espacio de 20 metros\n\nReglas:\n- El jugador debe iniciar detrás de la línea de salida.\n- La distancia del sprint debe ser exactamente 20 metros.\n- El intento completo debe verse en el video.\n- El tiempo se mide desde el primer movimiento hasta cruzar la meta.\n- No se permite salida lanzada.\n- No se permiten videos editados o recortados.\n- Duración máxima del video: 15 segundos.\n\nPuntuación:\n- Tiempo de sprint: 60\n- Explosividad de salida: 20\n- Técnica de carrera: 10\n- Validez de ejecución: 10\n\nIntentos:\n- Jugador gratis: 1 intento\n- Jugador premium: múltiples intentos + elegir mejor intento + mayor visibilidad para scouts\n\nRecompensa:\n- Challenge completado ✅\n- 50 puntos XP al completar válidamente\n- Posición en la clasificación\n- Insignia Velocista en el perfil",
+      "badgeTitle": "50 puntos XP",
+      "badgeDetail": "50 XP al completar válidamente · Insignia Velocista + Challenge completado ✅ + Clasificación",
+      "badgeName": "Velocista"
     },
     "keepyUps": {
       "title": "Keepy-Ups Challenge",
@@ -818,6 +819,19 @@
       "badgeTitle": "Hasta 100 puntos XP",
       "badgeDetail": "50 XP al completar válidamente · 100 XP por 10/10 · Insignia As del pie débil + Challenge completado ✅ + Clasificación + redes sociales PitchRusch",
       "rules": "Objetivo:\nDemuestra precisión y control con tu pie débil.\n\nCategoría:\nPase / Técnica\n\nDificultad:\n⭐ Principiante\n\nReglas:\n- Solo pie débil.\n- 10 intentos de pase.\n- Pases controlados, no tiros.\n- Objetivo claramente visible.\n- Jugador y balón visibles.\n- Video con los 10 intentos.\n- Una grabación continua.\n- Sin cortes ni edición.\n- Pie fuerte = intento inválido.\n\nPuntuación:\nAciertos al objetivo de 10.\n\nRangos:\n- 10/10 = Elite · 9/10 = Oro · 8/10 = Plata · 7/10 = Bronce · menos de 7 = Completado\n\nRecompensa:\n- Challenge completado ✅\n- 50 XP válido · 100 XP por 10/10\n- Clasificación · redes PitchRusch · insignia As del pie débil"
+    },
+    "crossbar": {
+      "title": "Desafío del larguero",
+      "headline": "¿Puedes dar al larguero?",
+      "description": "Realiza 10 tiros desde una distancia fija e intenta dar al larguero. Prueba precisión, técnica, control y compostura.",
+      "instructions": "Desde 16 metros (línea del área), realiza 10 tiros con el balón quieto. Graba todos los intentos en un video continuo con portería y larguero visibles.",
+      "cardGoal": "Realiza 10 tiros e intenta dar al larguero tantas veces como puedas.",
+      "cta": "Sube tu intento y demuestra tu precisión.",
+      "equipment": "Balón de fútbol\nPortería estándar\nCámara del móvil\nDistancia de tiro 16 m",
+      "badgeName": "Rey del larguero",
+      "badgeTitle": "Hasta 150 puntos XP",
+      "badgeDetail": "1 acierto = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Insignia Rey del larguero + Challenge completado ✅ + Clasificación + PitchRusch",
+      "rules": "Objetivo:\nDar al larguero el máximo de veces desde distancia fija.\n\nCategoría:\nTiro / Precisión\n\nDificultad:\n⭐⭐ Intermedio\n\nReglas:\n- Portería estándar si está disponible.\n- 10 intentos de tiro.\n- Distancia recomendada: 16 metros.\n- Balón quieto antes de cada tiro.\n- Impacto en el larguero claramente visible.\n- Jugador, balón, portería y larguero visibles.\n- Video con los 10 intentos.\n- Grabación continua sin edición.\n- Los postes no cuentan.\n- Solo impactos directos en el larguero.\n\nPuntuación:\nAciertos al larguero de 10.\n\nRangos:\n- 5/10+ = Elite · 4/10 = Oro · 3/10 = Plata · 2/10 = Bronce · 1/10 = Completado · 0/10 = No completado\n\nRecompensa:\n- Challenge completado ✅\n- XP: 1=50 · 2=75 · 3=100 · 4=125 · 5+=150\n- Clasificación · redes PitchRusch · insignia Rey del larguero"
     }
   },
   "rankings": {

@@ -781,9 +781,10 @@
     "sprint20m": {
       "title": "20 m Sprint Mücadelesi",
       "description": "20 metreyi mümkün olduğunca hızlı koşarak hızını, patlayıcılığını ve sprint tekniğini göster.",
-      "rules": "Talimatlar:\n- Başlangıç ve bitiş çizgisiyle 20 metrelik bir mesafe işaretle.\n- Çizginin arkasından başla ve bitişe mümkün olduğunca hızlı sprint at.\n- Denemeyi baştan sona kaydet.\n\nEkipman:\n- 2 konik\n- Telefon kamerası\n- Kronometre\n- 20 metrelik alan\n\nKurallar:\n- Oyuncu başlangıç çizgisinin arkasından başlamalıdır.\n- Sprint mesafesi tam olarak 20 metre olmalıdır.\n- Tüm deneme videoda görünür olmalıdır.\n- Süre ilk hareketten bitiş çizgisini geçmeye kadar ölçülür.\n- Uçuşlu starta izin verilmez.\n- Düzenlenmiş veya kesilmiş videolara izin verilmez.\n- Maksimum video süresi 15 saniyedir.\n\nPuanlama:\n- Sprint süresi: 60\n- Start patlayıcılığı: 20\n- Koşu tekniği: 10\n- Uygulama geçerliliği: 10\n\nDenemeler:\n- Ücretsiz oyuncu: 1 deneme\n- Premium oyuncu: birden fazla deneme + en iyi denemeyi seçme + scoutlara daha iyi görünürlük",
-      "badgeTitle": "Hız Canavarı",
-      "badgeDetail": "En iyi 20 m sprint performansları için rozet"
+      "rules": "Talimatlar:\n- Başlangıç ve bitiş çizgisiyle 20 metrelik bir mesafe işaretle.\n- Çizginin arkasından başla ve bitişe mümkün olduğunca hızlı sprint at.\n- Denemeyi baştan sona kaydet.\n\nEkipman:\n- 2 konik\n- Telefon kamerası\n- Kronometre\n- 20 metrelik alan\n\nKurallar:\n- Oyuncu başlangıç çizgisinin arkasından başlamalıdır.\n- Sprint mesafesi tam olarak 20 metre olmalıdır.\n- Tüm deneme videoda görünür olmalıdır.\n- Süre ilk hareketten bitiş çizgisini geçmeye kadar ölçülür.\n- Uçuşlu starta izin verilmez.\n- Düzenlenmiş veya kesilmiş videolara izin verilmez.\n- Maksimum video süresi 15 saniyedir.\n\nPuanlama:\n- Sprint süresi: 60\n- Start patlayıcılığı: 20\n- Koşu tekniği: 10\n- Uygulama geçerliliği: 10\n\nDenemeler:\n- Ücretsiz oyuncu: 1 deneme\n- Premium oyuncu: birden fazla deneme + en iyi denemeyi seçme + scoutlara daha iyi görünürlük\n\nÖdül:\n- Challenge tamamlandı ✅\n- Geçerli tamamlama için 50 XP\n- Sıralamadaki pozisyon\n- Hız Canavarı rozeti profilde",
+      "badgeTitle": "50 XP puanı",
+      "badgeDetail": "Geçerli tamamlama 50 XP · Hız Canavarı rozeti + Challenge tamamlandı ✅ + Sıralama",
+      "badgeName": "Hız Canavarı"
     },
     "keepyUps": {
       "title": "Keepy-Ups Challenge",
@@ -818,6 +819,19 @@
       "badgeTitle": "100 XP'ye kadar",
       "badgeDetail": "Geçerli tamamlama 50 XP · 10/10 için 100 XP · Zayıf Ayak Ustası rozeti + Challenge tamamlandı ✅ + Sıralama + PitchRusch sosyal medya",
       "rules": "Hedef:\nZayıf ayağınla isabet ve kontrol göster.\n\nKategori:\nPas / Teknik\n\nZorluk:\n⭐ Başlangıç\n\nKurallar:\n- Sadece zayıf ayak.\n- 10 pas denemesi.\n- Kontrollü paslar, şut değil.\n- Hedef net görünür.\n- Oyuncu ve top görünür.\n- Video 10 denemeyi göstermeli.\n- Tek sürekli kayıt.\n- Kesim veya düzenleme yok.\n- Güçlü ayak = geçersiz.\n\nPuanlama:\n10 üzerinden başarılı isabet.\n\nSeviyeler:\n- 10/10 = Elite · 9/10 = Altın · 8/10 = Gümüş · 7/10 = Bronz · 7 altı = Tamamlandı\n\nÖdül:\n- Challenge tamamlandı ✅\n- Geçerli 50 XP · 10/10 için 100 XP\n- Sıralama · PitchRusch sosyal medya · Zayıf Ayak Ustası rozeti"
+    },
+    "crossbar": {
+      "title": "Direk Mücadelesi",
+      "headline": "Direği vurabilir misin?",
+      "description": "Sabit mesafeden 10 şut çek ve direği vurmaya çalış. Şut isabeti, teknik, kontrol ve soğukkanlılığı test eder.",
+      "instructions": "16 metreden (ceza sahası çizgisi) duran topla 10 şut çek. Tüm denemeleri kale ve direk görünür şekilde tek videoda kaydet.",
+      "cardGoal": "10 şut çek ve direği mümkün olduğunca çok vur.",
+      "cta": "Denemeni yükle ve isabetini kanıtla.",
+      "equipment": "Futbol topu\nStandart kale\nTelefon kamerası\n16 m şut mesafesi",
+      "badgeName": "Direk Kralı",
+      "badgeTitle": "150 XP'ye kadar",
+      "badgeDetail": "1 isabet = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Direk Kralı rozeti + Challenge tamamlandı ✅ + Sıralama + PitchRusch",
+      "rules": "Hedef:\nSabit mesafeden direği mümkün olduğunca çok vur.\n\nKategori:\nŞut / İsabet\n\nZorluk:\n⭐⭐ Orta\n\nKurallar:\n- Mümkünse standart kale.\n- 10 şut denemesi.\n- Önerilen mesafe: 16 metre.\n- Her şuttan önce top hareketsiz.\n- Direk vuruşu net görünür.\n- Oyuncu, top, kale ve direk görünür.\n- Video 10 denemeyi göstermeli.\n- Tek sürekli kayıt.\n- Düzenleme yok.\n- Direkler sayılmaz.\n- Sadece direğe doğrudan isabet sayılır.\n\nPuanlama:\n10 üzerinden başarılı direk isabeti.\n\nSeviyeler:\n- 5/10+ = Elite · 4/10 = Altın · 3/10 = Gümüş · 2/10 = Bronz · 1/10 = Tamamlandı · 0/10 = Tamamlanmadı\n\nÖdül:\n- Challenge tamamlandı ✅\n- XP: 1=50 · 2=75 · 3=100 · 4=125 · 5+=150\n- Sıralama · PitchRusch · Direk Kralı rozeti"
     }
   },
   "rankings": {

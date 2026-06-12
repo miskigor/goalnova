@@ -781,9 +781,10 @@
     "sprint20m": {
       "title": "Sprint 20m-uitdaging",
       "description": "Laat je snelheid, explosiviteit en sprinttechniek zien door 20 meter zo snel mogelijk te rennen.",
-      "rules": "Instructies:\n- Markeer een afstand van 20 meter met een start- en finishlijn.\n- Start achter de lijn en sprint zo snel mogelijk naar de finish.\n- Neem de volledige poging op van start tot finish.\n\nMateriaal:\n- 2 pionnen\n- Telefooncamera\n- Stopwatch\n- Ruimte van 20 meter\n\nRegels:\n- De speler moet achter de startlijn beginnen.\n- De sprintafstand moet precies 20 meter zijn.\n- De volledige poging moet zichtbaar zijn in de video.\n- De tijd wordt gemeten vanaf de eerste beweging tot het passeren van de finishlijn.\n- Vliegende start is niet toegestaan.\n- Bewerkte of ingekorte video's zijn niet toegestaan.\n- Maximale videolengte is 15 seconden.\n\nScoring:\n- Sprinttijd: 60\n- Explosiviteit bij de start: 20\n- Loopttechniek: 10\n- Geldigheid van de uitvoering: 10\n\nPogingen:\n- Gratis speler: 1 poging\n- Premium speler: meerdere pogingen + beste poging kiezen + betere zichtbaarheid voor scouts",
-      "badgeTitle": "Snelheidsduivel",
-      "badgeDetail": "Badge voor de beste Sprint 20m-deelnemers"
+      "rules": "Instructies:\n- Markeer een afstand van 20 meter met een start- en finishlijn.\n- Start achter de lijn en sprint zo snel mogelijk naar de finish.\n- Neem de volledige poging op van start tot finish.\n\nMateriaal:\n- 2 pionnen\n- Telefooncamera\n- Stopwatch\n- Ruimte van 20 meter\n\nRegels:\n- De speler moet achter de startlijn beginnen.\n- De sprintafstand moet precies 20 meter zijn.\n- De volledige poging moet zichtbaar zijn in de video.\n- De tijd wordt gemeten vanaf de eerste beweging tot het passeren van de finishlijn.\n- Vliegende start is niet toegestaan.\n- Bewerkte of ingekorte video's zijn niet toegestaan.\n- Maximale videolengte is 15 seconden.\n\nScoring:\n- Sprinttijd: 60\n- Explosiviteit bij de start: 20\n- Loopttechniek: 10\n- Geldigheid van de uitvoering: 10\n\nPogingen:\n- Gratis speler: 1 poging\n- Premium speler: meerdere pogingen + beste poging kiezen + betere zichtbaarheid voor scouts\n\nBeloning:\n- Challenge voltooid ✅\n- 50 XP-punten bij geldige voltooiing\n- Leaderboard-positie\n- Snelheidsduivel-badge op profiel",
+      "badgeTitle": "50 XP-punten",
+      "badgeDetail": "50 XP bij geldige voltooiing · Snelheidsduivel-badge + Challenge voltooid ✅ + Leaderboard",
+      "badgeName": "Snelheidsduivel"
     },
     "keepyUps": {
       "title": "Keepy-Ups Challenge",
@@ -818,6 +819,19 @@
       "badgeTitle": "Tot 100 XP-punten",
       "badgeDetail": "50 XP bij geldige voltooiing · 100 XP bij 10/10 · Zwakke-voet-ass-badge + Challenge voltooid ✅ + Leaderboard + PitchRusch social media",
       "rules": "Doel:\nToon nauwkeurigheid en controle met je zwakkere voet.\n\nCategorie:\nPassen / Techniek\n\nMoeilijkheid:\n⭐ Beginner\n\nRegels:\n- Alleen zwakkere voet.\n- 10 passpogingen.\n- Gecontroleerde passes, geen schoten.\n- Doel duidelijk zichtbaar.\n- Speler en bal zichtbaar.\n- Video toont alle 10 pogingen.\n- Doorlopende opname.\n- Geen bewerking.\n- Sterkere voet = ongeldige poging.\n\nScore:\nGeslaagde doelraken van 10.\n\nNiveaus:\n- 10/10 = Elite · 9/10 = Goud · 8/10 = Zilver · 7/10 = Brons · onder 7 = Voltooid\n\nBeloning:\n- Challenge voltooid ✅\n- 50 XP geldig · 100 XP bij 10/10\n- Leaderboard · social PitchRusch · Zwakke-voet-ass-badge"
+    },
+    "crossbar": {
+      "title": "Lat-uitdaging",
+      "headline": "Raak jij de lat?",
+      "description": "Neem 10 schoten vanaf vaste afstand en probeer de lat te raken. Test schotnauwkeurigheid, techniek, controle en kalmte.",
+      "instructions": "Vanaf 16 meter (strafschopgebiedlijn) 10 schoten met stilstaande bal. Neem alle pogingen op in één doorlopende video met doel en lat zichtbaar.",
+      "cardGoal": "Neem 10 schoten en probeer de lat zo vaak mogelijk te raken.",
+      "cta": "Upload je poging en bewijs je nauwkeurigheid.",
+      "equipment": "Voetbal\nStandaard doel\nTelefooncamera\nSchotafstand 16 m",
+      "badgeName": "Lattenkoning",
+      "badgeTitle": "Tot 150 XP-punten",
+      "badgeDetail": "1 raak = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Lattenkoning-badge + Challenge voltooid ✅ + Leaderboard + PitchRusch",
+      "rules": "Doel:\nRaak de lat zo vaak mogelijk vanaf vaste afstand.\n\nCategorie:\nSchieten / Nauwkeurigheid\n\nMoeilijkheid:\n⭐⭐ Gemiddeld\n\nRegels:\n- Standaard doel indien beschikbaar.\n- 10 schotpogingen.\n- Aanbevolen afstand: 16 meter.\n- Bal stilstaand voor elk schot.\n- Latraak duidelijk zichtbaar.\n- Speler, bal, doel en lat zichtbaar.\n- Video toont alle 10 pogingen.\n- Doorlopende opname zonder bewerking.\n- Paalraak telt niet.\n- Alleen directe latraak telt.\n\nScore:\nGeslaagde latraken van 10.\n\nNiveaus:\n- 5/10+ = Elite · 4/10 = Goud · 3/10 = Zilver · 2/10 = Brons · 1/10 = Voltooid · 0/10 = Niet voltooid\n\nBeloning:\n- Challenge voltooid ✅\n- XP: 1=50 · 2=75 · 3=100 · 4=125 · 5+=150\n- Leaderboard · social PitchRusch · Lattenkoning"
     }
   },
   "rankings": {

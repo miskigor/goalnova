@@ -781,9 +781,10 @@
     "sprint20m": {
       "title": "Défi Sprint 20m",
       "description": "Montre ta vitesse, ton explosivité et ta technique de sprint en courant 20 mètres le plus vite possible.",
-      "rules": "Instructions :\n- Marque une distance de 20 mètres avec une ligne de départ et d’arrivée.\n- Pars derrière la ligne et sprinte jusqu’à l’arrivée le plus vite possible.\n- Enregistre la tentative complète du départ à l’arrivée.\n\nÉquipement :\n- 2 cônes\n- Caméra de téléphone\n- Chronomètre\n- Espace de 20 mètres\n\nRègles :\n- Le joueur doit démarrer derrière la ligne de départ.\n- La distance du sprint doit être exactement de 20 mètres.\n- La tentative complète doit être visible dans la vidéo.\n- Le temps est mesuré du premier mouvement jusqu’au passage de la ligne d’arrivée.\n- Le départ lancé est interdit.\n- Les vidéos montées ou coupées sont interdites.\n- Durée maximale de la vidéo : 15 secondes.\n\nNotation :\n- Temps de sprint : 60\n- Explosivité du départ : 20\n- Technique de course : 10\n- Validité de l’exécution : 10\n\nTentatives :\n- Joueur gratuit : 1 tentative\n- Joueur premium : tentatives multiples + choix de la meilleure + meilleure visibilité pour les scouts",
-      "badgeTitle": "As du sprint",
-      "badgeDetail": "Badge pour les meilleurs du sprint de 20 mètres"
+      "rules": "Instructions :\n- Marque une distance de 20 mètres avec une ligne de départ et d’arrivée.\n- Pars derrière la ligne et sprinte jusqu’à l’arrivée le plus vite possible.\n- Enregistre la tentative complète du départ à l’arrivée.\n\nÉquipement :\n- 2 cônes\n- Caméra de téléphone\n- Chronomètre\n- Espace de 20 mètres\n\nRègles :\n- Le joueur doit démarrer derrière la ligne de départ.\n- La distance du sprint doit être exactement de 20 mètres.\n- La tentative complète doit être visible dans la vidéo.\n- Le temps est mesuré du premier mouvement jusqu’au passage de la ligne d’arrivée.\n- Le départ lancé est interdit.\n- Les vidéos montées ou coupées sont interdites.\n- Durée maximale de la vidéo : 15 secondes.\n\nNotation :\n- Temps de sprint : 60\n- Explosivité du départ : 20\n- Technique de course : 10\n- Validité de l’exécution : 10\n\nTentatives :\n- Joueur gratuit : 1 tentative\n- Joueur premium : tentatives multiples + choix de la meilleure + meilleure visibilité pour les scouts\n\nRécompense :\n- Challenge terminé ✅\n- 50 points XP si valide\n- Position au classement\n- Badge As du sprint sur le profil",
+      "badgeTitle": "50 points XP",
+      "badgeDetail": "50 XP si valide · Badge As du sprint + Challenge terminé ✅ + Classement",
+      "badgeName": "As du sprint"
     },
     "keepyUps": {
       "title": "Keepy-Ups Challenge",
@@ -818,6 +819,19 @@
       "badgeTitle": "Jusqu'à 100 points XP",
       "badgeDetail": "50 XP si valide · 100 XP pour 10/10 · Badge As du pied faible + Challenge terminé ✅ + Classement + réseaux PitchRusch",
       "rules": "Objectif:\nMontre précision et contrôle avec ton pied faible.\n\nCatégorie:\nPasse / Technique\n\nDifficulté:\n⭐ Débutant\n\nRègles:\n- Pied faible uniquement.\n- 10 tentatives de passe.\n- Passes contrôlées, pas des tirs.\n- Cible clairement visible.\n- Joueur et ballon visibles.\n- Vidéo montrant les 10 tentatives.\n- Enregistrement continu.\n- Pas de montage.\n- Pied fort = tentative invalide.\n\nNotation:\nTouches réussies sur 10.\n\nPaliers:\n- 10/10 = Elite · 9/10 = Or · 8/10 = Argent · 7/10 = Bronze · moins de 7 = Terminé\n\nRécompense:\n- Challenge terminé ✅\n- 50 XP valide · 100 XP pour 10/10\n- Classement · réseaux PitchRusch · badge As du pied faible"
+    },
+    "crossbar": {
+      "title": "Défi de la barre transversale",
+      "headline": "Tu peux toucher la barre ?",
+      "description": "Tire 10 fois à distance fixe et essaie de toucher la barre transversale. Teste précision, technique, contrôle et sang-froid.",
+      "instructions": "À 16 mètres (ligne de surface), tire 10 fois avec le ballon immobile. Filme toutes les tentatives en une vidéo continue avec but et barre visibles.",
+      "cardGoal": "Tire 10 fois et essaie de toucher la barre le plus souvent possible.",
+      "cta": "Envoie ta tentative et prouve ta précision.",
+      "equipment": "Ballon de foot\nBut standard\nCaméra de téléphone\nDistance de tir 16 m",
+      "badgeName": "Roi de la barre",
+      "badgeTitle": "Jusqu'à 150 points XP",
+      "badgeDetail": "1 touche = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Badge Roi de la barre + Challenge terminé ✅ + Classement + PitchRusch",
+      "rules": "Objectif :\nToucher la barre transversale le plus souvent possible à distance fixe.\n\nCatégorie :\nTir / Précision\n\nDifficulté :\n⭐⭐ Intermédiaire\n\nRègles :\n- But standard si disponible.\n- 10 tentatives de tir.\n- Distance recommandée : 16 mètres.\n- Ballon immobile avant chaque tir.\n- Impact sur la barre clairement visible.\n- Joueur, ballon, but et barre visibles.\n- Vidéo montrant les 10 tentatives.\n- Enregistrement continu sans montage.\n- Les poteaux ne comptent pas.\n- Seuls les impacts directs sur la barre comptent.\n\nNotation :\nTouches réussies sur 10.\n\nPaliers :\n- 5/10+ = Elite · 4/10 = Or · 3/10 = Argent · 2/10 = Bronze · 1/10 = Terminé · 0/10 = Non terminé\n\nRécompense :\n- Challenge terminé ✅\n- XP : 1=50 · 2=75 · 3=100 · 4=125 · 5+=150\n- Classement · réseaux PitchRusch · badge Roi de la barre"
     }
   },
   "rankings": {

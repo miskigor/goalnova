@@ -781,9 +781,10 @@
     "sprint20m": {
       "title": "Sprint-20m-Herausforderung",
       "description": "Zeige deine Geschwindigkeit, Explosivität und Sprinttechnik, indem du 20 Meter so schnell wie möglich läufst.",
-      "rules": "Anleitung:\n- Markiere eine 20-Meter-Strecke mit Start- und Ziellinie.\n- Starte hinter der Linie und sprinte so schnell wie möglich ins Ziel.\n- Nimm den gesamten Versuch von Start bis Ziel auf.\n\nAusrüstung:\n- 2 Hütchen\n- Handykamera\n- Stoppuhr\n- 20 Meter Platz\n\nRegeln:\n- Der Spieler muss hinter der Startlinie starten.\n- Die Sprintdistanz muss genau 20 Meter betragen.\n- Der gesamte Versuch muss im Video sichtbar sein.\n- Die Zeit wird von der ersten Bewegung bis zum Überqueren der Ziellinie gemessen.\n- Fliegender Start ist nicht erlaubt.\n- Geschnittene oder bearbeitete Videos sind nicht erlaubt.\n- Maximale Videolänge ist 15 Sekunden.\n\nBewertung:\n- Sprintzeit: 60\n- Start-Explosivität: 20\n- Lauftechnik: 10\n- Gültigkeit der Ausführung: 10\n\nVersuche:\n- Free-Spieler: 1 Versuch\n- Premium-Spieler: mehrere Versuche + besten Versuch wählen + bessere Sichtbarkeit für Scouts",
-      "badgeTitle": "Sprinter",
-      "badgeDetail": "Abzeichen für die besten Sprint-20m-Performer"
+      "rules": "Anleitung:\n- Markiere eine 20-Meter-Strecke mit Start- und Ziellinie.\n- Starte hinter der Linie und sprinte so schnell wie möglich ins Ziel.\n- Nimm den gesamten Versuch von Start bis Ziel auf.\n\nAusrüstung:\n- 2 Hütchen\n- Handykamera\n- Stoppuhr\n- 20 Meter Platz\n\nRegeln:\n- Der Spieler muss hinter der Startlinie starten.\n- Die Sprintdistanz muss genau 20 Meter betragen.\n- Der gesamte Versuch muss im Video sichtbar sein.\n- Die Zeit wird von der ersten Bewegung bis zum Überqueren der Ziellinie gemessen.\n- Fliegender Start ist nicht erlaubt.\n- Geschnittene oder bearbeitete Videos sind nicht erlaubt.\n- Maximale Videolänge ist 15 Sekunden.\n\nBewertung:\n- Sprintzeit: 60\n- Start-Explosivität: 20\n- Lauftechnik: 10\n- Gültigkeit der Ausführung: 10\n\nVersuche:\n- Free-Spieler: 1 Versuch\n- Premium-Spieler: mehrere Versuche + besten Versuch wählen + bessere Sichtbarkeit für Scouts\n\nBelohnung:\n- Challenge abgeschlossen ✅\n- 50 XP-Punkte bei gültiger Absolvierung\n- Leaderboard-Platzierung\n- Sprinter-Abzeichen auf dem Profil",
+      "badgeTitle": "50 XP-Punkte",
+      "badgeDetail": "50 XP bei gültiger Absolvierung · Sprinter-Abzeichen + Challenge abgeschlossen ✅ + Leaderboard-Platz",
+      "badgeName": "Sprinter"
     },
     "keepyUps": {
       "title": "Keepy-Ups Challenge",
@@ -818,6 +819,19 @@
       "badgeTitle": "Bis zu 100 XP-Punkte",
       "badgeDetail": "50 XP bei gültiger Absolvierung · 100 XP bei 10/10 · Schwachfuß-Ass-Abzeichen + Challenge abgeschlossen ✅ + Leaderboard-Platz + Social-Media-Feature auf PitchRusch",
       "rules": "Ziel:\nZeige Genauigkeit und Kontrolle mit dem schwächeren Fuß.\n\nKategorie:\nPassspiel / Technik\n\nSchwierigkeit:\n⭐ Anfänger\n\nChallenge:\nRichte ein Ziel an Wand, Zaun, kleinem Tor oder markierter Fläche ein. Führe 10 kontrollierte Pässe nur mit dem schwächeren Fuß aus.\n\nRegeln:\n- Nur der schwächere Fuß.\n- 10 Passversuche absolvieren.\n- Pässe müssen kontrolliert sein, keine Schüsse.\n- Das Ziel muss klar sichtbar sein.\n- Spieler und Ball müssen sichtbar sein.\n- Das Video muss alle 10 Versuche zeigen.\n- Ein durchgehendes Video — keine Schnitte oder Beschleunigung.\n- Stärkerer Fuß = ungültiger Versuch.\n\nWertung:\nHauptmetrik: erfolgreiche Zieltreffer von 10.\n\nRangstufen:\n- 10/10 = Elite\n- 9/10 = Gold\n- 8/10 = Silber\n- 7/10 = Bronze\n- Unter 7/10 = Nur abgeschlossen\n\nBestenliste:\n- Höchste Trefferzahl (von 10).\n- Bei Gleichstand: frühere gültige Einreichung.\n\nUpload-Anforderungen:\n- Ganzkörper sichtbar.\n- Ziel sichtbar.\n- Alle 10 Versuche sichtbar.\n- Ein durchgehendes Video.\n- Keine Bearbeitung.\n\nBelohnung:\n- Challenge abgeschlossen ✅\n- 50 XP bei gültiger Absolvierung\n- 100 XP bei perfektem 10/10\n- Leaderboard-Platz\n- Feature auf PitchRusch Social Media\n- Schwachfuß-Ass-Abzeichen"
+    },
+    "crossbar": {
+      "title": "Latten-Challenge",
+      "headline": "Triffst du die Latte?",
+      "description": "Führe 10 Schüsse aus fester Distanz aus und versuche die Latte zu treffen. Testet Schussgenauigkeit, Technik, Kontrolle und Nervenstärke.",
+      "instructions": "Von 16 Metern (Strafraumlinie) 10 Schüsse mit stationärem Ball ausführen. Die Latte so oft wie möglich treffen. Alle Versuche in einem durchgehenden Video aufnehmen.",
+      "cardGoal": "Führe 10 Schüsse aus und versuche die Latte so oft wie möglich zu treffen.",
+      "cta": "Lade deinen Versuch hoch und beweise deine Genauigkeit.",
+      "equipment": "Fußball\nStandard-Tor\nHandykamera\n16 m Schussdistanz",
+      "badgeName": "Latten-König",
+      "badgeTitle": "Bis zu 150 XP-Punkte",
+      "badgeDetail": "1 Treffer = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Latten-König-Abzeichen + Challenge abgeschlossen ✅ + Leaderboard + PitchRusch Social Media",
+      "rules": "Ziel:\nTriff die Latte so oft wie möglich aus fester Distanz.\n\nKategorie:\nSchuss / Genauigkeit\n\nSchwierigkeit:\n⭐⭐ Mittel\n\nRegeln:\n- Standard-Fußballtor verwenden, falls verfügbar.\n- 10 Schussversuche.\n- Empfohlene Distanz: 16 Meter / Strafraumkante.\n- Ball muss vor jedem Schuss still liegen.\n- Lattentreffer muss klar sichtbar sein.\n- Spieler, Ball, Tor und Latte im Video sichtbar.\n- Video zeigt alle 10 Versuche.\n- Ein durchgehendes Video — keine Schnitte.\n- Pfosten-Treffer zählen nicht.\n- Nur direkte Lattentreffer zählen.\n\nWertung:\nErfolgreiche Lattentreffer von 10.\n\nRangstufen:\n- 5/10+ = Elite · 4/10 = Gold · 3/10 = Silber · 2/10 = Bronze · 1/10 = Abgeschlossen · 0/10 = Eingereicht, nicht abgeschlossen\n\nBelohnung:\n- Challenge abgeschlossen ✅\n- XP: 1 = 50 · 2 = 75 · 3 = 100 · 4 = 125 · 5+ = 150\n- Leaderboard · Social Media · Latten-König-Abzeichen"
     }
   },
   "rankings": {

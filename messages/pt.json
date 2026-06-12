@@ -781,9 +781,10 @@
     "sprint20m": {
       "title": "Desafio Sprint 20m",
       "description": "Mostra a tua velocidade, explosão e técnica de sprint correndo 20 metros o mais rápido possível.",
-      "rules": "Instruções:\n- Marca uma distância de 20 metros com linha de partida e chegada.\n- Começa atrás da linha e sprinta até à meta o mais rápido possível.\n- Grava a tentativa completa do início ao fim.\n\nEquipamento:\n- 2 cones\n- Câmara do telemóvel\n- Cronómetro\n- Espaço de 20 metros\n\nRegras:\n- O jogador deve começar atrás da linha de partida.\n- A distância do sprint deve ser exatamente 20 metros.\n- A tentativa completa deve estar visível no vídeo.\n- O tempo é medido do primeiro movimento até cruzar a meta.\n- Não é permitido início lançado.\n- Não são permitidos vídeos editados ou cortados.\n- Duração máxima do vídeo: 15 segundos.\n\nPontuação:\n- Tempo de sprint: 60\n- Explosão na partida: 20\n- Técnica de corrida: 10\n- Validade da execução: 10\n\nTentativas:\n- Jogador grátis: 1 tentativa\n- Jogador premium: várias tentativas + escolher a melhor + maior visibilidade para scouts",
-      "badgeTitle": "Velocista",
-      "badgeDetail": "Distintivo para os melhores no sprint de 20 metros"
+      "rules": "Instruções:\n- Marca uma distância de 20 metros com linha de partida e chegada.\n- Começa atrás da linha e sprinta até à meta o mais rápido possível.\n- Grava a tentativa completa do início ao fim.\n\nEquipamento:\n- 2 cones\n- Câmara do telemóvel\n- Cronómetro\n- Espaço de 20 metros\n\nRegras:\n- O jogador deve começar atrás da linha de partida.\n- A distância do sprint deve ser exatamente 20 metros.\n- A tentativa completa deve estar visível no vídeo.\n- O tempo é medido do primeiro movimento até cruzar a meta.\n- Não é permitido início lançado.\n- Não são permitidos vídeos editados ou cortados.\n- Duração máxima do vídeo: 15 segundos.\n\nPontuação:\n- Tempo de sprint: 60\n- Explosão na partida: 20\n- Técnica de corrida: 10\n- Validade da execução: 10\n\nTentativas:\n- Jogador grátis: 1 tentativa\n- Jogador premium: várias tentativas + escolher a melhor + maior visibilidade para scouts\n\nRecompensa:\n- Challenge concluído ✅\n- 50 pontos XP ao concluir validamente\n- Posição na classificação\n- Distintivo Velocista no perfil",
+      "badgeTitle": "50 pontos XP",
+      "badgeDetail": "50 XP ao concluir validamente · Distintivo Velocista + Challenge concluído ✅ + Classificação",
+      "badgeName": "Velocista"
     },
     "keepyUps": {
       "title": "Keepy-Ups Challenge",
@@ -818,6 +819,19 @@
       "badgeTitle": "Até 100 pontos XP",
       "badgeDetail": "50 XP ao concluir validamente · 100 XP por 10/10 · Emblema As do pé fraco + Challenge concluído ✅ + Classificação + redes PitchRusch",
       "rules": "Objetivo:\nMostra precisão e controlo com o pé mais fraco.\n\nCategoria:\nPasse / Técnica\n\nDificuldade:\n⭐ Iniciante\n\nRegras:\n- Só o pé mais fraco.\n- 10 tentativas de passe.\n- Passes controlados, não remates.\n- Alvo claramente visível.\n- Jogador e bola visíveis.\n- Vídeo com as 10 tentativas.\n- Gravação contínua.\n- Sem cortes ou edição.\n- Pé forte = tentativa inválida.\n\nPontuação:\nAcertos no alvo de 10.\n\nNíveis:\n- 10/10 = Elite · 9/10 = Ouro · 8/10 = Prata · 7/10 = Bronze · abaixo de 7 = Concluído\n\nRecompensa:\n- Challenge concluído ✅\n- 50 XP válido · 100 XP por 10/10\n- Classificação · redes PitchRusch · emblema As do pé fraco"
+    },
+    "crossbar": {
+      "title": "Desafio da trave",
+      "headline": "Consegues acertar na trave?",
+      "description": "Faz 10 remates a uma distância fixa e tenta acertar na trave. Testa precisão, técnica, controlo e compostura.",
+      "instructions": "A 16 metros (linha da grande área), faz 10 remates com a bola parada. Grava todos os tentativas num vídeo contínuo com baliza e trave visíveis.",
+      "cardGoal": "Faz 10 remates e tenta acertar na trave o máximo possível.",
+      "cta": "Carrega a tua tentativa e prova a tua precisão.",
+      "equipment": "Bola de futebol\nBaliza padrão\nCâmera do celular\nDistância de remate 16 m",
+      "badgeName": "Rei da trave",
+      "badgeTitle": "Até 150 pontos XP",
+      "badgeDetail": "1 acerto = 50 XP · 2 = 75 XP · 3 = 100 XP · 4 = 125 XP · 5+ = 150 XP · Emblema Rei da trave + Challenge concluído ✅ + Classificação + PitchRusch",
+      "rules": "Objetivo:\nAcertar na trave o máximo de vezes a partir de distância fixa.\n\nCategoria:\nRemate / Precisão\n\nDificuldade:\n⭐⭐ Intermédio\n\nRegras:\n- Baliza padrão se disponível.\n- 10 tentativas de remate.\n- Distância recomendada: 16 metros.\n- Bola parada antes de cada remate.\n- Impacto na trave claramente visível.\n- Jogador, bola, baliza e trave visíveis.\n- Vídeo com as 10 tentativas.\n- Gravação contínua sem edição.\n- Postes não contam.\n- Apenas impactos diretos na trave.\n\nPontuação:\nAcertos na trave de 10.\n\nNíveis:\n- 5/10+ = Elite · 4/10 = Ouro · 3/10 = Prata · 2/10 = Bronze · 1/10 = Concluído · 0/10 = Não concluído\n\nRecompensa:\n- Challenge concluído ✅\n- XP: 1=50 · 2=75 · 3=100 · 4=125 · 5+=150\n- Classificação · redes PitchRusch · Rei da trave"
     }
   },
   "rankings": {
