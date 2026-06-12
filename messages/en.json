@@ -854,6 +854,16 @@
       "rules": "Goal:\nComplete 10 consecutive touches without dropping the ball.\n\nRules:\n- Start from the ground or from hands.\n- The ball must not touch the ground.\n- Only 10 consecutive touches count.\n- The video must show your full body and the ball at all times.\n- Video may last up to 30 seconds maximum.\n- Players can submit multiple attempts; the best attempt counts.\n\nBasic reward:\n- 50 XP points\n- \"Keepy-Ups Challenger\" badge on profile\n- Challenge marked as completed ✅\n\nScoring:\n✅ Successfully completed = challenge finished\n\nDifficulty:\n⭐ Beginner\n\nWhy it's good:\n- Everyone can participate.\n- Quick to record.\n- A good first challenge for new users.\n- Easy to verify on video.",
       "badgeTitle": "50 XP points",
       "badgeDetail": "Keepy-Ups Challenger badge on profile + Challenge marked complete ✅"
+    },
+    "dribblingSlalom": {
+      "title": "Dribbling Slalom Challenge",
+      "description": "Dribble through 5 cones as fast as possible while keeping full control of the ball.",
+      "instructions": "Set up 5 cones in a straight line, about 2 meters apart. Start behind the start line, dribble through every cone, and finish past the last cone. Record one continuous attempt with your full body and the full course visible.",
+      "cardGoal": "Fastest valid time wins.",
+      "rules": "Goal:\nComplete a slalom course with the ball as quickly as possible while maintaining control.\n\nCategory:\nDribbling\n\nDifficulty:\n⭐⭐ Intermediate\n\nCourse layout:\nSTART → Cone 1 → Cone 2 → Cone 3 → Cone 4 → Cone 5 → FINISH\n\nRules:\n- Use 5 cones or markers.\n- Distance between cones: approximately 2 meters.\n- Start behind the start line.\n- Dribble through all 5 cones.\n- The ball must remain under control.\n- One continuous video — no cuts, edits or speed adjustments.\n- The full course must be visible.\n- Missing a cone = invalid attempt.\n- Knocking over a cone = +1 second penalty.\n\nScoring:\n- Primary metric: Fastest valid time wins (seconds).\n- Knocked cone = +1 second penalty.\n- Missed cone = invalid attempt.\n\nLeaderboard example:\n- Player A: 8.42s\n- Player B: 7.91s ← ranks higher\n- Player C: 8.65s\n\nUpload requirements:\n- Full body visible.\n- Full course visible.\n- One continuous recording.\n- No edits.\n- Valid completion of all cones.\n\nReward:\n- Challenge completed status ✅\n- 50 XP points\n- Leaderboard position\n- Eligible for PitchRusch featured player selection\n- Slalom Ace badge on profile",
+      "badgeName": "Slalom Ace",
+      "badgeTitle": "50 XP points",
+      "badgeDetail": "Slalom Ace badge on profile + Challenge completed ✅ + Leaderboard position + Featured player eligibility"
     }
   },
   "rankings": {

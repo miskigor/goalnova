@@ -791,6 +791,16 @@
       "rules": "Cilj:\nNapravi 10 uzastopnih dodira bez pada lopte.\n\nPravila:\n- Start s tla ili iz ruku.\n- Lopta ne smije dodirnuti tlo.\n- Broji se samo 10 uzastopnih dodira.\n- Video mora prikazivati cijelo tijelo i loptu cijelo vrijeme.\n- Video može trajati najviše 30 sekundi.\n- Igrač može poslati više pokušaja; najbolji pokušaj se računa.\n\nOsnovna nagrada:\n- 50 XP bodova\n- \"Keepy-Ups Challenger\" badge na profilu\n- Challenge označen kao završen ✅\n\nOcjenjivanje:\n✅ Uspješno odrađeno = završio challenge\n\nTežina:\n⭐ Početnik\n\nZašto je dobar:\n- Svi mogu sudjelovati.\n- Brzo se snima.\n- Dobar prvi challenge za nove korisnike.\n- Lako ga je provjeriti na videu.",
       "badgeTitle": "50 XP bodova",
       "badgeDetail": "Keepy-Ups Challenger badge na profilu + Challenge označen kao završen ✅"
+    },
+    "dribblingSlalom": {
+      "title": "Dribbling Slalom Challenge",
+      "description": "Provedi loptu kroz 5 čunjeva što brže uz potpunu kontrolu lopte.",
+      "instructions": "Postavi 5 čunjeva u ravnu liniju, oko 2 metra razmaka. Kreni iza startne linije, prođi kroz svaki čunj i završi iza zadnjeg. Snimi jedan neprekinut pokušaj.",
+      "cardGoal": "Pobjeđuje najbrže valjano vrijeme.",
+      "rules": "Cilj:\nProđi slalom s loptom što brže uz kontrolu.\n\nKategorija:\nDribling\n\nTežina:\n⭐⭐ Srednja\n\nPravila:\n- 5 čunjeva, razmak ~2 m.\n- Start iza linije.\n- Prođi svih 5 čunjeva.\n- Jedan neprekinut video.\n- Propušten čunj = nevažeće.\n- Oboren čunj = +1 s.\n\nNagrada:\n- 50 XP bodova\n- Slalom Ace badge\n- Challenge završen ✅",
+      "badgeName": "Slalom Ace",
+      "badgeTitle": "50 XP bodova",
+      "badgeDetail": "Slalom Ace badge + Challenge završen ✅ + Leaderboard"
     }
   },
   "rankings": {

@@ -791,6 +791,16 @@
       "rules": "Doel:\nMaak 10 opeenvolgende touches zonder de bal te laten vallen.\n\nRegels:\n- Start vanaf de grond of uit de handen.\n- De bal mag de grond niet raken.\n- Alleen 10 opeenvolgende touches tellen mee.\n- De video moet je hele lichaam en de bal de hele tijd tonen.\n- De video mag maximaal 30 seconden duren.\n- Spelers kunnen meerdere pogingen insturen; de beste poging telt.\n\nBasisbeloning:\n- 50 XP-punten\n- \"Keepy-Ups Challenger\"-badge op profiel\n- Challenge gemarkeerd als voltooid ✅\n\nScoring:\n✅ Succesvol voltooid = challenge afgerond\n\nMoeilijkheid:\n⭐ Beginner\n\nWaarom het goed is:\n- Iedereen kan meedoen.\n- Snel op te nemen.\n- Goede eerste challenge voor nieuwe gebruikers.\n- Makkelijk te verifiëren op video.",
       "badgeTitle": "50 XP-punten",
       "badgeDetail": "Keepy-Ups Challenger-badge op profiel + Challenge gemarkeerd als voltooid ✅"
+    },
+    "dribblingSlalom": {
+      "title": "Dribbling Slalom Challenge",
+      "description": "Dribbel zo snel mogelijk door 5 pionnen met volledige balcontrole.",
+      "instructions": "Zet 5 pionnen in een rechte lijn, ongeveer 2 meter uit elkaar. Start achter de startlijn, dribbel door elke pion en eindig voorbij de laatste. Neem één doorlopende poging op.",
+      "cardGoal": "Snelste geldige tijd wint.",
+      "rules": "Doel:\nVoltooi een slalom met de bal zo snel mogelijk met controle.\n\nCategorie:\nDribbelen\n\nMoeilijkheid:\n⭐⭐ Gemiddeld\n\nRegels:\n- 5 pionnen, ~2 m tussenruimte.\n- Start achter de lijn.\n- Door alle 5 pionnen.\n- Doorlopende video zonder bewerking.\n- Pion gemist = ongeldig.\n- Pion omver = +1 s.\n\nBeloning:\n- 50 XP-punten\n- Slalom Ace-badge\n- Challenge voltooid ✅",
+      "badgeName": "Slalom Ace",
+      "badgeTitle": "50 XP-punten",
+      "badgeDetail": "Slalom Ace-badge + Challenge voltooid ✅ + Leaderboard"
     }
   },
   "rankings": {

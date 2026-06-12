@@ -791,6 +791,16 @@
       "rules": "Objectif :\nRéalise 10 touches consécutives sans laisser le ballon tomber.\n\nRègles :\n- Départ depuis le sol ou des mains.\n- Le ballon ne doit pas toucher le sol.\n- Seules 10 touches consécutives comptent.\n- La vidéo doit montrer tout le corps et le ballon en permanence.\n- La vidéo peut durer au maximum 30 secondes.\n- Les joueurs peuvent envoyer plusieurs tentatives ; la meilleure compte.\n\nRécompense de base :\n- 50 points XP\n- Badge « Keepy-Ups Challenger » sur le profil\n- Challenge marqué comme terminé ✅\n\nNotation :\n✅ Réussi = challenge terminé\n\nDifficulté :\n⭐ Débutant\n\nPourquoi c'est bien :\n- Tout le monde peut participer.\n- Rapide à filmer.\n- Bon premier challenge pour les nouveaux utilisateurs.\n- Facile à vérifier sur la vidéo.",
       "badgeTitle": "50 points XP",
       "badgeDetail": "Badge Keepy-Ups Challenger sur le profil + Challenge marqué comme terminé ✅"
+    },
+    "dribblingSlalom": {
+      "title": "Dribbling Slalom Challenge",
+      "description": "Dribble entre 5 plots le plus vite possible en gardant le contrôle du ballon.",
+      "instructions": "Place 5 plots en ligne droite, environ 2 mètres d'écart. Démarre derrière la ligne, dribble à travers chaque plot et termine après le dernier. Enregistre une tentative continue.",
+      "cardGoal": "Le temps valide le plus rapide gagne.",
+      "rules": "Objectif :\nRéalise un slalom avec le ballon le plus vite possible en gardant le contrôle.\n\nCatégorie :\nDribble\n\nDifficulté :\n⭐⭐ Intermédiaire\n\nRègles :\n- 5 plots, ~2 m d'écart.\n- Départ derrière la ligne.\n- Passer les 5 plots.\n- Vidéo continue sans montage.\n- Plot manqué = invalide.\n- Plot renversé = +1 s.\n\nRécompense :\n- 50 points XP\n- Badge Slalom Ace\n- Challenge terminé ✅",
+      "badgeName": "Slalom Ace",
+      "badgeTitle": "50 points XP",
+      "badgeDetail": "Badge Slalom Ace + Challenge terminé ✅ + Classement"
     }
   },
   "rankings": {

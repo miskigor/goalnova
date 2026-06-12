@@ -791,6 +791,16 @@
       "rules": "Hedef:\nTopu düşürmeden 10 ardışık dokunuş yap.\n\nKurallar:\n- Yerden veya ellerden başla.\n- Top yere değmemeli.\n- Sadece 10 ardışık dokunuş sayılır.\n- Video boyunca tüm vücut ve top görünür olmalı.\n- Video en fazla 30 saniye sürebilir.\n- Oyuncular birden fazla deneme gönderebilir; en iyi deneme sayılır.\n\nTemel ödül:\n- 50 XP puanı\n- Profilde \"Keepy-Ups Challenger\" rozeti\n- Challenge tamamlandı olarak işaretlendi ✅\n\nPuanlama:\n✅ Başarıyla tamamlandı = challenge bitti\n\nZorluk:\n⭐ Başlangıç\n\nNeden iyi:\n- Herkes katılabilir.\n- Hızlı kaydedilir.\n- Yeni kullanıcılar için iyi ilk challenge.\n- Videoda doğrulaması kolay.",
       "badgeTitle": "50 XP puanı",
       "badgeDetail": "Profilde Keepy-Ups Challenger rozeti + Challenge tamamlandı olarak işaretlendi ✅"
+    },
+    "dribblingSlalom": {
+      "title": "Dribbling Slalom Challenge",
+      "description": "Topu tam kontrolle 5 koninin arasından mümkün olduğunca hızlı dribling yap.",
+      "instructions": "5 koniyi yaklaşık 2 metre arayla düz bir hatta diz. Başlangıç çizgisinin arkasından başla, her koniden geç ve son koninin ötesinde bitir. Tek kesintisiz deneme kaydet.",
+      "cardGoal": "En hızlı geçerli süre kazanır.",
+      "rules": "Hedef:\nTop kontrolünü koruyarak slalomu mümkün olduğunca hızlı tamamla.\n\nKategori:\nDribling\n\nZorluk:\n⭐⭐ Orta\n\nKurallar:\n- 5 koni, ~2 m aralık.\n- Çizginin arkasından başla.\n- 5 koninin tamamından geç.\n- Kesintisiz video, düzenleme yok.\n- Atlanan koni = geçersiz.\n- Devrilen koni = +1 sn.\n\nÖdül:\n- 50 XP puanı\n- Slalom Ace rozeti\n- Challenge tamamlandı ✅",
+      "badgeName": "Slalom Ace",
+      "badgeTitle": "50 XP puanı",
+      "badgeDetail": "Slalom Ace rozeti + Challenge tamamlandı ✅ + Sıralama"
     }
   },
   "rankings": {

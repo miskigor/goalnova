@@ -791,6 +791,16 @@
       "rules": "Objetivo:\nCompleta 10 toques consecutivos sem deixar a bola cair.\n\nRegras:\n- Começa no chão ou das mãos.\n- A bola não pode tocar o chão.\n- Contam apenas 10 toques consecutivos.\n- O vídeo deve mostrar o corpo inteiro e a bola o tempo todo.\n- O vídeo pode durar no máximo 30 segundos.\n- Os jogadores podem enviar várias tentativas; conta a melhor.\n\nRecompensa base:\n- 50 pontos XP\n- Distintivo \"Keepy-Ups Challenger\" no perfil\n- Challenge marcado como concluído ✅\n\nPontuação:\n✅ Concluído com sucesso = challenge terminado\n\nDificuldade:\n⭐ Iniciante\n\nPorque é bom:\n- Todos podem participar.\n- Gravação rápida.\n- Bom primeiro challenge para novos utilizadores.\n- Fácil de verificar no vídeo.",
       "badgeTitle": "50 pontos XP",
       "badgeDetail": "Distintivo Keepy-Ups Challenger no perfil + Challenge marcado como concluído ✅"
+    },
+    "dribblingSlalom": {
+      "title": "Dribbling Slalom Challenge",
+      "description": "Drible por 5 cones o mais rápido possível mantendo o controlo da bola.",
+      "instructions": "Coloca 5 cones em linha reta, cerca de 2 metros de distância. Começa atrás da linha de partida, dribla por todos os cones e termina após o último. Grava uma tentativa contínua.",
+      "cardGoal": "Vence o tempo válido mais rápido.",
+      "rules": "Objetivo:\nCompleta um slalom com a bola o mais rápido possível mantendo o controlo.\n\nCategoria:\nDrible\n\nDificuldade:\n⭐⭐ Intermédio\n\nRegras:\n- 5 cones, ~2 m de distância.\n- Partida atrás da linha.\n- Passa pelos 5 cones.\n- Vídeo contínuo sem edição.\n- Cone falhado = inválido.\n- Cone derrubado = +1 s.\n\nRecompensa:\n- 50 pontos XP\n- Distintivo Slalom Ace\n- Challenge concluído ✅",
+      "badgeName": "Slalom Ace",
+      "badgeTitle": "50 pontos XP",
+      "badgeDetail": "Distintivo Slalom Ace + Challenge concluído ✅ + Leaderboard"
     }
   },
   "rankings": {

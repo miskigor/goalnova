@@ -791,6 +791,16 @@
       "rules": "Ziel:\n10 aufeinanderfolgende Ballberührungen ohne dass der Ball den Boden berührt.\n\nRegeln:\n- Start vom Boden oder aus den Händen.\n- Der Ball darf den Boden nicht berühren.\n- Es zählen nur 10 aufeinanderfolgende Berührungen.\n- Das Video muss den ganzen Körper und den Ball durchgehend zeigen.\n- Das Video darf maximal 30 Sekunden lang sein.\n- Spieler können mehrere Versuche einreichen; der beste Versuch zählt.\n\nGrundbelohnung:\n- 50 XP-Punkte\n- \"Keepy-Ups Challenger\"-Abzeichen im Profil\n- Challenge als abgeschlossen markiert ✅\n\nBewertung:\n✅ Erfolgreich abgeschlossen = Challenge beendet\n\nSchwierigkeit:\n⭐ Anfänger\n\nWarum es gut ist:\n- Jeder kann mitmachen.\n- Schnell aufgenommen.\n- Gute erste Challenge für neue Nutzer.\n- Leicht im Video zu überprüfen.",
       "badgeTitle": "50 XP-Punkte",
       "badgeDetail": "Keepy-Ups Challenger-Abzeichen im Profil + Challenge als abgeschlossen markiert ✅"
+    },
+    "dribblingSlalom": {
+      "title": "Dribbling Slalom Challenge",
+      "description": "Dribble so schnell wie möglich durch 5 Hütchen bei voller Ballkontrolle.",
+      "instructions": "Stelle 5 Hütchen in einer Linie im Abstand von etwa 2 Metern auf. Starte hinter der Startlinie, dribble durch jedes Hütchen und beende hinter dem letzten. Filme einen durchgehenden Versuch — ganzer Körper und ganze Strecke sichtbar.",
+      "cardGoal": "Schnellste gültige Zeit gewinnt.",
+      "rules": "Ziel:\nSchließe einen Slalom mit dem Ball so schnell wie möglich bei Ballkontrolle ab.\n\nKategorie:\nDribbling\n\nSchwierigkeit:\n⭐⭐ Mittel\n\nStreckenlayout:\nSTART → Hütchen 1 → Hütchen 2 → Hütchen 3 → Hütchen 4 → Hütchen 5 → ZIEL\n\nRegeln:\n- 5 Hütchen oder Markierungen.\n- Abstand ca. 2 Meter.\n- Start hinter der Startlinie.\n- Durch alle 5 Hütchen dribbeln.\n- Ball unter Kontrolle halten.\n- Ein durchgehendes Video — keine Schnitte oder Beschleunigung.\n- Ganze Strecke sichtbar.\n- Hütchen ausgelassen = ungültig.\n- Hütchen umgestoßen = +1 Sekunde Strafe.\n\nWertung:\n- Hauptmetrik: schnellste gültige Zeit (Sekunden).\n\nBelohnung:\n- Challenge abgeschlossen ✅\n- 50 XP-Punkte\n- Leaderboard-Platzierung\n- Slalom Ace Abzeichen",
+      "badgeName": "Slalom Ace",
+      "badgeTitle": "50 XP-Punkte",
+      "badgeDetail": "Slalom Ace Abzeichen + Challenge abgeschlossen ✅ + Leaderboard + Featured player"
     }
   },
   "rankings": {

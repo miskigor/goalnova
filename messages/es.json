@@ -791,6 +791,16 @@
       "rules": "Objetivo:\nCompleta 10 toques consecutivos sin dejar caer el balón.\n\nReglas:\n- Empieza desde el suelo o con las manos.\n- El balón no debe tocar el suelo.\n- Solo cuentan 10 toques consecutivos.\n- El video debe mostrar todo el cuerpo y el balón en todo momento.\n- El video puede durar como máximo 30 segundos.\n- Los jugadores pueden enviar varios intentos; cuenta el mejor.\n\nRecompensa básica:\n- 50 puntos XP\n- Insignia \"Keepy-Ups Challenger\" en el perfil\n- Challenge marcado como completado ✅\n\nPuntuación:\n✅ Completado con éxito = challenge terminado\n\nDificultad:\n⭐ Principiante\n\nPor qué es bueno:\n- Todos pueden participar.\n- Se graba rápido.\n- Buen primer challenge para usuarios nuevos.\n- Fácil de verificar en el video.",
       "badgeTitle": "50 puntos XP",
       "badgeDetail": "Insignia Keepy-Ups Challenger en el perfil + Challenge marcado como completado ✅"
+    },
+    "dribblingSlalom": {
+      "title": "Dribbling Slalom Challenge",
+      "description": "Regatea entre 5 conos lo más rápido posible manteniendo el control del balón.",
+      "instructions": "Coloca 5 conos en línea recta, a unos 2 metros. Empieza detrás de la línea de salida, regatea por todos los conos y termina tras el último. Graba un intento continuo.",
+      "cardGoal": "Gana el tiempo válido más rápido.",
+      "rules": "Objetivo:\nCompleta un slalom con el balón lo más rápido posible manteniendo el control.\n\nCategoría:\nRegate\n\nDificultad:\n⭐⭐ Intermedio\n\nReglas:\n- 5 conos, ~2 m de separación.\n- Salida detrás de la línea.\n- Pasa por los 5 conos.\n- Video continuo sin edición.\n- Cono omitido = inválido.\n- Cono derribado = +1 s.\n\nRecompensa:\n- 50 puntos XP\n- Insignia Slalom Ace\n- Challenge completado ✅",
+      "badgeName": "Slalom Ace",
+      "badgeTitle": "50 puntos XP",
+      "badgeDetail": "Insignia Slalom Ace + Challenge completado ✅ + Leaderboard"
     }
   },
   "rankings": {

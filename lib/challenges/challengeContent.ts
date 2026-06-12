@@ -2,6 +2,7 @@ import type { ChallengeRow } from "@/lib/challenges/challengeRowUtils";
 
 const SPRINT_20M_SLUG = "sprint-20m-challenge";
 const KEEPY_UPS_SLUG = "keepy-ups-challenge";
+const DRIBBLING_SLALOM_SLUG = "dribbling-slalom-challenge";
 
 type TFn = (key: string) => string;
 
@@ -68,6 +69,18 @@ export function withLocalizedChallengeContent(
       reward_title: t("keepyUps.badgeTitle"),
       reward_detail: t("keepyUps.badgeDetail"),
       reward: `${t("keepyUps.badgeTitle")} — ${t("keepyUps.badgeDetail")}`,
+    };
+  } else if (challenge.slug === DRIBBLING_SLALOM_SLUG) {
+    base = {
+      ...challenge,
+      title: t("dribblingSlalom.title"),
+      description: t("dribblingSlalom.description"),
+      instructions: t("dribblingSlalom.instructions"),
+      rules: t("dribblingSlalom.rules"),
+      badge: t("dribblingSlalom.badgeName"),
+      reward_title: t("dribblingSlalom.badgeTitle"),
+      reward_detail: t("dribblingSlalom.badgeDetail"),
+      reward: `${t("dribblingSlalom.badgeTitle")} — ${t("dribblingSlalom.badgeDetail")}`,
     };
   }
   const localized = pickLocaleFields(base, locale);

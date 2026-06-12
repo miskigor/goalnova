@@ -791,6 +791,16 @@
       "rules": "Cilj:\nNapraviti 10 uzastopnih dodira bez pada lopte.\n\nPravila:\n- Start s tla ili iz ruku.\n- Lopta ne smije dodirnuti tlo.\n- Broji se samo 10 uzastopnih dodira.\n- Video mora prikazivati cijelo tijelo i loptu cijelo vrijeme.\n- Video može trajati najviše 30 sekundi.\n- Igrač može poslati više pokušaja; najbolji pokušaj se računa.\n\nOsnovna nagrada:\n- 50 XP bodova\n- \"Keepy-Ups Challenger\" badge na profilu\n- Challenge označen kao završen ✅\n\nOcjenjivanje:\n✅ Uspješno odrađeno = završio challenge\n\nTežina:\n⭐ Početnik\n\nZašto je dobar:\n- Svi mogu sudjelovati.\n- Brzo se snima.\n- Dobar prvi challenge za nove korisnike.\n- Lako ga je provjeriti na videu.",
       "badgeTitle": "50 XP bodova",
       "badgeDetail": "Keepy-Ups Challenger badge na profilu + Challenge označen kao završen ✅"
+    },
+    "dribblingSlalom": {
+      "title": "Dribbling Slalom Challenge",
+      "description": "Provedi loptu kroz 5 čunjeva što brže uz potpunu kontrolu lopte.",
+      "instructions": "Postavi 5 čunjeva u ravnu liniju, oko 2 metra razmaka. Kreni iza startne linije, prođi kroz svaki čunj i završi iza zadnjeg. Snimi jedan neprekinut pokušaj — cijelo tijelo i cijela staza moraju biti vidljivi.",
+      "cardGoal": "Pobjeđuje najbrže valjano vrijeme.",
+      "rules": "Cilj:\nProđi slalom s loptom što brže uz kontrolu lopte.\n\nKategorija:\nDribling\n\nTežina:\n⭐⭐ Srednja\n\nRaspored staze:\nSTART → Čunj 1 → Čunj 2 → Čunj 3 → Čunj 4 → Čunj 5 → CILJ\n\nPravila:\n- Koristi 5 čunjeva ili markera.\n- Razmak između čunjeva: oko 2 metra.\n- Start iza startne linije.\n- Prođi kroz svih 5 čunjeva.\n- Lopta mora ostati pod kontrolom.\n- Jedan neprekinut video — bez rezanja, montaže ili ubrzanja.\n- Cijela staza mora biti vidljiva.\n- Propušten čunj = nevažeći pokušaj.\n- Oboren čunj = +1 sekunda kazne.\n\nBodovanje:\n- Glavna metrika: najbrže valjano vrijeme (sekunde).\n- Oboren čunj = +1 sekunda.\n- Propušten čunj = nevažeći pokušaj.\n\nPrimjer ljestvice:\n- Igrač A: 8,42 s\n- Igrač B: 7,91 s ← bolji rang\n- Igrač C: 8,65 s\n\nZahtjevi za upload:\n- Cijelo tijelo vidljivo.\n- Cijela staza vidljiva.\n- Jedno neprekinuto snimanje.\n- Bez montaže.\n- Valjano prolazak svih čunjeva.\n\nNagrada:\n- Challenge označen kao završen ✅\n- 50 XP bodova\n- Pozicija na ljestvici\n- Uspješnost za PitchRusch featured player\n- Slalom Ace badge na profilu",
+      "badgeName": "Slalom Ace",
+      "badgeTitle": "50 XP bodova",
+      "badgeDetail": "Slalom Ace badge na profilu + Challenge završen ✅ + Pozicija na ljestvici + Featured player"
     }
   },
   "rankings": {
