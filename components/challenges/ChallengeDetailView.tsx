@@ -25,10 +25,11 @@ import type { ExploreFeedItem, ExploreSort } from "@/lib/supabase/exploreFeed";
 import { ChallengesPageScrollLock } from "@/components/challenges/ChallengesPageScrollLock";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import {
-  GN_VIDEO_MEDIA_ELEMENT_CLASS,
-  GN_VIDEO_MEDIA_STAGE_FLEX_CLASS,
-  gnVideoMediaDataProps,
-} from "@/lib/video/videoMediaDisplayClasses";
+  exploreTileVideoPosterAttribute,
+  exploreTileVideoSrcCandidates,
+} from "@/lib/video/exploreTileMedia";
+import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
+import { gnVideoMediaDataProps } from "@/lib/video/videoMediaDisplayClasses";
 
 type Props = { slug: string };
 
@@ -59,16 +60,22 @@ function ChallengeTikTokCard({ item }: { item: ExploreFeedItem }) {
     profile?.username?.trim() || profile?.full_name?.trim() || t("unknownPlayer");
   const slug = profile?.username?.trim() || profile?.id || video.user_id;
   const playerHref = `/player/${encodeURIComponent(slug)}` as const;
-  const src = videoPlaybackUrl(video);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const candidates = exploreTileVideoSrcCandidates(video);
+  const src = candidates[0] ?? videoPlaybackUrl(video) ?? "";
+  const poster = exploreTileVideoPosterAttribute(video, item.userAvatarUrl);
+  useIosInlineVideoFirstFrameBump(videoRef, Boolean(src), src);
   return (
     <div
       {...gnVideoMediaDataProps}
-      className={`relative h-full w-full overflow-hidden rounded-2xl border border-gn-border-subtle ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`}
+      className="relative h-full w-full overflow-hidden rounded-2xl border border-gn-border-subtle bg-black"
     >
       {src ? (
         <video
+          ref={videoRef}
           src={src}
-          className={GN_VIDEO_MEDIA_ELEMENT_CLASS}
+          poster={poster || undefined}
+          className="absolute inset-0 size-full object-cover object-center [color-scheme:dark]"
           playsInline
           controls
           preload="metadata"

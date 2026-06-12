@@ -742,6 +742,7 @@
     "leaderboardAiScoreLabel": "KI-Score",
     "leaderboardScorePending": "—",
     "leaderboardYourEntry": "Dein Beitrag",
+    "compactVideoThumbAria": "Video von {name} ansehen",
     "yourRankSectionTitle": "Dein aktueller Rang",
     "yourRankRankLabel": "Rang",
     "yourRankAiLabel": "KI-Score",

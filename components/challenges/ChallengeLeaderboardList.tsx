@@ -3,39 +3,9 @@
 import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import type { ExploreFeedItem } from "@/lib/supabase/exploreFeed";
 import { VideoMusicCredit } from "@/components/video/VideoMusicCredit";
-import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
-import {
-  GN_VIDEO_MEDIA_ELEMENT_CLASS,
-  GN_VIDEO_MEDIA_STAGE_FLEX_CLASS,
-  gnVideoMediaDataProps,
-} from "@/lib/video/videoMediaDisplayClasses";
-
-function LeaderboardEntryVideo({ url }: { url: string }) {
-  const { containerRef, loadMedia } = useMediaNearViewport({
-    rootMargin: "160px 0px 160px 0px",
-  });
-  return (
-    <div
-      ref={containerRef}
-      {...gnVideoMediaDataProps}
-      className={`mt-3 aspect-video max-h-40 overflow-hidden rounded-xl border border-gn-border-subtle sm:max-h-48 ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`}
-    >
-      {loadMedia ? (
-        <video
-          className={GN_VIDEO_MEDIA_ELEMENT_CLASS}
-          src={url}
-          muted
-          playsInline
-          preload="metadata"
-          controls
-        />
-      ) : null}
-    </div>
-  );
-}
+import { ChallengeCompactVideoThumb } from "@/components/challenges/ChallengeCompactVideoThumb";
 
 type Props = {
   items: ExploreFeedItem[];
@@ -77,7 +47,6 @@ export function ChallengeLeaderboardList({ items, highlightVideoId }: Props) {
         {items.map((item, index) => {
           const rank = index + 1;
           const { video, profile, likeCount } = item;
-          const url = videoPlaybackUrl(video);
           const username =
             profile?.username?.trim() ||
             profile?.full_name?.trim() ||
@@ -121,6 +90,14 @@ export function ChallengeLeaderboardList({ items, highlightVideoId }: Props) {
                   {rank}
                 </span>
               </div>
+              {video.id ? (
+                <ChallengeCompactVideoThumb
+                  videoId={video.id}
+                  video={video}
+                  profileAvatarUrl={item.userAvatarUrl}
+                  ariaLabel={t("compactVideoThumbAria", { name: username })}
+                />
+              ) : null}
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                   {isHi ? (
@@ -146,7 +123,6 @@ export function ChallengeLeaderboardList({ items, highlightVideoId }: Props) {
                     </span>
                   ) : null}
                 </div>
-                {url ? <LeaderboardEntryVideo url={url} /> : null}
                 {item.musicTrack ? (
                   <VideoMusicCredit track={item.musicTrack} compact className="mt-2" />
                 ) : null}

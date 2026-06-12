@@ -2,41 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import type { ExploreFeedItem } from "@/lib/supabase/exploreFeed";
-import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
-import {
-  GN_VIDEO_MEDIA_ELEMENT_CLASS,
-  GN_VIDEO_MEDIA_STAGE_FLEX_CLASS,
-  gnVideoMediaDataProps,
-} from "@/lib/video/videoMediaDisplayClasses";
-
-function WinnerEntryVideo({ url }: { url: string }) {
-  const { containerRef, loadMedia } = useMediaNearViewport();
-  return (
-    <div
-      ref={containerRef}
-      {...gnVideoMediaDataProps}
-      className={`mt-2 aspect-video max-h-36 overflow-hidden rounded-lg border border-gn-border-subtle ${GN_VIDEO_MEDIA_STAGE_FLEX_CLASS}`}
-    >
-      {loadMedia ? (
-        <video
-          className={GN_VIDEO_MEDIA_ELEMENT_CLASS}
-          src={url}
-          muted
-          playsInline
-          preload="metadata"
-          controls
-        />
-      ) : (
-        <div
-          className="aspect-video max-h-36 w-full bg-gradient-to-b from-gn-surface/40 to-black"
-          aria-hidden
-        />
-      )}
-    </div>
-  );
-}
+import { ChallengeCompactVideoThumb } from "@/components/challenges/ChallengeCompactVideoThumb";
 
 type Props = {
   items: ExploreFeedItem[];
@@ -67,7 +34,6 @@ export function ChallengeWinnersSection({ items, source }: Props) {
       <ol className="grid gap-4 sm:grid-cols-3">
         {items.map((item, i) => {
           const rank = i + 1;
-          const url = videoPlaybackUrl(item.video);
           const username =
             item.profile?.username?.trim() ||
             item.profile?.full_name?.trim() ||
@@ -105,7 +71,15 @@ export function ChallengeWinnersSection({ items, source }: Props) {
                   </span>
                 ) : null}
               </p>
-              {url ? <WinnerEntryVideo url={url} /> : null}
+              {item.video.id ? (
+                <ChallengeCompactVideoThumb
+                  videoId={item.video.id}
+                  video={item.video}
+                  profileAvatarUrl={item.userAvatarUrl}
+                  ariaLabel={t("compactVideoThumbAria", { name: username })}
+                  className="mt-2"
+                />
+              ) : null}
             </li>
           );
         })}
