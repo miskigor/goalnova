@@ -17,6 +17,23 @@ type LocalizedFields = Partial<{
   reward: string;
 }>;
 
+function linesToEquipmentList(raw: string): string[] {
+  return raw
+    .split("\n")
+    .map((line) => line.replace(/^-\s*/, "").trim())
+    .filter((line) => line.length > 0);
+}
+
+/** Drop English DB fragments when i18n provides the full rules block. */
+function withoutDbRuleFragments(challenge: ChallengeRow): ChallengeRow {
+  return {
+    ...challenge,
+    rules_json: [],
+    scoring: null,
+    equipment: [],
+  };
+}
+
 function pickLocaleFields(challenge: ChallengeRow, locale: string): LocalizedFields {
   const root = challenge.translations;
   if (!root || typeof root !== "object" || Array.isArray(root)) return {};
@@ -52,9 +69,10 @@ export function withLocalizedChallengeContent(
   let base = challenge;
   if (challenge.slug === SPRINT_20M_SLUG) {
     base = {
-      ...challenge,
+      ...withoutDbRuleFragments(challenge),
       title: t("sprint20m.title"),
       description: t("sprint20m.description"),
+      instructions: null,
       rules: t("sprint20m.rules"),
       reward_title: t("sprint20m.badgeTitle"),
       reward_detail: t("sprint20m.badgeDetail"),
@@ -62,9 +80,10 @@ export function withLocalizedChallengeContent(
     };
   } else if (challenge.slug === KEEPY_UPS_SLUG) {
     base = {
-      ...challenge,
+      ...withoutDbRuleFragments(challenge),
       title: t("keepyUps.title"),
       description: t("keepyUps.description"),
+      instructions: null,
       rules: t("keepyUps.rules"),
       reward_title: t("keepyUps.badgeTitle"),
       reward_detail: t("keepyUps.badgeDetail"),
@@ -72,10 +91,11 @@ export function withLocalizedChallengeContent(
     };
   } else if (challenge.slug === DRIBBLING_SLALOM_SLUG) {
     base = {
-      ...challenge,
+      ...withoutDbRuleFragments(challenge),
       title: t("dribblingSlalom.title"),
       description: t("dribblingSlalom.description"),
       instructions: t("dribblingSlalom.instructions"),
+      equipment: linesToEquipmentList(t("dribblingSlalom.equipment")),
       rules: t("dribblingSlalom.rules"),
       badge: t("dribblingSlalom.badgeName"),
       reward_title: t("dribblingSlalom.badgeTitle"),

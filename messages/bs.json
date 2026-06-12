@@ -800,8 +800,14 @@
       "rules": "Cilj:\nProđi slalom s loptom što brže uz kontrolu.\n\nKategorija:\nDribling\n\nTežina:\n⭐⭐ Srednja\n\nPravila:\n- 5 čunjeva, razmak ~2 m.\n- Start iza linije.\n- Prođi svih 5 čunjeva.\n- Jedan neprekinut video.\n- Propušten čunj = nevažeće.\n- Oboren čunj = +1 s.\n\nNagrada:\n- 50 XP bodova\n- Slalom Ace badge\n- Challenge završen ✅",
       "badgeName": "Slalom Ace",
       "badgeTitle": "50 XP bodova",
-      "badgeDetail": "Slalom Ace badge + Challenge završen ✅ + Leaderboard"
-    }
+      "badgeDetail": "Slalom Ace badge + Challenge završen ✅ + Leaderboard",
+      "equipment": "5 čunjeva\nNogometna lopta\nMobitel za snimanje\n~10 m ravnog prostora"
+    },
+    "detailInstructionsLabel": "Upute",
+    "detailMaxVideoDurationLabel": "Maks. trajanje videa",
+    "detailEquipmentLabel": "Oprema",
+    "detailScoringLabel": "Bodovanje",
+    "detailBadgeLabel": "Značka"
   },
   "rankings": {
     "title": "Rankings",

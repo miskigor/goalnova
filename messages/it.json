@@ -800,8 +800,14 @@
       "rules": "Obiettivo:\nCompleta uno slalom con la palla il più velocemente possibile mantenendo il controllo.\n\nCategoria:\nDribbling\n\nDifficoltà:\n⭐⭐ Intermedio\n\nRegole:\n- 5 coni, ~2 m di distanza.\n- Partenza dietro la linea.\n- Passa tutti e 5 i coni.\n- Video continuo senza montaggio.\n- Cono saltato = non valido.\n- Cono abbattuto = +1 s.\n\nRicompensa:\n- 50 punti XP\n- Badge Slalom Ace\n- Challenge completata ✅",
       "badgeName": "Slalom Ace",
       "badgeTitle": "50 punti XP",
-      "badgeDetail": "Badge Slalom Ace + Challenge completata ✅ + Classifica"
-    }
+      "badgeDetail": "Badge Slalom Ace + Challenge completata ✅ + Classifica",
+      "equipment": "5 coni\nPallone da calcio\nFotocamera del telefono\n~10 m di spazio piatto"
+    },
+    "detailInstructionsLabel": "Istruzioni",
+    "detailMaxVideoDurationLabel": "Durata massima del video",
+    "detailEquipmentLabel": "Attrezzatura",
+    "detailScoringLabel": "Punteggio",
+    "detailBadgeLabel": "Badge"
   },
   "rankings": {
     "title": "Classifiche",

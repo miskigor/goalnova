@@ -391,7 +391,7 @@ export function ChallengeDetailView({ slug }: Props) {
         {ch.instructions?.trim() ? (
           <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4">
             <p className="text-[11px] font-bold uppercase tracking-wider text-gn-text-tertiary">
-              Instructions
+              {t("detailInstructionsLabel")}
             </p>
             <p className="mt-2 whitespace-pre-wrap text-sm text-gn-text-secondary">
               {ch.instructions.trim()}
@@ -401,7 +401,7 @@ export function ChallengeDetailView({ slug }: Props) {
         {ch.max_video_duration_seconds != null ? (
           <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4">
             <p className="text-[11px] font-bold uppercase tracking-wider text-gn-text-tertiary">
-              Max video duration
+              {t("detailMaxVideoDurationLabel")}
             </p>
             <p className="mt-2 text-sm text-gn-text-secondary">
               {ch.max_video_duration_seconds}s
@@ -411,7 +411,7 @@ export function ChallengeDetailView({ slug }: Props) {
         {equipment.length > 0 ? (
           <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4">
             <p className="text-[11px] font-bold uppercase tracking-wider text-gn-text-tertiary">
-              Equipment
+              {t("detailEquipmentLabel")}
             </p>
             <ul className="mt-2 list-disc space-y-1 ps-5 text-sm text-gn-text-secondary">
               {equipment.map((item) => (
@@ -420,7 +420,16 @@ export function ChallengeDetailView({ slug }: Props) {
             </ul>
           </div>
         ) : null}
-        {rulesList.length > 0 ? (
+        {ch.rules?.trim() ? (
+          <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-gn-text-tertiary">
+              {t("rules")}
+            </p>
+            <p className="mt-2 whitespace-pre-wrap text-sm text-gn-text-secondary">
+              {ch.rules.trim()}
+            </p>
+          </div>
+        ) : rulesList.length > 0 ? (
           <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4">
             <p className="text-[11px] font-bold uppercase tracking-wider text-gn-text-tertiary">
               {t("rules")}
@@ -431,20 +440,11 @@ export function ChallengeDetailView({ slug }: Props) {
               ))}
             </ul>
           </div>
-        ) : ch.rules?.trim() ? (
-          <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-gn-text-tertiary">
-              {t("rules")}
-            </p>
-            <p className="mt-2 whitespace-pre-wrap text-sm text-gn-text-secondary">
-              {ch.rules.trim()}
-            </p>
-          </div>
         ) : null}
         {scoringRows.length > 0 ? (
           <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4">
             <p className="text-[11px] font-bold uppercase tracking-wider text-gn-text-tertiary">
-              Scoring
+              {t("detailScoringLabel")}
             </p>
             <ul className="mt-2 space-y-1 text-sm text-gn-text-secondary">
               {scoringRows.map((row) => (
@@ -459,7 +459,7 @@ export function ChallengeDetailView({ slug }: Props) {
         {ch.badge?.trim() ? (
           <div className="rounded-xl border border-gn-border-subtle bg-gn-surface/25 p-4">
             <p className="text-[11px] font-bold uppercase tracking-wider text-gn-text-tertiary">
-              Badge
+              {t("detailBadgeLabel")}
             </p>
             <p className="mt-2 text-sm font-semibold text-gn-accent">{ch.badge.trim()}</p>
           </div>

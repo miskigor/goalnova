@@ -800,8 +800,14 @@
       "rules": "Objectif :\nRéalise un slalom avec le ballon le plus vite possible en gardant le contrôle.\n\nCatégorie :\nDribble\n\nDifficulté :\n⭐⭐ Intermédiaire\n\nRègles :\n- 5 plots, ~2 m d'écart.\n- Départ derrière la ligne.\n- Passer les 5 plots.\n- Vidéo continue sans montage.\n- Plot manqué = invalide.\n- Plot renversé = +1 s.\n\nRécompense :\n- 50 points XP\n- Badge Slalom Ace\n- Challenge terminé ✅",
       "badgeName": "Slalom Ace",
       "badgeTitle": "50 points XP",
-      "badgeDetail": "Badge Slalom Ace + Challenge terminé ✅ + Classement"
-    }
+      "badgeDetail": "Badge Slalom Ace + Challenge terminé ✅ + Classement",
+      "equipment": "5 plots\nBallon de foot\nCaméra de téléphone\n~10 m d'espace plat"
+    },
+    "detailInstructionsLabel": "Instructions",
+    "detailMaxVideoDurationLabel": "Durée max. de la vidéo",
+    "detailEquipmentLabel": "Équipement",
+    "detailScoringLabel": "Notation",
+    "detailBadgeLabel": "Badge"
   },
   "rankings": {
     "title": "Classements",

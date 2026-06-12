@@ -800,8 +800,14 @@
       "rules": "Hedef:\nTop kontrolünü koruyarak slalomu mümkün olduğunca hızlı tamamla.\n\nKategori:\nDribling\n\nZorluk:\n⭐⭐ Orta\n\nKurallar:\n- 5 koni, ~2 m aralık.\n- Çizginin arkasından başla.\n- 5 koninin tamamından geç.\n- Kesintisiz video, düzenleme yok.\n- Atlanan koni = geçersiz.\n- Devrilen koni = +1 sn.\n\nÖdül:\n- 50 XP puanı\n- Slalom Ace rozeti\n- Challenge tamamlandı ✅",
       "badgeName": "Slalom Ace",
       "badgeTitle": "50 XP puanı",
-      "badgeDetail": "Slalom Ace rozeti + Challenge tamamlandı ✅ + Sıralama"
-    }
+      "badgeDetail": "Slalom Ace rozeti + Challenge tamamlandı ✅ + Sıralama",
+      "equipment": "5 koniler\nFutbol topu\nTelefon kamerası\n~10 m düz alan"
+    },
+    "detailInstructionsLabel": "Talimatlar",
+    "detailMaxVideoDurationLabel": "Maks. video süresi",
+    "detailEquipmentLabel": "Ekipman",
+    "detailScoringLabel": "Puanlama",
+    "detailBadgeLabel": "Rozet"
   },
   "rankings": {
     "title": "Rankings",

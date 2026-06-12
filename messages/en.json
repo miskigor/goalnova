@@ -863,8 +863,14 @@
       "rules": "Goal:\nComplete a slalom course with the ball as quickly as possible while maintaining control.\n\nCategory:\nDribbling\n\nDifficulty:\n⭐⭐ Intermediate\n\nCourse layout:\nSTART → Cone 1 → Cone 2 → Cone 3 → Cone 4 → Cone 5 → FINISH\n\nRules:\n- Use 5 cones or markers.\n- Distance between cones: approximately 2 meters.\n- Start behind the start line.\n- Dribble through all 5 cones.\n- The ball must remain under control.\n- One continuous video — no cuts, edits or speed adjustments.\n- The full course must be visible.\n- Missing a cone = invalid attempt.\n- Knocking over a cone = +1 second penalty.\n\nScoring:\n- Primary metric: Fastest valid time wins (seconds).\n- Knocked cone = +1 second penalty.\n- Missed cone = invalid attempt.\n\nLeaderboard example:\n- Player A: 8.42s\n- Player B: 7.91s ← ranks higher\n- Player C: 8.65s\n\nUpload requirements:\n- Full body visible.\n- Full course visible.\n- One continuous recording.\n- No edits.\n- Valid completion of all cones.\n\nReward:\n- Challenge completed status ✅\n- 50 XP points\n- Leaderboard position\n- Eligible for PitchRusch featured player selection\n- Slalom Ace badge on profile",
       "badgeName": "Slalom Ace",
       "badgeTitle": "50 XP points",
-      "badgeDetail": "Slalom Ace badge on profile + Challenge completed ✅ + Leaderboard position + Featured player eligibility"
-    }
+      "badgeDetail": "Slalom Ace badge on profile + Challenge completed ✅ + Leaderboard position + Featured player eligibility",
+      "equipment": "5 cones\nFootball\nPhone camera\n~10 m flat space"
+    },
+    "detailInstructionsLabel": "Instructions",
+    "detailMaxVideoDurationLabel": "Max video duration",
+    "detailEquipmentLabel": "Equipment",
+    "detailScoringLabel": "Scoring",
+    "detailBadgeLabel": "Badge"
   },
   "rankings": {
     "title": "Rankings",

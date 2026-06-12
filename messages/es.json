@@ -800,8 +800,14 @@
       "rules": "Objetivo:\nCompleta un slalom con el balón lo más rápido posible manteniendo el control.\n\nCategoría:\nRegate\n\nDificultad:\n⭐⭐ Intermedio\n\nReglas:\n- 5 conos, ~2 m de separación.\n- Salida detrás de la línea.\n- Pasa por los 5 conos.\n- Video continuo sin edición.\n- Cono omitido = inválido.\n- Cono derribado = +1 s.\n\nRecompensa:\n- 50 puntos XP\n- Insignia Slalom Ace\n- Challenge completado ✅",
       "badgeName": "Slalom Ace",
       "badgeTitle": "50 puntos XP",
-      "badgeDetail": "Insignia Slalom Ace + Challenge completado ✅ + Leaderboard"
-    }
+      "badgeDetail": "Insignia Slalom Ace + Challenge completado ✅ + Leaderboard",
+      "equipment": "5 conos\nBalón de fútbol\nCámara del móvil\n~10 m de espacio plano"
+    },
+    "detailInstructionsLabel": "Instrucciones",
+    "detailMaxVideoDurationLabel": "Duración máxima del video",
+    "detailEquipmentLabel": "Equipo",
+    "detailScoringLabel": "Puntuación",
+    "detailBadgeLabel": "Insignia"
   },
   "rankings": {
     "title": "Clasificación",

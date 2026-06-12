@@ -800,8 +800,14 @@
       "rules": "الهدف:\nأكمل مسار السلام مع الكرة بأسرع ما يمكن مع الحفاظ على التحكم.\n\nالفئة:\nمراوغة\n\nالصعوبة:\n⭐⭐ متوسط\n\nالقواعد:\n- 5 أقماع، ~2 م بينها.\n- البداية خلف الخط.\n- المرور بين جميع الأقماع.\n- فيديو متصل دون montage.\n- تفويت قمع = غير صالح.\n- إسقاط قمع = +1 ثانية.\n\nالمكافأة:\n- 50 نقطة XP\n- شارة Slalom Ace\n- التحدي مكتمل ✅",
       "badgeName": "Slalom Ace",
       "badgeTitle": "50 نقطة XP",
-      "badgeDetail": "شارة Slalom Ace + التحدي مكتمل ✅ + الترتيب"
-    }
+      "badgeDetail": "شارة Slalom Ace + التحدي مكتمل ✅ + الترتيب",
+      "equipment": "5 أقماع\nكرة قدم\nكاميرا الهاتف\n~10 م من مساحة مستوية"
+    },
+    "detailInstructionsLabel": "التعليمات",
+    "detailMaxVideoDurationLabel": "الحد الأقصى لمدة الفيديو",
+    "detailEquipmentLabel": "المعدات",
+    "detailScoringLabel": "التسجيل",
+    "detailBadgeLabel": "الشارة"
   },
   "rankings": {
     "title": "التصنيف",

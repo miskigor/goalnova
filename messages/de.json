@@ -800,8 +800,14 @@
       "rules": "Ziel:\nSchließe einen Slalom mit dem Ball so schnell wie möglich bei Ballkontrolle ab.\n\nKategorie:\nDribbling\n\nSchwierigkeit:\n⭐⭐ Mittel\n\nStreckenlayout:\nSTART → Hütchen 1 → Hütchen 2 → Hütchen 3 → Hütchen 4 → Hütchen 5 → ZIEL\n\nRegeln:\n- 5 Hütchen oder Markierungen.\n- Abstand ca. 2 Meter.\n- Start hinter der Startlinie.\n- Durch alle 5 Hütchen dribbeln.\n- Ball unter Kontrolle halten.\n- Ein durchgehendes Video — keine Schnitte oder Beschleunigung.\n- Ganze Strecke sichtbar.\n- Hütchen ausgelassen = ungültig.\n- Hütchen umgestoßen = +1 Sekunde Strafe.\n\nWertung:\n- Hauptmetrik: schnellste gültige Zeit (Sekunden).\n\nBelohnung:\n- Challenge abgeschlossen ✅\n- 50 XP-Punkte\n- Leaderboard-Platzierung\n- Slalom Ace Abzeichen",
       "badgeName": "Slalom Ace",
       "badgeTitle": "50 XP-Punkte",
-      "badgeDetail": "Slalom Ace Abzeichen + Challenge abgeschlossen ✅ + Leaderboard + Featured player"
-    }
+      "badgeDetail": "Slalom Ace Abzeichen + Challenge abgeschlossen ✅ + Leaderboard + Featured player",
+      "equipment": "5 Hütchen\nFußball\nHandykamera\n~10 m ebener Raum"
+    },
+    "detailInstructionsLabel": "Anleitung",
+    "detailMaxVideoDurationLabel": "Maximale Videolänge",
+    "detailEquipmentLabel": "Ausrüstung",
+    "detailScoringLabel": "Bewertung",
+    "detailBadgeLabel": "Abzeichen"
   },
   "rankings": {
     "title": "Rangliste",

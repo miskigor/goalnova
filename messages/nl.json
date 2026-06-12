@@ -800,8 +800,14 @@
       "rules": "Doel:\nVoltooi een slalom met de bal zo snel mogelijk met controle.\n\nCategorie:\nDribbelen\n\nMoeilijkheid:\n⭐⭐ Gemiddeld\n\nRegels:\n- 5 pionnen, ~2 m tussenruimte.\n- Start achter de lijn.\n- Door alle 5 pionnen.\n- Doorlopende video zonder bewerking.\n- Pion gemist = ongeldig.\n- Pion omver = +1 s.\n\nBeloning:\n- 50 XP-punten\n- Slalom Ace-badge\n- Challenge voltooid ✅",
       "badgeName": "Slalom Ace",
       "badgeTitle": "50 XP-punten",
-      "badgeDetail": "Slalom Ace-badge + Challenge voltooid ✅ + Leaderboard"
-    }
+      "badgeDetail": "Slalom Ace-badge + Challenge voltooid ✅ + Leaderboard",
+      "equipment": "5 pionnen\nVoetbal\nTelefooncamera\n~10 m vlakke ruimte"
+    },
+    "detailInstructionsLabel": "Instructies",
+    "detailMaxVideoDurationLabel": "Maximale videoduur",
+    "detailEquipmentLabel": "Materiaal",
+    "detailScoringLabel": "Score",
+    "detailBadgeLabel": "Badge"
   },
   "rankings": {
     "title": "Rankings",

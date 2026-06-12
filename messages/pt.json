@@ -800,8 +800,14 @@
       "rules": "Objetivo:\nCompleta um slalom com a bola o mais rápido possível mantendo o controlo.\n\nCategoria:\nDrible\n\nDificuldade:\n⭐⭐ Intermédio\n\nRegras:\n- 5 cones, ~2 m de distância.\n- Partida atrás da linha.\n- Passa pelos 5 cones.\n- Vídeo contínuo sem edição.\n- Cone falhado = inválido.\n- Cone derrubado = +1 s.\n\nRecompensa:\n- 50 pontos XP\n- Distintivo Slalom Ace\n- Challenge concluído ✅",
       "badgeName": "Slalom Ace",
       "badgeTitle": "50 pontos XP",
-      "badgeDetail": "Distintivo Slalom Ace + Challenge concluído ✅ + Leaderboard"
-    }
+      "badgeDetail": "Distintivo Slalom Ace + Challenge concluído ✅ + Leaderboard",
+      "equipment": "5 cones\nBola de futebol\nCâmera do celular\n~10 m de espaço plano"
+    },
+    "detailInstructionsLabel": "Instruções",
+    "detailMaxVideoDurationLabel": "Duração máxima do vídeo",
+    "detailEquipmentLabel": "Equipamento",
+    "detailScoringLabel": "Pontuação",
+    "detailBadgeLabel": "Emblema"
   },
   "rankings": {
     "title": "Classificação",
