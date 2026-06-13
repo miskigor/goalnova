@@ -2273,6 +2273,17 @@
     "category_current_football": "Current Football",
     "correctRewardHint": "Correct answer: +{xp} XP",
     "weeklyXpLabel": "Weekly XP",
-    "yourRankLabel": "Your rank"
+    "yourRankLabel": "Your rank",
+    "navPendingHint": "Today's quiz is waiting",
+    "hubCardTitle": "Daily Football Quiz",
+    "hubCardNewBadge": "New",
+    "hubCardPendingBody": "Answer today and earn +{xp} XP.",
+    "hubCardPendingCta": "Play now",
+    "hubCardPendingAria": "Play today's daily football quiz",
+    "hubCardAnsweredBody": "You played today · streak {streak}",
+    "hubCardAnsweredCta": "View results",
+    "hubCardAnsweredAria": "View today's quiz results",
+    "hubCardGuestBody": "Sign in and earn +{xp} XP for a correct answer.",
+    "hubCardGuestCta": "Sign in to play"
   }
 }

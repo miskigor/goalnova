@@ -28,6 +28,9 @@ import {
   APP_MOBILE_BOTTOM_NAV_UPLOAD_LINK_CLASS,
 } from "@/lib/layout/appShellClasses";
 import { mobileBottomNavDisplayLabel } from "@/lib/layout/mobileBottomNavLabel";
+import { useDailyQuizStatus } from "@/hooks/useDailyQuizStatus";
+import { challengesNavHref } from "@/lib/quiz/dailyQuizNav";
+import { DailyQuizPendingDot } from "@/components/quiz/DailyQuizPendingDot";
 
 const BOTTOM_NAV_HOME_EMOJI = "🏠";
 const BOTTOM_NAV_EXPLORE_EMOJI = "🔍";
@@ -118,7 +121,9 @@ export function AppMobileBottomNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const tNav = useTranslations("nav");
+  const tQuiz = useTranslations("dailyQuiz");
   const { user } = useNavSession();
+  const { pending: quizPending } = useDailyQuizStatus();
   const { loaded: adminLoaded, isAdmin } = useAdminAccess();
   const { loaded, row, isApprovedScout } = useScoutVerification();
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
@@ -177,9 +182,15 @@ export function AppMobileBottomNav() {
       <div className={APP_MOBILE_BOTTOM_NAV_INNER_CLASS}>
         {items.map((item) => {
           const label = mobileBottomNavDisplayLabel(tNav(item.labelKey));
-          const href = shellNavItemHref(item);
+          const href =
+            item.href === "/challenges" && quizPending
+              ? challengesNavHref(true)
+              : shellNavItemHref(item);
           const active = shellNavItemActive(pathname, searchParams, item);
-          const title = tNav(item.labelKey);
+          const title =
+            item.href === "/challenges" && quizPending
+              ? `${tNav(item.labelKey)} — ${tQuiz("navPendingHint")}`
+              : tNav(item.labelKey);
           const itemKey = `${item.labelKey}-${item.scoutDashboardSection ?? item.href}`;
 
           if (item.href === "/upload") {
@@ -287,15 +298,23 @@ export function AppMobileBottomNav() {
               aria-label={title}
             >
               {usePlayerEmojis && playerTabEmoji(item.href) ? (
-                <span className={PLAYER_TAB_EMOJI_CLASS} aria-hidden>
+                <span className={`relative ${PLAYER_TAB_EMOJI_CLASS}`} aria-hidden>
                   {playerTabEmoji(item.href)}
+                  {item.href === "/challenges" && quizPending ? (
+                    <DailyQuizPendingDot variant="bottomNav" />
+                  ) : null}
                 </span>
               ) : (
-                <NavIcon
-                  name={item.icon}
-                  variant="tabBar"
-                  className="size-5 shrink-0 min-[360px]:size-[22px]"
-                />
+                <span className="relative inline-flex shrink-0">
+                  <NavIcon
+                    name={item.icon}
+                    variant="tabBar"
+                    className="size-5 shrink-0 min-[360px]:size-[22px]"
+                  />
+                  {item.href === "/challenges" && quizPending ? (
+                    <DailyQuizPendingDot variant="bottomNav" />
+                  ) : null}
+                </span>
               )}
               <span
                 className="w-full min-w-0 max-w-full truncate px-0.5 text-center"

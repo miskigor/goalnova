@@ -28,6 +28,9 @@ import {
   SIDEBAR_PLAYER_UPLOAD_CLASS,
 } from "@/components/layout/sidebarUploadStyles";
 import { countMyUnreadSupportReplies } from "@/lib/supabase/supportTickets";
+import { useDailyQuizStatus } from "@/hooks/useDailyQuizStatus";
+import { challengesNavHref } from "@/lib/quiz/dailyQuizNav";
+import { DailyQuizPendingDot } from "@/components/quiz/DailyQuizPendingDot";
 
 function sidebarLinkClass(pathname: string, href: string) {
   const active = navItemActive(pathname, href);
@@ -45,9 +48,11 @@ const SIDEBAR_SHELL_CLASS =
 export function AppSidebar() {
   const pathname = usePathname();
   const tNav = useTranslations("nav");
+  const tQuiz = useTranslations("dailyQuiz");
   const tSettings = useTranslations("settings");
   const [hydrated, setHydrated] = useState(false);
   const { authed, user } = useNavSession();
+  const { pending: quizPending } = useDailyQuizStatus();
   const uploadEligibility = useVideoUploadEligibility();
   const scoutGate = useScoutVerification();
   const { isApprovedScout, isUnverifiedScout } = scoutGate;
@@ -172,19 +177,34 @@ export function AppSidebar() {
               <HeaderNotificationsLink key={item.href} layout="sidebar" />
             );
           }
+          const challengesHref =
+            item.href === "/challenges" && quizPending
+              ? challengesNavHref(true)
+              : item.href;
+          const challengesTitle =
+            item.href === "/challenges" && quizPending
+              ? `${tNav(item.labelKey)} — ${tQuiz("navPendingHint")}`
+              : tNav(item.labelKey);
           return (
             <Link
               key={item.href}
-              href={item.href}
+              href={challengesHref}
               className={sidebarLinkClass(pathname, item.href)}
               aria-current={
                 navItemActive(pathname, item.href) ? "page" : undefined
               }
+              aria-label={challengesTitle}
+              title={challengesTitle}
             >
-              <NavIcon
-                name={item.icon}
-                className="size-5 shrink-0 transition-transform duration-300 ease-gn-smooth motion-safe:group-hover:scale-110"
-              />
+              <span className="relative inline-flex shrink-0">
+                <NavIcon
+                  name={item.icon}
+                  className="size-5 shrink-0 transition-transform duration-300 ease-gn-smooth motion-safe:group-hover:scale-110"
+                />
+                {item.href === "/challenges" && quizPending ? (
+                  <DailyQuizPendingDot variant="bottomNav" />
+                ) : null}
+              </span>
               <span className="min-w-0 truncate">{tNav(item.labelKey)}</span>
             </Link>
           );

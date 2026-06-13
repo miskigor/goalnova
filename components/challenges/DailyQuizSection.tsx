@@ -14,6 +14,8 @@ import { DailyQuizLeaderboardRow } from "@/components/challenges/DailyQuizLeader
 import { DailyQuizWeeklyLeaderboard } from "@/components/challenges/DailyQuizWeeklyLeaderboard";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { QUIZ_CORRECT_XP } from "@/lib/quiz/quizConfig";
+import { notifyDailyQuizStatusChanged } from "@/lib/quiz/dailyQuizStatusEvents";
+import { invalidateDailyQuizStatusSnapshot } from "@/lib/quiz/fetchDailyQuizStatusSnapshot";
 import { supabase } from "@/lib/supabase/client";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 
@@ -118,6 +120,8 @@ export function DailyQuizSection() {
     });
     const { rows } = await rpcQuizWeeklyLeaderboard(locale, 10);
     setLeaderboard(rows);
+    invalidateDailyQuizStatusSnapshot();
+    notifyDailyQuizStatusChanged();
   }
 
   if (loading) {

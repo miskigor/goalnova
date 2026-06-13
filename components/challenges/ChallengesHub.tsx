@@ -10,6 +10,7 @@ import {
   type ChallengeRow,
 } from "@/lib/supabase/challenges";
 import { ChallengeHubCard } from "@/components/challenges/ChallengeHubCard";
+import { DailyQuizHubCard } from "@/components/challenges/DailyQuizHubCard";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
   GN_PRIMARY_BUTTON_CLASS,
@@ -77,22 +78,27 @@ export function ChallengesHub() {
 
   if (loading) {
     return (
-      <div
-        className="flex flex-col items-center justify-center gap-3 py-10 text-sm text-gn-text-secondary"
-        role="status"
-      >
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gn-accent border-t-transparent" />
-        {t("loading")}
+      <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip sm:space-y-8">
+        <DailyQuizHubCard />
+        <div
+          className="flex flex-col items-center justify-center gap-3 py-10 text-sm text-gn-text-secondary"
+          role="status"
+        >
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gn-accent border-t-transparent" />
+          {t("loading")}
+        </div>
       </div>
     );
   }
 
   if (loadFailed) {
     return (
-      <div
-        role="alert"
-        className="rounded-2xl border border-red-500/40 bg-red-950/25 px-4 py-6 text-center"
-      >
+      <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip sm:space-y-8">
+        <DailyQuizHubCard />
+        <div
+          role="alert"
+          className="rounded-2xl border border-red-500/40 bg-red-950/25 px-4 py-6 text-center"
+        >
         <p className="text-sm font-medium text-red-100">{t("errorTitle")}</p>
         <p className="mt-1 text-sm text-red-100/85">{t("errorBody")}</p>
         <button
@@ -107,13 +113,16 @@ export function ChallengesHub() {
         >
           {retryBusy ? t("retrying") : t("retry")}
         </button>
+        </div>
       </div>
     );
   }
 
   if (challenges.length === 0) {
     return (
-      <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/25 px-6 py-12 text-center sm:px-10">
+      <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip sm:space-y-8">
+        <DailyQuizHubCard />
+        <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/25 px-6 py-12 text-center sm:px-10">
         <p className="text-sm font-medium text-gn-text">{t("emptyTitle")}</p>
         <p className="mt-2 text-sm text-gn-text-secondary">{t("emptyBody")}</p>
         <div className="mx-auto mt-8 flex w-full max-w-xs flex-col gap-3">
@@ -132,12 +141,14 @@ export function ChallengesHub() {
             </Link>
           ) : null}
         </div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="box-border min-w-0 w-full max-w-full space-y-6 overflow-x-clip sm:space-y-8">
+      <DailyQuizHubCard />
       {activeSorted.length > 0 ? (
         <section
           className="box-border min-w-0 w-full max-w-full space-y-3 overflow-x-clip"

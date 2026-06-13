@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ChallengesHub } from "@/components/challenges/ChallengesHub";
 import { DailyQuizSection } from "@/components/challenges/DailyQuizSection";
+import { DailyQuizPendingDot } from "@/components/quiz/DailyQuizPendingDot";
+import { useDailyQuizStatus } from "@/hooks/useDailyQuizStatus";
 
 type ChallengesTab = "challenges" | "quiz";
 
@@ -25,6 +27,7 @@ export function ChallengesPageTabs() {
   const t = useTranslations("dailyQuiz");
   const searchParams = useSearchParams();
   const tab = useMemo(() => resolveChallengesTab(searchParams), [searchParams]);
+  const { pending: quizPending } = useDailyQuizStatus();
 
   return (
     <>
@@ -49,13 +52,16 @@ export function ChallengesPageTabs() {
           href={challengesTabHref("quiz")}
           role="tab"
           aria-selected={tab === "quiz"}
-          className={`shrink-0 rounded-xl px-4 py-2 text-sm font-medium transition ${
+          className={`relative shrink-0 rounded-xl px-4 py-2 text-sm font-medium transition ${
             tab === "quiz"
               ? "bg-gn-accent text-black"
               : "border border-gn-border-subtle text-gn-text-secondary hover:text-gn-text"
           }`}
         >
-          {t("tabQuiz")}
+          <span className="inline-flex items-center gap-2">
+            {t("tabQuiz")}
+            {quizPending ? <DailyQuizPendingDot /> : null}
+          </span>
         </Link>
       </div>
       {tab === "quiz" ? <DailyQuizSection /> : <ChallengesHub />}
