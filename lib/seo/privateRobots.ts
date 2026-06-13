@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { routing } from "@/i18n/routing";
 
-/** Paths that must not be indexed (default locale has no prefix; others use /{locale}/…). */
+/**
+ * App/auth routes that must not appear in search results.
+ * Use page/layout `noindex` (not robots.txt Disallow) so Google can recrawl and drop stale URLs.
+ */
 export const PRIVATE_ROUTE_PATHS = [
   "/login",
   "/signup",
@@ -31,17 +33,5 @@ export const PRIVATE_ROUTE_PATHS = [
 export const PRIVATE_PAGE_ROBOTS: Metadata["robots"] = {
   index: false,
   follow: true,
+  googleBot: { index: false, follow: true },
 };
-
-/** `robots.txt` Disallow entries for all locales (prefix match covers nested paths). */
-export function privateDisallowPaths(): string[] {
-  const paths: string[] = [];
-  for (const segment of PRIVATE_ROUTE_PATHS) {
-    paths.push(segment);
-    for (const locale of routing.locales) {
-      if (locale === routing.defaultLocale) continue;
-      paths.push(`/${locale}${segment}`);
-    }
-  }
-  return paths;
-}

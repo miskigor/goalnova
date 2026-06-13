@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { ViewportScrollLock } from "@/components/layout/ViewportScrollLock";
 import { ReferralBootstrap } from "@/components/referrals/ReferralBootstrap";
+import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
+
+export const metadata: Metadata = {
+  robots: PRIVATE_PAGE_ROBOTS,
+};
 
 export default function AuthLayout({
   children,

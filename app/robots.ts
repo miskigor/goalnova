@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { privateDisallowPaths } from "@/lib/seo/privateRobots";
 import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 
 export default function robots(): MetadataRoute.Robots {
@@ -9,7 +8,8 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: privateDisallowPaths(),
+        // Private routes use `noindex` in layout/page metadata — not Disallow here.
+        // Disallow + noindex blocks recrawl and causes GSC "indexed though blocked by robots.txt".
       },
     ],
     sitemap: `${origin}/sitemap.xml`,

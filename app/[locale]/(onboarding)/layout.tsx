@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { EmailConfirmationGate } from "@/components/auth/EmailConfirmationGate";
@@ -8,6 +9,11 @@ import { MinimalAppHeader } from "@/components/layout/MinimalAppHeader";
 import { NotificationsInboxProvider } from "@/components/notifications/NotificationsInboxContext";
 import { PremiumProvider } from "@/components/premium/PremiumProvider";
 import { ReferralBootstrap } from "@/components/referrals/ReferralBootstrap";
+import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
+
+export const metadata: Metadata = {
+  robots: PRIVATE_PAGE_ROBOTS,
+};
 
 export default function OnboardingLayout({
   children,
