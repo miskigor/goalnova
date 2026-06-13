@@ -11,6 +11,19 @@ import { useDailyQuizStatus } from "@/hooks/useDailyQuizStatus";
 
 type ChallengesTab = "challenges" | "quiz";
 
+function challengesTabClass(active: boolean, variant: ChallengesTab): string {
+  const base = "shrink-0 rounded-xl px-4 py-2 text-sm font-semibold transition";
+
+  if (active) {
+    if (variant === "quiz") {
+      return `${base} bg-gn-accent text-black shadow-[0_4px_16px_-4px_rgba(249,115,22,0.45)] ring-1 ring-white/10`;
+    }
+    return `${base} bg-gn-accent/20 text-gn-accent ring-1 ring-gn-accent/40`;
+  }
+
+  return `${base} border border-white/15 bg-gn-surface/55 text-gn-text hover:border-white/25 hover:bg-gn-surface-elevated/60`;
+}
+
 function resolveChallengesTab(
   searchParams: Pick<URLSearchParams, "get">,
 ): ChallengesTab {
@@ -40,11 +53,7 @@ export function ChallengesPageTabs() {
           href={challengesTabHref("challenges")}
           role="tab"
           aria-selected={tab === "challenges"}
-          className={`shrink-0 rounded-xl px-4 py-2 text-sm font-medium transition ${
-            tab === "challenges"
-              ? "bg-gn-accent text-black"
-              : "border border-gn-border-subtle text-gn-text-secondary hover:text-gn-text"
-          }`}
+          className={challengesTabClass(tab === "challenges", "challenges")}
         >
           {t("tabChallenges")}
         </Link>
@@ -52,11 +61,7 @@ export function ChallengesPageTabs() {
           href={challengesTabHref("quiz")}
           role="tab"
           aria-selected={tab === "quiz"}
-          className={`relative shrink-0 rounded-xl px-4 py-2 text-sm font-medium transition ${
-            tab === "quiz"
-              ? "bg-gn-accent text-black"
-              : "border border-gn-border-subtle text-gn-text-secondary hover:text-gn-text"
-          }`}
+          className={`relative ${challengesTabClass(tab === "quiz", "quiz")}`}
         >
           <span className="inline-flex items-center gap-2">
             {t("tabQuiz")}
@@ -79,10 +84,10 @@ export function ChallengesPageTabsFallback() {
         role="tablist"
         aria-label={t("tabsAria")}
       >
-        <span className="shrink-0 rounded-xl bg-gn-accent px-4 py-2 text-sm font-medium text-black">
+        <span className={challengesTabClass(true, "challenges")}>
           {t("tabChallenges")}
         </span>
-        <span className="shrink-0 rounded-xl border border-gn-border-subtle px-4 py-2 text-sm font-medium text-gn-text-secondary">
+        <span className={challengesTabClass(false, "quiz")}>
           {t("tabQuiz")}
         </span>
       </div>
