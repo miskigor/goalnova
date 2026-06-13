@@ -74,7 +74,8 @@ html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-mlv3-
   max-height: var(--home-clean-v3-slide-height, 100%);
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  padding: calc(var(--home-clean-v3-top-offset, 48px) + env(safe-area-inset-top, 0px)) 16px 16px;
+  padding: calc(var(--home-clean-v3-top-offset, 48px) + env(safe-area-inset-top, 0px)) 16px
+    var(--home-clean-v3-slide-padding-bottom, 16px);
 }
 
 [data-home-clean-v3-item] {
@@ -91,6 +92,7 @@ html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-mlv3-
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
+  flex: none;
   padding-top: 0.625rem;
 }
 
@@ -155,12 +157,24 @@ a[data-home-clean-v3-meta-name]:hover {
   box-sizing: border-box;
   position: relative;
   flex: none;
-  width: var(--home-clean-v3-card-width);
-  height: var(--home-clean-v3-card-height);
-  min-width: var(--home-clean-v3-card-width);
-  max-width: var(--home-clean-v3-card-width);
-  min-height: var(--home-clean-v3-card-height);
-  max-height: var(--home-clean-v3-card-height);
+  --home-clean-v3-card-height-effective: min(
+    var(--home-clean-v3-card-height),
+    calc(
+      var(--home-clean-v3-slide-height, 100dvh) - var(--home-clean-v3-top-offset) -
+        env(safe-area-inset-top, 0px) - var(--home-clean-v3-meta-reserve) -
+        var(--home-clean-v3-slide-padding-bottom)
+    )
+  );
+  --home-clean-v3-card-width-effective: min(
+    var(--home-clean-v3-card-width),
+    calc(var(--home-clean-v3-card-height-effective) * 9 / 16)
+  );
+  width: var(--home-clean-v3-card-width-effective);
+  height: var(--home-clean-v3-card-height-effective);
+  min-width: 0;
+  max-width: var(--home-clean-v3-card-width-effective);
+  min-height: 0;
+  max-height: var(--home-clean-v3-card-height-effective);
   margin-inline: auto;
   overflow: hidden;
   border-radius: 16px;
@@ -172,12 +186,12 @@ a[data-home-clean-v3-meta-name]:hover {
 
 /* Beat mobileLayoutV3 `[data-mlv3-scroll] * { max-width: 100% }` on /home. */
 html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-home-clean-v3-card] {
-  width: var(--home-clean-v3-card-width) !important;
-  height: var(--home-clean-v3-card-height) !important;
-  min-width: var(--home-clean-v3-card-width) !important;
-  max-width: var(--home-clean-v3-card-width) !important;
-  min-height: var(--home-clean-v3-card-height) !important;
-  max-height: var(--home-clean-v3-card-height) !important;
+  width: var(--home-clean-v3-card-width-effective) !important;
+  height: var(--home-clean-v3-card-height-effective) !important;
+  min-width: 0 !important;
+  max-width: var(--home-clean-v3-card-width-effective) !important;
+  min-height: 0 !important;
+  max-height: var(--home-clean-v3-card-height-effective) !important;
   flex: 0 0 auto !important;
 }
 
