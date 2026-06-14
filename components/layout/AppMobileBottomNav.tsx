@@ -30,7 +30,6 @@ import {
 import { mobileBottomNavDisplayLabel } from "@/lib/layout/mobileBottomNavLabel";
 import { useDailyQuizStatus } from "@/hooks/useDailyQuizStatus";
 import { challengesNavHref } from "@/lib/quiz/dailyQuizNav";
-import { DailyQuizPendingDot } from "@/components/quiz/DailyQuizPendingDot";
 
 const BOTTOM_NAV_HOME_EMOJI = "🏠";
 const BOTTOM_NAV_EXPLORE_EMOJI = "🔍";
@@ -298,23 +297,15 @@ export function AppMobileBottomNav() {
               aria-label={title}
             >
               {usePlayerEmojis && playerTabEmoji(item.href) ? (
-                <span className={`relative ${PLAYER_TAB_EMOJI_CLASS}`} aria-hidden>
+                <span className={PLAYER_TAB_EMOJI_CLASS} aria-hidden>
                   {playerTabEmoji(item.href)}
-                  {item.href === "/challenges" && quizPending ? (
-                    <DailyQuizPendingDot variant="bottomNav" />
-                  ) : null}
                 </span>
               ) : (
-                <span className="relative inline-flex shrink-0">
-                  <NavIcon
-                    name={item.icon}
-                    variant="tabBar"
-                    className="size-5 shrink-0 min-[360px]:size-[22px]"
-                  />
-                  {item.href === "/challenges" && quizPending ? (
-                    <DailyQuizPendingDot variant="bottomNav" />
-                  ) : null}
-                </span>
+                <NavIcon
+                  name={item.icon}
+                  variant="tabBar"
+                  className="size-5 shrink-0 min-[360px]:size-[22px]"
+                />
               )}
               <span
                 className="w-full min-w-0 max-w-full truncate px-0.5 text-center"
