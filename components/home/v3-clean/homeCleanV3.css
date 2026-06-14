@@ -293,3 +293,74 @@ html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-home-
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
+
+/* Campaign banner — flush top + full device width, opaque over feed scroll */
+@media (max-width: 1023px) {
+  html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-world-cup-campaign-banner-slot] {
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    width: 100vw;
+    max-width: 100vw !important;
+    margin: 0;
+    transform: none;
+    pointer-events: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-world-cup-campaign-banner-slot] {
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    width: 100%;
+    max-width: none !important;
+    margin: 0;
+    transform: none;
+    pointer-events: none;
+  }
+}
+
+html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-world-cup-campaign-banner-slot] > [data-world-cup-campaign-banner-bar] {
+  pointer-events: auto;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none !important;
+  margin: 0;
+  background-color: #000000;
+  box-shadow: 0 10px 36px rgb(0 0 0 / 1);
+}
+
+html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-world-cup-campaign-banner-slot] button {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Beat mobileLayoutV3 scroll max-width clamp on home campaign banner */
+html[data-mobile-layout-v3] [data-mlv3-scroll] [data-world-cup-campaign-banner-slot],
+html[data-mobile-layout-v3] [data-mlv3-scroll] [data-world-cup-campaign-banner-slot] > [data-world-cup-campaign-banner-bar],
+html[data-mobile-layout-v3] [data-mlv3-scroll] [data-world-cup-campaign-banner-slot] button {
+  width: 100vw !important;
+  max-width: 100vw !important;
+}
+
+@media (min-width: 1024px) {
+  html[data-mobile-layout-v3] [data-mlv3-scroll] [data-world-cup-campaign-banner-slot],
+  html[data-mobile-layout-v3] [data-mlv3-scroll] [data-world-cup-campaign-banner-slot] > [data-world-cup-campaign-banner-bar],
+  html[data-mobile-layout-v3] [data-mlv3-scroll] [data-world-cup-campaign-banner-slot] button {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-world-cup-campaign-banner-slot],
+html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-world-cup-campaign-banner-slot] > [data-world-cup-campaign-banner-bar],
+html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-world-cup-campaign-banner-slot] button {
+  max-width: none !important;
+}

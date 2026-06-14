@@ -398,7 +398,9 @@ export function PlayerPublicProfile({
         }));
     setDeletingVideoId(null);
     if (!result.ok) {
-      setDeleteError(result.errorMessage || t("deleteVideoFailed"));
+      const message = result.errorMessage || t("deleteVideoFailed");
+      setDeleteError(message);
+      window.alert(message);
       return;
     }
     setVideos((prev) => prev.filter((v) => v.id !== videoId));

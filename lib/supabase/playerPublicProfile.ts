@@ -113,12 +113,23 @@ export async function deleteOwnVideoById(
   if (!vid) {
     return { ok: false, errorMessage: "Invalid video id." };
   }
-  const { error } = await supabase.from("videos").delete().eq("id", vid);
+  const { data, error } = await supabase
+    .from("videos")
+    .delete()
+    .eq("id", vid)
+    .select("id");
   if (error) {
     logFullSupabaseError("playerPublicProfile: deleteOwnVideoById", error, {
       videoId: vid,
     });
     return { ok: false, errorMessage: supabaseErrorToUserMessage(error) };
+  }
+  if (!data?.length) {
+    return {
+      ok: false,
+      errorMessage:
+        "Could not delete video. It may still have linked likes or comments.",
+    };
   }
   return { ok: true };
 }

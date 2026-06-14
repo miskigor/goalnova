@@ -7,6 +7,7 @@ import {
   ChallengesPageTabs,
   ChallengesPageTabsFallback,
 } from "@/components/challenges/ChallengesPageTabs";
+import { RoadToWorldCup2026Banner } from "@/components/campaign/RoadToWorldCup2026Banner";
 
 /** Hub layout — same shell pattern as {@link ExploreView} (frame + header inside). */
 export function ChallengesPageView() {
@@ -20,6 +21,7 @@ export function ChallengesPageView() {
           aria-labelledby="challenges-page-title"
         >
           <ChallengesPageHeader />
+          <RoadToWorldCup2026Banner variant="challenges" />
           <Suspense fallback={<ChallengesPageTabsFallback />}>
             <ChallengesPageTabs />
           </Suspense>

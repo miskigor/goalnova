@@ -776,18 +776,24 @@ export async function rpcAdminUpdateModerationReport(args: {
 export async function rpcAdminDeleteVideo(
   videoId: string,
 ): Promise<{ ok: boolean; error: string | null }> {
-  const { data, error } = await supabase.rpc("goalnova_admin_delete_video", {
-    p_video_id: videoId,
-  });
-  if (error) {
-    logFullSupabaseError("[admin] goalnova_admin_delete_video", error);
-    return { ok: false, error: error.message };
+  const { adminDeleteVideo } = await import("@/lib/supabase/adminDeleteVideo");
+  const result = await adminDeleteVideo(videoId);
+  if (result.ok) {
+    return { ok: true, error: null };
   }
-  const body = data as { ok?: boolean; error?: string } | null;
-  if (body && body.ok === false) {
-    return { ok: false, error: body.error ?? "Failed" };
+  if (result.reason === "not_authenticated") {
+    return { ok: false, error: "Not authenticated" };
   }
-  return { ok: true, error: null };
+  if (result.reason === "forbidden") {
+    return { ok: false, error: "Forbidden" };
+  }
+  if (result.reason === "not_found") {
+    return { ok: false, error: "not_found" };
+  }
+  return {
+    ok: false,
+    error: result.errorMessage ?? result.reason,
+  };
 }
 
 export async function rpcAdminDeleteComment(

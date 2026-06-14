@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { HomeCleanV3 } from "@/components/home/v3-clean/HomeCleanV3";
+import { HomePageWithCampaign } from "@/components/home/HomePageWithCampaign";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -16,5 +16,5 @@ export default async function HomeFeedPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <HomeCleanV3 />;
+  return <HomePageWithCampaign />;
 }
