@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ChallengesHub } from "@/components/challenges/ChallengesHub";
 import { DailyQuizSection } from "@/components/challenges/DailyQuizSection";
+import { RoadToWorldCup2026ChallengesButton } from "@/components/campaign/RoadToWorldCup2026ChallengesButton";
 import { DailyQuizPendingDot } from "@/components/quiz/DailyQuizPendingDot";
 import { useDailyQuizStatus } from "@/hooks/useDailyQuizStatus";
 
@@ -69,6 +70,7 @@ export function ChallengesPageTabs() {
           </span>
         </Link>
       </div>
+      <RoadToWorldCup2026ChallengesButton />
       {tab === "quiz" ? <DailyQuizSection /> : <ChallengesHub />}
     </>
   );

@@ -2313,6 +2313,8 @@
     "ctaQuiz": "Igraj dnevni kviz",
     "ctaUpload": "Uploaduj video",
     "ctaChallenges": "Pregledaj izazove",
-    "ctaProfile": "Dovrši profil"
+    "ctaProfile": "Dovrši profil",
+    "top10Title": "Top 10 igrača",
+    "top10Empty": "Još nema igrača na ljestvici ovog tjedna."
   }
 }

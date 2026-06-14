@@ -2313,6 +2313,8 @@
     "ctaQuiz": "Günlük quizi oyna",
     "ctaUpload": "Video yükle",
     "ctaChallenges": "Meydan okumalar",
-    "ctaProfile": "Profili tamamla"
+    "ctaProfile": "Profili tamamla",
+    "top10Title": "İlk 10 oyuncu",
+    "top10Empty": "Bu hafta sıralamada henüz oyuncu yok."
   }
 }

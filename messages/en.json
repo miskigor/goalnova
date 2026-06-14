@@ -2313,6 +2313,8 @@
     "ctaQuiz": "Play daily quiz",
     "ctaUpload": "Upload video",
     "ctaChallenges": "Browse challenges",
-    "ctaProfile": "Complete your profile"
+    "ctaProfile": "Complete your profile",
+    "top10Title": "Top 10 players",
+    "top10Empty": "No players on the weekly leaderboard yet."
   }
 }

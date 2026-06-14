@@ -2313,6 +2313,8 @@
     "ctaQuiz": "Dagelijkse quiz spelen",
     "ctaUpload": "Video uploaden",
     "ctaChallenges": "Uitdagingen bekijken",
-    "ctaProfile": "Profiel voltooien"
+    "ctaProfile": "Profiel voltooien",
+    "top10Title": "Top 10 spelers",
+    "top10Empty": "Nog geen spelers op het weekrankingbord."
   }
 }

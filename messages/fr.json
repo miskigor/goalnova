@@ -2313,6 +2313,8 @@
     "ctaQuiz": "Jouer au quiz du jour",
     "ctaUpload": "Publier une vidéo",
     "ctaChallenges": "Voir les défis",
-    "ctaProfile": "Compléter ton profil"
+    "ctaProfile": "Compléter ton profil",
+    "top10Title": "Top 10 joueurs",
+    "top10Empty": "Pas encore de joueurs au classement hebdomadaire."
   }
 }
