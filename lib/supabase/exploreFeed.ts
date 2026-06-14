@@ -52,6 +52,10 @@ const POOL_NEWEST = 72;
 const POOL_MOST_LIKED = 160;
 const PROFILE_MATCH_LIMIT = 100;
 
+/** Match home feed + RLS — any non-empty playback column qualifies. */
+const PLAYABLE_VIDEO_OR =
+  "video_url.not.is.null,processed_video_url.not.is.null,source_video_url.not.is.null";
+
 function recentSinceIso(days: number): string {
   return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
 }
@@ -232,7 +236,7 @@ export async function fetchExploreFeed(params: {
   let vq = supabase
     .from("videos")
     .select("*")
-    .not("video_url", "is", null)
+    .or(PLAYABLE_VIDEO_OR)
     .order("created_at", { ascending: false })
     .limit(pool);
 
@@ -276,23 +280,20 @@ export async function fetchExploreFeed(params: {
       logFullSupabaseError("[explore] users(is_deleted) filter", usersErr, {
         userIdsCount: userIds.length,
       });
-      return {
-        items: [],
-        playerMatches: matchedProfiles,
-        error: supabaseErrorToUserMessage(usersErr),
-      };
+      // Continue without avatar/deleted filtering — video RLS already gates inactive owners.
+    } else {
+      for (const u of users ?? []) {
+        const v = typeof u.avatar_url === "string" ? u.avatar_url.trim() : "";
+        avatarByUserId.set(u.id, v || null);
+      }
+      const deletedUserIds = new Set(
+        (users ?? []).filter((u) => u.is_deleted).map((u) => u.id),
+      );
+      const activeUserIds = new Set(
+        userIds.filter((id) => !deletedUserIds.has(id)),
+      );
+      videos = videos.filter((v) => activeUserIds.has(v.user_id));
     }
-    for (const u of users ?? []) {
-      const v = typeof u.avatar_url === "string" ? u.avatar_url.trim() : "";
-      avatarByUserId.set(u.id, v || null);
-    }
-    const deletedUserIds = new Set(
-      (users ?? []).filter((u) => u.is_deleted).map((u) => u.id),
-    );
-    const activeUserIds = new Set(
-      userIds.filter((id) => !deletedUserIds.has(id)),
-    );
-    videos = videos.filter((v) => activeUserIds.has(v.user_id));
   }
 
   const filteredUserIds = [...new Set(videos.map((v) => v.user_id).filter(Boolean))];

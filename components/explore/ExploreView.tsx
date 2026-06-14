@@ -283,9 +283,9 @@ function ExploreTileMedia({
             controls={false}
             onError={onVideoError}
           />
-        ) : videoPosterUrl ? (
+        ) : videoPosterUrl || primaryImage ? (
           <Image
-            src={videoPosterUrl}
+            src={videoPosterUrl || primaryImage || ""}
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 33vw"

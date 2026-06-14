@@ -9,14 +9,16 @@ type Options = {
   sticky?: boolean;
 };
 
-/** App scrollport (V2 shell or V1 main) — IO must use this, not the layout viewport. */
+/** App scrollport (V2/V3 shell or V1 main) — IO must use this, not always the layout viewport. */
 function resolveIntersectionRoot(el: HTMLElement): Element | null {
   let node: HTMLElement | null = el.parentElement;
   while (node) {
     if (
       node.hasAttribute("data-mlv2-scroll") ||
+      node.hasAttribute("data-mlv3-scroll") ||
       node.hasAttribute("data-app-main") ||
-      node.hasAttribute("data-pitchrusch-feed-scroll-root")
+      node.hasAttribute("data-pitchrusch-feed-scroll-root") ||
+      node.hasAttribute("data-home-clean-v3-scroll-root")
     ) {
       return node;
     }
@@ -55,25 +57,33 @@ export function useMediaNearViewport(options: Options = {}) {
     if (!el || (sticky && loadMedia)) return;
 
     const scrollRoot = resolveIntersectionRoot(el);
-    if (intersectsRoot(el, scrollRoot)) {
+    if (intersectsRoot(el, scrollRoot) || intersectsRoot(el, null)) {
       setLoadMedia(true);
       if (sticky) return;
     }
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setLoadMedia(true);
-            if (sticky) io.disconnect();
+    const observers: IntersectionObserver[] = [];
+    const attach = (root: Element | null) => {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              setLoadMedia(true);
+              if (sticky) observers.forEach((observer) => observer.disconnect());
+            }
           }
-        }
-      },
-      { root: scrollRoot, rootMargin, threshold: 0.01 },
-    );
+        },
+        { root, rootMargin, threshold: 0.01 },
+      );
+      io.observe(el);
+      observers.push(io);
+    };
 
-    io.observe(el);
-    return () => io.disconnect();
+    attach(scrollRoot);
+    // Viewport fallback — nested overflow on Explore/Challenges can miss the app scrollport IO.
+    if (scrollRoot) attach(null);
+
+    return () => observers.forEach((observer) => observer.disconnect());
   }, [loadMedia, rootMargin, sticky]);
 
   return { containerRef, loadMedia };
