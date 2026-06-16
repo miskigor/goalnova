@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { cookies } from "next/headers";
 import { ChallengeTagPill } from "@/components/challenges/ChallengeTagPill";
 import { PublicVideoJsonLd } from "@/components/share/PublicVideoJsonLd";
 import {
@@ -13,6 +14,10 @@ import { absolutePublicVideoUrl } from "@/lib/share/localizedVideoPath";
 import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 import { getPublicVideoPageData } from "@/lib/supabase/publicVideoPageData";
 import { videoPlaybackCandidates, videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
+import {
+  VIDEO_ENTRY_COOKIE,
+  parseVideoEntrySource,
+} from "@/lib/video/videoEntryCookie";
 import { VideoMusicCredit } from "@/components/video/VideoMusicCredit";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { PublicVideoDetailPanel } from "@/components/video/PublicVideoDetailPanel";
@@ -59,9 +64,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PublicVideoPage({ params, searchParams }: Props) {
   const { locale, videoId } = await params;
-  const { from } = await searchParams;
+  const { from: fromQuery } = await searchParams;
   setRequestLocale(locale);
-  const compactWatch = from === "explore" || from === "rankings";
+  const cookieStore = await cookies();
+  const entryFrom =
+    fromQuery === "explore" || fromQuery === "rankings"
+      ? fromQuery
+      : parseVideoEntrySource(cookieStore.get(VIDEO_ENTRY_COOKIE)?.value);
+  const compactWatch = entryFrom === "explore" || entryFrom === "rankings";
   const profileVideoLayout = compactWatch;
 
   const data = await getPublicVideoPageData(videoId);
@@ -69,7 +79,7 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
 
   const t = await getTranslations({ locale, namespace: "publicVideo" });
   const tRankings =
-    from === "rankings"
+    entryFrom === "rankings"
       ? await getTranslations({ locale, namespace: "rankings" })
       : null;
 
@@ -219,14 +229,14 @@ export default async function PublicVideoPage({ params, searchParams }: Props) {
 
         <div className="flex min-w-0 pb-0.5">
           <Link
-            href={from === "rankings" ? "/rankings" : "/explore"}
+            href={entryFrom === "rankings" ? "/rankings" : "/explore"}
             className={
               compactWatch
                 ? "text-xs font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
                 : "text-sm font-medium text-gn-text-secondary underline-offset-2 hover:text-gn-accent hover:underline"
             }
           >
-            {from === "rankings" && tRankings ? tRankings("title") : t("moreHighlights")}
+            {entryFrom === "rankings" && tRankings ? tRankings("title") : t("moreHighlights")}
           </Link>
         </div>
       </div>

@@ -7,8 +7,30 @@ import {
   localeFromPathname,
 } from "./lib/i18n/localePreference";
 import { hrefWithLocale, routing } from "./i18n/routing";
+import { VIDEO_ENTRY_COOKIE } from "./lib/video/videoEntryCookie";
 
 const handleI18nRouting = createMiddleware(routing);
+
+const VIDEO_FROM_QUERY = new Set(["explore", "rankings", "challenge"]);
+
+/** 301 legacy `?from=` video URLs to canonical paths (fewer GSC duplicates). */
+function maybeRedirectVideoFromQuery(request: NextRequest): NextResponse | null {
+  const from = request.nextUrl.searchParams.get("from");
+  if (!from || !VIDEO_FROM_QUERY.has(from)) return null;
+  if (!/\/video\/[^/]+$/.test(request.nextUrl.pathname)) return null;
+
+  const url = request.nextUrl.clone();
+  url.searchParams.delete("from");
+  const response = NextResponse.redirect(url, 301);
+  if (from === "explore" || from === "rankings") {
+    response.cookies.set(VIDEO_ENTRY_COOKIE, from, {
+      path: "/",
+      maxAge: 300,
+      sameSite: "lax",
+    });
+  }
+  return response;
+}
 
 function setLocaleCookie(response: NextResponse, locale: string) {
   response.cookies.set(PITCHRUSCH_LOCALE_COOKIE, locale, {
@@ -19,6 +41,9 @@ function setLocaleCookie(response: NextResponse, locale: string) {
 }
 
 export default function proxy(request: NextRequest) {
+  const videoFromRedirect = maybeRedirectVideoFromQuery(request);
+  if (videoFromRedirect) return videoFromRedirect;
+
   const { pathname } = request.nextUrl;
   const urlLocale = localeFromPathname(pathname);
   const cookieRaw = request.cookies.get(PITCHRUSCH_LOCALE_COOKIE)?.value;

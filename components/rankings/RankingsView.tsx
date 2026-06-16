@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { PublicVideoEntryLink } from "@/components/video/PublicVideoEntryLink";
 import {
   fetchRankings,
   type RankingsListItem,
@@ -174,7 +175,7 @@ function RankingCard({
   t: ReturnType<typeof useTranslations<"rankings">>;
 }) {
   const profileHref = `/player/${encodeURIComponent(item.playerSlug)}`;
-  const videoHref = `/video/${encodeURIComponent(item.videoId)}?from=rankings` as const;
+  const videoHref = `/video/${encodeURIComponent(item.videoId)}` as const;
 
   const metaParts: string[] = [];
   if (item.position?.trim()) {
@@ -203,12 +204,13 @@ function RankingCard({
             {item.rank}
           </span>
         </div>
-        <Link
+        <PublicVideoEntryLink
           href={videoHref}
+          entryFrom="rankings"
           className="box-border block w-full min-w-0 max-w-full overflow-hidden px-3 pt-2 outline-none ring-gn-accent/40 focus-visible:ring-2"
         >
           <RankingsVideoThumb sources={item.playbackSources} layout="mobile" />
-        </Link>
+        </PublicVideoEntryLink>
         <div className="box-border min-w-0 max-w-full overflow-hidden px-3 py-2">
           <RankingCardBody item={item} tab={tab} t={t} metaLine={metaLine} />
         </div>
@@ -233,15 +235,16 @@ function RankingCard({
           </span>
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-stretch">
-          <Link
+          <PublicVideoEntryLink
             href={videoHref}
+            entryFrom="rankings"
             className="flex min-w-0 gap-3 rounded-xl outline-none ring-gn-accent/40 transition-colors hover:bg-white/[0.03] focus-visible:ring-2 sm:min-h-0 sm:flex-1 sm:gap-4"
           >
             <RankingsVideoThumb sources={item.playbackSources} layout="desktop" />
             <div className="min-w-0 flex-1 py-0.5">
               <RankingCardBody item={item} tab={tab} t={t} metaLine={metaLine} />
             </div>
-          </Link>
+          </PublicVideoEntryLink>
           <div className="flex shrink-0 items-center sm:flex-col sm:justify-center sm:border-s sm:border-gn-border-subtle sm:ps-4">
             <Link
               href={profileHref}

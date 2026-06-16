@@ -65,7 +65,7 @@ export function ChallengeCompactVideoThumb({
 
   useIosInlineVideoFirstFrameBump(videoRef, showVideo, showVideo ? src : "");
 
-  const videoHref = `/video/${encodeURIComponent(videoId)}?from=challenge` as const;
+  const videoHref = `/video/${encodeURIComponent(videoId)}` as const;
 
   return (
     <Link

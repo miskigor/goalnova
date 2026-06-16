@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { PublicVideoEntryLink } from "@/components/video/PublicVideoEntryLink";
 import {
   fetchExploreFeed,
   type ExploreFeedItem,
@@ -377,14 +378,14 @@ export function ExploreVideoCard({
   const hasAnySource = exploreTileHasVisualMedia(videoRow, avatarUrl);
 
   const playerHref = `/player/${encodeURIComponent(slug)}` as const;
-  const videoPageHref =
-    `/video/${encodeURIComponent(video.id)}?from=explore` as const;
+  const videoPageHref = `/video/${encodeURIComponent(video.id)}` as const;
 
   return (
     <div className="box-border flex w-full min-w-0 max-w-full flex-col overflow-hidden">
       <div className="relative aspect-[3/4] w-full min-w-0 max-w-full overflow-hidden lg:aspect-video">
-        <Link
+        <PublicVideoEntryLink
           href={videoPageHref}
+          entryFrom="explore"
           className="block h-full w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/50"
         >
           <div className="absolute inset-0 min-h-0 min-w-0">
@@ -397,7 +398,7 @@ export function ExploreVideoCard({
               mediaErrorAriaLabel={t("errorTitle")}
             />
           </div>
-        </Link>
+        </PublicVideoEntryLink>
       </div>
 
       <div className="box-border min-w-0 max-w-full overflow-hidden px-1.5 py-1.5 sm:px-2">
