@@ -157,6 +157,7 @@
     "userDetailAccountSuperAdmin": "Account (super admin)",
     "userDetailLabelAppRole": "App role",
     "userDetailLabelPremium": "Premium account",
+    "userDetailPremiumUntil": "Premium active until {date}",
     "userDetailLabelScoutVerStatus": "Scout verification status",
     "userDetailLabelStaffRole": "Staff role (empty = none)",
     "userDetailAppRolePlayer": "Player",

@@ -1,3 +1,4 @@
+import { getQuizZagrebTodayIso } from "@/lib/quiz/quizZagrebDate";
 import { rpcQuizGetToday, type QuizTodayPayload } from "@/lib/supabase/dailyQuiz";
 import { supabase } from "@/lib/supabase/client";
 
@@ -14,7 +15,12 @@ export type DailyQuizStatusSnapshot = {
 const CACHE_MS = 30_000;
 
 let inflight: Promise<DailyQuizStatusSnapshot> | null = null;
-let cache: { locale: string; at: number; snapshot: DailyQuizStatusSnapshot } | null = null;
+let cache: {
+  locale: string;
+  quizDate: string;
+  at: number;
+  snapshot: DailyQuizStatusSnapshot;
+} | null = null;
 
 function snapshotFromPayload(
   authed: boolean,
@@ -42,9 +48,14 @@ export async function fetchDailyQuizStatusSnapshot(
   locale: string,
 ): Promise<DailyQuizStatusSnapshot> {
   const now = Date.now();
+  const today = getQuizZagrebTodayIso();
+  if (cache && cache.quizDate !== today) {
+    cache = null;
+  }
   if (
     cache &&
     cache.locale === locale &&
+    cache.quizDate === today &&
     now - cache.at < CACHE_MS
   ) {
     return cache.snapshot;
@@ -57,7 +68,12 @@ export async function fetchDailyQuizStatusSnapshot(
     const authed = Boolean(session.session?.user);
     const { data } = await rpcQuizGetToday(locale);
     const snapshot = snapshotFromPayload(authed, data);
-    cache = { locale, at: Date.now(), snapshot };
+    cache = {
+      locale,
+      quizDate: data?.quiz_date?.trim() || today,
+      at: Date.now(),
+      snapshot,
+    };
     return snapshot;
   })();
 

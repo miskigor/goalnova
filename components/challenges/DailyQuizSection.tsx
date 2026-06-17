@@ -16,6 +16,7 @@ import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { QUIZ_CORRECT_XP } from "@/lib/quiz/quizConfig";
 import { notifyDailyQuizStatusChanged } from "@/lib/quiz/dailyQuizStatusEvents";
 import { invalidateDailyQuizStatusSnapshot } from "@/lib/quiz/fetchDailyQuizStatusSnapshot";
+import { getQuizZagrebTodayIso } from "@/lib/quiz/quizZagrebDate";
 import { supabase } from "@/lib/supabase/client";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 
@@ -87,6 +88,30 @@ export function DailyQuizSection() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  useEffect(() => {
+    const reloadIfStale = () => {
+      const today = getQuizZagrebTodayIso();
+      if (payload?.quiz_date && payload.quiz_date !== today) {
+        invalidateDailyQuizStatusSnapshot();
+        void load();
+      }
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        reloadIfStale();
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    const timer = window.setInterval(reloadIfStale, 60_000);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.clearInterval(timer);
+    };
+  }, [load, payload?.quiz_date]);
 
   async function onSelectOption(index: number) {
     if (!authed || submitting || payload?.already_answered) return;

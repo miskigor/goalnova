@@ -157,6 +157,7 @@
     "userDetailAccountSuperAdmin": "Račun (super admin)",
     "userDetailLabelAppRole": "Uloga u aplikaciji",
     "userDetailLabelPremium": "Premium račun",
+    "userDetailPremiumUntil": "Premium aktivan do {date}",
     "userDetailLabelScoutVerStatus": "Status verifikacije skauta",
     "userDetailLabelStaffRole": "Uloga osoblja (prazno = nema)",
     "userDetailAppRolePlayer": "Igrač",

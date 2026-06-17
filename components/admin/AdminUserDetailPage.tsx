@@ -23,6 +23,7 @@ import {
   rpcAdminSetSuspended,
   rpcAdminCreateTicketForUser,
 } from "@/lib/supabase/adminSystem";
+import { PITCHRUSCH_PREMIUM_UPDATED_EVENT } from "@/lib/supabase/premium";
 import { devLog } from "@/lib/devLog";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 import {
@@ -149,6 +150,8 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
   const [savingFoundingPlayer, setSavingFoundingPlayer] = useState(false);
   const [scoutVer, setScoutVer] = useState("none");
   const [staffRole, setStaffRole] = useState("");
+  const [savingUserFlags, setSavingUserFlags] = useState(false);
+  const [premiumUntil, setPremiumUntil] = useState<string | null>(null);
   const [savedAccountFlags, setSavedAccountFlags] = useState({
     appRole: "player",
     isPremium: false,
@@ -319,6 +322,11 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
       .maybeSingle();
     const foundingPlayer = Boolean(foundingRow?.founding_player ?? pp?.founding_player);
     setIsFoundingPlayer(foundingPlayer);
+    const periodEnd =
+      str(pp?.subscription_current_period_end) ||
+      str(u.subscription_current_period_end) ||
+      null;
+    setPremiumUntil(periodEnd || null);
     setSavedAccountFlags({
       appRole: str(u.role) || "player",
       isPremium: Boolean(u.is_premium),
@@ -407,19 +415,25 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
   async function saveUserFlags() {
     if (!isSuperAdmin) return;
 
+    setSavingUserFlags(true);
+    let premiumChanged = false;
+
     const nextAppRole = appRole === "scout" ? "scout" : "player";
 
     if (nextAppRole !== savedAccountFlags.appRole) {
       const r1 = await rpcAdminSetAppRole(userId, nextAppRole);
       if (!r1.ok) {
+        setSavingUserFlags(false);
         alert(r1.error ?? tc("failed"));
         return;
       }
     }
 
     if (isPremium !== savedAccountFlags.isPremium) {
+      premiumChanged = true;
       const r2 = await rpcAdminSetPremium(userId, isPremium);
       if (!r2.ok) {
+        setSavingUserFlags(false);
         alert(r2.error ?? tc("failed"));
         return;
       }
@@ -428,6 +442,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
     if (scoutVer !== savedAccountFlags.scoutVer) {
       const r3 = await rpcAdminSetScoutVerificationStatus(userId, scoutVer);
       if (!r3.ok) {
+        setSavingUserFlags(false);
         alert(r3.error ?? tc("failed"));
         return;
       }
@@ -438,12 +453,18 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
     if (roleVal !== savedStaffVal) {
       const r4 = await rpcAdminSetStaffRole(userId, roleVal);
       if (!r4.ok) {
+        setSavingUserFlags(false);
         alert(r4.error ?? tc("failed"));
         return;
       }
     }
 
-    void load();
+    await load();
+    setSavingUserFlags(false);
+    if (premiumChanged && typeof window !== "undefined") {
+      window.dispatchEvent(new Event(PITCHRUSCH_PREMIUM_UPDATED_EVENT));
+    }
+    alert(tc("done"));
   }
 
   function applyNoticeTemplate(templateId: string) {
@@ -558,10 +579,18 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
                 suppressHydrationWarning
                 type="checkbox"
                 checked={isPremium}
+                disabled={savingUserFlags}
                 onChange={(e) => setIsPremium(e.target.checked)}
               />
               {t("userDetailLabelPremium")}
             </label>
+            {isPremium && premiumUntil ? (
+              <p className="text-xs text-zinc-500 sm:col-span-2">
+                {t("userDetailPremiumUntil", {
+                  date: new Date(premiumUntil).toLocaleDateString(locale),
+                })}
+              </p>
+            ) : null}
             {appRole === "player" ? (
               <label className="flex items-center gap-2 pt-6 text-sm text-zinc-300 sm:col-span-2">
                 <input
@@ -628,10 +657,11 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
           </div>
           <button
             type="button"
+            disabled={savingUserFlags}
             onClick={() => void saveUserFlags()}
-            className="rounded-lg bg-orange-500/90 px-4 py-2 text-sm font-semibold text-black hover:bg-orange-400"
+            className="rounded-lg bg-orange-500/90 px-4 py-2 text-sm font-semibold text-black hover:bg-orange-400 disabled:opacity-50"
           >
-            {t("saveUserFlags")}
+            {savingUserFlags ? tc("loadingEllipsis") : t("saveUserFlags")}
           </button>
         </section>
       ) : null}
