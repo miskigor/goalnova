@@ -1,10 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { FriendChallengeLeaderboard } from "@/components/friendChallenge/FriendChallengeLeaderboard";
-import { rememberFriendChallengeId } from "@/lib/friendChallenge/friendChallengeInviteStorage";
+import {
+  clearPendingFriendChallengeId,
+  rememberFriendChallengeId,
+} from "@/lib/friendChallenge/friendChallengeInviteStorage";
 import { FRIEND_CHALLENGE_JOIN_BONUS_XP } from "@/lib/friendChallenge/friendChallengeConfig";
 import {
   buildFriendChallengeShareUrl,
@@ -30,6 +33,8 @@ export function FriendChallengeView({ challengeId }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [authed, setAuthed] = useState<boolean | null>(null);
   const [shareBusy, setShareBusy] = useState(false);
+  const joinAttemptRef = useRef(false);
+  const autoJoinChallengeRef = useRef<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -52,6 +57,54 @@ export function FriendChallengeView({ challengeId }: Props) {
   }, [challengeId, load]);
 
   useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+        setAuthed(Boolean(session?.user));
+        void load();
+      }
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [load]);
+
+  const acceptChallenge = useCallback(async () => {
+    if (joinAttemptRef.current) return;
+    joinAttemptRef.current = true;
+    setAccepting(true);
+    setError(null);
+    const { data: session } = await supabase.auth.getSession();
+    if (!session.session?.user) {
+      joinAttemptRef.current = false;
+      setAccepting(false);
+      router.push(`/login?next=/challenge/${encodeURIComponent(challengeId)}`);
+      return;
+    }
+    const { data, error: acceptErr } = await rpcFriendChallengeAccept(challengeId);
+    joinAttemptRef.current = false;
+    setAccepting(false);
+    if (acceptErr) {
+      if (acceptErr.toLowerCase().includes("not pending")) {
+        clearPendingFriendChallengeId();
+        await load();
+        return;
+      }
+      setError(acceptErr);
+      return;
+    }
+    if (data) {
+      clearPendingFriendChallengeId();
+      setPayload(data);
+    }
+  }, [challengeId, load, router]);
+
+  useEffect(() => {
+    if (!payload || payload.status !== "pending") return;
+    if (!authed || payload.is_challenger || !payload.viewer_id) return;
+    if (autoJoinChallengeRef.current === challengeId) return;
+    autoJoinChallengeRef.current = challengeId;
+    void acceptChallenge();
+  }, [acceptChallenge, authed, challengeId, payload]);
+
+  useEffect(() => {
     if (payload?.status !== "active") return;
     const timer = window.setInterval(() => {
       void load();
@@ -60,21 +113,7 @@ export function FriendChallengeView({ challengeId }: Props) {
   }, [load, payload?.status]);
 
   async function onAccept() {
-    setAccepting(true);
-    setError(null);
-    const { data: session } = await supabase.auth.getSession();
-    if (!session.session?.user) {
-      setAccepting(false);
-      router.push(`/login?next=/challenge/${encodeURIComponent(challengeId)}`);
-      return;
-    }
-    const { data, error: acceptErr } = await rpcFriendChallengeAccept(challengeId);
-    setAccepting(false);
-    if (acceptErr) {
-      setError(acceptErr);
-      return;
-    }
-    if (data) setPayload(data);
+    await acceptChallenge();
   }
 
   function onShareResult() {
@@ -199,7 +238,10 @@ export function FriendChallengeView({ challengeId }: Props) {
         <div className="mt-4 flex flex-col gap-2">
           {!authed && payload.status === "pending" ? (
             <>
-              <Link href="/signup" className={`${GN_PRIMARY_BUTTON_CLASS} justify-center text-center`}>
+              <Link
+                href={`/signup?next=/challenge/${encodeURIComponent(challengeId)}`}
+                className={`${GN_PRIMARY_BUTTON_CLASS} justify-center text-center`}
+              >
                 {t("signUpToJoin")}
               </Link>
               <Link

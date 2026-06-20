@@ -21,10 +21,24 @@ function challengeIdFromPathname(pathname: string): string | null {
   return match?.[1]?.trim() || null;
 }
 
-/** After sign-in, accept a pending friend-challenge invite stored from `/challenge/:id`. */
-export async function tryConsumePendingFriendChallenge(): Promise<boolean> {
+type ConsumeOptions = {
+  /** When true, skip auto-accept on `/challenge/:id` — the page handles join there. */
+  skipIfOnChallengePage?: boolean;
+  currentPathname?: string;
+};
+
+let consumeInFlight: Promise<boolean> | null = null;
+
+async function consumePendingFriendChallengeInner(
+  options?: ConsumeOptions,
+): Promise<boolean> {
   const pendingId = readPendingFriendChallengeId();
   if (!pendingId) return false;
+
+  if (options?.skipIfOnChallengePage && options.currentPathname) {
+    const fromPath = challengeIdFromPathname(options.currentPathname);
+    if (fromPath === pendingId) return false;
+  }
 
   const { data: sessionData } = await supabase.auth.getSession();
   const uid = sessionData.session?.user?.id ?? null;
@@ -32,7 +46,9 @@ export async function tryConsumePendingFriendChallenge(): Promise<boolean> {
 
   const { data: challenge } = await rpcFriendChallengeGet(pendingId);
   if (!challenge || challenge.status !== "pending") {
-    clearPendingFriendChallengeId();
+    if (challenge?.status === "active" || challenge?.status === "completed") {
+      clearPendingFriendChallengeId();
+    }
     return false;
   }
   if (challenge.challenger_id === uid) {
@@ -44,7 +60,22 @@ export async function tryConsumePendingFriendChallenge(): Promise<boolean> {
     clearPendingFriendChallengeId();
     return true;
   }
+  if (error.includes("not pending")) {
+    clearPendingFriendChallengeId();
+  }
   return false;
+}
+
+/** After sign-in, accept a pending friend-challenge invite stored from `/challenge/:id`. */
+export function tryConsumePendingFriendChallenge(
+  options?: ConsumeOptions,
+): Promise<boolean> {
+  if (!consumeInFlight) {
+    consumeInFlight = consumePendingFriendChallengeInner(options).finally(() => {
+      consumeInFlight = null;
+    });
+  }
+  return consumeInFlight;
 }
 
 export function FriendChallengeBootstrap() {
@@ -59,21 +90,22 @@ export function FriendChallengeBootstrap() {
 
   useEffect(() => {
     let cancelled = false;
+    const opts = { skipIfOnChallengePage: true, currentPathname: pathname };
     const run = async () => {
       if (cancelled) return;
-      await tryConsumePendingFriendChallenge();
+      await tryConsumePendingFriendChallenge(opts);
     };
     void run();
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
-        void tryConsumePendingFriendChallenge();
+        void tryConsumePendingFriendChallenge(opts);
       }
     });
     return () => {
       cancelled = true;
       sub.subscription.unsubscribe();
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }
