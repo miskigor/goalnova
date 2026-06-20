@@ -12,6 +12,7 @@ import {
 } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { IncomingMessageAlert } from "@/components/notifications/IncomingMessageAlert";
+import { IncomingMessageAlertBoundary } from "@/components/notifications/IncomingMessageAlertBoundary";
 import { devWarn } from "@/lib/devLog";
 import { fetchUnreadMessageThreadCount } from "@/lib/supabase/messages";
 import {
@@ -240,7 +241,9 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
   return (
     <NotificationsInboxContext.Provider value={value}>
       {children}
-      <IncomingMessageAlert />
+      <IncomingMessageAlertBoundary>
+        <IncomingMessageAlert />
+      </IncomingMessageAlertBoundary>
     </NotificationsInboxContext.Provider>
   );
 }

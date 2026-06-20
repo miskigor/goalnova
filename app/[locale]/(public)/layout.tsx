@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PremiumProvider } from "@/components/premium/PremiumProvider";
-import { NotificationsInboxProvider } from "@/components/notifications/NotificationsInboxContext";
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
 import { PublicShell } from "@/components/layout/PublicShell";
 import { FriendChallengeBootstrap } from "@/components/friendChallenge/FriendChallengeBootstrap";
@@ -19,12 +18,10 @@ export default function PublicAppLayout({
   return (
     <PremiumProvider>
       <FeedbackProvider>
-        <NotificationsInboxProvider>
-          <Suspense fallback={null}>
-            <FriendChallengeBootstrap />
-          </Suspense>
-          <PublicShell>{children}</PublicShell>
-        </NotificationsInboxProvider>
+        <Suspense fallback={null}>
+          <FriendChallengeBootstrap />
+        </Suspense>
+        <PublicShell>{children}</PublicShell>
       </FeedbackProvider>
     </PremiumProvider>
   );

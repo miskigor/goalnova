@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useNavSession } from "@/components/layout/useNavSession";
@@ -11,8 +12,13 @@ import { useNavSession } from "@/components/layout/useNavSession";
 export function GuestPublicCallout() {
   const { authed } = useNavSession();
   const t = useTranslations("publicGuest");
+  const [mounted, setMounted] = useState(false);
 
-  if (authed !== false) {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || authed !== false) {
     return null;
   }
 

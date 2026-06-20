@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, type ReactNode } from "react";
 import { usePathname } from "@/i18n/navigation";
-import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
+import { AppMobileBottomNavSlot } from "@/components/layout/AppMobileBottomNavSlot";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { MobileBottomNavSlotV3 } from "@/components/layout/mobile-v3/MobileBottomNavSlotV3";
 import { MLV3_HTML_ATTR } from "@/components/layout/mobile-v3/mobileLayoutV3.tokens";
@@ -53,7 +53,7 @@ export function AppChromeLayoutV3({ children }: { children: ReactNode }) {
           <div data-mlv3-scroll>{children}</div>
         </div>
         <MobileBottomNavSlotV3>
-          <AppMobileBottomNav />
+          <AppMobileBottomNavSlot />
         </MobileBottomNavSlotV3>
       </div>
     </div>

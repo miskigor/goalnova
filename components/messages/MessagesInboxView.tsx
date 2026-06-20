@@ -18,6 +18,24 @@ import {
   markAllUnreadMessageNotificationsRead,
 } from "@/lib/supabase/notifications";
 
+function formatInboxTime(
+  format: ReturnType<typeof useFormatter>,
+  iso: string | null | undefined,
+): string {
+  const raw = iso?.trim() ?? "";
+  if (!raw) return "";
+  const ms = Date.parse(raw);
+  if (!Number.isFinite(ms)) return "";
+  try {
+    return format.dateTime(new Date(ms), {
+      dateStyle: "short",
+      timeStyle: "short",
+    });
+  } catch {
+    return "";
+  }
+}
+
 function ScoutInboxNotice() {
   const tSv = useTranslations("scoutVerification");
   const scoutGate = useScoutVerification();
@@ -189,12 +207,9 @@ export function MessagesInboxView() {
               </div>
               <time
                 className="shrink-0 text-xs text-gn-text-tertiary"
-                dateTime={c.lastAt}
+                dateTime={c.lastAt || undefined}
               >
-                {format.dateTime(new Date(c.lastAt), {
-                  dateStyle: "short",
-                  timeStyle: "short",
-                })}
+                {formatInboxTime(format, c.lastAt)}
               </time>
             </div>
           </Link>

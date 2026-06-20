@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, type ReactNode } from "react";
 import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
-import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
+import { AppMobileBottomNavSlot } from "@/components/layout/AppMobileBottomNavSlot";
 import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBanner";
@@ -43,7 +43,7 @@ export function AppChromeLayoutStableV2({ children }: { children: ReactNode }) {
             </MobileLayoutStableV2RouteFrame>
           </div>
           <div data-mlv2-bottom-nav="true" suppressHydrationWarning className="max-lg:block lg:hidden">
-            <AppMobileBottomNav />
+            <AppMobileBottomNavSlot />
           </div>
         </div>
       </div>

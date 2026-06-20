@@ -2,12 +2,13 @@
 
 import { Suspense } from "react";
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
+import { NotificationsInboxProvider } from "@/components/notifications/NotificationsInboxContext";
 import { AdminSupportUnreadProvider } from "@/components/layout/AdminSupportUnreadContext";
 import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBanner";
-import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
+import { AppMobileBottomNavSlot } from "@/components/layout/AppMobileBottomNavSlot";
 import { AppMobileChromeMetrics } from "@/components/layout/AppMobileChromeMetrics";
 import { AppChromeLayoutStableV2 } from "@/components/layout/mobile-v2/AppChromeLayoutStableV2";
 import { AppChromeLayoutV3 } from "@/components/layout/mobile-v3/AppChromeLayoutV3";
@@ -53,7 +54,7 @@ function AppChromeLayoutV1({ children }: { children: React.ReactNode }) {
           data-app-mobile-bottom-nav-mount
           className={APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS}
         >
-          <AppMobileBottomNav />
+          <AppMobileBottomNavSlot />
         </div>
     </>
   );
@@ -69,18 +70,20 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <FeedbackProvider>
-      <AdminSupportUnreadProvider>
-        <Suspense fallback={null}>
-          <FriendChallengeBootstrap />
-        </Suspense>
-        {useV3Shell ? (
-          <AppChromeLayoutV3>{children}</AppChromeLayoutV3>
-        ) : isMobileLayoutStableV2Enabled() ? (
-          <AppChromeLayoutStableV2>{children}</AppChromeLayoutStableV2>
-        ) : (
-          <AppChromeLayoutV1>{children}</AppChromeLayoutV1>
-        )}
-      </AdminSupportUnreadProvider>
+      <NotificationsInboxProvider>
+        <AdminSupportUnreadProvider>
+          <Suspense fallback={null}>
+            <FriendChallengeBootstrap />
+          </Suspense>
+          {useV3Shell ? (
+            <AppChromeLayoutV3>{children}</AppChromeLayoutV3>
+          ) : isMobileLayoutStableV2Enabled() ? (
+            <AppChromeLayoutStableV2>{children}</AppChromeLayoutStableV2>
+          ) : (
+            <AppChromeLayoutV1>{children}</AppChromeLayoutV1>
+          )}
+        </AdminSupportUnreadProvider>
+      </NotificationsInboxProvider>
     </FeedbackProvider>
   );
 }

@@ -5,7 +5,7 @@ import {
   PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS,
   PITCHRUSCH_CRITICAL_FIRST_PAINT_SCRIPT,
 } from "@/lib/loading/criticalFirstPaint";
-import { BOOT_SPLASH_CSS, LOCALE_HTML_SYNC_SCRIPT } from "@/lib/loading/bootSplash";
+import { BOOT_SPLASH_CSS, BOOT_SPLASH_BODY_SCRIPT, LOCALE_HTML_SYNC_SCRIPT } from "@/lib/loading/bootSplash";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -59,13 +59,15 @@ export default function RootLayout({ children }: Props) {
     <html
       lang="en"
       dir="ltr"
+      translate="no"
       suppressHydrationWarning
       style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${bebasNeue.variable} ${notoArabic.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${bebasNeue.variable} ${notoArabic.variable} notranslate h-full antialiased`}
     >
       <head>
         <meta name="color-scheme" content="dark" />
+        <meta name="google" content="notranslate" />
         <link
           rel="preload"
           href="/brand/pitchrusch-logo.svg"
@@ -89,20 +91,12 @@ export default function RootLayout({ children }: Props) {
       </head>
       <body
         style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}
-        className="flex min-h-dvh min-w-0 max-w-full flex-col overflow-x-hidden bg-gn-bg text-gn-text"
+        className="notranslate flex min-h-dvh min-w-0 max-w-full flex-col overflow-x-hidden bg-gn-bg text-gn-text"
       >
-        <div id="pitchrusch-boot-splash" aria-hidden="true">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/brand/pitchrusch-logo.svg"
-            alt=""
-            width={80}
-            height={80}
-            decoding="async"
-            fetchPriority="high"
-          />
-          <div className="pitchrusch-boot-spinner" />
-        </div>
+        <script
+          id="pitchrusch-boot-splash-inject"
+          dangerouslySetInnerHTML={{ __html: BOOT_SPLASH_BODY_SCRIPT }}
+        />
         {children}
       </body>
     </html>

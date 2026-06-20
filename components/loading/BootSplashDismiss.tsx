@@ -2,22 +2,23 @@
 
 import { useEffect } from "react";
 
-/** Removes the static boot splash once React has mounted (handoff to app loading UI). */
+/** Removes the static boot splash once React has hydrated (splash is not a React node). */
 export function BootSplashDismiss() {
   useEffect(() => {
-    const el = document.getElementById("pitchrusch-boot-splash");
-    if (!el) return;
-
-    const dismiss = () => {
+    const id = window.setTimeout(() => {
+      const el = document.getElementById("pitchrusch-boot-splash");
+      if (!el) return;
       el.style.transition = "opacity 220ms ease";
       el.style.opacity = "0";
-      window.setTimeout(() => el.remove(), 240);
-    };
-
-    const raf = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(dismiss);
-    });
-    return () => window.cancelAnimationFrame(raf);
+      window.setTimeout(() => {
+        try {
+          el.remove();
+        } catch {
+          /* already removed */
+        }
+      }, 240);
+    }, 50);
+    return () => window.clearTimeout(id);
   }, []);
 
   return null;
