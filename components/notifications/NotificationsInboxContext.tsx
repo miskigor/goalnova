@@ -11,8 +11,8 @@ import {
   type ReactNode,
 } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { IncomingMessageAlert } from "@/components/notifications/IncomingMessageAlert";
 import { devWarn } from "@/lib/devLog";
-import { fetchUnreadMessageThreadCount } from "@/lib/supabase/messages";
 import {
   logNotificationsRealtimeStatus,
   NOTIFICATIONS_UNREAD_POLL_MS,
@@ -69,22 +69,18 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
           )
           .filter(Boolean),
       );
-      const { count: messageThreadUnread } = await fetchUnreadMessageThreadCount(uid);
-      const notificationPeers = unreadDmRes.error ? 0 : dmPeers.size;
-      const finalBadge = Math.max(notificationPeers, messageThreadUnread);
+      const conversationsUnread = unreadDmRes.error ? 0 : dmPeers.size;
+      const finalBadge = conversationsUnread;
 
       if (unreadDmRes.error) {
         if (isLikelyTransientNetworkFailure(unreadDmRes.error)) {
           devWarn("[notifications inbox] unread count refresh skipped (network)", unreadDmRes.error);
-          if (messageThreadUnread > 0) {
-            setUnreadCount(messageThreadUnread);
-          }
           return;
         }
         logFullSupabaseError("[notifications inbox] unread dm peers fetch failed", unreadDmRes.error, {
           uid,
         });
-        setUnreadCount(messageThreadUnread);
+        setUnreadCount(0);
         return;
       }
 
@@ -147,18 +143,6 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
             schema: "public",
             table: "notifications",
             filter: `user_id=eq.${userId}`,
-          },
-          () => {
-            void refreshUnreadCount();
-          },
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "messages",
-            filter: `receiver_id=eq.${userId}`,
           },
           () => {
             void refreshUnreadCount();
@@ -239,6 +223,7 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
   return (
     <NotificationsInboxContext.Provider value={value}>
       {children}
+      <IncomingMessageAlert />
     </NotificationsInboxContext.Provider>
   );
 }
