@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
-import { useAppFeedback } from "@/components/feedback/FeedbackProvider";
+import { useAppFeedback } from "@/components/feedback/feedbackContext";
 import { useNotificationsInboxOptional } from "@/components/notifications/NotificationsInboxContext";
 import { NOTIFICATIONS_UNREAD_POLL_MS } from "@/lib/notifications/realtimeChannelUtils";
 import { fetchDisplayNamesForUserIds } from "@/lib/supabase/messages";
@@ -38,10 +38,21 @@ export function IncomingMessageAlert() {
   const pathnameRef = useRef(pathname);
   const lastToastAtRef = useRef<Map<string, number>>(new Map());
   const seenMessageIdsRef = useRef<Set<string>>(new Set());
+  const showSuccessRef = useRef(showSuccess);
+  const inboxRef = useRef(inbox);
+  const tRef = useRef(t);
+  const tMessagesRef = useRef(tMessages);
 
   useEffect(() => {
     pathnameRef.current = pathname;
   }, [pathname]);
+
+  useEffect(() => {
+    showSuccessRef.current = showSuccess;
+    inboxRef.current = inbox;
+    tRef.current = t;
+    tMessagesRef.current = tMessages;
+  }, [showSuccess, inbox, t, tMessages]);
 
   useEffect(() => {
     let cancelled = false;
@@ -70,21 +81,21 @@ export function IncomingMessageAlert() {
       if (now - last < 2500) return;
       lastToastAtRef.current.set(trimmedSender, now);
 
-      void inbox?.refreshUnreadCount();
+      void inboxRef.current?.refreshUnreadCount();
 
       const names = await fetchDisplayNamesForUserIds(
         [trimmedSender],
-        tMessages("unknownUser"),
+        tMessagesRef.current("unknownUser"),
       );
       if (cancelled) return;
 
-      const senderName = names.get(trimmedSender) ?? tMessages("unknownUser");
+      const senderName = names.get(trimmedSender) ?? tMessagesRef.current("unknownUser");
       const body = preview.trim();
       const text =
         body.length > 0
           ? `${senderName}: ${body.length > 100 ? `${body.slice(0, 100)}…` : body}`
-          : `${senderName} — ${t("newMessage")}`;
-      showSuccess(text, { durationMs: 4500 });
+          : `${senderName} — ${tRef.current("newMessage")}`;
+      showSuccessRef.current(text, { durationMs: 4500 });
     };
 
     const handleMessageRow = (row: Record<string, unknown>) => {
@@ -129,7 +140,7 @@ export function IncomingMessageAlert() {
         }
         handleMessageRow(row as Record<string, unknown>);
       }
-      void inbox?.refreshUnreadCount();
+      void inboxRef.current?.refreshUnreadCount();
     };
 
     const attach = (uid: string) => {
@@ -208,7 +219,7 @@ export function IncomingMessageAlert() {
     const onVisible = () => {
       if (document.visibilityState !== "visible" || !userId) return;
       void pollLatestIncoming(userId);
-      void inbox?.refreshUnreadCount();
+      void inboxRef.current?.refreshUnreadCount();
     };
     document.addEventListener("visibilitychange", onVisible);
 
@@ -219,15 +230,16 @@ export function IncomingMessageAlert() {
       if (pollTimer) clearInterval(pollTimer);
       if (channel) void supabase.removeChannel(channel);
     };
-  }, [inbox, showSuccess, t, tMessages]);
+  }, []);
 
   useEffect(() => {
+    const inbox = inboxRef.current;
     if (!inbox || inbox.realtimeHealthy) return;
     const id = setInterval(() => {
-      void inbox.refreshUnreadCount();
+      void inboxRef.current?.refreshUnreadCount();
     }, NOTIFICATIONS_UNREAD_POLL_MS);
     return () => clearInterval(id);
-  }, [inbox]);
+  }, [inbox?.realtimeHealthy]);
 
   return null;
 }

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { LocaleIntlProviders } from "@/components/i18n/LocaleIntlProviders";
 import type { AppLocale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
@@ -103,9 +102,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           />
         </>
       ) : null}
-      <Suspense fallback={null}>
-        <LocaleIntlProviders locale={locale as AppLocale}>{children}</LocaleIntlProviders>
-      </Suspense>
+      <LocaleIntlProviders locale={locale as AppLocale}>{children}</LocaleIntlProviders>
     </>
   );
 }

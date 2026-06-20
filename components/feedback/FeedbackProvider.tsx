@@ -1,30 +1,22 @@
 "use client";
 
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
-import { IncomingMessageAlert } from "@/components/notifications/IncomingMessageAlert";
+import {
+  FeedbackContext,
+  type FeedbackContextValue,
+  type ShowSuccessOptions,
+} from "@/components/feedback/feedbackContext";
 
 type ToastState =
   | null
   | { kind: "error"; message: string; durationMs: number }
   | { kind: "success"; message: string; durationMs: number };
-
-type ShowSuccessOptions = { durationMs?: number };
-
-type FeedbackContextValue = {
-  /** Short-lived success toast (e.g. DM removed from your view). */
-  showSuccess: (message: string, options?: ShowSuccessOptions) => void;
-  showError: (message: string) => void;
-};
-
-const FeedbackContext = createContext<FeedbackContextValue | null>(null);
 
 const AUTO_DISMISS_MS = 3200;
 
@@ -46,7 +38,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(id);
   }, [toast]);
 
-  const value = useMemo(
+  const value = useMemo<FeedbackContextValue>(
     () => ({ showSuccess, showError }),
     [showSuccess, showError],
   );
@@ -54,7 +46,6 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   return (
     <FeedbackContext.Provider value={value}>
       {children}
-      <IncomingMessageAlert />
       {toast ? (
         <div
           role={toast.kind === "error" ? "alert" : "status"}
@@ -72,14 +63,4 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAppFeedback(): FeedbackContextValue {
-  const ctx = useContext(FeedbackContext);
-  return (
-    ctx ?? {
-      showSuccess: () => {
-        /* no-op when FeedbackProvider is missing */
-      },
-      showError: () => {},
-    }
-  );
-}
+export { useAppFeedback } from "@/components/feedback/feedbackContext";
