@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { IncomingMessageAlert } from "@/components/notifications/IncomingMessageAlert";
 import { devWarn } from "@/lib/devLog";
 import { fetchUnreadMessageThreadCount } from "@/lib/supabase/messages";
 import {
@@ -239,6 +240,7 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
   return (
     <NotificationsInboxContext.Provider value={value}>
       {children}
+      <IncomingMessageAlert />
     </NotificationsInboxContext.Provider>
   );
 }
