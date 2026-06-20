@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { ChallengeFriendButton } from "@/components/friendChallenge/ChallengeFriendButton";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import {
   deleteOwnVideoById,
@@ -463,6 +464,9 @@ export function PlayerPublicProfile({
             >
               <span className="min-w-0 truncate">{tProfile("editProfile")}</span>
             </Link>
+            <div className="mt-2">
+              <ChallengeFriendButton fullWidth />
+            </div>
           </div>
         ) : null}
         {userId && profile.id !== userId ? (
@@ -493,6 +497,9 @@ export function PlayerPublicProfile({
                 <ScoutShortlistButton scoutUserId={userId} playerUserId={profile.id} />
               </div>
             ) : null}
+            <div className="box-border w-full min-w-0 max-w-full sm:max-w-none sm:flex-1">
+              <ChallengeFriendButton fullWidth />
+            </div>
           </div>
         ) : null}
       </header>

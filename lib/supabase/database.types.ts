@@ -784,6 +784,60 @@ export type Database = {
         };
         Relationships: [];
       };
+      friend_challenges: {
+        Row: {
+          id: string;
+          challenger_id: string;
+          opponent_id: string | null;
+          start_date: string | null;
+          end_date: string | null;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          challenger_id: string;
+          opponent_id?: string | null;
+          start_date?: string | null;
+          end_date?: string | null;
+          status?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          challenger_id?: string;
+          opponent_id?: string | null;
+          start_date?: string | null;
+          end_date?: string | null;
+          status?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      challenge_scores: {
+        Row: {
+          id: string;
+          challenge_id: string;
+          user_id: string;
+          xp: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          challenge_id: string;
+          user_id: string;
+          xp?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          challenge_id?: string;
+          user_id?: string;
+          xp?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       quiz_questions: {
         Row: {
           id: string;
@@ -1653,6 +1707,22 @@ export type Database = {
           country: string | null;
           weekly_xp: number;
         }[];
+      };
+      goalnova_friend_challenge_create: {
+        Args: Record<string, never>;
+        Returns: Json;
+      };
+      goalnova_friend_challenge_accept: {
+        Args: { p_challenge_id: string };
+        Returns: Json;
+      };
+      goalnova_friend_challenge_get: {
+        Args: { p_challenge_id: string };
+        Returns: Json;
+      };
+      goalnova_friend_challenge_list_mine: {
+        Args: { p_limit?: number };
+        Returns: Json;
       };
       goalnova_admin_delete_video: {
         Args: { p_video_id: string };

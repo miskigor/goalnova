@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { ViewportScrollLock } from "@/components/layout/ViewportScrollLock";
 import { ReferralBootstrap } from "@/components/referrals/ReferralBootstrap";
+import { FriendChallengeBootstrap } from "@/components/friendChallenge/FriendChallengeBootstrap";
 import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default function AuthLayout({
     <AuthGate mode="guest" redirectTo="/home">
       <Suspense fallback={null}>
         <ReferralBootstrap />
+        <FriendChallengeBootstrap />
       </Suspense>
       <ViewportScrollLock />
       <div

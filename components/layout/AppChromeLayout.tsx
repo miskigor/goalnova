@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { FeedbackProvider } from "@/components/feedback/FeedbackProvider";
 import { AdminSupportUnreadProvider } from "@/components/layout/AdminSupportUnreadContext";
 import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
@@ -22,6 +23,7 @@ import {
   isMobileLayoutStableV2Enabled,
 } from "@/lib/layout/mobileLayoutStableV2Flag";
 import { isMobileLayoutV3ShellRoute } from "@/lib/layout/mobileLayoutV3Flag";
+import { FriendChallengeBootstrap } from "@/components/friendChallenge/FriendChallengeBootstrap";
 
 function AppMainColumn({ children }: { children: React.ReactNode }) {
   return (
@@ -68,6 +70,9 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
   return (
     <FeedbackProvider>
       <AdminSupportUnreadProvider>
+        <Suspense fallback={null}>
+          <FriendChallengeBootstrap />
+        </Suspense>
         {useV3Shell ? (
           <AppChromeLayoutV3>{children}</AppChromeLayoutV3>
         ) : isMobileLayoutStableV2Enabled() ? (

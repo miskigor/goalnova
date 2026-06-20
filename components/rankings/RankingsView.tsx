@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PublicVideoEntryLink } from "@/components/video/PublicVideoEntryLink";
+import { ChallengeFriendButton } from "@/components/friendChallenge/ChallengeFriendButton";
 import {
   fetchRankings,
   type RankingsListItem,
@@ -343,6 +344,9 @@ export function RankingsView() {
         <p className="mt-2 max-w-xl text-sm leading-relaxed text-gn-text-secondary">
           {t("subtitle")}
         </p>
+        <div className="mt-4">
+          <ChallengeFriendButton />
+        </div>
         <p className="mt-1 max-w-xl text-xs leading-relaxed text-gn-text-tertiary">
           {t("globalRanking")}
         </p>
