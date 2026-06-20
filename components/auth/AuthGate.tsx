@@ -17,7 +17,6 @@ import {
   recoverStaleSupabaseSession,
   hasSupabaseAuthStorage,
 } from "@/lib/auth/staleSessionRecovery";
-import { AppChromeLayout } from "@/components/layout/AppChromeLayout";
 import { PitchruschLoadingScreen } from "@/components/loading/PitchruschLoadingScreen";
 import { supabase } from "@/lib/supabase/client";
 import type { Session } from "@supabase/supabase-js";
@@ -52,14 +51,6 @@ const GUEST_MANUAL_AUTH_PATHS = new Set([
 ]);
 
 const INITIAL_SESSION_GRACE_MS = 250;
-
-function protectedChromeLoading(
-  mode: AuthGateMode,
-  node: React.ReactNode,
-): React.ReactNode {
-  if (mode !== "protected") return node;
-  return <AppChromeLayout>{node}</AppChromeLayout>;
-}
 
 export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const router = useRouter();
@@ -221,10 +212,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   }, [checking, isAuthenticated, emailConfirmed, mode, pathname, redirectTo, router, session]);
 
   if (checking) {
-    return protectedChromeLoading(
-      mode,
-      <PitchruschLoadingScreen fullScreen={false} />,
-    );
+    return <PitchruschLoadingScreen />;
   }
 
   const isLoggedIn = isAuthenticated ?? Boolean(session);
@@ -236,14 +224,11 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     mode === "protected" && isLoggedIn && emailConfirmed === false;
 
   if ((mode === "protected" && !isLoggedIn) || blockedUnconfirmed) {
-    return protectedChromeLoading(
-      mode,
-      <PitchruschLoadingScreen fullScreen={false} />,
-    );
+    return <PitchruschLoadingScreen />;
   }
 
   if (mode === "guest" && guestAuthSnapshotPending) {
-    return <PitchruschLoadingScreen fullScreen={false} />;
+    return <PitchruschLoadingScreen />;
   }
 
   return <>{children}</>;
