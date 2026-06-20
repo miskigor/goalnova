@@ -488,18 +488,6 @@ export function NavUserMenu({
             <NavIcon name="rankings" className="size-4 shrink-0 opacity-90" />
             {tNav("rankings")}
           </Link>
-          <Link
-            href="/notifications"
-            role="menuitem"
-            className={linkClass}
-            onClick={() => {
-              setOpen(false);
-              onNavigate?.();
-            }}
-          >
-            <NavIcon name="messages" className="size-4 shrink-0 opacity-90" />
-            {tNav("messages")}
-          </Link>
         </>
       ) : null}
 

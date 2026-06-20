@@ -9,7 +9,6 @@ import {
   logFullSupabaseError,
   supabaseErrorToUserMessage,
 } from "./logError";
-import { scheduleMessageNotification } from "./notifications";
 import { fetchVerifiedScoutFlagsForUserIds } from "./scoutVerificationPublic";
 import { rpcFetchPublicPlayerProfilesByIds } from "@/lib/supabase/publicPlayerProfiles";
 
@@ -717,7 +716,6 @@ export async function sendDirectMessage(params: {
     senderId: sessionSenderId,
     receiverId: params.receiverId,
   });
-  scheduleMessageNotification(supabase, params.receiverId, sessionSenderId, trimmed);
   return { ok: true, row };
 }
 

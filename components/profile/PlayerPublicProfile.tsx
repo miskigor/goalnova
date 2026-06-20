@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ChallengeFriendButton } from "@/components/friendChallenge/ChallengeFriendButton";
+import { ProfileMessagesLink } from "@/components/profile/ProfileMessagesLink";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import {
   deleteOwnVideoById,
@@ -466,6 +467,9 @@ export function PlayerPublicProfile({
             </Link>
             <div className="mt-2">
               <ChallengeFriendButton fullWidth />
+            </div>
+            <div className="mt-2">
+              <ProfileMessagesLink fullWidth />
             </div>
           </div>
         ) : null}

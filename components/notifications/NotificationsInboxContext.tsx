@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { IncomingMessageAlert } from "@/components/notifications/IncomingMessageAlert";
 import { devWarn } from "@/lib/devLog";
 import {
   logNotificationsRealtimeStatus,
@@ -222,6 +223,7 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
   return (
     <NotificationsInboxContext.Provider value={value}>
       {children}
+      <IncomingMessageAlert />
     </NotificationsInboxContext.Provider>
   );
 }
