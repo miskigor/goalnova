@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { IncomingMessageAlert } from "@/components/notifications/IncomingMessageAlert";
 
 type ToastState =
   | null
@@ -53,6 +54,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   return (
     <FeedbackContext.Provider value={value}>
       {children}
+      <IncomingMessageAlert />
       {toast ? (
         <div
           role={toast.kind === "error" ? "alert" : "status"}

@@ -29,8 +29,8 @@ export default function OnboardingLayout({
           <ReferralBootstrap />
         </Suspense>
         <PremiumProvider>
+        <FeedbackProvider>
         <NotificationsInboxProvider>
-          <FeedbackProvider>
             <div className="relative flex min-h-dvh min-w-0 w-full flex-col overflow-x-clip bg-gn-bg">
               <div className="pointer-events-none absolute inset-0 overflow-x-clip" aria-hidden>
                 <div className="absolute -top-40 start-1/2 h-[22rem] w-[22rem] -translate-x-1/2 rounded-full bg-gn-accent/[0.12] blur-[120px]" />
@@ -43,8 +43,8 @@ export default function OnboardingLayout({
                 <div className="mx-auto w-full min-w-0 max-w-sm">{children}</div>
               </main>
             </div>
-          </FeedbackProvider>
         </NotificationsInboxProvider>
+        </FeedbackProvider>
         </PremiumProvider>
       </RoleOnboardingGate>
       </EmailConfirmationGate>

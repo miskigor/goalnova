@@ -18,14 +18,14 @@ export default function PublicAppLayout({
 }) {
   return (
     <PremiumProvider>
-      <NotificationsInboxProvider>
-        <FeedbackProvider>
+      <FeedbackProvider>
+        <NotificationsInboxProvider>
           <Suspense fallback={null}>
             <FriendChallengeBootstrap />
           </Suspense>
           <PublicShell>{children}</PublicShell>
-        </FeedbackProvider>
-      </NotificationsInboxProvider>
+        </NotificationsInboxProvider>
+      </FeedbackProvider>
     </PremiumProvider>
   );
 }
