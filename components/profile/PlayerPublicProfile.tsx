@@ -31,7 +31,7 @@ import {
   type PlayerProfileGamification,
 } from "@/lib/supabase/playerProfileGamification";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
-import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { GN_SUCCESS_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
 import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
@@ -461,7 +461,7 @@ export function PlayerPublicProfile({
           >
             <Link
               href="/settings/profile"
-              className={`${GN_PRIMARY_BUTTON_CLASS} box-border min-h-11 w-full max-w-full min-w-0 max-lg:min-h-7 max-lg:rounded-lg max-lg:py-1 max-lg:text-xs`}
+              className={`${GN_SUCCESS_BUTTON_CLASS} box-border min-h-11 w-full max-w-full min-w-0 max-lg:min-h-7 max-lg:rounded-lg max-lg:py-1 max-lg:text-xs`}
             >
               <span className="min-w-0 truncate">{tProfile("editProfile")}</span>
             </Link>

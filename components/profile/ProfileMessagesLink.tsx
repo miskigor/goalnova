@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { NavIcon } from "@/components/icons/NavIcons";
 import { useNotificationsInbox } from "@/components/notifications/NotificationsInboxContext";
 import { UnreadNotificationBadge } from "@/components/notifications/UnreadNotificationBadge";
-import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
 type Props = {
   fullWidth?: boolean;
@@ -23,8 +23,8 @@ export function ProfileMessagesLink({ fullWidth = false, className = "" }: Props
       : t("inboxLinkAria");
 
   const btnClass = fullWidth
-    ? `${GN_SECONDARY_BUTTON_CLASS} relative w-full min-h-11 justify-center gap-2 ${className}`
-    : `${GN_SECONDARY_BUTTON_CLASS} relative inline-flex min-h-10 items-center justify-center gap-2 px-4 py-2 text-sm font-semibold ${className}`;
+    ? `${GN_PRIMARY_BUTTON_CLASS} relative w-full min-h-11 justify-center gap-2 ${className}`
+    : `${GN_PRIMARY_BUTTON_CLASS} relative inline-flex min-h-10 items-center justify-center gap-2 px-4 py-2 text-sm font-semibold ${className}`;
 
   return (
     <Link href="/notifications" className={btnClass} aria-label={ariaLabel}>
