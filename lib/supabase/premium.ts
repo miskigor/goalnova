@@ -1,4 +1,5 @@
 import { supabase } from "./client";
+import { hasPermanentPremiumAccess } from "@/lib/admin/bootstrapAdminEmails";
 import { logFullSupabaseError, supabaseErrorToUserMessage } from "./logError";
 import { isSubscriptionActive, isClubPlan, isPlayerPremium, isScoutPro } from "@/lib/subscription/access";
 
@@ -16,14 +17,19 @@ export async function fetchUserIsPremium(
   try {
     const roleLookup = await supabase
       .from("users")
-      .select("role")
+      .select("role,email")
       .eq("id", userId)
       .maybeSingle();
     const userRole = String(roleLookup.data?.role ?? "").trim();
+    const userEmail = roleLookup.data?.email ?? null;
+
+    if (hasPermanentPremiumAccess(userEmail)) {
+      return { isPremium: true, errorMessage: null };
+    }
 
     const primary = await supabase
       .from("users")
-      .select("is_premium,subscription_plan,subscription_status")
+      .select("is_premium,subscription_plan,subscription_status,subscription_current_period_end")
       .eq("id", userId)
       .maybeSingle();
 
@@ -64,10 +70,17 @@ export async function fetchUserIsPremium(
       return { isPremium: profileFallback.isPremium, errorMessage: null };
     }
 
-    // Stripe subscriptions are the source of truth; keep `is_premium` as backward-compatible fallback.
+    // Stripe subscriptions are the source of truth; keep `is_premium` only for legacy rows.
     const isPremiumFromSubscription =
       isSubscriptionActive(data) && (isPlayerPremium(data) || isScoutPro(data) || isClubPlan(data));
-    let isPremium = isPremiumFromSubscription || data.is_premium === true;
+    const hasManagedSubscription = Boolean(
+      String(data.subscription_plan ?? "").trim() &&
+        String(data.subscription_status ?? "").trim(),
+    );
+    let isPremium = isPremiumFromSubscription;
+    if (!isPremium && !hasManagedSubscription && data.is_premium === true) {
+      isPremium = true;
+    }
 
     // If users row still shows free (race/migration mismatch), trust role profile table.
     if (!isPremium) {
@@ -100,7 +113,7 @@ async function fetchPremiumFromProfileTable(
   const table = role === "player" ? "player_profiles" : "scout_profiles";
   const { data, error } = await supabase
     .from(table)
-    .select("subscription_plan,subscription_status")
+    .select("subscription_plan,subscription_status,subscription_current_period_end")
     .eq("id", userId)
     .maybeSingle();
 

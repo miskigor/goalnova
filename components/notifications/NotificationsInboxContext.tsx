@@ -27,7 +27,7 @@ import {
 } from "@/lib/supabase/logError";
 
 type NotificationsInboxContextValue = {
-  /** Unread notification rows only (`public.notifications`, `is_read = false`). Message unread disabled until real tracking exists. */
+  /** Distinct DM peers with unread `message` / `admin_notice` notification rows. */
   unreadCount: number;
   realtimeHealthy: boolean;
   refreshUnreadCount: () => Promise<void>;
@@ -73,7 +73,8 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
       );
       const { count: messageThreadUnread } = await fetchUnreadMessageThreadCount(uid);
       const notificationPeers = unreadDmRes.error ? 0 : dmPeers.size;
-      const finalBadge = Math.max(notificationPeers, messageThreadUnread);
+      // Use notification peers only — thread heuristic stays high after read (no per-message read flag).
+      const finalBadge = unreadDmRes.error ? messageThreadUnread : notificationPeers;
 
       if (unreadDmRes.error) {
         if (isLikelyTransientNetworkFailure(unreadDmRes.error)) {

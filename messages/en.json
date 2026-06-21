@@ -1286,6 +1286,8 @@
     "clipTypeTraining": "training",
     "clipTypeMatch": "match",
     "clipTypeSkill": "skill",
+    "clipTypeShootingAtGoal": "shooting at goal",
+    "clipTypeOneVOne": "1v1",
     "clipTypeNonFootball": "non football",
     "clipTypeUnclear": "unclear",
     "clipTypeOther": "other",
@@ -1326,6 +1328,9 @@
     "playerStrength": "Strength",
     "playerBadge": "Badge",
     "playerImprove": "Improve",
+    "howToImproveHeading": "How to improve",
+    "coachDetailHeading": "Detailed coach notes",
+    "weeklyPlanHeading": "Weekly training plan",
     "scoutNote": "Scout note",
     "coreMetricsHeading": "Core metrics",
     "core": {

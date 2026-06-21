@@ -63,6 +63,14 @@ export async function POST(request: Request): Promise<NextResponse> {
     console.error("[account/delete] users.is_deleted update failed", softErr);
   }
 
+  const { error: trialClaimErr } = await service.rpc(
+    "goalnova_record_welcome_trial_email_if_used",
+    { p_user_id: userId },
+  );
+  if (trialClaimErr) {
+    console.error("[account/delete] welcome trial email claim failed", trialClaimErr);
+  }
+
   const { error: deleteErr } = await service.auth.admin.deleteUser(userId);
   if (deleteErr) {
     console.error("[account/delete] auth.admin.deleteUser failed", deleteErr);

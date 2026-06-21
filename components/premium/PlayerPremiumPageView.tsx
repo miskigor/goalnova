@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { fetchMyPlayerPremiumProfile } from "@/lib/supabase/playerPremium";
 import { useEffect, useState } from "react";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
+import { supabase } from "@/lib/supabase/client";
 
 export function PlayerPremiumPageView() {
   const t = useTranslations("premium");
@@ -15,9 +16,12 @@ export function PlayerPremiumPageView() {
   useEffect(() => {
     let mounted = true;
     void (async () => {
-      const { profile } = await fetchMyPlayerPremiumProfile();
+      const [{ profile }, auth] = await Promise.all([
+        fetchMyPlayerPremiumProfile(),
+        supabase.auth.getUser(),
+      ]);
       if (!mounted) return;
-      setActive(isPlayerPremium(profile));
+      setActive(isPlayerPremium(profile, auth.data.user?.email));
     })();
     return () => {
       mounted = false;

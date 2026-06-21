@@ -232,6 +232,10 @@ function getLocalizedClipTypeLabel(t: ReturnType<typeof useTranslations>, clipTy
       return t("clipTypeMatch");
     case "skill":
       return t("clipTypeSkill");
+    case "shooting_at_goal":
+      return t("clipTypeShootingAtGoal");
+    case "one_v_one":
+      return t("clipTypeOneVOne");
     case "non_football":
       return t("clipTypeNonFootball");
     case "unclear":
@@ -309,19 +313,150 @@ function ScoreRow({ label, value }: { label: string; value: number }) {
   );
 }
 
+function PlayerSpeedTechniqueScores({
+  speed,
+  technique,
+  t,
+}: {
+  speed: number | null;
+  technique: number | null;
+  t: ReturnType<typeof useTranslations<"ai">>;
+}) {
+  if (speed == null && technique == null) return null;
+
+  const cards: { key: "speed" | "technique"; value: number; label: string }[] =
+    [];
+  if (speed != null) {
+    cards.push({ key: "speed", value: speed, label: t("core.speed") });
+  }
+  if (technique != null) {
+    cards.push({
+      key: "technique",
+      value: technique,
+      label: t("core.technique"),
+    });
+  }
+
+  return (
+    <div
+      className={`grid gap-3 ${cards.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}
+    >
+      {cards.map(({ key, value, label }) => {
+        const v = Math.min(100, Math.max(0, value));
+        return (
+          <div
+            key={key}
+            className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 text-center"
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gn-text-tertiary">
+              {label}
+            </p>
+            <p className="mt-1.5 text-3xl font-bold tabular-nums text-gn-accent">
+              {Math.round(v)}
+            </p>
+            <div className="mx-auto mt-2 h-1.5 max-w-[8rem] overflow-hidden rounded-full bg-white/[0.06]">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-gn-accent/90 to-gn-accent/60"
+                style={{ width: `${v}%` }}
+              />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function WeeklyTrainingPlanBlock({
+  plan,
+  t,
+}: {
+  plan?: string | null;
+  t: ReturnType<typeof useTranslations<"ai">>;
+}) {
+  const text = plan?.trim();
+  if (!text) return null;
+  return (
+    <div className="rounded-2xl border border-gn-accent/20 bg-gn-accent/[0.06] px-4 py-3.5 sm:px-5 sm:py-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gn-accent/90">
+        {t("weeklyPlanHeading")}
+      </p>
+      <p className="mt-3 text-sm leading-relaxed text-gn-text [overflow-wrap:anywhere]">
+        {text}
+      </p>
+    </div>
+  );
+}
+
+function ImprovementTipsList({
+  items,
+  t,
+  coachNote,
+}: {
+  items: string[];
+  t: ReturnType<typeof useTranslations<"ai">>;
+  coachNote?: string | null;
+}) {
+  const tips = items.map((s) => s.trim()).filter(Boolean);
+  const coach =
+    coachNote?.trim() &&
+    !tips.some((tip) => tip.includes(coachNote.trim().slice(0, 40)))
+      ? coachNote.trim()
+      : null;
+  if (tips.length === 0 && !coach) return null;
+
+  return (
+    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 sm:px-5 sm:py-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gn-accent/90">
+        {t("howToImproveHeading")}
+      </p>
+      {tips.length > 0 ? (
+        <ol className="mt-3 list-decimal space-y-4 ps-5 marker:text-gn-accent/80">
+          {tips.map((tip, index) => (
+            <li
+              key={`${index}-${tip.slice(0, 24)}`}
+              className="text-sm leading-relaxed text-gn-text [overflow-wrap:anywhere]"
+            >
+              {tip}
+            </li>
+          ))}
+        </ol>
+      ) : null}
+      {coach ? (
+        <div className={tips.length > 0 ? "mt-4 border-t border-white/[0.06] pt-4" : "mt-3"}>
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gn-text-tertiary">
+            {t("coachDetailHeading")}
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-gn-text-secondary [overflow-wrap:anywhere]">
+            {coach}
+          </p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function PlayerV2Preview({
   scores,
   t,
+  locale,
+  fb,
 }: {
   scores: VideoAnalysisScores;
   t: ReturnType<typeof useTranslations<"ai">>;
+  locale: UiLocale;
+  fb: (typeof AI_UI_FALLBACK_TEXT)[UiLocale];
 }) {
   const v2 = scores.v2;
   const strength = v2?.strengths[0]?.trim();
   const badge = v2?.badges[0]?.trim();
-  const improve = v2?.improvements[0]?.trim();
-  const motivation =
+  const improvements = v2?.improvements ?? [];
+  const motivationRaw =
     v2?.player_friendly_summary?.trim() || scores.feedback_text;
+  const motivation =
+    motivationRaw && shouldUseLocalizedFallback(motivationRaw, locale)
+      ? fb.feedback
+      : motivationRaw;
 
   return (
     <>
@@ -334,6 +469,12 @@ function PlayerV2Preview({
         </p>
         <p className="mt-1 text-xs text-gn-text-tertiary">/ 100</p>
       </div>
+
+      <PlayerSpeedTechniqueScores
+        speed={v2?.scores.speed ?? null}
+        technique={v2?.scores.technique ?? null}
+        t={t}
+      />
 
       {strength ? (
         <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5">
@@ -353,14 +494,13 @@ function PlayerV2Preview({
         </div>
       ) : null}
 
-      {improve ? (
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gn-text-tertiary">
-            {t("playerImprove")}
-          </p>
-          <p className="mt-1.5 text-sm leading-relaxed text-gn-text">{improve}</p>
-        </div>
-      ) : null}
+      <ImprovementTipsList
+        items={improvements}
+        t={t}
+        coachNote={v2?.coach_feedback}
+      />
+
+      <WeeklyTrainingPlanBlock plan={v2?.weekly_training_plan} t={t} />
 
       {motivation ? (
         <p className="text-center text-sm leading-relaxed text-gn-text-secondary">
@@ -483,7 +623,7 @@ export function AiAnalysisResultPanel({
     return (
       <div className="box-border w-full min-w-0 max-w-full space-y-5 overflow-x-clip">
         <p className="text-center text-xs text-gn-text-tertiary">{t("fromSavedHint")}</p>
-        <PlayerV2Preview scores={scores} t={t} />
+        <PlayerV2Preview scores={scores} t={t} locale={locale} fb={fb} />
         <button
           type="button"
           disabled={reanalyzeBusy}
@@ -546,7 +686,13 @@ export function AiAnalysisResultPanel({
         ) : null}
       </div>
 
-      {v2?.coach_feedback ? (
+      {v2?.improvements?.length ? (
+        <ImprovementTipsList
+          items={v2.improvements}
+          t={t}
+          coachNote={v2.coach_feedback}
+        />
+      ) : v2?.coach_feedback ? (
         <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 sm:p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gn-text-tertiary">
             {t("scoutNote")}
@@ -556,6 +702,8 @@ export function AiAnalysisResultPanel({
           </p>
         </div>
       ) : null}
+
+      <WeeklyTrainingPlanBlock plan={v2?.weekly_training_plan} t={t} />
 
       {v2 ? (
         <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 sm:p-5">
@@ -825,6 +973,7 @@ export function AiAnalysisModal({
   const displayError = localRunError?.message ?? error;
   const displayErrorCode = localRunError?.code ?? errorCode;
   const hasBlockingError = Boolean(displayError);
+  const showDevErrorCode = process.env.NODE_ENV === "development";
 
   const showAnalysisLoading =
     !hasBlockingError && (runBusy || (loadSavedBusy && !scores));
@@ -901,9 +1050,11 @@ export function AiAnalysisModal({
                   <p className="text-sm leading-relaxed text-gn-text-secondary">
                     {getAiErrorReasonLabel("premium_check_timeout", locale)}
                   </p>
-                  <p className="break-all font-mono text-xs text-gn-text-tertiary">
-                    premium_check_timeout
-                  </p>
+                  {showDevErrorCode ? (
+                    <p className="break-all font-mono text-xs text-gn-text-tertiary">
+                      premium_check_timeout
+                    </p>
+                  ) : null}
                 </div>
               ) : !premiumStatusLoaded ? (
                 <LoadingState
@@ -949,7 +1100,7 @@ export function AiAnalysisModal({
               <p className="text-sm leading-relaxed text-gn-text-secondary">
                 {displayError}
               </p>
-              {displayErrorCode ? (
+              {displayErrorCode && showDevErrorCode ? (
                 <p className="break-all font-mono text-xs text-gn-text-tertiary">
                   {displayErrorCode}
                 </p>
@@ -980,7 +1131,7 @@ export function AiAnalysisModal({
                   role="alert"
                 >
                   <p>{error}</p>
-                  {errorCode ? (
+                  {errorCode && showDevErrorCode ? (
                     <p className="mt-1 break-all font-mono text-xs text-gn-text-tertiary">
                       {errorCode}
                     </p>

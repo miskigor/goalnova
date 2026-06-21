@@ -75,6 +75,8 @@ export type VideoAnalysisModelJson = {
   badges: string[];
   coach_feedback: string;
   player_friendly_summary: string;
+  /** Optional 5-day micro-plan tied to visible weaknesses. */
+  weekly_training_plan?: string;
 };
 
 /** Persisted inside `visibility_analysis` jsonb for v2 rows. */
@@ -87,6 +89,7 @@ export type VideoAnalysisV2Stored = {
   badges: string[];
   coach_feedback: string;
   player_friendly_summary: string;
+  weekly_training_plan?: string;
   scout_visibility: VisibilityAnalysisPayload | null;
 };
 

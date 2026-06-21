@@ -9,6 +9,7 @@ import { devError, isDev } from "@/lib/devLog";
 import { signOut } from "@/lib/supabase/auth";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { UnreadNotificationBadge } from "@/components/notifications/UnreadNotificationBadge";
+import { useNotificationsInbox } from "@/components/notifications/NotificationsInboxContext";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
 import { NAV_MENU_PLAYER_UPLOAD_CLASS } from "@/components/layout/sidebarUploadStyles";
 import { NavIcon } from "@/components/icons/NavIcons";
@@ -110,6 +111,7 @@ export function NavUserMenu({
   const wrapRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const tNav = useTranslations("nav");
+  const tMessages = useTranslations("messages");
   const tSettings = useTranslations("settings");
   const tAuth = useTranslations("authCommon");
   const tErr = useTranslations("errors");
@@ -122,6 +124,12 @@ export function NavUserMenu({
   const isScoutAccount = scoutGate.loaded && scoutGate.row?.role === "scout";
   const [userSupportUnread, setUserSupportUnread] = useState(0);
   const { showError } = useAppFeedback();
+  const { unreadCount: dmUnreadCount } = useNotificationsInbox();
+
+  const dmMessagesAriaLabel =
+    dmUnreadCount > 0
+      ? tMessages("inboxLinkAriaUnread", { count: dmUnreadCount })
+      : tMessages("inboxLinkAria");
 
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
@@ -373,13 +381,40 @@ export function NavUserMenu({
         href="/profile"
         role="menuitem"
         className={linkClass}
+        aria-label={
+          dmUnreadCount > 0
+            ? `${tNav("profile")}, ${tMessages("inboxLinkAriaUnread", { count: dmUnreadCount })}`
+            : tNav("profile")
+        }
         onClick={() => {
           setOpen(false);
           onNavigate?.();
         }}
       >
+        <span className="relative inline-flex shrink-0">
+          <NavIcon name="profile" className="size-4 shrink-0 opacity-90" />
+          <UnreadNotificationBadge count={dmUnreadCount} variant="navSidebar" />
+        </span>
         {tNav("profile")}
       </Link>
+      {bottomNavTrigger ? (
+        <Link
+          href="/notifications"
+          role="menuitem"
+          className={linkClass}
+          aria-label={dmMessagesAriaLabel}
+          onClick={() => {
+            setOpen(false);
+            onNavigate?.();
+          }}
+        >
+          <span className="relative inline-flex shrink-0">
+            <NavIcon name="messages" className="size-4 shrink-0 opacity-90" />
+            <UnreadNotificationBadge count={dmUnreadCount} variant="navSidebar" />
+          </span>
+          {tNav("messages")}
+        </Link>
+      ) : null}
       <Link
         href="/settings"
         role="menuitem"
@@ -520,7 +555,11 @@ export function NavUserMenu({
         aria-expanded={open}
         aria-haspopup="true"
         aria-controls={menuId}
-        aria-label={tA11y("accountMenu")}
+        aria-label={
+          dmUnreadCount > 0
+            ? `${tA11y("accountMenu")}, ${tMessages("inboxLinkAriaUnread", { count: dmUnreadCount })}`
+            : tA11y("accountMenu")
+        }
         onClick={() => setOpen((v) => !v)}
         className={
           "flex items-center transition-all duration-200 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg " +
@@ -531,22 +570,28 @@ export function NavUserMenu({
               : "gap-2 rounded-full p-0.5")
         }
       >
-        <ProfileAvatar
-          name={displayNameFromUser(user)}
-          imageUrl={avatarUrl}
-          sizeClassName={
-            bottomNavTrigger
-              ? APP_MOBILE_BOTTOM_NAV_PROFILE_AVATAR_CLASS
-              : compactTrigger
-                ? "size-9 text-xs font-semibold"
-                : "size-9 text-xs font-semibold"
-          }
-          className={
-            bottomNavTrigger
-              ? "!rounded-full ring-2 ring-white/30"
-              : "ring-2 ring-gn-border-subtle"
-          }
-        />
+        <span className="relative inline-flex shrink-0">
+          <ProfileAvatar
+            name={displayNameFromUser(user)}
+            imageUrl={avatarUrl}
+            sizeClassName={
+              bottomNavTrigger
+                ? APP_MOBILE_BOTTOM_NAV_PROFILE_AVATAR_CLASS
+                : compactTrigger
+                  ? "size-9 text-xs font-semibold"
+                  : "size-9 text-xs font-semibold"
+            }
+            className={
+              bottomNavTrigger
+                ? "!rounded-full ring-2 ring-white/30"
+                : "ring-2 ring-gn-border-subtle"
+            }
+          />
+          <UnreadNotificationBadge
+            count={dmUnreadCount}
+            variant={bottomNavTrigger || compactTrigger ? "navCompact" : "header"}
+          />
+        </span>
         {compactTrigger ? null : (
           <svg
             className={`size-4 shrink-0 text-gn-text-tertiary transition-transform duration-200 ${open ? "rotate-180" : ""}`}

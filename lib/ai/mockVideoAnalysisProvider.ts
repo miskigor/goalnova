@@ -1,4 +1,17 @@
 import type { VideoAnalysisProvider } from "./videoAnalysisProvider";
+import {
+  badgeForTopMetric,
+  buildVariedImprovements,
+  buildVariedWeeklyPlan,
+  localizedClipSummary,
+  variedPlayerSummary,
+  type AdviceLocale,
+  type WeakestMetric,
+} from "./mockVideoAnalysisAdvice";
+import {
+  deriveSpeedScore,
+  deriveTechniqueScore,
+} from "./deriveCoreScores";
 import type {
   CoreSkillScores,
   MetricAssessment,
@@ -33,6 +46,15 @@ type LocaleCopy = {
   cameraNote: string;
   evidence: string;
   notAssessable: string;
+  v2PlayerSummary: string;
+  v2ImprovementFallback: string;
+  v2BadgeFastFeet: string;
+  v2ImprovementTraining: string;
+  v2ImprovementSecondary: string;
+  v2ImprovementHabit: string;
+  v2ImprovementFilming: string;
+  v2ImprovementExtra: string;
+  v2WeeklyPlan: string;
 };
 
 const METRIC_LABELS: Record<SupportedLocale, Record<string, string>> = {
@@ -249,6 +271,23 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Camera quality and angle affect confidence; unclear moments are not scored.",
     evidence: "Visible football action in this clip supports this score.",
     notAssessable: "This action is not clearly visible enough in this clip.",
+    v2PlayerSummary:
+      "Strong clip — keep training with the same energy and upload your next highlight. Focus on one weak area per session so progress is easy to measure.",
+    v2ImprovementFallback:
+      "Film a clearer full-action rep to unlock sharper tips.",
+    v2BadgeFastFeet: "Fast Feet",
+    v2ImprovementTraining:
+      "In this clip, {metric} has the most room to grow. In your next session, run 3 sets of 8–10 reps focused on that skill (cones, wall passes, or 1v1 boxes), rest 60 seconds between sets, and keep the ball close on every touch.",
+    v2ImprovementSecondary:
+      "Your second focus is {metric}. Slow the first touch slightly so your body is balanced before the next action — this reduces mistakes when pressure arrives.",
+    v2ImprovementHabit:
+      "Between sets, reset your hips square to the direction you want to go before receiving. That small habit makes your next touch faster without rushing.",
+    v2ImprovementFilming:
+      "For sharper feedback next time, film from hip height at a 30–45° angle, keep the full action in frame from first touch to finish, and avoid cutting mid-movement.",
+    v2ImprovementExtra:
+      "A third focus is {metric}. Add 10 minutes of slow-motion reps at half speed before going full tempo — your brain learns the pattern faster when mistakes are visible.",
+    v2WeeklyPlan:
+      "Monday: 25 min {m1} cone grid (3×8 reps). Tuesday: wall passes + first touch (4×12). Wednesday: light recovery jog + stretching. Thursday: {m2} in a small 1v1 box (5×2 min). Friday: film a new highlight applying this week's cues.",
   },
   hr: {
     invalidReason:
@@ -268,6 +307,23 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Kvaliteta i kut kamere utječu na pouzdanost; nejasni dijelovi se ne ocjenjuju.",
     evidence: "Jasno vidljiva nogometna akcija podupire ovu ocjenu.",
     notAssessable: "Ova akcija nije dovoljno jasno vidljiva u ovom isječku.",
+    v2PlayerSummary:
+      "Solidan klip — nastavi trenirati istim tempom i učitaj sljedeći highlight. Fokusiraj jednu slabiju metriku po treningu da vidiš jasan napredak.",
+    v2ImprovementFallback:
+      "Snimi jasniji cijeli pokret da dobiješ preciznije savjete.",
+    v2BadgeFastFeet: "Brza stopala",
+    v2ImprovementTraining:
+      "U ovom isječku najviše prostora za napredak ima {metric}. Na sljedećem treningu odradi 3 serije po 8–10 ponavljanja uz fokus na tu vještinu (npr. slalom oko stožaca ili zidno dodavanje), pauza 60 s, loptu drži blizu stopala.",
+    v2ImprovementSecondary:
+      "Drugi fokus je {metric}. Uspori prvi dodir dok se tijelo ne postavi uravnoteženo prije sljedeće akcije — manje grešaka pod pritiskom.",
+    v2ImprovementHabit:
+      "Između serija postavi kukove okomito na smjer u koji ideš prije primanja lopte. Taj mali navik ubrzava sljedeći dodir bez žurbe.",
+    v2ImprovementFilming:
+      "Za detaljnije savjete sljedeći put snimaj s visine kukova pod kutom 30–45°, cijela akcija mora biti u kadru od prvog do zadnjeg dodira, bez rezanja usred pokreta.",
+    v2ImprovementExtra:
+      "Treći fokus je {metric}. Dodaj 10 minuta sporih ponavljanja na pola tempa prije punog ritma — mozak brže uči obrazac kad su greške vidljive.",
+    v2WeeklyPlan:
+      "Ponedjeljak: 25 min vježbe {m1} uz stožce (3×8 ponavljanja). Utorak: zidno dodavanje + prvi dodir (4×12). Srijeda: lagani oporavak + istezanje. Četvrtak: {m2} u malom 1v1 prostoru (5×2 min). Petak: snimi novi highlight primjenjujući savjete iz ovog tjedna.",
   },
   de: {
     invalidReason:
@@ -287,6 +343,23 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Kameraqualität und Perspektive beeinflussen die Sicherheit; unklare Momente werden nicht bewertet.",
     evidence: "Sichtbare Fußballaktion im Clip stützt diese Bewertung.",
     notAssessable: "Diese Aktion ist in diesem Clip nicht klar genug sichtbar.",
+    v2PlayerSummary:
+      "Starker Clip — trainiere weiter mit derselben Energie und lade dein nächstes Highlight hoch.",
+    v2ImprovementFallback:
+      "Filme eine klarere vollständige Aktion für präzisere Tipps.",
+    v2BadgeFastFeet: "Schnelle Füße",
+    v2ImprovementTraining:
+      "In diesem Clip hat {metric} das größte Verbesserungspotenzial. Trainiere 3 Sätze à 8–10 Wiederholungen mit Fokus auf diese Fähigkeit (Hütchen, Wandpässe oder 1-gegen-1), 60 s Pause, Ball eng am Fuß.",
+    v2ImprovementSecondary:
+      "Zweiter Fokus: {metric}. Verlangsame die erste Ballannahme leicht, bis der Körper ausbalanciert ist — weniger Fehler unter Druck.",
+    v2ImprovementHabit:
+      "Stelle die Hüften vor der Annahme in Spielrichtung. Diese Gewohnheit macht den nächsten Kontakt schneller ohne Hektik.",
+    v2ImprovementFilming:
+      "Filme nächstes Mal auf Hüfthöhe aus 30–45° Winkel, ganze Aktion von erstem bis letztem Kontakt im Bild, ohne Schnitt mitten in der Bewegung.",
+    v2ImprovementExtra:
+      "Dritter Fokus: {metric}. 10 Minuten langsame Wiederholungen in halbem Tempo vor voller Geschwindigkeit.",
+    v2WeeklyPlan:
+      "Montag: 25 Min {m1} Hütchen (3×8). Dienstag: Wandpässe + erster Kontakt (4×12). Mittwoch: leichte Regeneration. Donnerstag: {m2} im 1-gegen-1 (5×2 Min). Freitag: neues Highlight filmen.",
   },
   bs: {
     invalidReason:
@@ -306,6 +379,23 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Kvalitet i ugao kamere utiču na pouzdanost; nejasni dijelovi se ne ocjenjuju.",
     evidence: "Jasno vidljiva nogometna akcija podržava ovu ocjenu.",
     notAssessable: "Ova akcija nije dovoljno jasno vidljiva u ovom klipu.",
+    v2PlayerSummary:
+      "Solidan klip — nastavi trenirati istim tempom i učitaj sljedeći highlight.",
+    v2ImprovementFallback:
+      "Snimi jasniji cijeli pokret da dobiješ preciznije savjete.",
+    v2BadgeFastFeet: "Brza stopala",
+    v2ImprovementTraining:
+      "U ovom klipu najviše prostora za napredak ima {metric}. Na sljedećem treningu uradi 3 serije po 8–10 ponavljanja fokusirano na tu vještinu, pauza 60 s, loptu drži blizu stopala.",
+    v2ImprovementSecondary:
+      "Drugi fokus je {metric}. Uspori prvi dodir dok se tijelo ne uravnoteži prije sljedeće akcije.",
+    v2ImprovementHabit:
+      "Prije primanja lopte postavi kukove u smjeru kretanja — brži sljedeći dodir bez žurbe.",
+    v2ImprovementFilming:
+      "Sljedeći put snimaj s visine kukova pod kutom 30–45°, cijela akcija u kadru, bez rezanja usred pokreta.",
+    v2ImprovementExtra:
+      "Treći fokus je {metric}. Dodaj 10 minuta sporih ponavljanja na pola tempa prije punog ritma.",
+    v2WeeklyPlan:
+      "Ponedjeljak: 25 min {m1} sa stožcima (3×8). Utorak: zidno dodavanje (4×12). Srijeda: oporavak. Četvrtak: {m2} u 1v1 (5×2 min). Petak: snimi novi highlight.",
   },
   es: {
     invalidReason:
@@ -325,6 +415,23 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "La calidad y el ángulo de cámara afectan la confianza; los momentos poco claros no se puntúan.",
     evidence: "La acción de fútbol visible en el clip respalda esta puntuación.",
     notAssessable: "Esta acción no se ve con suficiente claridad en este clip.",
+    v2PlayerSummary:
+      "Buen clip — sigue entrenando con la misma energía y sube tu próximo highlight.",
+    v2ImprovementFallback:
+      "Graba una repetición completa más clara para conseguir consejos más precisos.",
+    v2BadgeFastFeet: "Pies rápidos",
+    v2ImprovementTraining:
+      "En este clip, {metric} tiene más margen de mejora. En el próximo entrenamiento haz 3 series de 8–10 repeticiones enfocadas en esa habilidad, descansa 60 s y mantén el balón cerca del pie.",
+    v2ImprovementSecondary:
+      "Segundo foco: {metric}. Reduce un poco la velocidad del primer toque hasta equilibrar el cuerpo antes de la siguiente acción.",
+    v2ImprovementHabit:
+      "Antes de recibir, orienta la cadera hacia donde quieres jugar — acelera el siguiente toque sin precipitarte.",
+    v2ImprovementFilming:
+      "La próxima vez graba a la altura de la cadera en ángulo 30–45°, con toda la acción en cuadro de principio a fin.",
+    v2ImprovementExtra:
+      "Tercer foco: {metric}. Añade 10 min de repeticiones lentas a medio ritmo antes de ir a tempo completo.",
+    v2WeeklyPlan:
+      "Lunes: 25 min {m1} con conos (3×8). Martes: pared + primer toque (4×12). Miércoles: recuperación ligera. Jueves: {m2} en 1v1 (5×2 min). Viernes: graba un nuevo highlight.",
   },
   pt: {
     invalidReason:
@@ -344,6 +451,23 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "A qualidade e o ângulo da câmara afetam a confiança; momentos pouco claros não são pontuados.",
     evidence: "A ação de futebol visível no clipe sustenta esta pontuação.",
     notAssessable: "Esta ação não está suficientemente visível neste clipe.",
+    v2PlayerSummary:
+      "Clipe forte — continua a treinar com a mesma energia e carrega o teu próximo highlight.",
+    v2ImprovementFallback:
+      "Grava uma repetição completa mais clara para obteres dicas mais precisas.",
+    v2BadgeFastFeet: "Pés rápidos",
+    v2ImprovementTraining:
+      "Neste clipe, {metric} tem mais margem para melhorar. No próximo treino faz 3 séries de 8–10 repetições focadas nessa habilidade, pausa 60 s, bola perto do pé.",
+    v2ImprovementSecondary:
+      "Segundo foco: {metric}. Aborda ligeiramente o primeiro toque até o corpo estar equilibrado antes da ação seguinte.",
+    v2ImprovementHabit:
+      "Antes de receber, orienta as ancas para a direção do jogo — toque seguinte mais rápido sem pressa.",
+    v2ImprovementFilming:
+      "Da próxima vez grava à altura da anca em ângulo 30–45°, ação completa no enquadramento.",
+    v2ImprovementExtra:
+      "Terceiro foco: {metric}. Adiciona 10 min de repetições lentas a meio ritmo antes do tempo completo.",
+    v2WeeklyPlan:
+      "Segunda: 25 min {m1} com cones (3×8). Terça: parede + primeiro toque (4×12). Quarta: recuperação leve. Quinta: {m2} em 1v1 (5×2 min). Sexta: grava novo highlight.",
   },
   sr: {
     invalidReason:
@@ -363,6 +487,23 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Kvalitet i ugao kamere utiču na pouzdanost; nejasni delovi se ne ocenjuju.",
     evidence: "Jasno vidljiva fudbalska akcija podržava ovu ocenu.",
     notAssessable: "Ova akcija nije dovoljno jasno vidljiva u ovom klipu.",
+    v2PlayerSummary:
+      "Solidan klip — nastavi da treniraš istim tempom i otpremi sledeći highlight.",
+    v2ImprovementFallback:
+      "Snimi jasniji ceo pokret da dobiješ preciznije savete.",
+    v2BadgeFastFeet: "Brza stopala",
+    v2ImprovementTraining:
+      "U ovom klipu najviše prostora za napredak ima {metric}. Na sledećem treningu uradi 3 serije po 8–10 ponavljanja fokusirano na tu veštinu, pauza 60 s.",
+    v2ImprovementSecondary:
+      "Drugi fokus je {metric}. Uspori prvi dodir dok se telo ne uravnoteži pre sledeće akcije.",
+    v2ImprovementHabit:
+      "Pre primanja lopte postavi kukove u smeru kretanja — brži sledeći dodir bez žurbe.",
+    v2ImprovementFilming:
+      "Sledeći put snimaj sa visine kukova pod uglom 30–45°, cela akcija u kadru.",
+    v2ImprovementExtra:
+      "Treći fokus je {metric}. Dodaj 10 minuta sporih ponavljanja na pola tempa pre punog ritma.",
+    v2WeeklyPlan:
+      "Ponedeljak: 25 min {m1} sa čunjevima (3×8). Utorak: zidno dodavanje (4×12). Sreda: oporavak. Četvrtak: {m2} u 1v1 (5×2 min). Petak: snimi novi highlight.",
   },
   fr: {
     invalidReason:
@@ -382,6 +523,23 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "La qualité et l’angle de caméra influencent la confiance ; les moments flous ne sont pas notés.",
     evidence: "Une action de football visible dans le clip justifie cette note.",
     notAssessable: "Cette action n’est pas suffisamment visible dans ce clip.",
+    v2PlayerSummary:
+      "Bon clip — continue à t’entraîner avec la même énergie et publie ton prochain highlight.",
+    v2ImprovementFallback:
+      "Filme une répétition complète plus claire pour obtenir des conseils plus précis.",
+    v2BadgeFastFeet: "Pieds rapides",
+    v2ImprovementTraining:
+      "Dans ce clip, {metric} a le plus de marge de progression. À l'entraînement suivant, fais 3 séries de 8–10 reps ciblées, pause 60 s, ballon près du pied.",
+    v2ImprovementSecondary:
+      "Deuxième axe : {metric}. Ralentis légèrement la première touche jusqu'à être équilibré avant l'action suivante.",
+    v2ImprovementHabit:
+      "Avant de recevoir, oriente les hanches vers la direction du jeu — touche suivante plus rapide sans précipitation.",
+    v2ImprovementFilming:
+      "Filme la prochaine fois à hauteur de hanche en angle 30–45°, action complète dans le cadre.",
+    v2ImprovementExtra:
+      "Troisième axe : {metric}. Ajoute 10 min de répétitions lentes à mi-régime avant le tempo complet.",
+    v2WeeklyPlan:
+      "Lundi : 25 min {m1} avec plots (3×8). Mardi : mur + première touche (4×12). Mercredi : récupération légère. Jeudi : {m2} en 1v1 (5×2 min). Vendredi : filme un nouveau highlight.",
   },
   it: {
     invalidReason:
@@ -401,6 +559,23 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Qualità e angolo della camera influenzano la confidenza; i momenti poco chiari non vengono valutati.",
     evidence: "L’azione calcistica visibile nel clip supporta questo punteggio.",
     notAssessable: "Questa azione non è abbastanza visibile in questo clip.",
+    v2PlayerSummary:
+      "Clip forte — continua ad allenarti con la stessa energia e carica il prossimo highlight.",
+    v2ImprovementFallback:
+      "Filma una ripetizione completa più chiara per consigli più precisi.",
+    v2BadgeFastFeet: "Piedi veloci",
+    v2ImprovementTraining:
+      "In questo clip, {metric} ha più margine di miglioramento. Al prossimo allenamento fai 3 serie da 8–10 ripetizioni mirate, pausa 60 s, palla vicino al piede.",
+    v2ImprovementSecondary:
+      "Secondo focus: {metric}. Rallenta leggermente il primo tocco finché il corpo è in equilibrio.",
+    v2ImprovementHabit:
+      "Prima di ricevere, orienta i fianchi verso la direzione di gioco — tocco successivo più veloce senza fretta.",
+    v2ImprovementFilming:
+      "La prossima volta filma all'altezza dei fianchi con angolo 30–45°, azione completa in inquadratura.",
+    v2ImprovementExtra:
+      "Terzo focus: {metric}. Aggiungi 10 min di ripetizioni lente a metà ritmo prima del tempo pieno.",
+    v2WeeklyPlan:
+      "Lunedì: 25 min {m1} con coni (3×8). Martedì: muro + primo tocco (4×12). Mercoledì: recupero leggero. Giovedì: {m2} in 1v1 (5×2 min). Venerdì: filma un nuovo highlight.",
   },
   nl: {
     invalidReason:
@@ -420,6 +595,23 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Camerakwaliteit en hoek beïnvloeden de betrouwbaarheid; onduidelijke momenten worden niet gescoord.",
     evidence: "Zichtbare voetbalactie in de clip ondersteunt deze score.",
     notAssessable: "Deze actie is niet duidelijk genoeg zichtbaar in deze clip.",
+    v2PlayerSummary:
+      "Sterke clip — blijf trainen met dezelfde energie en upload je volgende highlight.",
+    v2ImprovementFallback:
+      "Film een duidelijkere volledige actie voor scherpere tips.",
+    v2BadgeFastFeet: "Snelle voeten",
+    v2ImprovementTraining:
+      "In deze clip heeft {metric} de meeste groeiruimte. Train 3 sets van 8–10 reps gericht op die vaardigheid, 60 s rust, bal dicht bij de voet.",
+    v2ImprovementSecondary:
+      "Tweede focus: {metric}. Vertraag de eerste touch licht tot je lichaam in balans is.",
+    v2ImprovementHabit:
+      "Richt je heupen voor de balontvangst naar speelrichting — snellere volgende touch zonder haast.",
+    v2ImprovementFilming:
+      "Film de volgende keer op heuphoogte onder 30–45°, volledige actie in beeld.",
+    v2ImprovementExtra:
+      "Derde focus: {metric}. Voeg 10 min trage herhalingen op halve snelheid toe voor vol tempo.",
+    v2WeeklyPlan:
+      "Maandag: 25 min {m1} met pionnen (3×8). Dinsdag: muur + eerste touch (4×12). Woensdag: licht herstel. Donderdag: {m2} in 1v1 (5×2 min). Vrijdag: film nieuwe highlight.",
   },
   tr: {
     invalidReason:
@@ -439,6 +631,23 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "Kamera kalitesi ve açı güveni etkiler; belirsiz anlar puanlanmaz.",
     evidence: "Klipte görülen futbol aksiyonu bu puanı destekliyor.",
     notAssessable: "Bu aksiyon bu klipte yeterince net görünmüyor.",
+    v2PlayerSummary:
+      "Güçlü klip — aynı enerjiyle antrenmana devam et ve bir sonraki highlightını yükle.",
+    v2ImprovementFallback:
+      "Daha net ipuçları için daha açık bir tam aksiyon çek.",
+    v2BadgeFastFeet: "Hızlı ayaklar",
+    v2ImprovementTraining:
+      "Bu klipte {metric} en çok gelişim alanına sahip. Sonraki antrenmanda 3 set 8–10 tekrar yap, 60 sn dinlen, topu ayağa yakın tut.",
+    v2ImprovementSecondary:
+      "İkinci odak: {metric}. İlk dokunuşu hafif yavaşlat, vücut dengelensin.",
+    v2ImprovementHabit:
+      "Topu almadan önce kalçalarını oyun yönüne çevir — acele etmeden daha hızlı sonraki dokunuş.",
+    v2ImprovementFilming:
+      "Bir sonraki sefer kalça hizasından 30–45° açıyla çek, tüm aksiyon kadrajda olsun.",
+    v2ImprovementExtra:
+      "Üçüncü odak: {metric}. Tam tempodan önce yarı hızda 10 dk yavaş tekrar ekle.",
+    v2WeeklyPlan:
+      "Pazartesi: 25 dk {m1} koniler (3×8). Salı: duvar pası + ilk dokunuş (4×12). Çarşamba: hafif toparlanma. Perşembe: {m2} 1v1 (5×2 dk). Cuma: yeni highlight çek.",
   },
   ar: {
     invalidReason:
@@ -458,8 +667,56 @@ const LOCALIZED_COPY: Record<SupportedLocale, LocaleCopy> = {
       "جودة وزاوية الكاميرا تؤثران على الثقة؛ اللحظات غير الواضحة لا يتم تقييمها.",
     evidence: "اللقطة الكروية الظاهرة في الفيديو تدعم هذه الدرجة.",
     notAssessable: "هذه اللقطة غير واضحة بما يكفي للتقييم في هذا الفيديو.",
+    v2PlayerSummary:
+      "مقطع قوي — واصل التدريب بنفس الطاقة وارفع highlight التالي.",
+    v2ImprovementFallback:
+      "صوّر حركة كاملة أوضح للحصول على نصائح أدق.",
+    v2BadgeFastFeet: "أقدام سريعة",
+    v2ImprovementTraining:
+      "في هذا المقطع، {metric} لديها أكبر مجال للتحسن. في التمرين القادم نفّذ 3 مجموعات × 8–10 تكرارات مع التركيز على هذه المهارة، استراحة 60 ثانية، الكرة قريبة من القدم.",
+    v2ImprovementSecondary:
+      "التركيز الثاني: {metric}. أبطئ اللمسة الأولى قليلًا حتى يتوازن الجسم قبل الحركة التالية.",
+    v2ImprovementHabit:
+      "قبل استلام الكرة، وجّه الوركين نحو اتجاه اللعب — لمسة تالية أسرع دون تسرع.",
+    v2ImprovementFilming:
+      "في المرة القادمة صوّر من مستوى الورك بزاوية 30–45°، مع إبقاء الحركة كاملة في الإطار.",
+    v2ImprovementExtra:
+      "التركيز الثالث: {metric}. أضف 10 دقائق تكرارات بطيئة بنصف السرعة قبل الإيقاع الكامل.",
+    v2WeeklyPlan:
+      "الاثنين: 25 دقيقة {m1} مع الأقماع (3×8). الثلاثاء: تمرير على الحائط + اللمسة الأولى (4×12). الأربعاء: استشفاء خفيف. الخميس: {m2} في 1v1 (5×2 د). الجمعة: صوّر highlight جديدًا.",
   },
 };
+
+function toAdviceLocale(locale: SupportedLocale): AdviceLocale {
+  return locale;
+}
+
+function localizeVisibilityPayload(
+  payload: VisibilityAnalysisPayload,
+  copy: LocaleCopy,
+  locale: SupportedLocale,
+  fallbackSummaryEn: string,
+): VisibilityAnalysisPayload {
+  const metrics = Object.fromEntries(
+    Object.entries(payload.metrics).map(([k, v]) => {
+      if (!v) return [k, v];
+      if (v.status === "not_assessable") {
+        return [k, { ...v, reason: copy.notAssessable }];
+      }
+      return [k, v];
+    }),
+  ) as VisibilityAnalysisPayload["metrics"];
+
+  return {
+    ...payload,
+    clip_summary: localizedClipSummary(
+      toAdviceLocale(locale),
+      payload.clip_type,
+      fallbackSummaryEn,
+    ),
+    metrics,
+  };
+}
 
 function normalizeLocale(locale?: string): SupportedLocale {
   const base = String(locale ?? "en").toLowerCase().split("-")[0];
@@ -469,28 +726,6 @@ function normalizeLocale(locale?: string): SupportedLocale {
 
 function formatMetricLabel(locale: SupportedLocale, key: string): string {
   return METRIC_LABELS[locale]?.[key] ?? key.replace(/_/g, " ");
-}
-
-function localizeVisibilityPayload(
-  payload: VisibilityAnalysisPayload,
-  copy: LocaleCopy,
-): VisibilityAnalysisPayload {
-  const metrics = Object.fromEntries(
-    Object.entries(payload.metrics).map(([k, v]) => {
-      if (!v) return [k, v];
-      if (v.status === "assessable") {
-        return [k, { ...v, evidence: copy.evidence }];
-      }
-      return [k, { ...v, reason: copy.notAssessable }];
-    }),
-  ) as VisibilityAnalysisPayload["metrics"];
-
-  return {
-    ...payload,
-    clip_summary: copy.clipSummary,
-    camera: { ...payload.camera, assessment_note: copy.cameraNote },
-    metrics,
-  };
 }
 
 function hashToUnit(input: string, salt: number): number {
@@ -554,21 +789,6 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
     }
 
     const scenario = Math.floor(hashToUnit(videoId, 0) * 8);
-
-    if (scenario === 7) {
-      const invalid: VideoAnalysisScores = {
-        valid_for_football_analysis: false,
-        clip_type: "non_football",
-        invalid_reason: copy.invalidReason,
-        overall_score: 0,
-        overall_confidence: 0,
-        feedback_text: copy.invalidFeedback,
-        visibility_analysis: null,
-        legacy: null,
-        v2: null,
-      };
-      return invalid;
-    }
 
     let draft: VisibilityAnalysisDraft;
 
@@ -952,7 +1172,7 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
         };
         break;
       }
-      default: {
+      case 6: {
         draft = {
           schema_version: 1,
           clip_type: "passing_drill",
@@ -1011,6 +1231,90 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
             composure: na("Opponent pressure is absent in the drill view."),
           },
         };
+        break;
+      }
+      default: {
+        draft = {
+          schema_version: 1,
+          clip_type: "shooting_at_goal",
+          clip_summary:
+            "Training in front of goal: player advances with the ball on grass, a defender or keeper is in frame, and a shot toward the net is attempted.",
+          visible_actions: [
+            "shooting",
+            "finishing",
+            "dribbling",
+            "one_v_one",
+            "match_play",
+            "training_drill",
+          ],
+          camera: {
+            quality: "adequate",
+            assessment_note:
+              "Pitch, goal, ball, and players are visible; strike mechanics and ball flight toward goal can be judged.",
+          },
+          metrics: {
+            shooting: ok(
+              videoId,
+              91,
+              "The strike toward goal is visible with approach steps and contact.",
+            ),
+            finishing: ok(
+              videoId,
+              92,
+              "Attempt on goal with target direction is clear in the clip.",
+            ),
+            dribbling: ok(
+              videoId,
+              93,
+              "Ball is carried forward before the shot in the visible sequence.",
+            ),
+            ball_control: ok(
+              videoId,
+              94,
+              "The ball stays with the attacker through the approach to the shot.",
+            ),
+            close_control: ok(
+              videoId,
+              95,
+              "Touches stay tight in the run-up to the strike.",
+            ),
+            decision_making: ok(
+              videoId,
+              96,
+              "Choice to shoot rather than pass is observable in this 1v1-style moment.",
+            ),
+            composure: ok(
+              videoId,
+              97,
+              "Execution with a defender or keeper in frame supports a composure read.",
+            ),
+            balance: ok(
+              videoId,
+              98,
+              "Body stays balanced through the shooting motion shown.",
+            ),
+            coordination: ok(
+              videoId,
+              99,
+              "Approach stride and striking foot timing align in frame.",
+            ),
+            acceleration: ok(
+              videoId,
+              100,
+              "Brief burst into the shooting position is visible.",
+            ),
+            agility: na(
+              "Mostly linear approach; lateral agility is limited in this clip.",
+            ),
+            passing: na("No pass to a teammate in this sequence."),
+            defending: na(
+              "Defender is present but outfield defending technique is not the focus.",
+            ),
+            first_touch: na(
+              "Clip starts with the player already in possession.",
+            ),
+          },
+        };
       }
     }
 
@@ -1022,17 +1326,33 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
       ...draft,
       overall_confidence,
     };
-    const localizedPayload = localizeVisibilityPayload(payload, copy);
+    const localizedPayload = localizeVisibilityPayload(
+      payload,
+      copy,
+      normalizeLocale(locale),
+      draft.clip_summary,
+    );
 
-    const weakest = Object.entries(localizedPayload.metrics)
+    const weakestMetrics: WeakestMetric[] = Object.entries(
+      localizedPayload.metrics,
+    )
       .filter(([, value]) => value?.status === "assessable")
-      .map(([key, value]) => ({ key, score: (value as MetricAssessment & { score: number }).score }))
+      .map(([key, value]) => ({
+        key,
+        label: formatMetricLabel(normalizeLocale(locale), key),
+        score: (value as MetricAssessment & { score: number }).score,
+      }))
       .sort((a, b) => a.score - b.score)
-      .slice(0, 3)
-      .map((entry) => formatMetricLabel(normalizeLocale(locale), entry.key));
+      .slice(0, 3);
+    const adviceLocale = toAdviceLocale(normalizeLocale(locale));
+    const improvements = buildVariedImprovements(
+      adviceLocale,
+      videoId,
+      weakestMetrics,
+    );
     const recText =
-      weakest.length > 0
-        ? ` ${copy.recommendationPrefix} ${weakest.join(", ")}.`
+      weakestMetrics.length > 0
+        ? ` ${copy.recommendationPrefix} ${weakestMetrics.map((m) => m.label).join(", ")}.`
         : "";
 
     const assessedEntries = Object.entries(localizedPayload.metrics).filter(
@@ -1042,14 +1362,11 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
       assessedEntries.sort((a, b) => b[1].score - a[1].score)[0]?.[0] ??
       "ball_control";
     const scores: CoreSkillScores = {
-      speed:
-        localizedPayload.metrics.acceleration?.status === "assessable"
-          ? localizedPayload.metrics.acceleration.score
-          : null,
-      technique:
-        localizedPayload.metrics.coordination?.status === "assessable"
-          ? localizedPayload.metrics.coordination.score
-          : null,
+      speed: deriveSpeedScore(localizedPayload.metrics),
+      technique: deriveTechniqueScore(
+        localizedPayload.metrics,
+        draft.clip_type,
+      ),
       ball_control:
         localizedPayload.metrics.ball_control?.status === "assessable"
           ? localizedPayload.metrics.ball_control.score
@@ -1089,15 +1406,22 @@ export const mockVideoAnalysisProvider: VideoAnalysisProvider = {
         confidence: Math.round(overall_confidence * 100),
         scores,
         strengths: [formatMetricLabel(normalizeLocale(locale), top)],
-        improvements: weakest.length
-          ? [
-              `${copy.recommendationPrefix.replace(/:$/, "")} ${weakest[0]}.`,
-            ]
-          : ["Film a clearer full-action rep to unlock sharper tips."],
-        badges: ["Fast Feet"],
-        coach_feedback: localizedPayload.clip_summary,
-        player_friendly_summary:
-          "Strong clip — keep training with the same energy and upload your next highlight.",
+        improvements,
+        badges: [badgeForTopMetric(adviceLocale, top, videoId)],
+        coach_feedback: [localizedPayload.clip_summary, improvements[0] ?? ""]
+          .filter(Boolean)
+          .join(" "),
+        player_friendly_summary: variedPlayerSummary(
+          adviceLocale,
+          videoId,
+          scenario,
+        ),
+        weekly_training_plan: buildVariedWeeklyPlan(
+          adviceLocale,
+          videoId,
+          draft.clip_type,
+          weakestMetrics,
+        ),
       },
     };
     return result;

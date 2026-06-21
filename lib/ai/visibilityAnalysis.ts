@@ -119,6 +119,10 @@ export function normalizeV2StoredPayload(
       typeof o.player_friendly_summary === "string"
         ? o.player_friendly_summary.trim()
         : "",
+    weekly_training_plan:
+      typeof o.weekly_training_plan === "string"
+        ? o.weekly_training_plan.trim()
+        : undefined,
     scout_visibility: scout,
   };
 }

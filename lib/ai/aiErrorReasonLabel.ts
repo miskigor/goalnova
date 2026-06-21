@@ -2,140 +2,462 @@
  * Human-readable labels for AI flow failure codes (existing API / client errors).
  */
 
-const REASONS: Record<string, { en: string; hr: string }> = {
-  ai_not_configured: {
-    en: "Server AI provider is not configured (ai_not_configured).",
-    hr: "Serverski AI provider nije konfiguriran (ai_not_configured).",
-  },
-  service_role_missing: {
-    en: "Server database access is not configured (service_role_missing).",
-    hr: "Serverski pristup bazi nije konfiguriran (service_role_missing).",
-  },
-  video_download_failed: {
-    en: "Video could not be downloaded for analysis (video_download_failed).",
-    hr: "Video se nije mogao preuzeti za analizu (video_download_failed).",
-  },
-  video_not_found: {
-    en: "Video not found in database (video_not_found).",
-    hr: "Video nije pronađen u bazi (video_not_found).",
-  },
-  video_playback_missing: {
-    en: "Video has no playback URL (video_playback_missing).",
-    hr: "Video nema URL za reprodukciju (video_playback_missing).",
-  },
-  openai_failed: {
-    en: "OpenAI request failed (openai_failed).",
-    hr: "OpenAI zahtjev nije uspio (openai_failed).",
-  },
-  openai_auth_failed: {
-    en: "OpenAI API key rejected (openai_auth_failed).",
-    hr: "OpenAI API ključ odbijen (openai_auth_failed).",
-  },
-  openai_quota_exceeded: {
-    en: "OpenAI quota or billing limit reached (openai_quota_exceeded).",
-    hr: "OpenAI kvota ili billing limit dosegnut (openai_quota_exceeded).",
-  },
-  openai_rate_limited: {
-    en: "OpenAI rate limit hit — try again shortly (openai_rate_limited).",
-    hr: "OpenAI rate limit — pokušaj ponovno za trenutak (openai_rate_limited).",
-  },
-  openai_model_not_available: {
-    en: "Configured OpenAI model is not available (openai_model_not_available).",
-    hr: "Konfigurirani OpenAI model nije dostupan (openai_model_not_available).",
-  },
-  openai_invalid_request: {
-    en: "OpenAI rejected the vision request (openai_invalid_request).",
-    hr: "OpenAI je odbio vision zahtjev (openai_invalid_request).",
-  },
-  openai_timeout: {
-    en: "OpenAI request timed out (openai_timeout).",
-    hr: "OpenAI zahtjev je istekao (openai_timeout).",
-  },
-  timeout: {
-    en: "Analysis timed out (timeout).",
-    hr: "Analiza je istekla (timeout).",
-  },
-  permission_denied: {
-    en: "Permission denied for this analysis (permission_denied).",
-    hr: "Nema dozvole za ovu analizu (permission_denied).",
-  },
-  network_error: {
-    en: "Network error calling /api/videos/ai-analyze (network_error).",
-    hr: "Mrežna greška pri pozivu /api/videos/ai-analyze (network_error).",
-  },
-  not_authenticated: {
-    en: "Not signed in (not_authenticated).",
-    hr: "Nisi prijavljen (not_authenticated).",
-  },
-  save_failed: {
-    en: "Analysis ran but could not save to database (save_failed).",
-    hr: "Analiza je prošla, ali se nije mogla spremiti (save_failed).",
-  },
-  load_failed: {
-    en: "Could not load saved analysis (load_failed).",
-    hr: "Nije moguće učitati spremljenu analizu (load_failed).",
-  },
-  load_saved_timeout: {
-    en: "Loading saved analysis timed out (load_saved_timeout).",
-    hr: "Učitavanje spremljene analize je isteklo (load_saved_timeout).",
-  },
-  scout_access_denied: {
-    en: "Scout access not allowed for this run (scout_access_denied).",
-    hr: "Scout pristup nije dozvoljen (scout_access_denied).",
-  },
-  premium_check_timeout: {
-    en: "Premium status check timed out (premium_check_timeout).",
-    hr: "Provjera Premium statusa je istekla (premium_check_timeout).",
-  },
-  analysis_failed: {
-    en: "Server analysis failed (analysis_failed).",
-    hr: "Serverska analiza nije uspjela (analysis_failed).",
-  },
-  invalid_video_id: {
-    en: "Invalid video id (invalid_video_id).",
-    hr: "Nevaljan ID videa (invalid_video_id).",
-  },
-  not_active: {
-    en: "Analysis cannot run in current state (not_active).",
-    hr: "Analiza se ne može pokrenuti u ovom stanju (not_active).",
-  },
+import type { AppLocale } from "@/i18n/routing";
+import { normalizeAppLocale } from "@/lib/i18n/normalizeAppLocale";
+
+type LocaleLabels = Record<AppLocale, string>;
+
+function L(en: string, hr: string, de: string, bs: string, es: string, pt: string, sr: string, fr: string, it: string, nl: string, tr: string, ar: string): LocaleLabels {
+  return { en, hr, de, bs, es, pt, sr, fr, it, nl, tr, ar };
+}
+
+const REASONS: Record<string, LocaleLabels> = {
+  ai_not_configured: L(
+    "Server AI provider is not configured.",
+    "Serverski AI provider nije konfiguriran.",
+    "Der KI-Anbieter auf dem Server ist nicht konfiguriert.",
+    "Serverski AI provider nije konfigurisan.",
+    "El proveedor de IA del servidor no está configurado.",
+    "O fornecedor de IA do servidor não está configurado.",
+    "Serverski AI provajder nije konfigurisan.",
+    "Le fournisseur IA du serveur n'est pas configuré.",
+    "Il provider AI del server non è configurato.",
+    "De AI-provider op de server is niet geconfigureerd.",
+    "Sunucu AI sağlayıcısı yapılandırılmamış.",
+    "مزود الذكاء الاصطناعي على الخادم غير مُعد.",
+  ),
+  service_role_missing: L(
+    "Server database access is not configured.",
+    "Serverski pristup bazi nije konfiguriran.",
+    "Der Server-Datenbankzugriff ist nicht konfiguriert.",
+    "Serverski pristup bazi nije konfigurisan.",
+    "El acceso a la base de datos del servidor no está configurado.",
+    "O acesso à base de dados do servidor não está configurado.",
+    "Serverski pristup bazi nije konfigurisan.",
+    "L'accès à la base de données du serveur n'est pas configuré.",
+    "L'accesso al database del server non è configurato.",
+    "Serverdatabase-toegang is niet geconfigureerd.",
+    "Sunucu veritabanı erişimi yapılandırılmamış.",
+    "وصول قاعدة بيانات الخادم غير مُعد.",
+  ),
+  video_download_failed: L(
+    "Video could not be downloaded for analysis.",
+    "Video se nije mogao preuzeti za analizu.",
+    "Das Video konnte nicht für die Analyse heruntergeladen werden.",
+    "Video se nije mogao preuzeti za analizu.",
+    "No se pudo descargar el video para el análisis.",
+    "Não foi possível transferir o vídeo para análise.",
+    "Video se nije mogao preuzeti za analizu.",
+    "Impossible de télécharger la vidéo pour l'analyse.",
+    "Impossibile scaricare il video per l'analisi.",
+    "Video kon niet worden gedownload voor analyse.",
+    "Video analiz için indirilemedi.",
+    "تعذّر تنزيل الفيديو للتحليل.",
+  ),
+  video_not_found: L(
+    "Video not found in database.",
+    "Video nije pronađen u bazi.",
+    "Video in der Datenbank nicht gefunden.",
+    "Video nije pronađen u bazi.",
+    "Video no encontrado en la base de datos.",
+    "Vídeo não encontrado na base de dados.",
+    "Video nije pronađen u bazi.",
+    "Vidéo introuvable dans la base de données.",
+    "Video non trovato nel database.",
+    "Video niet gevonden in de database.",
+    "Video veritabanında bulunamadı.",
+    "الفيديو غير موجود في قاعدة البيانات.",
+  ),
+  video_playback_missing: L(
+    "Video has no playback URL.",
+    "Video nema URL za reprodukciju.",
+    "Video hat keine Wiedergabe-URL.",
+    "Video nema URL za reprodukciju.",
+    "El video no tiene URL de reproducción.",
+    "O vídeo não tem URL de reprodução.",
+    "Video nema URL za reprodukciju.",
+    "La vidéo n'a pas d'URL de lecture.",
+    "Il video non ha un URL di riproduzione.",
+    "Video heeft geen afspeel-URL.",
+    "Videonun oynatma URL'si yok.",
+    "الفيديو لا يحتوي على رابط تشغيل.",
+  ),
+  openai_failed: L(
+    "OpenAI request failed.",
+    "OpenAI zahtjev nije uspio.",
+    "OpenAI-Anfrage fehlgeschlagen.",
+    "OpenAI zahtjev nije uspio.",
+    "La solicitud a OpenAI falló.",
+    "O pedido OpenAI falhou.",
+    "OpenAI zahtev nije uspeo.",
+    "La requête OpenAI a échoué.",
+    "Richiesta OpenAI non riuscita.",
+    "OpenAI-verzoek mislukt.",
+    "OpenAI isteği başarısız oldu.",
+    "فشل طلب OpenAI.",
+  ),
+  openai_auth_failed: L(
+    "OpenAI API key rejected.",
+    "OpenAI API ključ odbijen.",
+    "OpenAI-API-Schlüssel abgelehnt.",
+    "OpenAI API ključ odbijen.",
+    "Clave API de OpenAI rechazada.",
+    "Chave API OpenAI rejeitada.",
+    "OpenAI API ključ odbijen.",
+    "Clé API OpenAI rejetée.",
+    "Chiave API OpenAI rifiutata.",
+    "OpenAI API-sleutel geweigerd.",
+    "OpenAI API anahtarı reddedildi.",
+    "تم رفض مفتاح OpenAI API.",
+  ),
+  openai_quota_exceeded: L(
+    "OpenAI quota or billing limit reached.",
+    "OpenAI kvota ili billing limit dosegnut.",
+    "OpenAI-Kontingent oder Abrechnungslimit erreicht.",
+    "OpenAI kvota ili billing limit dosegnut.",
+    "Cuota de OpenAI o límite de facturación alcanzado.",
+    "Quota OpenAI ou limite de faturação atingido.",
+    "OpenAI kvota ili billing limit dostignut.",
+    "Quota OpenAI ou limite de facturation atteinte.",
+    "Quota OpenAI o limite di fatturazione raggiunto.",
+    "OpenAI-quota of factureringslimiet bereikt.",
+    "OpenAI kotası veya faturalama limiti doldu.",
+    "تم الوصول إلى حصة OpenAI أو حد الفوترة.",
+  ),
+  openai_rate_limited: L(
+    "OpenAI rate limit hit — try again shortly.",
+    "OpenAI rate limit — pokušaj ponovno za trenutak.",
+    "OpenAI-Ratenlimit erreicht — bitte kurz warten.",
+    "OpenAI rate limit — pokušaj ponovo uskoro.",
+    "Límite de OpenAI alcanzado — inténtalo de nuevo en un momento.",
+    "Limite OpenAI atingido — tenta novamente em breve.",
+    "OpenAI rate limit — pokušaj ponovo uskoro.",
+    "Limite OpenAI atteinte — réessaie dans un instant.",
+    "Limite OpenAI raggiunto — riprova tra poco.",
+    "OpenAI-limiet bereikt — probeer het zo opnieuw.",
+    "OpenAI hız limiti — kısa süre sonra tekrar dene.",
+    "تم الوصول إلى حد OpenAI — حاول مرة أخرى قريبًا.",
+  ),
+  openai_model_not_available: L(
+    "Configured OpenAI model is not available.",
+    "Konfigurirani OpenAI model nije dostupan.",
+    "Das konfigurierte OpenAI-Modell ist nicht verfügbar.",
+    "Konfigurisani OpenAI model nije dostupan.",
+    "El modelo OpenAI configurado no está disponible.",
+    "O modelo OpenAI configurado não está disponível.",
+    "Konfigurisani OpenAI model nije dostupan.",
+    "Le modèle OpenAI configuré n'est pas disponible.",
+    "Il modello OpenAI configurato non è disponibile.",
+    "Geconfigureerd OpenAI-model is niet beschikbaar.",
+    "Yapılandırılmış OpenAI modeli kullanılamıyor.",
+    "نموذج OpenAI المُعد غير متاح.",
+  ),
+  openai_invalid_request: L(
+    "OpenAI rejected the vision request.",
+    "OpenAI je odbio vision zahtjev.",
+    "OpenAI hat die Vision-Anfrage abgelehnt.",
+    "OpenAI je odbio vision zahtjev.",
+    "OpenAI rechazó la solicitud de visión.",
+    "OpenAI rejeitou o pedido de visão.",
+    "OpenAI je odbio vision zahtev.",
+    "OpenAI a rejeté la requête vision.",
+    "OpenAI ha rifiutato la richiesta vision.",
+    "OpenAI heeft het vision-verzoek geweigerd.",
+    "OpenAI görüntü isteğini reddetti.",
+    "رفض OpenAI طلب الرؤية.",
+  ),
+  openai_timeout: L(
+    "OpenAI request timed out.",
+    "OpenAI zahtjev je istekao.",
+    "OpenAI-Anfrage ist abgelaufen.",
+    "OpenAI zahtjev je istekao.",
+    "La solicitud a OpenAI expiró.",
+    "O pedido OpenAI expirou.",
+    "OpenAI zahtev je istekao.",
+    "La requête OpenAI a expiré.",
+    "Richiesta OpenAI scaduta.",
+    "OpenAI-verzoek verlopen.",
+    "OpenAI isteği zaman aşımına uğradı.",
+    "انتهت مهلة طلب OpenAI.",
+  ),
+  timeout: L(
+    "Analysis timed out.",
+    "Analiza je istekla.",
+    "Analyse ist abgelaufen.",
+    "Analiza je istekla.",
+    "El análisis expiró.",
+    "A análise expirou.",
+    "Analiza je istekla.",
+    "L'analyse a expiré.",
+    "Analisi scaduta.",
+    "Analyse verlopen.",
+    "Analiz zaman aşımına uğradı.",
+    "انتهت مهلة التحليل.",
+  ),
+  permission_denied: L(
+    "Permission denied for this analysis.",
+    "Nema dozvole za ovu analizu.",
+    "Keine Berechtigung für diese Analyse.",
+    "Nema dozvole za ovu analizu.",
+    "Permiso denegado para este análisis.",
+    "Permissão negada para esta análise.",
+    "Nema dozvole za ovu analizu.",
+    "Permission refusée pour cette analyse.",
+    "Permesso negato per questa analisi.",
+    "Geen toestemming voor deze analyse.",
+    "Bu analiz için izin reddedildi.",
+    "تم رفض الإذن لهذا التحليل.",
+  ),
+  network_error: L(
+    "Network error calling the analysis service.",
+    "Mrežna greška pri pozivu usluge analize.",
+    "Netzwerkfehler beim Aufruf des Analysedienstes.",
+    "Mrežna greška pri pozivu servisa analize.",
+    "Error de red al llamar al servicio de análisis.",
+    "Erro de rede ao chamar o serviço de análise.",
+    "Mrežna greška pri pozivu servisa analize.",
+    "Erreur réseau lors de l'appel au service d'analyse.",
+    "Errore di rete durante la chiamata al servizio di analisi.",
+    "Netwerkfout bij het aanroepen van de analyseservice.",
+    "Analiz servisi çağrılırken ağ hatası.",
+    "خطأ في الشبكة أثناء استدعاء خدمة التحليل.",
+  ),
+  not_authenticated: L(
+    "Not signed in.",
+    "Nisi prijavljen.",
+    "Nicht angemeldet.",
+    "Nisi prijavljen.",
+    "No has iniciado sesión.",
+    "Sessão não iniciada.",
+    "Nisi prijavljen.",
+    "Non connecté.",
+    "Accesso non effettuato.",
+    "Niet ingelogd.",
+    "Oturum açılmamış.",
+    "لم يتم تسجيل الدخول.",
+  ),
+  save_failed: L(
+    "Analysis ran but could not save to database.",
+    "Analiza je prošla, ali se nije mogla spremiti.",
+    "Analyse lief, konnte aber nicht gespeichert werden.",
+    "Analiza je prošla, ali se nije mogla sačuvati.",
+    "El análisis se ejecutó pero no se pudo guardar.",
+    "A análise correu mas não foi possível guardar.",
+    "Analiza je prošla, ali se nije mogla sačuvati.",
+    "L'analyse a fonctionné mais n'a pas pu être enregistrée.",
+    "L'analisi è stata eseguita ma non salvata.",
+    "Analyse uitgevoerd maar kon niet worden opgeslagen.",
+    "Analiz çalıştı ancak kaydedilemedi.",
+    "تم التحليل لكن تعذّر الحفظ.",
+  ),
+  load_failed: L(
+    "Could not load saved analysis.",
+    "Nije moguće učitati spremljenu analizu.",
+    "Gespeicherte Analyse konnte nicht geladen werden.",
+    "Nije moguće učitati sačuvanu analizu.",
+    "No se pudo cargar el análisis guardado.",
+    "Não foi possível carregar a análise guardada.",
+    "Nije moguće učitati sačuvanu analizu.",
+    "Impossible de charger l'analyse enregistrée.",
+    "Impossibile caricare l'analisi salvata.",
+    "Opgeslagen analyse kon niet worden geladen.",
+    "Kayıtlı analiz yüklenemedi.",
+    "تعذّر تحميل التحليل المحفوظ.",
+  ),
+  load_saved_timeout: L(
+    "Loading saved analysis timed out.",
+    "Učitavanje spremljene analize je isteklo.",
+    "Laden der gespeicherten Analyse ist abgelaufen.",
+    "Učitavanje sačuvane analize je isteklo.",
+    "La carga del análisis guardado expiró.",
+    "O carregamento da análise guardada expirou.",
+    "Učitavanje sačuvane analize je isteklo.",
+    "Le chargement de l'analyse enregistrée a expiré.",
+    "Caricamento analisi salvata scaduto.",
+    "Laden van opgeslagen analyse verlopen.",
+    "Kayıtlı analiz yüklemesi zaman aşımına uğradı.",
+    "انتهت مهلة تحميل التحليل المحفوظ.",
+  ),
+  scout_access_denied: L(
+    "Scout access not allowed for this run.",
+    "Scout pristup nije dozvoljen.",
+    "Scout-Zugriff für diesen Lauf nicht erlaubt.",
+    "Scout pristup nije dozvoljen.",
+    "Acceso scout no permitido para esta ejecución.",
+    "Acesso scout não permitido para esta execução.",
+    "Scout pristup nije dozvoljen.",
+    "Accès scout non autorisé pour cette exécution.",
+    "Accesso scout non consentito per questa esecuzione.",
+    "Scout-toegang niet toegestaan voor deze run.",
+    "Bu çalıştırma için scout erişimine izin verilmiyor.",
+    "وصول الكشّاف غير مسموح لهذا التشغيل.",
+  ),
+  premium_check_timeout: L(
+    "Premium status check timed out.",
+    "Provjera Premium statusa je istekla.",
+    "Premium-Statusprüfung ist abgelaufen.",
+    "Provjera Premium statusa je istekla.",
+    "La verificación del estado Premium expiró.",
+    "A verificação do estado Premium expirou.",
+    "Provera Premium statusa je istekla.",
+    "La vérification du statut Premium a expiré.",
+    "Verifica stato Premium scaduta.",
+    "Premium-statuscontrole verlopen.",
+    "Premium durum kontrolü zaman aşımına uğradı.",
+    "انتهت مهلة التحقق من حالة Premium.",
+  ),
+  analysis_failed: L(
+    "Server analysis failed.",
+    "Serverska analiza nije uspjela.",
+    "Serveranalyse fehlgeschlagen.",
+    "Serverska analiza nije uspjela.",
+    "El análisis del servidor falló.",
+    "A análise do servidor falhou.",
+    "Serverska analiza nije uspela.",
+    "L'analyse serveur a échoué.",
+    "Analisi server non riuscita.",
+    "Serveranalyse mislukt.",
+    "Sunucu analizi başarısız oldu.",
+    "فشل تحليل الخادم.",
+  ),
+  invalid_video_id: L(
+    "Invalid video id.",
+    "Nevaljan ID videa.",
+    "Ungültige Video-ID.",
+    "Nevaljan ID videa.",
+    "ID de video no válido.",
+    "ID de vídeo inválido.",
+    "Nevaljan ID videa.",
+    "ID vidéo invalide.",
+    "ID video non valido.",
+    "Ongeldige video-ID.",
+    "Geçersiz video kimliği.",
+    "معرّف فيديو غير صالح.",
+  ),
+  not_active: L(
+    "Analysis cannot run in current state.",
+    "Analiza se ne može pokrenuti u ovom stanju.",
+    "Analyse kann im aktuellen Zustand nicht gestartet werden.",
+    "Analiza se ne može pokrenuti u ovom stanju.",
+    "El análisis no puede ejecutarse en el estado actual.",
+    "A análise não pode ser executada no estado atual.",
+    "Analiza se ne može pokrenuti u ovom stanju.",
+    "L'analyse ne peut pas s'exécuter dans l'état actuel.",
+    "L'analisi non può essere eseguita nello stato attuale.",
+    "Analyse kan niet worden uitgevoerd in de huidige staat.",
+    "Analiz mevcut durumda çalıştırılamıyor.",
+    "لا يمكن تشغيل التحليل في الحالة الحالية.",
+  ),
+  analysis_timeout: L(
+    "Analysis request timed out.",
+    "Zahtjev za analizu je istekao.",
+    "Analyseanfrage ist abgelaufen.",
+    "Zahtjev za analizu je istekao.",
+    "La solicitud de análisis expiró.",
+    "O pedido de análise expirou.",
+    "Zahtev za analizu je istekao.",
+    "La demande d'analyse a expiré.",
+    "Richiesta di analisi scaduta.",
+    "Analyseverzoek verlopen.",
+    "Analiz isteği zaman aşımına uğradı.",
+    "انتهت مهلة طلب التحليل.",
+  ),
+  premium_required: L(
+    "Premium subscription required.",
+    "Potreban je Premium.",
+    "Premium-Abonnement erforderlich.",
+    "Potreban je Premium.",
+    "Se requiere suscripción Premium.",
+    "Subscrição Premium necessária.",
+    "Potreban je Premium.",
+    "Abonnement Premium requis.",
+    "Abbonamento Premium richiesto.",
+    "Premium-abonnement vereist.",
+    "Premium abonelik gerekli.",
+    "مطلوب اشتراك Premium.",
+  ),
 };
 
-function localeKey(locale: string): "en" | "hr" {
-  return locale.toLowerCase().split("-")[0] === "hr" ? "hr" : "en";
-}
+const HTTP_404: LocaleLabels = L(
+  "Analysis API route is not available (404).",
+  "API ruta za analizu nije dostupna (404).",
+  "Analyse-API-Route nicht verfügbar (404).",
+  "API ruta za analizu nije dostupna (404).",
+  "La ruta API de análisis no está disponible (404).",
+  "A rota API de análise não está disponível (404).",
+  "API ruta za analizu nije dostupna (404).",
+  "Route API d'analyse indisponible (404).",
+  "Route API analisi non disponibile (404).",
+  "Analyse-API-route niet beschikbaar (404).",
+  "Analiz API rotası kullanılamıyor (404).",
+  "مسار API التحليل غير متاح (404).",
+);
 
 /** Label for UI; falls back to raw code if unknown. */
 export function getAiErrorReasonLabel(code: string, locale: string): string {
+  const lang = normalizeAppLocale(locale);
   const key = code.trim();
   if (!key) return "";
+
   if (key.startsWith("ai_analyze_http_")) {
     const status = key.replace("ai_analyze_http_", "");
-    const lang = localeKey(locale);
-    if (status === "404") {
-      return lang === "hr"
-        ? "API ruta /api/videos/ai-analyze nije dostupna (404)."
-        : "API route /api/videos/ai-analyze not available (404).";
-    }
-    return lang === "hr"
-      ? `API greška HTTP ${status} (${key}).`
-      : `API error HTTP ${status} (${key}).`;
+    if (status === "404") return HTTP_404[lang];
+    const template: LocaleLabels = L(
+      `API error HTTP ${status}.`,
+      `API greška HTTP ${status}.`,
+      `API-Fehler HTTP ${status}.`,
+      `API greška HTTP ${status}.`,
+      `Error API HTTP ${status}.`,
+      `Erro API HTTP ${status}.`,
+      `API greška HTTP ${status}.`,
+      `Erreur API HTTP ${status}.`,
+      `Errore API HTTP ${status}.`,
+      `API-fout HTTP ${status}.`,
+      `API hatası HTTP ${status}.`,
+      `خطأ API HTTP ${status}.`,
+    );
+    return template[lang];
   }
+
   if (key.startsWith("save_failed:")) {
     const detail = key.slice("save_failed:".length).trim();
-    const lang = localeKey(locale);
-    return lang === "hr"
-      ? `Spremanje nije uspjelo: ${detail}`
-      : `Save failed: ${detail}`;
+    const prefix: LocaleLabels = L(
+      "Save failed:",
+      "Spremanje nije uspjelo:",
+      "Speichern fehlgeschlagen:",
+      "Spremanje nije uspjelo:",
+      "Error al guardar:",
+      "Falha ao guardar:",
+      "Čuvanje nije uspelo:",
+      "Échec de l'enregistrement :",
+      "Salvataggio non riuscito:",
+      "Opslaan mislukt:",
+      "Kaydetme başarısız:",
+      "فشل الحفظ:",
+    );
+    return `${prefix[lang]} ${detail}`;
   }
+
   if (key.startsWith("load_failed:")) {
     const detail = key.slice("load_failed:".length).trim();
-    const lang = localeKey(locale);
-    return lang === "hr"
-      ? `Učitavanje nije uspjelo: ${detail}`
-      : `Load failed: ${detail}`;
+    const prefix: LocaleLabels = L(
+      "Load failed:",
+      "Učitavanje nije uspjelo:",
+      "Laden fehlgeschlagen:",
+      "Učitavanje nije uspjelo:",
+      "Error al cargar:",
+      "Falha ao carregar:",
+      "Učitavanje nije uspelo:",
+      "Échec du chargement :",
+      "Caricamento non riuscito:",
+      "Laden mislukt:",
+      "Yükleme başarısız:",
+      "فشل التحميل:",
+    );
+    return `${prefix[lang]} ${detail}`;
   }
+
   const row = REASONS[key];
-  if (row) return row[localeKey(locale)];
+  if (row) return row[lang];
   return key;
 }

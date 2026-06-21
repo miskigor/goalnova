@@ -91,9 +91,15 @@ ${VIDEO_ANALYSIS_FOOTBALL_VALIDITY_GATE}
 - \`confidence\` is 0–100 (clip quality + evidence).
 - \`overall_score\` must align with visible \`scores\` and \`confidence\` — not independent hype.
 
-## Player copy
-- \`player_friendly_summary\`: one upbeat sentence.
-- \`coach_feedback\`: scout-facing note with visible evidence.
+## Player copy (training-focused — be specific and helpful)
+- \`player_friendly_summary\`: 2–3 upbeat sentences: what went well in this clip + one clear next step.
+- \`coach_feedback\`: 3–5 sentences for scouts — what you saw, why scores look that way, and how the player could train smarter (concrete drills or habits tied to visible weaknesses).
+- \`improvements\`: **5–6 items**. Each item must be **2–4 full sentences** (not one-liners). Structure each tip as:
+  1) **What** you observed in this clip (tie to a visible moment or lowest metric),
+  2) **How** to improve (specific drill, rep count, or technique cue a young player can do this week),
+  3) **Why** it helps (short, plain language).
+- \`weekly_training_plan\`: **One string**, 4–6 sentences describing a simple **Mon–Fri micro-plan** (one focus per weekday + rest/recovery note). Tie each day to weaknesses visible in this clip. Use weekday names in the user's language.
+- Mention filming tips in the **last** improvement when camera angle/quality limited the analysis.
 
 ${VIDEO_ANALYSIS_CONSERVATIVE_RULES}
 `.trim();
@@ -110,13 +116,17 @@ Return **one** JSON object (no markdown fences, no text outside JSON).
 
 **Phase 2 — Only when \`valid_for_football_analysis\` is true**
 - Score only skills clearly visible in the frames. Use **null** for anything you cannot see — never guess.
+- \`scores.speed\` and \`scores.technique\` are **separate** — always try to score both when the clip allows:
+  - **speed**: linear/explosive movement (sprint pace, acceleration over distance, recovery runs, first-step burst). Null only if no running or movement speed is visible.
+  - **technique**: ball and body skill quality (touch, passing form, striking mechanics, coordination, control under pressure). A player can be fast with weak technique or technically strong but slow — do not copy one score into the other.
 - \`confidence\` (0–100): how reliably the footage supports your scores (camera, length, clarity).
 - \`overall_score\` (0–100): should reflect visible metrics **and** confidence — do not give high overall scores with low confidence or mostly null metrics.
 - \`strengths\`: 1–3 short phrases (top strength first).
-- \`improvements\`: 1–3 short, actionable tips (one concrete habit each).
+- \`improvements\`: **5–6 detailed tips**. Each string = **2–4 sentences**: visible evidence → concrete training action → why it matters. No bullet symbols inside strings.
+- \`weekly_training_plan\`: **4–6 sentences** — Mon–Fri micro-plan (one main drill/focus per day + short recovery note on one day). Based on this clip's weakest visible metrics.
 - \`badges\`: 1–2 catchy titles, e.g. "Fast Feet", "Great Control", "Strong Finisher", "Sharp Dribbler", "High Energy".
-- \`coach_feedback\`: 1–2 sentences for scouts — concrete, observational (what you saw).
-- \`player_friendly_summary\`: one short motivational sentence for the player (no jargon).
+- \`coach_feedback\`: **4–6 sentences** — observational scout note plus practical training advice linked to what was visible.
+- \`player_friendly_summary\`: **2–3 sentences** — motivational, plain language, one actionable next step.
 
 Shape:
 
@@ -138,18 +148,20 @@ Shape:
   "improvements": ["string"],
   "badges": ["string"],
   "coach_feedback": "string",
-  "player_friendly_summary": "string"
+  "player_friendly_summary": "string",
+  "weekly_training_plan": "string"
 }
 
 Rules:
 - Never output serious football grades for non-football videos.
 - Prefer null over invented numbers.
-- Keep all text brief and useful to a young player.
+- Improvement text should be **substantive and practical** for a young player (not generic praise).
+- Write all player-facing strings in the user's language when requested.
 `.trim();
 
 /** Optional second user message for APIs that keep system minimal. */
 export const VIDEO_ANALYSIS_USER_REMINDER = `
-Phase 1 first: is this actually football? If not, valid_for_football_analysis false, overall_score 0, confidence 0, all scores null — STOP. If yes, score only what you see; use null otherwise; keep copy short and helpful.
+Phase 1 first: is this actually football? If not, valid_for_football_analysis false, overall_score 0, confidence 0, all scores null — STOP. If yes, score only what you see; use null otherwise. Give **detailed, practical improvement tips** (2–4 sentences each) tied to visible evidence.
 `.trim();
 
 export type VideoAnalysisPromptParts = {

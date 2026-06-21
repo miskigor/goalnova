@@ -1326,6 +1326,9 @@
     "playerStrength": "Strength",
     "playerBadge": "Badge",
     "playerImprove": "Improve",
+    "howToImproveHeading": "How to improve",
+    "coachDetailHeading": "Detailed coach notes",
+    "weeklyPlanHeading": "Weekly training plan",
     "scoutNote": "Scout note",
     "coreMetricsHeading": "Core metrics",
     "core": {

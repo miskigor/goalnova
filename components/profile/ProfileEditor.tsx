@@ -322,7 +322,7 @@ export function ProfileEditor() {
               .eq("user_id", result.data.user.id)
               .order("created_at", { ascending: false }),
           ]);
-          setPlayerPremiumActive(isPlayerPremium(pp));
+          setPlayerPremiumActive(isPlayerPremium(pp, result.data.user.email));
           setMyVideos(
             (myVideoRows ?? []).map((v) => ({
               id: String(v.id),

@@ -90,8 +90,8 @@ export function parseVideoAnalysisModelJson(
     ),
     confidence,
     scores,
-    strengths: parseStringArray(o.strengths, 5),
-    improvements: parseStringArray(o.improvements, 5),
+    strengths: parseStringArray(o.strengths, 6),
+    improvements: parseStringArray(o.improvements, 7),
     badges: parseStringArray(o.badges, 5),
     coach_feedback:
       typeof o.coach_feedback === "string" ? o.coach_feedback.trim() : "",
@@ -99,6 +99,10 @@ export function parseVideoAnalysisModelJson(
       typeof o.player_friendly_summary === "string"
         ? o.player_friendly_summary.trim()
         : "",
+    weekly_training_plan:
+      typeof o.weekly_training_plan === "string"
+        ? o.weekly_training_plan.trim()
+        : undefined,
   };
 }
 
@@ -158,6 +162,7 @@ export function modelJsonToVideoAnalysisScores(
     badges: model.badges,
     coach_feedback: model.coach_feedback,
     player_friendly_summary: model.player_friendly_summary,
+    weekly_training_plan: model.weekly_training_plan,
   };
 
   return {

@@ -17,9 +17,9 @@ import type { ExtractedFrame } from "./extractVideoFrames";
 function localeInstruction(locale: string): string {
   const base = locale.toLowerCase().split("-")[0];
   if (base === "en") {
-    return "Write strengths, improvements, badges, coach_feedback, and player_friendly_summary in English.";
+    return "Write strengths, improvements, badges, coach_feedback, player_friendly_summary, and weekly_training_plan in English. Each improvement must be 2–4 full sentences with specific training advice. weekly_training_plan = Mon–Fri micro-plan in one paragraph.";
   }
-  return `Write strengths, improvements, badges, coach_feedback, and player_friendly_summary in the user's language (${base}). Keep badge names short and catchy (can stay English if natural).`;
+  return `Write strengths, improvements, badges, coach_feedback, player_friendly_summary, and weekly_training_plan in the user's language (${base}). Each improvement must be 2–4 full sentences. weekly_training_plan must be a Mon–Fri micro-plan in one paragraph. Keep badge names short and catchy.`;
 }
 
 export async function analyzeFootballClipWithOpenAI(params: {
@@ -55,6 +55,7 @@ export async function analyzeFootballClipWithOpenAI(params: {
     body: JSON.stringify({
       model: getOpenAiModel(),
       temperature: 0.35,
+      max_tokens: 2800,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: system },

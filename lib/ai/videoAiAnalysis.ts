@@ -57,6 +57,7 @@ export function mapAiAnalysisRowToScores(row: AiAnalysisRow): VideoAnalysisScore
         badges: v2Stored.badges,
         coach_feedback: v2Stored.coach_feedback,
         player_friendly_summary: v2Stored.player_friendly_summary,
+        weekly_training_plan: v2Stored.weekly_training_plan,
       },
     };
   }

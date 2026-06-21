@@ -1616,6 +1616,14 @@ export type Database = {
         };
         Returns: Json;
       };
+      goalnova_grant_welcome_premium_trial: {
+        Args: { p_user_id: string };
+        Returns: Json;
+      };
+      goalnova_record_welcome_trial_email_if_used: {
+        Args: { p_user_id: string };
+        Returns: undefined;
+      };
       goalnova_admin_set_premium: {
         Args: { p_user_id: string; p_premium: boolean };
         Returns: Json;

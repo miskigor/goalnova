@@ -6,3 +6,8 @@ export function isBootstrapAdminEmail(email: string | null | undefined): boolean
   if (!normalized) return false;
   return (BOOTSTRAP_ADMIN_EMAILS as readonly string[]).includes(normalized);
 }
+
+/** Test / owner accounts — always treated as premium in the app. */
+export function hasPermanentPremiumAccess(email: string | null | undefined): boolean {
+  return isBootstrapAdminEmail(email);
+}

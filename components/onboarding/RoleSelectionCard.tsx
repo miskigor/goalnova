@@ -16,6 +16,7 @@ import {
   tryConsumePendingReferralWhenPlayerReady,
 } from "@/lib/supabase/referrals";
 import { InviteFriendsSection } from "@/components/referrals/InviteFriendsSection";
+import { PITCHRUSCH_PREMIUM_UPDATED_EVENT } from "@/lib/supabase/premium";
 
 type Role = "player" | "scout";
 
@@ -250,6 +251,17 @@ export function RoleSelectionCard() {
       }
 
       void ensureOnboardingNotificationsForRole(supabase, userId, role);
+
+      void (async () => {
+        try {
+          await supabase.rpc("goalnova_grant_welcome_premium_trial", { p_user_id: userId });
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event(PITCHRUSCH_PREMIUM_UPDATED_EVENT));
+          }
+        } catch (e) {
+          devError("[RoleSelection] welcome premium trial grant failed", e);
+        }
+      })();
 
       if (role === "player") {
         markPostAuthProfileLandingComplete(userId);

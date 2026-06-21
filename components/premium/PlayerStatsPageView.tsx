@@ -10,6 +10,7 @@ import {
   type PlayerProfileStatsRow,
 } from "@/lib/supabase/playerPremium";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
+import { supabase } from "@/lib/supabase/client";
 
 export function PlayerStatsPageView() {
   const t = useTranslations("premium");
@@ -21,12 +22,13 @@ export function PlayerStatsPageView() {
   useEffect(() => {
     let mounted = true;
     void (async () => {
-      const [{ profile }, { stats: s }] = await Promise.all([
+      const [{ profile }, { stats: s }, auth] = await Promise.all([
         fetchMyPlayerPremiumProfile(),
         fetchMyPlayerProfileStats(),
+        supabase.auth.getUser(),
       ]);
       if (!mounted) return;
-      setPremium(isPlayerPremium(profile));
+      setPremium(isPlayerPremium(profile, auth.data.user?.email));
       setStats(s);
       setLoading(false);
     })();

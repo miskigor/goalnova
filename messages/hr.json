@@ -1286,6 +1286,8 @@
     "clipTypeTraining": "trening",
     "clipTypeMatch": "utakmica",
     "clipTypeSkill": "vještina",
+    "clipTypeShootingAtGoal": "šut na gol",
+    "clipTypeOneVOne": "1v1",
     "clipTypeNonFootball": "nije nogomet",
     "clipTypeUnclear": "nejasno",
     "clipTypeOther": "ostalo",
@@ -1326,6 +1328,9 @@
     "playerStrength": "Snaga",
     "playerBadge": "Bedž",
     "playerImprove": "Poboljšaj",
+    "howToImproveHeading": "Kako poboljšati",
+    "coachDetailHeading": "Detaljni savjeti trenera",
+    "weeklyPlanHeading": "Tjedni plan treninga",
     "scoutNote": "Scout bilješka",
     "coreMetricsHeading": "Osnovne metrike",
     "core": {

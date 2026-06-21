@@ -9,6 +9,7 @@ export type PlayerSubscriptionStatus =
 export type PremiumLikeProfile = {
   subscription_plan?: string | null;
   subscription_status?: string | null;
+  subscription_current_period_end?: string | null;
   ai_overall_score?: number | null;
   profile_completeness?: number | null;
   /** Referral reward: treat like featured in discovery ordering until this instant. */
@@ -25,12 +26,22 @@ export type PremiumLikeVideo = {
 export const FREE_PLAYER_MAX_VIDEOS_TOTAL = 3;
 export const PLAYER_PREMIUM_MAX_VIDEOS_TOTAL = 20;
 
-export function isPlayerPremium(profile: PremiumLikeProfile | null | undefined): boolean {
+import { hasPermanentPremiumAccess } from "@/lib/admin/bootstrapAdminEmails";
+
+export function isPlayerPremium(
+  profile: PremiumLikeProfile | null | undefined,
+  email?: string | null,
+): boolean {
+  if (hasPermanentPremiumAccess(email)) return true;
   if (!profile) return false;
-  return (
-    String(profile.subscription_plan ?? "").trim() === "player_premium" &&
-    String(profile.subscription_status ?? "").trim() === "active"
-  );
+  if (String(profile.subscription_plan ?? "").trim() !== "player_premium") return false;
+  if (String(profile.subscription_status ?? "").trim() !== "active") return false;
+  const endRaw = profile.subscription_current_period_end?.trim();
+  if (endRaw) {
+    const endMs = new Date(endRaw).getTime();
+    if (Number.isFinite(endMs) && endMs <= Date.now()) return false;
+  }
+  return true;
 }
 
 export function isPlayer(profileRole: string | null | undefined): boolean {
