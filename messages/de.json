@@ -1442,7 +1442,8 @@
     "readNotificationsDeleted": "Gelesene Benachrichtigungen entfernt",
     "allNotificationsDeleted": "Alle Benachrichtigungen entfernt",
     "deleteFailed": "Aktion konnte nicht ausgeführt werden.",
-    "supportReply": "PitchRusch Support replied to your ticket"
+    "supportReply": "PitchRusch Support replied to your ticket",
+    "welcomeInboxPreview": "Willkommen bei PitchRusch! Öffne Nachrichten für deine Willkommensnachricht."
   },
   "support": {
     "title": "Support / Contact Support",
@@ -2051,7 +2052,8 @@
     "deleteMessage": "Löschen",
     "deletingMessage": "Wird entfernt…",
     "messageDeleted": "Nachricht in deiner Ansicht entfernt",
-    "deleteMessageFailed": "Nachricht konnte nicht entfernt werden."
+    "deleteMessageFailed": "Nachricht konnte nicht entfernt werden.",
+    "welcomeInboxMessage": "Willkommen bei PitchRusch!\n\nSchön, dass du Teil unserer Fußball-Community bist. PitchRusch ist der Ort, an dem Spieler ihr Talent zeigen, Videos posten, an Challenges teilnehmen und ihr Fußballprofil aufbauen können.\n\nWenn du möchtest, können wir dich auf unserem Instagram-Profil @pitchrusch vorstellen.\n\nFür einen Instagram-Beitrag sende uns dein Foto und schreib uns deinen Benutzernamen in der App. Für den Beitrag nutzen wir Daten aus deinem PitchRusch-Profil:\n- Vor- und Nachname\n- Ort\n- Verein\n- Größe\n- Gewicht\n\nWenn du einen Instagram-Beitrag möchtest, schreib uns und sende dein Foto.\n\nWillkommen im PitchRusch-Team!"
   },
   "success": {
     "upload": "Upload erfolgreich",

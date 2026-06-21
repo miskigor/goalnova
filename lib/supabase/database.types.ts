@@ -1620,6 +1620,10 @@ export type Database = {
         Args: { p_user_id: string };
         Returns: Json;
       };
+      goalnova_send_welcome_inbox_message: {
+        Args: { p_user_id: string };
+        Returns: Json;
+      };
       goalnova_record_welcome_trial_email_if_used: {
         Args: { p_user_id: string };
         Returns: undefined;

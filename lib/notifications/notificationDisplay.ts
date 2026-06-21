@@ -1,4 +1,5 @@
 import type { NotificationRow } from "@/lib/supabase/notifications";
+import { isWelcomeInboxMessageToken } from "@/lib/messages/welcomeInboxMessage";
 
 /** Stored in DB for onboarding rows — UI maps to `notifications.*` keys. */
 export const GN_NOTIFY_PREFIX = "__gn:" as const;
@@ -87,6 +88,9 @@ export function localizedNotificationMessage(
 }
 
 function localizedDirectMessageBody(raw: string, t: NotificationTranslate): string {
+  if (isWelcomeInboxMessageToken(raw)) {
+    return t("welcomeInboxPreview");
+  }
   const m = raw.match(LEGACY_MESSAGE_PREVIEW);
   if (m && m[1] !== undefined) {
     const preview = m[1].trim();

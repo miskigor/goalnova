@@ -1442,7 +1442,8 @@
     "readNotificationsDeleted": "Read notifications removed",
     "allNotificationsDeleted": "All notifications removed",
     "deleteFailed": "Could not complete that action.",
-    "supportReply": "PitchRusch Support replied to your ticket"
+    "supportReply": "PitchRusch Support replied to your ticket",
+    "welcomeInboxPreview": "PitchRusch'a hoş geldin! Hoş geldin mesajını okumak için Mesajlar'ı aç."
   },
   "support": {
     "title": "Support / Contact Support",
@@ -2051,7 +2052,8 @@
     "deleteMessage": "Delete",
     "deletingMessage": "Removing…",
     "messageDeleted": "Message removed from your view",
-    "deleteMessageFailed": "Could not remove that message."
+    "deleteMessageFailed": "Could not remove that message.",
+    "welcomeInboxMessage": "PitchRusch'a hoş geldin!\n\nFutbol topluluğumuzun bir parçası olduğun için mutluyuz. PitchRusch, oyuncuların yeteneğini gösterebildiği, video paylaşabildiği, meydan okumalara katılabildiği ve futbol profilini oluşturabildiği bir yerdir.\n\nİstersen seni Instagram profilimizde @pitchrusch tanıtabiliriz.\n\nInstagram paylaşımı için bize fotoğrafını gönder ve uygulamadaki kullanıcı adını yaz. Paylaşım için PitchRusch profilindeki bilgileri kullanırız:\n- ad soyad\n- şehir\n- kulüp\n- boy\n- kilo\n\nInstagram paylaşımı istersen bize yaz ve fotoğrafını gönder.\n\nPitchRusch ekibine hoş geldin!"
   },
   "success": {
     "upload": "Upload successful",

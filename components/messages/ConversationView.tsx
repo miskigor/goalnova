@@ -15,10 +15,15 @@ import {
   fetchConversationMessages,
   fetchDisplayNamesForUserIds,
   isMessageInConversation,
+  PITCHRUSCH_SENDER_SUPPORT,
   type MessageRow,
   parseMessageRow,
   sendDirectMessage,
 } from "@/lib/supabase/messages";
+import {
+  localizedDirectMessageBody,
+  isWelcomeInboxMessageToken,
+} from "@/lib/messages/welcomeInboxMessage";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { useNotificationsInboxOptional } from "@/components/notifications/NotificationsInboxContext";
 import { markThreadMessageNotificationsRead } from "@/lib/supabase/notifications";
@@ -205,14 +210,18 @@ export function ConversationView({ otherUserId }: Props) {
           .reverse()
           .find((row) => row.sender_id === otherUserId) ?? null;
         if (latestIncoming) {
-          const teamLabel = await fetchOfficialAdminNoticeSenderLabelForLatestMessage(
-            me,
-            otherUserId,
-            latestIncoming.message,
-            latestIncoming.created_at,
-          );
-          if (teamLabel) {
-            setOtherName(teamLabel);
+          if (isWelcomeInboxMessageToken(latestIncoming.message)) {
+            setOtherName(PITCHRUSCH_SENDER_SUPPORT);
+          } else {
+            const teamLabel = await fetchOfficialAdminNoticeSenderLabelForLatestMessage(
+              me,
+              otherUserId,
+              latestIncoming.message,
+              latestIncoming.created_at,
+            );
+            if (teamLabel) {
+              setOtherName(teamLabel);
+            }
           }
         }
         devLog("FETCH ROWS BEFORE FILTER", data);
@@ -856,7 +865,7 @@ export function ConversationView({ otherUserId }: Props) {
                   }`}
                 >
                   <p className="whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
-                    {m.message}
+                    {localizedDirectMessageBody(m.message, t)}
                   </p>
                   <div
                     className={`mt-1 flex items-center gap-2 ${!m.pending ? "justify-between" : ""}`}

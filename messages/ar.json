@@ -1442,7 +1442,8 @@
     "readNotificationsDeleted": "تمت إزالة الإشعارات المقروءة",
     "allNotificationsDeleted": "تمت إزالة كل الإشعارات",
     "deleteFailed": "تعذّر إتمام الإجراء.",
-    "supportReply": "PitchRusch Support replied to your ticket"
+    "supportReply": "PitchRusch Support replied to your ticket",
+    "welcomeInboxPreview": "مرحبًا بك في PitchRusch! افتح الرسائل لقراءة رسالة الترحيب."
   },
   "support": {
     "title": "Support / Contact Support",
@@ -2051,7 +2052,8 @@
     "deleteMessage": "حذف",
     "deletingMessage": "جارٍ الإزالة…",
     "messageDeleted": "تمت إزالة الرسالة من عرضك",
-    "deleteMessageFailed": "تعذّر إزالة الرسالة."
+    "deleteMessageFailed": "تعذّر إزالة الرسالة.",
+    "welcomeInboxMessage": "مرحبًا بك في PitchRusch!\n\nيسعدنا أنك جزء من مجتمعنا لكرة القدم. PitchRusch هو المكان الذي يمكن للاعبين فيه إظهار موهبتهم ونشر الفيديوهات والمشاركة في التحديات وبناء ملفهم الشخصي.\n\nإذا رغبت، يمكننا تقديمك على حسابنا على إنستغرام @pitchrusch.\n\nللنشر على إنستغرام، أرسل لنا صورتك واكتب اسم المستخدم في التطبيق. نستخدم بيانات ملفك في PitchRusch:\n- الاسم الكامل\n- المدينة\n- النادي\n- الطول\n- الوزن\n\nإذا أردت منشورًا على إنستغرام، راسلنا وأرسل صورتك.\n\nمرحبًا بك في فريق PitchRusch!"
   },
   "success": {
     "upload": "Upload successful",

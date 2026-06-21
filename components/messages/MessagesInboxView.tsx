@@ -10,6 +10,7 @@ import {
   buildInboxSummaries,
   type ConversationSummary,
 } from "@/lib/supabase/messages";
+import { localizedDirectMessageBody } from "@/lib/messages/welcomeInboxMessage";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { VerifiedScoutBadge } from "@/components/scout/VerifiedScoutBadge";
 import { useNotificationsInboxOptional } from "@/components/notifications/NotificationsInboxContext";
@@ -202,7 +203,10 @@ export function MessagesInboxView() {
                   ) : null}
                 </div>
                 <p className="mt-0.5 truncate text-sm text-gn-text-secondary">
-                  {c.lastMessage}
+                  {(() => {
+                    const body = localizedDirectMessageBody(c.lastMessage, t);
+                    return body.length > 140 ? `${body.slice(0, 140)}…` : body;
+                  })()}
                 </p>
               </div>
               <time

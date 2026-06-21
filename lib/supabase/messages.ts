@@ -12,6 +12,7 @@ import {
 import { fetchVerifiedScoutFlagsForUserIds } from "./scoutVerificationPublic";
 import { scheduleMessageNotification } from "./notifications";
 import { rpcFetchPublicPlayerProfilesByIds } from "@/lib/supabase/publicPlayerProfiles";
+import { isWelcomeInboxMessageToken } from "@/lib/messages/welcomeInboxMessage";
 
 /** `public.messages` row shape from `Database` (regenerate `database.types.ts` from Supabase when DDL changes). */
 export type MessageRow = PublicMessagesRow;
@@ -758,11 +759,13 @@ export async function buildInboxSummaries(
     .map((otherUserId) => {
       const meta = byOther.get(otherUserId)!;
       const notice = officialNoticeMeta.get(otherUserId) ?? null;
-      const useTeamLabel = shouldUseOfficialAdminNoticeLabel(
-        meta.lastMessage,
-        meta.lastAt,
-        notice,
-      );
+      const useTeamLabel =
+        isWelcomeInboxMessageToken(meta.lastMessage) ||
+        shouldUseOfficialAdminNoticeLabel(
+          meta.lastMessage,
+          meta.lastAt,
+          notice,
+        );
       return {
         otherUserId,
         displayName: useTeamLabel

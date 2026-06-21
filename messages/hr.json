@@ -1444,7 +1444,8 @@
     "readNotificationsDeleted": "Pročitane obavijesti uklonjene",
     "allNotificationsDeleted": "Sve obavijesti uklonjene",
     "deleteFailed": "Radnja nije uspjela.",
-    "supportReply": "PitchRusch Support replied to your ticket"
+    "supportReply": "PitchRusch Support replied to your ticket",
+    "welcomeInboxPreview": "Dobrodošao/la na PitchRusch! Otvori Poruke i pročitaj dobrodošlicu."
   },
   "support": {
     "title": "Support / Contact Support",
@@ -2053,7 +2054,8 @@
     "deleteMessage": "Obriši",
     "deletingMessage": "Uklanjanje…",
     "messageDeleted": "Poruka uklonjena s tvog prikaza",
-    "deleteMessageFailed": "Poruku nije moguće ukloniti."
+    "deleteMessageFailed": "Poruku nije moguće ukloniti.",
+    "welcomeInboxMessage": "Dobrodošao/la na PitchRusch!\n\nDrago nam je što si dio naše nogometne zajednice. PitchRusch je mjesto gdje igrači mogu pokazati svoj talent, objavljivati videe, sudjelovati u izazovima i graditi svoj nogometni profil.\n\nAko želiš, možemo te predstaviti i na našem Instagram profilu @pitchrusch.\n\nZa Instagram objavu pošalji nam svoju sliku i napiši kako se zoveš u aplikaciji. Podatke za objavu uzimamo iz tvog PitchRusch profila:\n- ime i prezime\n- mjesto\n- klub\n- visina\n- težina\n\nAko želiš Instagram objavu, javi nam se i pošalji sliku.\n\nDobrodošao/la u PitchRusch tim!"
   },
   "success": {
     "upload": "Upload uspješan",
