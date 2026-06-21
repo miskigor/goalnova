@@ -14,6 +14,7 @@ export function AdminOverviewPage() {
       <p className="text-sm leading-relaxed text-zinc-400">{t("overviewIntro")}</p>
       <ul className="grid gap-3 sm:grid-cols-2">
         {[
+          { href: "/admin/stats", label: t("navStats") },
           { href: "/admin/users", label: t("navUsers") },
           { href: "/admin/support", label: t("navSupport") },
           { href: "/admin/tasks", label: t("navTasks") },

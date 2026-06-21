@@ -38,6 +38,158 @@ export type AdminNoticeType =
   | "verification_issue"
   | "custom";
 
+export type AdminPlatformStats = {
+  generated_at: string;
+  users: {
+    total: number;
+    players: number;
+    scouts: number;
+    premium: number;
+    suspended: number;
+    signups_7d: number;
+    signups_30d: number;
+  };
+  profiles: {
+    player_profiles: number;
+    complete_profiles: number;
+    with_avatar: number;
+    with_video: number;
+    with_ai_analysis: number;
+    completeness_buckets: { score: number; count: number }[];
+    field_fill: Record<string, number>;
+  };
+  usage: {
+    videos_total: number;
+    videos_7d: number;
+    videos_30d: number;
+    uploaders: number;
+    ai_analyses_total: number;
+    ai_analyses_valid: number;
+    ai_analyses_7d: number;
+    ai_users: number;
+    messages_total: number;
+    messages_7d: number;
+    message_users: number;
+    likes_total: number;
+    comments_total: number;
+    follows_total: number;
+    challenge_entries_total: number;
+    weekly_submissions_total: number;
+    friend_challenges_total: number;
+    quiz_answers_total: number;
+    quiz_users_7d: number;
+    referrals_total: number;
+    scout_saves_total: number;
+    welcome_messages_sent: number;
+  };
+  operations: {
+    open_support_tickets: number;
+    open_moderation_reports: number;
+    pending_scout_verifications: number;
+  };
+};
+
+function num(v: unknown, fallback = 0): number {
+  return typeof v === "number" && Number.isFinite(v) ? v : fallback;
+}
+
+function parseAdminPlatformStats(raw: unknown): AdminPlatformStats | null {
+  if (!raw || typeof raw !== "object") return null;
+  const o = raw as Record<string, unknown>;
+  const users = o.users as Record<string, unknown> | undefined;
+  const profiles = o.profiles as Record<string, unknown> | undefined;
+  const usage = o.usage as Record<string, unknown> | undefined;
+  const operations = o.operations as Record<string, unknown> | undefined;
+  if (!users || !profiles || !usage || !operations) return null;
+
+  const bucketsRaw = profiles.completeness_buckets;
+  const completeness_buckets = Array.isArray(bucketsRaw)
+    ? bucketsRaw
+        .map((b) => {
+          if (!b || typeof b !== "object") return null;
+          const row = b as Record<string, unknown>;
+          return { score: num(row.score), count: num(row.count) };
+        })
+        .filter((x): x is { score: number; count: number } => x != null)
+    : [];
+
+  const fieldRaw = profiles.field_fill;
+  const field_fill: Record<string, number> = {};
+  if (fieldRaw && typeof fieldRaw === "object") {
+    for (const [k, v] of Object.entries(fieldRaw as Record<string, unknown>)) {
+      field_fill[k] = num(v);
+    }
+  }
+
+  return {
+    generated_at:
+      typeof o.generated_at === "string" ? o.generated_at : new Date().toISOString(),
+    users: {
+      total: num(users.total),
+      players: num(users.players),
+      scouts: num(users.scouts),
+      premium: num(users.premium),
+      suspended: num(users.suspended),
+      signups_7d: num(users.signups_7d),
+      signups_30d: num(users.signups_30d),
+    },
+    profiles: {
+      player_profiles: num(profiles.player_profiles),
+      complete_profiles: num(profiles.complete_profiles),
+      with_avatar: num(profiles.with_avatar),
+      with_video: num(profiles.with_video),
+      with_ai_analysis: num(profiles.with_ai_analysis),
+      completeness_buckets,
+      field_fill,
+    },
+    usage: {
+      videos_total: num(usage.videos_total),
+      videos_7d: num(usage.videos_7d),
+      videos_30d: num(usage.videos_30d),
+      uploaders: num(usage.uploaders),
+      ai_analyses_total: num(usage.ai_analyses_total),
+      ai_analyses_valid: num(usage.ai_analyses_valid),
+      ai_analyses_7d: num(usage.ai_analyses_7d),
+      ai_users: num(usage.ai_users),
+      messages_total: num(usage.messages_total),
+      messages_7d: num(usage.messages_7d),
+      message_users: num(usage.message_users),
+      likes_total: num(usage.likes_total),
+      comments_total: num(usage.comments_total),
+      follows_total: num(usage.follows_total),
+      challenge_entries_total: num(usage.challenge_entries_total),
+      weekly_submissions_total: num(usage.weekly_submissions_total),
+      friend_challenges_total: num(usage.friend_challenges_total),
+      quiz_answers_total: num(usage.quiz_answers_total),
+      quiz_users_7d: num(usage.quiz_users_7d),
+      referrals_total: num(usage.referrals_total),
+      scout_saves_total: num(usage.scout_saves_total),
+      welcome_messages_sent: num(usage.welcome_messages_sent),
+    },
+    operations: {
+      open_support_tickets: num(operations.open_support_tickets),
+      open_moderation_reports: num(operations.open_moderation_reports),
+      pending_scout_verifications: num(operations.pending_scout_verifications),
+    },
+  };
+}
+
+export async function fetchAdminPlatformStats(): Promise<{
+  stats: AdminPlatformStats | null;
+  error: string | null;
+}> {
+  const { data, error } = await supabase.rpc("goalnova_admin_get_platform_stats");
+  if (error) {
+    logFullSupabaseError("[admin] goalnova_admin_get_platform_stats", error);
+    return { stats: null, error: error.message };
+  }
+  const stats = parseAdminPlatformStats(data);
+  if (!stats) {
+    return { stats: null, error: "Invalid stats payload." };
+  }
+  return { stats, error: null };
+}
+
 export async function rpcAdminListUsers(opts: {
   limit?: number;
   offset?: number;

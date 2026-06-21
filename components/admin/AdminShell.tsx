@@ -9,6 +9,7 @@ import { fetchAdminUnreadInboxBreakdown } from "@/lib/supabase/adminSystem";
 
 const NAV: { href: string; labelKey: string; superOnly?: boolean }[] = [
   { href: "/admin", labelKey: "navOverview" },
+  { href: "/admin/stats", labelKey: "navStats" },
   { href: "/admin/users", labelKey: "navUsers" },
   { href: "/admin/profiles", labelKey: "navProfiles" },
   { href: "/admin/scout-verifications", labelKey: "navScout" },

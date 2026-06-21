@@ -1624,6 +1624,10 @@ export type Database = {
         Args: { p_user_id: string };
         Returns: Json;
       };
+      goalnova_admin_get_platform_stats: {
+        Args: Record<PropertyKey, never>;
+        Returns: Json;
+      };
       goalnova_record_welcome_trial_email_if_used: {
         Args: { p_user_id: string };
         Returns: undefined;
