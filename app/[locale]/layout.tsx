@@ -13,17 +13,10 @@ import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrig
 import { isMobileLayoutStableV2Enabled } from "@/lib/layout/mobileLayoutStableV2Flag";
 import { isMobileLayoutV3Enabled } from "@/lib/layout/mobileLayoutV3Flag";
 import { MLV2_CRITICAL_NON_HOME_CSS } from "@/lib/layout/mlv2CriticalCss";
-import {
-  MLV3_CRITICAL_CSS,
-  MLV3_HTML_ATTRIBUTE_SYNC_SCRIPT,
-} from "@/lib/layout/mlv3CriticalCss";
-import { MLV2_ROOT_ATTR } from "@/components/layout/mobile-v2/mobileLayoutStableV2.tokens";
+import { MLV3_CRITICAL_CSS } from "@/lib/layout/mlv3CriticalCss";
 import "@/components/layout/mobile-v2/mobileLayoutStableV2.css";
 import "@/components/layout/mobile-v2/mobileLayoutStableV2Content.css";
 import "@/components/scout/scoutPageLayout.css";
-
-/** Sets V2 html flag on app routes before first paint (avoids hydration size flash). */
-const MLV2_HTML_ATTRIBUTE_SYNC_SCRIPT = `(function(){var p=location.pathname,re=/(?:^|\\/)(?:home|explore|profile|upload|challenges|scout-dashboard|scout-apply|admin|notifications|messages|settings|premium|benefits|rankings|discover|player)(?:\\/|$)/;if(!re.test(p))return;document.documentElement.setAttribute("${MLV2_ROOT_ATTR}","");})();`;
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -79,28 +72,16 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <>
       {mobileLayoutStableV2 ? (
-        <>
-          <style
-            id="mlv2-critical-non-home"
-            dangerouslySetInnerHTML={{ __html: MLV2_CRITICAL_NON_HOME_CSS }}
-          />
-          <script
-            id="mlv2-html-attribute-sync"
-            dangerouslySetInnerHTML={{ __html: MLV2_HTML_ATTRIBUTE_SYNC_SCRIPT }}
-          />
-        </>
+        <style
+          id="mlv2-critical-non-home"
+          dangerouslySetInnerHTML={{ __html: MLV2_CRITICAL_NON_HOME_CSS }}
+        />
       ) : null}
       {mobileLayoutV3 ? (
-        <>
-          <style
-            id="mlv3-critical"
-            dangerouslySetInnerHTML={{ __html: MLV3_CRITICAL_CSS }}
-          />
-          <script
-            id="mlv3-html-attribute-sync"
-            dangerouslySetInnerHTML={{ __html: MLV3_HTML_ATTRIBUTE_SYNC_SCRIPT }}
-          />
-        </>
+        <style
+          id="mlv3-critical"
+          dangerouslySetInnerHTML={{ __html: MLV3_CRITICAL_CSS }}
+        />
       ) : null}
       <LocaleIntlProviders locale={locale as AppLocale}>{children}</LocaleIntlProviders>
     </>

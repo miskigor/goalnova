@@ -20,6 +20,11 @@ export function LocalePreferenceSync() {
   const ran = useRef(false);
 
   useEffect(() => {
+    document.documentElement.lang = locale;
+    document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
+  }, [locale]);
+
+  useEffect(() => {
     if (ran.current) return;
     ran.current = true;
 

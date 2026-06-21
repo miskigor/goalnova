@@ -3,7 +3,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import type { AppLocale } from "@/i18n/routing";
 import { LocalePreferenceSync } from "@/components/i18n/LocalePreferenceSync";
-import { BootSplashDismiss } from "@/components/loading/BootSplashDismiss";
 
 type Props = {
   locale: AppLocale;
@@ -24,7 +23,6 @@ export async function LocaleIntlProviders({ locale, children }: Props) {
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <BootSplashDismiss />
       <LocalePreferenceSync />
       {children}
     </NextIntlClientProvider>

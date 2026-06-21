@@ -1,11 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Bebas_Neue, Geist, Noto_Sans_Arabic } from "next/font/google";
-import {
-  PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS,
-  PITCHRUSCH_CRITICAL_FIRST_PAINT_SCRIPT,
-} from "@/lib/loading/criticalFirstPaint";
-import { BOOT_SPLASH_CSS, BOOT_SPLASH_BODY_SCRIPT, LOCALE_HTML_SYNC_SCRIPT } from "@/lib/loading/bootSplash";
+import { PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS } from "@/lib/loading/criticalFirstPaint";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -50,10 +46,7 @@ type Props = {
   children: ReactNode;
 };
 
-/**
- * Root shell renders synchronously (black + boot splash) before locale/messages stream.
- * Fixes long white screen on cold opens (e.g. Instagram in-app browser).
- */
+/** Root shell — black first paint via inlined CSS only (no scripts, no boot splash DOM). */
 export default function RootLayout({ children }: Props) {
   return (
     <html
@@ -68,35 +61,15 @@ export default function RootLayout({ children }: Props) {
       <head>
         <meta name="color-scheme" content="dark" />
         <meta name="google" content="notranslate" />
-        <link
-          rel="preload"
-          href="/brand/pitchrusch-logo.svg"
-          as="image"
-          type="image/svg+xml"
-        />
         <style
           id="pitchrusch-critical-first-paint"
-          dangerouslySetInnerHTML={{
-            __html: `${PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS}\n${BOOT_SPLASH_CSS}`,
-          }}
-        />
-        <script
-          id="pitchrusch-critical-first-paint-js"
-          dangerouslySetInnerHTML={{ __html: PITCHRUSCH_CRITICAL_FIRST_PAINT_SCRIPT }}
-        />
-        <script
-          id="pitchrusch-locale-html-sync"
-          dangerouslySetInnerHTML={{ __html: LOCALE_HTML_SYNC_SCRIPT }}
+          dangerouslySetInnerHTML={{ __html: PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS }}
         />
       </head>
       <body
         style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}
         className="notranslate flex min-h-dvh min-w-0 max-w-full flex-col overflow-x-hidden bg-gn-bg text-gn-text"
       >
-        <script
-          id="pitchrusch-boot-splash-inject"
-          dangerouslySetInnerHTML={{ __html: BOOT_SPLASH_BODY_SCRIPT }}
-        />
         {children}
       </body>
     </html>
