@@ -2,7 +2,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { insertNotificationCompat } from "@/lib/supabase/notifications";
-import { ensureWelcomeInboxMessage } from "@/lib/supabase/welcomeInboxMessage";
 
 export type OnboardingNotificationRole = "player" | "scout";
 
@@ -151,8 +150,6 @@ export async function ensureOnboardingNotificationsForRole(
       await insertSystemNotification(client, userId, spec);
       alreadyHave.add(spec.type);
     }
-
-    await ensureWelcomeInboxMessage(client, userId);
   } catch (e) {
     logFullSupabaseError(
       "[onboarding notifications] ensureOnboardingNotificationsForRole unexpected",

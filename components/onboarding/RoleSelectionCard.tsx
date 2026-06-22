@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase/client";
 import { signOut } from "@/lib/supabase/auth";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { ensureOnboardingNotificationsForRole } from "@/lib/supabase/onboardingNotifications";
+import { sendWelcomeInboxMessageOnRegistration } from "@/lib/supabase/welcomeInboxMessage";
 import { resolvePostOnboardingHomePath } from "@/lib/onboarding/roleOnboardingPaths";
 import {
   needsRoleOnboardingPage,
@@ -251,6 +252,7 @@ export function RoleSelectionCard() {
       }
 
       void ensureOnboardingNotificationsForRole(supabase, userId, role);
+      void sendWelcomeInboxMessageOnRegistration(supabase, userId);
 
       void (async () => {
         try {
