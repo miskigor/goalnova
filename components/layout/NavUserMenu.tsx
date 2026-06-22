@@ -381,23 +381,16 @@ export function NavUserMenu({
         href="/profile"
         role="menuitem"
         className={linkClass}
-        aria-label={
-          dmUnreadCount > 0
-            ? `${tNav("profile")}, ${tMessages("inboxLinkAriaUnread", { count: dmUnreadCount })}`
-            : tNav("profile")
-        }
+        aria-label={tNav("profile")}
         onClick={() => {
           setOpen(false);
           onNavigate?.();
         }}
       >
-        <span className="relative inline-flex shrink-0">
-          <NavIcon name="profile" className="size-4 shrink-0 opacity-90" />
-          <UnreadNotificationBadge count={dmUnreadCount} variant="navSidebar" />
-        </span>
+        <NavIcon name="profile" className="size-4 shrink-0 opacity-90" />
         {tNav("profile")}
       </Link>
-      {bottomNavTrigger ? (
+      {(bottomNavTrigger || mobileMoreInMenu) ? (
         <Link
           href="/notifications"
           role="menuitem"
@@ -555,11 +548,7 @@ export function NavUserMenu({
         aria-expanded={open}
         aria-haspopup="true"
         aria-controls={menuId}
-        aria-label={
-          dmUnreadCount > 0
-            ? `${tA11y("accountMenu")}, ${tMessages("inboxLinkAriaUnread", { count: dmUnreadCount })}`
-            : tA11y("accountMenu")
-        }
+        aria-label={tA11y("accountMenu")}
         onClick={() => setOpen((v) => !v)}
         className={
           "flex items-center transition-all duration-200 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gn-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-gn-bg " +
@@ -586,10 +575,6 @@ export function NavUserMenu({
                 ? "!rounded-full ring-2 ring-white/30"
                 : "ring-2 ring-gn-border-subtle"
             }
-          />
-          <UnreadNotificationBadge
-            count={dmUnreadCount}
-            variant={bottomNavTrigger || compactTrigger ? "navCompact" : "header"}
           />
         </span>
         {compactTrigger ? null : (
