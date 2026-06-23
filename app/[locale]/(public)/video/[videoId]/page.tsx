@@ -10,8 +10,6 @@ import {
   challengeLinkSegment,
 } from "@/lib/challenges/challengeRowUtils";
 import { buildPublicVideoMetadata } from "@/lib/share/buildPublicVideoMetadata";
-import { absolutePublicVideoUrl } from "@/lib/share/localizedVideoPath";
-import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 import { getPublicVideoPageData } from "@/lib/supabase/publicVideoPageData";
 import { videoPlaybackCandidates, videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import {
@@ -32,7 +30,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, videoId } = await params;
   const data = await getPublicVideoPageData(videoId);
   const t = await getTranslations({ locale, namespace: "publicVideo" });
-  const base = getServerSiteOrigin();
 
   if (!data) {
     return buildPublicVideoMetadata({
@@ -48,16 +45,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = t("metaTitle", { name: displayName });
   const description =
     data.video.caption?.trim() || t("metaDescriptionFallback");
-  const canonical = base
-    ? absolutePublicVideoUrl(base, locale, videoId)
-    : undefined;
 
   return buildPublicVideoMetadata({
     status: "ok",
     title,
     description,
     videoUrl: videoPlaybackUrl(data.video),
-    canonicalUrl: canonical,
+    videoId,
     locale,
   });
 }

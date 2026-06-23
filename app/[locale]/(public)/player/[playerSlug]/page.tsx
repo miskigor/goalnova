@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cache } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
 import { PlayerPublicProfilePage } from "@/components/profile/PlayerPublicProfilePage";
 import { PublicPlayerJsonLd } from "@/components/share/PublicPlayerJsonLd";
 import { buildLocaleAlternates, localizedCanonicalPath } from "@/lib/seo/alternates";
@@ -15,6 +16,18 @@ import {
 type Props = {
   params: Promise<{ locale: string; playerSlug: string }>;
 };
+
+const PLAYER_UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function preferredPlayerPathSegment(
+  data: Awaited<ReturnType<typeof getPlayerProfile>>,
+  slug: string,
+): string {
+  const username = (data?.username ?? "").trim();
+  if (username) return username;
+  return slug;
+}
 
 export const revalidate = 60;
 
@@ -62,7 +75,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? `${display} — ${parts.join(" · ")}`
       : t("rootDescription");
 
-  const pathname = `/player/${encodeURIComponent(playerSlug)}`;
+  const pathname = `/player/${encodeURIComponent(preferredPlayerPathSegment(data, slug))}`;
   const canonicalPath = localizedCanonicalPath(locale, pathname);
   const linkPreview = buildBrandLinkPreviewMetadata({ canonicalPath, origin });
 
@@ -96,6 +109,16 @@ export default async function PlayerProfilePage({ params }: Props) {
 
   const slug = normalizePlayerProfileSlug(playerSlug ?? "");
   const data = await getPlayerProfile(slug);
+
+  const preferredSlug = preferredPlayerPathSegment(data, slug);
+  if (
+    data &&
+    PLAYER_UUID_RE.test(slug) &&
+    preferredSlug !== slug
+  ) {
+    redirect({ href: `/player/${encodeURIComponent(preferredSlug)}`, locale });
+  }
+
   const initialVideos = data?.id ? await getPlayerVideos(data.id) : [];
   const initialUserAvatarUrl =
     typeof data?.avatar_url === "string" ? data.avatar_url.trim() || null : null;

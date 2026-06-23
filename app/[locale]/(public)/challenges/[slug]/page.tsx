@@ -3,8 +3,9 @@ import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ChallengeDetailView } from "@/components/challenges/ChallengeDetailView";
 import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
-import { parseChallengeRowLoose, withChallengeSelectFallback } from "@/lib/challenges/challengeRowUtils";
+import { parseChallengeRowLoose, withChallengeSelectFallback, challengeLinkSegment } from "@/lib/challenges/challengeRowUtils";
 import { buildPublicPageMetadata } from "@/lib/seo/buildPublicPageMetadata";
+import { redirect } from "@/i18n/navigation";
 import { createAnonSupabaseServerClient } from "@/lib/supabase/anonServerClient";
 
 type Props = {
@@ -45,10 +46,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description =
     challenge?.description?.trim() ||
     (await getTranslations({ locale, namespace: "challenges" }))("subtitle");
+  const canonicalSegment = challenge ? challengeLinkSegment(challenge) : decoded;
 
   return buildPublicPageMetadata({
     locale,
-    pathname: `/challenges/${encodeURIComponent(decoded)}`,
+    pathname: `/challenges/${encodeURIComponent(canonicalSegment)}`,
     title,
     description,
   });
@@ -59,6 +61,14 @@ export default async function ChallengeDetailPage({ params }: Props) {
   setRequestLocale(locale);
 
   const decoded = decodeURIComponent(slug);
+  const challenge = await getChallengeForMetadata(decoded);
+
+  if (challenge && CHALLENGE_UUID_RE.test(decoded)) {
+    const canonicalSegment = challengeLinkSegment(challenge);
+    if (canonicalSegment !== decoded) {
+      redirect({ href: `/challenges/${encodeURIComponent(canonicalSegment)}`, locale });
+    }
+  }
 
   return (
     <AppMobileTabPageShell data-pitchrusch-explore-page data-challenges-page>

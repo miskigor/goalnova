@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { routing, type AppLocale } from "@/i18n/routing";
+import { buildLocaleAlternates, localizedCanonicalPath } from "@/lib/seo/alternates";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 
 /** Open Graph `locale` — align with app locales where possible. */
@@ -33,8 +34,7 @@ export type PublicVideoMetadataInput =
       title: string;
       description: string;
       videoUrl: string;
-      /** Absolute canonical URL when site origin is configured */
-      canonicalUrl?: string;
+      videoId: string;
       locale: string;
     };
 
@@ -53,23 +53,28 @@ export function buildPublicVideoMetadata(
     };
   }
 
-  const { title, description, videoUrl, canonicalUrl, locale } = input;
+  const { title, description, videoUrl, videoId, locale } = input;
   const ogLocale = isAppLocale(locale) ? (OG_LOCALE[locale] ?? "en_US") : "en_US";
   const mime = inferVideoMimeType(videoUrl);
   const isHttps = videoUrl.startsWith("https://");
+  const pathname = `/video/${encodeURIComponent(videoId)}`;
+  const canonicalPath = localizedCanonicalPath(locale, pathname);
 
   const metadataBase = siteMetadataBase(base);
   const metadata: Metadata = {
     ...(metadataBase ? { metadataBase } : {}),
     title,
     description,
-    robots: { index: true, follow: true },
-    ...(canonicalUrl ? { alternates: { canonical: canonicalUrl } } : {}),
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+    alternates: {
+      ...buildLocaleAlternates(pathname),
+      canonical: canonicalPath,
+    },
     openGraph: {
       type: "video.other",
       title,
       description,
-      ...(canonicalUrl ? { url: canonicalUrl } : {}),
+      url: canonicalPath,
       siteName: "PitchRusch",
       locale: ogLocale,
       videos: [

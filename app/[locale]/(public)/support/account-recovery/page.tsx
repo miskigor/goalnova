@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AccountRecoveryForm } from "@/components/support/AccountRecoveryForm";
+import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
-  return { title: t("accountRecoveryTitle") };
+  return { title: t("accountRecoveryTitle"), robots: PRIVATE_PAGE_ROBOTS };
 }
 
 export default async function AccountRecoverySupportPage({ params }: Props) {

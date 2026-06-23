@@ -13,6 +13,11 @@ const handleI18nRouting = createMiddleware(routing);
 
 const VIDEO_FROM_QUERY = new Set(["explore", "rankings", "challenge"]);
 
+/** Reject crawler junk paths like `/$` or `/&` (GSC 404 noise). */
+function isMalformedPathname(pathname: string): boolean {
+  return /^\/[^a-zA-Z0-9/_-]$/.test(pathname);
+}
+
 /** 301 legacy `?from=` video URLs to canonical paths (fewer GSC duplicates). */
 function maybeRedirectVideoFromQuery(request: NextRequest): NextResponse | null {
   const from = request.nextUrl.searchParams.get("from");
@@ -45,6 +50,10 @@ export default function proxy(request: NextRequest) {
   if (videoFromRedirect) return videoFromRedirect;
 
   const { pathname } = request.nextUrl;
+  if (isMalformedPathname(pathname)) {
+    return new NextResponse(null, { status: 404 });
+  }
+
   const urlLocale = localeFromPathname(pathname);
   const cookieRaw = request.cookies.get(PITCHRUSCH_LOCALE_COOKIE)?.value;
   const preferred = isAppLocale(cookieRaw) ? cookieRaw : null;

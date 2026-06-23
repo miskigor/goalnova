@@ -5,13 +5,19 @@ import {
   LegalPageLayout,
   LegalSection,
 } from "@/components/legal/LegalPageLayout";
+import { buildPublicPageMetadata } from "@/lib/seo/buildPublicPageMetadata";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
-  return { title: t("contentPolicyTitle") };
+  return buildPublicPageMetadata({
+    locale,
+    pathname: "/content-policy",
+    title: t("contentPolicyTitle"),
+    description: t("rootDescription"),
+  });
 }
 
 export default async function ContentPolicyPage({ params }: Props) {

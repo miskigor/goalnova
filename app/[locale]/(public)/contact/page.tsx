@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LegalPageLayout, LegalSection } from "@/components/legal/LegalPageLayout";
+import { buildPublicPageMetadata } from "@/lib/seo/buildPublicPageMetadata";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
-  return { title: t("contactTitle") };
+  return buildPublicPageMetadata({
+    locale,
+    pathname: "/contact",
+    title: t("contactTitle"),
+    description: t("rootDescription"),
+  });
 }
 
 export default async function ContactPage({ params }: Props) {
