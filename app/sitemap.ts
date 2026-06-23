@@ -35,20 +35,23 @@ function safeLastModified(value: string | null | undefined, fallback: Date): Dat
   return Number.isNaN(parsed.getTime()) ? fallback : parsed;
 }
 
+function buildSitemapLanguageAlternates(origin: string, pathname: string): Record<string, string> {
+  const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
+  const languages = Object.fromEntries(
+    routing.locales.map((locale) => [locale, `${origin}${localizedPath(path, locale)}`]),
+  ) as Record<string, string>;
+  languages["x-default"] = `${origin}${localizedPath(path, routing.defaultLocale)}`;
+  return languages;
+}
+
 /** Static URLs always included — survives Supabase outages. */
 function buildStaticSitemapItems(now = new Date()): SitemapItem[] {
-  const items: SitemapItem[] = [];
-  for (const locale of routing.locales) {
-    for (const path of INDEXABLE_PATHS) {
-      items.push({
-        path: localizedPath(path, locale),
-        lastModified: now,
-        changeFrequency: path === "/" ? "daily" : "weekly",
-        priority: path === "/" ? 1 : 0.7,
-      });
-    }
-  }
-  return items;
+  return INDEXABLE_PATHS.map((path) => ({
+    path,
+    lastModified: now,
+    changeFrequency: path === "/" ? "daily" : "weekly",
+    priority: path === "/" ? 1 : 0.7,
+  }));
 }
 
 async function collectDynamicSitemapItems(now: Date): Promise<SitemapItem[]> {
@@ -129,12 +132,18 @@ async function collectDynamicSitemapItems(now: Date): Promise<SitemapItem[]> {
 }
 
 function toSitemapEntries(origin: string, items: SitemapItem[]): MetadataRoute.Sitemap {
-  return items.map((item) => ({
-    url: `${origin}${item.path.startsWith("/") ? item.path : `/${item.path}`}`,
-    lastModified: item.lastModified,
-    changeFrequency: item.changeFrequency,
-    priority: item.priority,
-  }));
+  return items.map((item) => {
+    const pathname = item.path.startsWith("/") ? item.path : `/${item.path}`;
+    return {
+      url: `${origin}${localizedPath(pathname, routing.defaultLocale)}`,
+      lastModified: item.lastModified,
+      changeFrequency: item.changeFrequency,
+      priority: item.priority,
+      alternates: {
+        languages: buildSitemapLanguageAlternates(origin, pathname),
+      },
+    };
+  });
 }
 
 /** Single sitemap at `/sitemap.xml` (robots.txt). Under 50k URLs — no `generateSitemaps` split. */
