@@ -1036,6 +1036,8 @@
     "unknownPosition": "Posizione sconosciuta",
     "unknownLocation": "Posizione sconosciuta",
     "noCaption": "Clip highlight",
+    "recentHighlightsTitle": "Recent highlights",
+    "videoLinkFallback": "Football highlight {id}",
     "shareVideo": "Condividi",
     "openPlayerProfileAria": "Apri profilo di {name}",
     "shareVideoAria": "Condividi questo video",

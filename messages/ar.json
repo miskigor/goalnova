@@ -1036,6 +1036,8 @@
     "unknownPosition": "المركز غير مذكور",
     "unknownLocation": "الموقع غير مذكور",
     "noCaption": "مقطع مميز",
+    "recentHighlightsTitle": "Recent highlights",
+    "videoLinkFallback": "Football highlight {id}",
     "shareVideo": "مشاركة",
     "openPlayerProfileAria": "فتح ملف {name}",
     "shareVideoAria": "مشاركة هذا الفيديو",

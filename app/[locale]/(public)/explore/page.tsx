@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ExplorePageHeader } from "@/components/explore/ExplorePageHeader";
+import { ExploreCrawlLinks } from "@/components/explore/ExploreCrawlLinks";
 import { ExploreView } from "@/components/explore/ExploreView";
 import { AppMobileTabPageShell } from "@/components/layout/AppMobileTabPageShell";
 import { GuestPublicCallout } from "@/components/layout/GuestPublicCallout";
@@ -32,6 +33,7 @@ export default async function ExplorePage({ params }: Props) {
           <ExplorePageHeader title={t("title")} subtitle={t("subtitle")} />
         }
       />
+      <ExploreCrawlLinks />
     </AppMobileTabPageShell>
   );
 }

@@ -154,14 +154,17 @@ const child = spawn(process.execPath, [nextBin, "build"], {
   stdio: "inherit",
 });
 
-async function runIndexNowNotify() {
-  try {
-    await import(pathToFileURL(path.join(root, "scripts", "notify-indexnow.mjs")).href);
-  } catch (err) {
-    console.warn(
-      "[next-build] IndexNow notify failed (non-fatal):",
-      err instanceof Error ? err.message : err,
-    );
+async function runPostDeploySeoNotify() {
+  const scripts = ["notify-indexnow.mjs", "notify-sitemap-ping.mjs"];
+  for (const name of scripts) {
+    try {
+      await import(pathToFileURL(path.join(root, "scripts", name)).href);
+    } catch (err) {
+      console.warn(
+        `[next-build] ${name} failed (non-fatal):`,
+        err instanceof Error ? err.message : err,
+      );
+    }
   }
 }
 
@@ -172,5 +175,5 @@ child.on("exit", (code) => {
   stripSecretsFromEnvFiles([root]);
   removeStandaloneEnvArtifacts();
   verifyNoSecretsInArtifacts();
-  void runIndexNowNotify().finally(() => process.exit(0));
+  void runPostDeploySeoNotify().finally(() => process.exit(0));
 });

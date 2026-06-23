@@ -1036,6 +1036,8 @@
     "unknownPosition": "Nepoznata pozicija",
     "unknownLocation": "Nepoznata lokacija",
     "noCaption": "Video istaknutog trenutka",
+    "recentHighlightsTitle": "Nedavni highlighti",
+    "videoLinkFallback": "Nogometni highlight {id}",
     "shareVideo": "Podijeli",
     "openPlayerProfileAria": "Otvori profil: {name}",
     "shareVideoAria": "Podijeli ovaj video",

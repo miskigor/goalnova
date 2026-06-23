@@ -1,27 +1,12 @@
 /**
  * Notifies search engines (Bing/Yandex/Seznam via IndexNow) after production deploy.
- * No Google Search Console or manual env vars required.
- * Key must match `public/pitchrusch2026indexnow.txt` and `lib/seo/indexNowConfig.ts`.
+ * Fetches live sitemap.xml and submits discovered URLs in batches.
  */
 const INDEXNOW_KEY = "pitchrusch2026indexnow";
 
 const DEFAULT_ORIGIN = "https://pitchrusch.com";
-
-const STATIC_PATHS = [
-  "/",
-  "/explore",
-  "/challenges",
-  "/rankings",
-  "/search",
-  "/contact",
-  "/privacy",
-  "/terms",
-  "/content-policy",
-  "/hr",
-  "/de",
-  "/hr/explore",
-  "/hr/challenges",
-];
+const INDEXNOW_BATCH_SIZE = 100;
+const INDEXNOW_MAX_URLS = 500;
 
 function siteOrigin() {
   const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim() || DEFAULT_ORIGIN;
@@ -44,9 +29,28 @@ function shouldNotify() {
   return true;
 }
 
-function priorityUrls(origin) {
-  const base = origin.replace(/\/$/, "");
-  return STATIC_PATHS.map((path) => (path === "/" ? base : `${base}${path}`));
+function parseSitemapLocs(xml) {
+  const locs = [];
+  const re = /<loc>([^<]+)<\/loc>/g;
+  let match;
+  while ((match = re.exec(xml)) !== null) {
+    locs.push(match[1].trim());
+  }
+  return locs;
+}
+
+async function fetchSitemapUrls(origin) {
+  const sitemapUrl = `${origin.replace(/\/$/, "")}/sitemap.xml`;
+  const res = await fetch(sitemapUrl, { signal: AbortSignal.timeout(20_000) });
+  if (!res.ok) {
+    throw new Error(`sitemap fetch ${res.status}`);
+  }
+  const xml = await res.text();
+  const urls = parseSitemapLocs(xml);
+  if (urls.length === 0) {
+    throw new Error("sitemap empty");
+  }
+  return urls.slice(0, INDEXNOW_MAX_URLS);
 }
 
 async function submitIndexNow(origin, urlList) {
@@ -77,12 +81,23 @@ async function main() {
   }
 
   const origin = siteOrigin();
-  const urlList = priorityUrls(origin);
-
+  let urls;
   try {
-    await submitIndexNow(origin, urlList);
+    urls = await fetchSitemapUrls(origin);
+    console.log(`[indexnow] loaded ${urls.length} URL(s) from sitemap`);
   } catch (err) {
-    console.warn("[indexnow] notify failed (non-fatal):", err instanceof Error ? err.message : err);
+    console.warn("[indexnow] sitemap fetch failed; skipping notify:", err instanceof Error ? err.message : err);
+    return;
+  }
+
+  for (let i = 0; i < urls.length; i += INDEXNOW_BATCH_SIZE) {
+    const batch = urls.slice(i, i + INDEXNOW_BATCH_SIZE);
+    try {
+      await submitIndexNow(origin, batch);
+    } catch (err) {
+      console.warn("[indexnow] notify failed (non-fatal):", err instanceof Error ? err.message : err);
+      break;
+    }
   }
 }
 
