@@ -439,6 +439,16 @@ export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
 
   const requestId = useRef(0);
 
+  const hasActivePlayerSearch =
+    debouncedName.trim().length > 0 ||
+    extraFilters.position.trim().length > 0 ||
+    extraFilters.country.trim().length > 0 ||
+    extraFilters.city.trim().length > 0 ||
+    extraFilters.ageMinStr.trim().length > 0 ||
+    extraFilters.ageMaxStr.trim().length > 0 ||
+    extraFilters.preferredFoot.trim().length > 0 ||
+    extraFilters.club.trim().length > 0;
+
   useEffect(() => {
     const id = window.setTimeout(() => setDebouncedName(nameInput.trim()), SEARCH_DEBOUNCE_MS);
     return () => window.clearTimeout(id);
@@ -532,6 +542,9 @@ export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
             </svg>
           </span>
         </div>
+        {!hasActivePlayerSearch ? (
+          <p className="text-xs leading-relaxed text-gn-text-tertiary">{t("searchPlayersHint")}</p>
+        ) : null}
 
         <button
           type="button"
@@ -619,13 +632,21 @@ export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
       ) : null}
 
       {!loading && !loadFailed && playerMatches.length > 0 ? (
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {playerMatches.map((row) => (
-            <li key={row.id}>
-              <PlayerDiscoverCard row={row} />
-            </li>
-          ))}
-        </ul>
+        <section className="space-y-3" aria-labelledby="explore-players-without-highlights">
+          <h2
+            id="explore-players-without-highlights"
+            className="text-sm font-semibold text-gn-text"
+          >
+            {t("playersWithoutHighlights")}
+          </h2>
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {playerMatches.map((row) => (
+              <li key={row.id}>
+                <PlayerDiscoverCard row={row} />
+              </li>
+            ))}
+          </ul>
+        </section>
       ) : null}
 
       {!loading && !loadFailed && items.length > 0 ? (

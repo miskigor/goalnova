@@ -1031,6 +1031,8 @@
     "retry": "Erneut versuchen",
     "noResults": "Keine Ergebnisse gefunden",
     "noResultsHint": "Andere Suchbegriffe oder Filter ausprobieren.",
+    "searchPlayersHint": "Search by name or username to find players who have not uploaded a highlight yet.",
+    "playersWithoutHighlights": "Players without highlights",
     "empty": "Noch keine Videos, die zu deinen Filtern passen.",
     "unknownPlayer": "Unbekannter Spieler",
     "unknownPosition": "Unbekannte Position",

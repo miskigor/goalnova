@@ -1031,6 +1031,8 @@
     "retry": "إعادة المحاولة",
     "noResults": "لا توجد مقاطع مميزة تطابق هذه المرشحات",
     "noResultsHint": "جرّب كلمات بحث أو مرشحات أخرى.",
+    "searchPlayersHint": "Search by name or username to find players who have not uploaded a highlight yet.",
+    "playersWithoutHighlights": "Players without highlights",
     "empty": "لا توجد فيديوهات تطابق مرشحاتك بعد.",
     "unknownPlayer": "لاعب",
     "unknownPosition": "المركز غير مذكور",

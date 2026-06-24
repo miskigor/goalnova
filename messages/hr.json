@@ -1031,6 +1031,8 @@
     "retry": "Pokušaj ponovno",
     "noResults": "Nema rezultata",
     "noResultsHint": "Probaj druge pojmove za pretragu ili filtere.",
+    "searchPlayersHint": "Pretraži po imenu ili korisničkom imenu da pronađeš igrače koji još nisu objavili highlight.",
+    "playersWithoutHighlights": "Igrači bez objavljenog videa",
     "empty": "Još nema videa koji odgovaraju filterima.",
     "unknownPlayer": "Nepoznati igrač",
     "unknownPosition": "Nepoznata pozicija",
