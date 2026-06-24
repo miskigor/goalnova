@@ -10,6 +10,7 @@ import {
 } from "@/lib/challenges/challengeRowUtils";
 import { buildPublicVideoMetadata } from "@/lib/share/buildPublicVideoMetadata";
 import { getPublicVideoPageData } from "@/lib/supabase/publicVideoPageData";
+import { resolvePublicVideoThumbnailUrl } from "@/lib/video/publicVideoThumbnailUrl";
 import { videoPlaybackCandidates, videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { VideoMusicCredit } from "@/components/video/VideoMusicCredit";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
@@ -42,6 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = t("metaTitle", { name: displayName });
   const description =
     data.video.caption?.trim() || t("metaDescriptionFallback");
+  const thumbnailUrl = resolvePublicVideoThumbnailUrl(data.video, data.userAvatarUrl);
 
   return buildPublicVideoMetadata({
     status: "ok",
@@ -50,6 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     videoUrl: videoPlaybackUrl(data.video),
     videoId,
     locale,
+    thumbnailUrl,
   });
 }
 
@@ -87,6 +90,8 @@ export default async function PublicVideoPage({ params }: Props) {
         description={seoDescription}
         videoContentUrl={videoUrl}
         uploadDateIso={data.video.created_at ?? null}
+        video={data.video}
+        profileAvatarUrl={data.userAvatarUrl}
       />
 
       <PublicVideoWatchPlayer

@@ -36,6 +36,7 @@ export type PublicVideoMetadataInput =
       videoUrl: string;
       videoId: string;
       locale: string;
+      thumbnailUrl: string;
     };
 
 /**
@@ -53,7 +54,7 @@ export function buildPublicVideoMetadata(
     };
   }
 
-  const { title, description, videoUrl, videoId, locale } = input;
+  const { title, description, videoUrl, videoId, locale, thumbnailUrl } = input;
   const ogLocale = isAppLocale(locale) ? (OG_LOCALE[locale] ?? "en_US") : "en_US";
   const mime = inferVideoMimeType(videoUrl);
   const isHttps = videoUrl.startsWith("https://");
@@ -77,6 +78,7 @@ export function buildPublicVideoMetadata(
       url: canonicalPath,
       siteName: "PitchRusch",
       locale: ogLocale,
+      images: [{ url: thumbnailUrl }],
       videos: [
         {
           url: videoUrl,
@@ -86,9 +88,10 @@ export function buildPublicVideoMetadata(
       ],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description,
+      images: [thumbnailUrl],
     },
   };
 

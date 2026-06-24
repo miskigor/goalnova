@@ -1,5 +1,7 @@
 import { absolutePublicVideoUrl } from "@/lib/share/localizedVideoPath";
 import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
+import type { VideoWithOptionalThumbnail } from "@/lib/video/exploreTileMedia";
+import { resolvePublicVideoThumbnailUrl } from "@/lib/video/publicVideoThumbnailUrl";
 
 type Props = {
   locale: string;
@@ -8,7 +10,8 @@ type Props = {
   description: string;
   videoContentUrl: string;
   uploadDateIso: string | null | undefined;
-  thumbnailUrl?: string | null;
+  video: VideoWithOptionalThumbnail;
+  profileAvatarUrl?: string | null;
 };
 
 /**
@@ -21,11 +24,13 @@ export function PublicVideoJsonLd({
   description,
   videoContentUrl,
   uploadDateIso,
-  thumbnailUrl,
+  video,
+  profileAvatarUrl,
 }: Props) {
   const base = getServerSiteOrigin();
   const pageUrl =
     base ? absolutePublicVideoUrl(base, locale, videoId) : undefined;
+  const thumbnailUrl = resolvePublicVideoThumbnailUrl(video, profileAvatarUrl);
 
   const payload: Record<string, unknown> = {
     "@context": "https://schema.org",
@@ -35,7 +40,7 @@ export function PublicVideoJsonLd({
     contentUrl: videoContentUrl,
     embedUrl: pageUrl,
     url: pageUrl,
-    thumbnailUrl: thumbnailUrl?.trim() || undefined,
+    thumbnailUrl,
     inLanguage: locale,
     genre: "Sports",
     sport: "Soccer",
