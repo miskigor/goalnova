@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { routing, type AppLocale } from "@/i18n/routing";
 import { buildLocaleAlternates, localizedCanonicalPath } from "@/lib/seo/alternates";
+import { buildBrandedVideoOgImageUrl } from "@/lib/share/brandedVideoOgImageUrl";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 
 /** Open Graph `locale` — align with app locales where possible. */
@@ -54,12 +55,13 @@ export function buildPublicVideoMetadata(
     };
   }
 
-  const { title, description, videoUrl, videoId, locale, thumbnailUrl } = input;
+  const { title, description, videoUrl, videoId, locale } = input;
   const ogLocale = isAppLocale(locale) ? (OG_LOCALE[locale] ?? "en_US") : "en_US";
   const mime = inferVideoMimeType(videoUrl);
   const isHttps = videoUrl.startsWith("https://");
   const pathname = `/video/${encodeURIComponent(videoId)}`;
   const canonicalPath = localizedCanonicalPath(locale, pathname);
+  const shareImageUrl = buildBrandedVideoOgImageUrl(videoId, base);
 
   const metadataBase = siteMetadataBase(base);
   const metadata: Metadata = {
@@ -78,7 +80,16 @@ export function buildPublicVideoMetadata(
       url: canonicalPath,
       siteName: "PitchRusch",
       locale: ogLocale,
-      images: [{ url: thumbnailUrl }],
+      images: [
+        {
+          url: shareImageUrl,
+          secureUrl: shareImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+          type: "image/png",
+        },
+      ],
       videos: [
         {
           url: videoUrl,
@@ -91,7 +102,7 @@ export function buildPublicVideoMetadata(
       card: "summary_large_image",
       title,
       description,
-      images: [thumbnailUrl],
+      images: [shareImageUrl],
     },
   };
 
