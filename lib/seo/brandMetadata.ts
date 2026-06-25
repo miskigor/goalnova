@@ -16,8 +16,10 @@ export const SITE_SEO_KEYWORDS = [
   "football challenges",
 ] as const;
 
-/** Generated OG image route (also used for Twitter large-image previews). */
-export const SITE_SEO_OG_IMAGE_PATH = "/opengraph-image";
+import { BRAND_LOGO_SRC } from "@/lib/constants/brand";
+
+/** Static brand logo for social link previews (WhatsApp, Instagram, TikTok). */
+export const SITE_SEO_OG_IMAGE_PATH = BRAND_LOGO_SRC;
 
 /** Short line for generated OG / Twitter card images. */
 export const SITE_SEO_OG_TAGLINE =

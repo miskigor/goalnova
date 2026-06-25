@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
 import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
+import { BRAND_LOGO_HEIGHT, BRAND_LOGO_WIDTH } from "@/lib/constants/brand";
 import {
   SITE_SEO_DESCRIPTION,
   SITE_SEO_OG_IMAGE_PATH,
@@ -50,8 +51,8 @@ export function buildBrandLinkPreviewMetadata({
         {
           url: imageUrl,
           secureUrl: imageUrl,
-          width: 1200,
-          height: 630,
+          width: BRAND_LOGO_WIDTH,
+          height: BRAND_LOGO_HEIGHT,
           alt: `${APP_DISPLAY_NAME} — Football talent discovery`,
           type: "image/png",
         },
