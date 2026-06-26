@@ -39,6 +39,7 @@ import {
 } from "@/lib/upload/videoUploadLimits";
 import { isPublishWithMusicBlocked } from "@/lib/upload/musicMergePublish";
 import { probeLocalVideoDuration } from "@/lib/upload/videoDurationProbe";
+import { captureVideoThumbnailJpeg } from "@/lib/video/captureVideoThumbnail";
 import { formatTrackDuration } from "@/lib/supabase/musicTracks";
 import { defaultMusicEndSec } from "@/lib/video/clampMusicSegment";
 import {
@@ -669,6 +670,7 @@ export function UploadForm() {
 
       try {
         setUploadPhase("uploading");
+        const thumbnailBlobPromise = captureVideoThumbnailJpeg(file);
 
         const safeOriginalName = file.name.replaceAll("/", "_");
         const objectPath = `${authUserId}/${Date.now()}-${safeOriginalName}`;
@@ -1015,6 +1017,23 @@ export function UploadForm() {
 
         setUploadPhase("saving_metadata");
 
+        let thumbnailUrl: string | null = null;
+        const thumbBlob = await thumbnailBlobPromise.catch(() => null);
+        if (thumbBlob) {
+          const thumbPath = `${authUserId}/thumbnails/${Date.now()}-thumb.jpg`;
+          const { error: thumbUploadError } = await supabase.storage
+            .from(activeBucket)
+            .upload(thumbPath, thumbBlob, {
+              upsert: true,
+              contentType: "image/jpeg",
+              cacheControl: "31536000",
+            });
+          if (!thumbUploadError) {
+            thumbnailUrl = supabase.storage.from(activeBucket).getPublicUrl(thumbPath).data
+              .publicUrl;
+          }
+        }
+
         /**
          * DB columns `music_start_seconds` / `music_end_seconds` are integer-backed.
          * Merge math can produce decimals (e.g. 10.368), so normalize before insert.
@@ -1043,6 +1062,7 @@ export function UploadForm() {
           music_start_seconds: hasProcessedMergedVideo ? normalizedMusicStartSeconds : 0,
           music_end_seconds: hasProcessedMergedVideo ? normalizedMusicEndSeconds : null,
           music_volume: hasProcessedMergedVideo ? storeVol : 1,
+          ...(thumbnailUrl ? { thumbnail_url: thumbnailUrl } : {}),
         };
         if (resolvedChallengeId) {
           insertPayload.challenge_id = resolvedChallengeId;
@@ -1080,6 +1100,26 @@ export function UploadForm() {
 
         const newVideoId = insertedRow?.id ?? null;
         let aiAnalysisOk = true;
+
+        if (!thumbnailUrl && newVideoId) {
+          const { data: sess } = await supabase.auth.getSession();
+          const accessToken = sess.session?.access_token;
+          if (accessToken) {
+            void fetch(
+              typeof window !== "undefined"
+                ? `${window.location.origin}/api/videos/generate-thumbnail`
+                : "/api/videos/generate-thumbnail",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({ videoId: newVideoId }),
+              },
+            ).catch(() => undefined);
+          }
+        }
 
         if (resolvedChallengeId && newVideoId) {
           await recordChallengeEntryForNewVideo(supabase, {

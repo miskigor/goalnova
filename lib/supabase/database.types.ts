@@ -941,6 +941,8 @@ export type Database = {
           music_start_seconds: number;
           music_end_seconds: number | null;
           music_volume: number;
+          thumbnail_url: string | null;
+          poster_url: string | null;
           is_featured?: boolean | null;
           views_count?: number | null;
           visibility_boost?: number | null;
@@ -961,6 +963,8 @@ export type Database = {
           music_start_seconds?: number;
           music_end_seconds?: number | null;
           music_volume?: number;
+          thumbnail_url?: string | null;
+          poster_url?: string | null;
           is_featured?: boolean | null;
           views_count?: number | null;
           visibility_boost?: number | null;
@@ -981,6 +985,8 @@ export type Database = {
           music_start_seconds?: number;
           music_end_seconds?: number | null;
           music_volume?: number;
+          thumbnail_url?: string | null;
+          poster_url?: string | null;
           is_featured?: boolean | null;
           views_count?: number | null;
           visibility_boost?: number | null;

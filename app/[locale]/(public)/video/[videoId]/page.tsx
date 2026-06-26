@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { after } from "next/server";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ChallengeTagPill } from "@/components/challenges/ChallengeTagPill";
@@ -10,7 +11,9 @@ import {
 } from "@/lib/challenges/challengeRowUtils";
 import { buildPublicVideoMetadata } from "@/lib/share/buildPublicVideoMetadata";
 import { getPublicVideoPageData } from "@/lib/supabase/publicVideoPageData";
+import { ensureVideoThumbnailForRow } from "@/lib/video/ensureVideoThumbnail.server";
 import { resolvePublicVideoThumbnailUrl } from "@/lib/video/publicVideoThumbnailUrl";
+import { exploreTileThumbnailOrPosterImageUrl } from "@/lib/video/exploreTileMedia";
 import { videoPlaybackCandidates, videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { VideoMusicCredit } from "@/components/video/VideoMusicCredit";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
@@ -77,9 +80,16 @@ export default async function PublicVideoPage({ params }: Props) {
 
   const videoUrl = videoPlaybackUrl(data.video);
   const playbackSources = videoPlaybackCandidates(data.video);
+  const posterUrl = resolvePublicVideoThumbnailUrl(data.video, data.userAvatarUrl);
   const caption = data.video.caption?.trim() || t("noCaption");
   const seoDescription =
     data.video.caption?.trim() || t("metaDescriptionFallback");
+
+  if (!exploreTileThumbnailOrPosterImageUrl(data.video)) {
+    after(() => {
+      void ensureVideoThumbnailForRow(data.video);
+    });
+  }
 
   return (
     <div className="mx-auto w-full min-w-0 max-w-lg space-y-6 overflow-x-hidden px-4 py-8 pb-16 sm:px-6 lg:max-w-2xl">
@@ -99,6 +109,7 @@ export default async function PublicVideoPage({ params }: Props) {
         sources={playbackSources}
         playerDisplayName={displayName}
         caption={data.video.caption}
+        posterUrl={posterUrl}
         layout="default"
         showCaptionOverlay
       />

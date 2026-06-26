@@ -14,6 +14,8 @@ type Props = {
   sources: string[];
   playerDisplayName: string;
   caption: string | null;
+  /** Still frame for crawlers and initial paint (`<video poster>`). */
+  posterUrl?: string | null;
   /** Same aspect band as explore tiles (explore → watch). */
   layout?: "default" | "profile";
   /** When false, caption is shown only in the page body (explore watch). */
@@ -28,6 +30,7 @@ export function PublicVideoWatchPlayer({
   sources,
   playerDisplayName,
   caption,
+  posterUrl,
   layout = "default",
   showCaptionOverlay = true,
 }: Props) {
@@ -48,6 +51,7 @@ export function PublicVideoWatchPlayer({
           sources={sources}
           preload="auto"
           fetchPriority="high"
+          poster={posterUrl?.trim() || undefined}
         />
         <div
           className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/25 via-transparent to-black/60"
