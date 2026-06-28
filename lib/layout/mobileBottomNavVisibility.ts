@@ -26,6 +26,7 @@ export const MOBILE_BOTTOM_NAV_APP_PREFIXES = [
   "/search",
   "/support",
   "/rankings",
+  "/clubs",
   "/scout-dashboard",
   "/scout-apply",
   "/player",

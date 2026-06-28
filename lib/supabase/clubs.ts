@@ -183,7 +183,13 @@ export async function rpcPlayerClubBadge(userId: string): Promise<{
 export async function rpcClubJoin(options: {
   clubId?: string;
   clubCode?: string;
-}): Promise<{ ok: boolean; error?: string; clubId?: string; clubName?: string }> {
+}): Promise<{
+  ok: boolean;
+  error?: string;
+  clubId?: string;
+  clubName?: string;
+  membershipId?: string;
+}> {
   const { data, error } = await supabase.rpc("goalnova_club_join", {
     p_club_id: options.clubId ?? null,
     p_club_code: options.clubCode?.trim().toUpperCase() ?? null,
@@ -200,6 +206,7 @@ export async function rpcClubJoin(options: {
     ok: true,
     clubId: String(payload.club_id),
     clubName: String(payload.club_name ?? ""),
+    membershipId: payload.membership_id ? String(payload.membership_id) : undefined,
   };
 }
 
@@ -280,7 +287,11 @@ export async function rpcClubSubmitPartnershipRequest(input: {
     logFullSupabaseError("[clubs] goalnova_club_submit_partnership_request", error);
     return { ok: false, error: error.message };
   }
-  return { ok: Boolean((data as Record<string, unknown>)?.ok) };
+  const payload = (data ?? {}) as Record<string, unknown>;
+  if (!payload.ok) {
+    return { ok: false, error: String(payload.error ?? "submit_failed") };
+  }
+  return { ok: true };
 }
 
 export async function rpcAdminClubsList(): Promise<{

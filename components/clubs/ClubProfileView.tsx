@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { VerifiedAcademyBadge } from "@/components/clubs/VerifiedAcademyBadge";
+import { notifyClubPlayerJoin } from "@/lib/clubs/notifyClubPlayerJoin.client";
 import {
   rpcClubGetPublic,
   rpcClubJoin,
@@ -65,8 +66,19 @@ export function ClubProfileView({ slug }: Props) {
     setJoining(true);
     const result = await rpcClubJoin({ clubId: club.id });
     setJoining(false);
-    if (result.ok) setMessage(t("joinPending", { club: club.name }));
-    else setMessage(result.error === "already_member" ? t("alreadyMember") : t("joinError"));
+    if (result.ok) {
+      void notifyClubPlayerJoin({
+        clubId: club.id,
+        membershipId: result.membershipId,
+      });
+      setMessage(t("joinPending", { club: club.name }));
+    } else if (result.error === "already_member") {
+      setMessage(t("alreadyMember"));
+    } else if (result.error === "club_not_found") {
+      setMessage(t("joinErrorClubNotFound"));
+    } else {
+      setMessage(t("joinError"));
+    }
   }
 
   if (loading) {

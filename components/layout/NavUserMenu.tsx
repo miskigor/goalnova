@@ -482,40 +482,36 @@ export function NavUserMenu({
 
       {mobileMoreInMenu ? (
         <>
+          <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
+          <p className="min-w-0 truncate px-3 pt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-gn-text-tertiary">
+            {tNav("moreInMenu")}
+          </p>
           {!bottomNavTrigger ? (
-            <>
-              <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
-              <p className="min-w-0 truncate px-3 pt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-gn-text-tertiary">
-                {tNav("moreInMenu")}
-              </p>
-              <Link
-                href="/explore"
-                role="menuitem"
-                className={linkClass}
-                onClick={() => {
-                  setOpen(false);
-                  onNavigate?.();
-                }}
-              >
-                <NavIcon name="explore" className="size-4 shrink-0 opacity-90" />
-                {tNav("explore")}
-              </Link>
-              <Link
-                href="/clubs"
-                role="menuitem"
-                className={linkClass}
-                onClick={() => {
-                  setOpen(false);
-                  onNavigate?.();
-                }}
-              >
-                <NavIcon name="clubs" className="size-4 shrink-0 opacity-90" />
-                {tNav("clubs")}
-              </Link>
-            </>
-          ) : (
-            <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
-          )}
+            <Link
+              href="/explore"
+              role="menuitem"
+              className={linkClass}
+              onClick={() => {
+                setOpen(false);
+                onNavigate?.();
+              }}
+            >
+              <NavIcon name="explore" className="size-4 shrink-0 opacity-90" />
+              {tNav("explore")}
+            </Link>
+          ) : null}
+          <Link
+            href="/clubs"
+            role="menuitem"
+            className={linkClass}
+            onClick={() => {
+              setOpen(false);
+              onNavigate?.();
+            }}
+          >
+            <NavIcon name="clubs" className="size-4 shrink-0 opacity-90" />
+            {tNav("clubs")}
+          </Link>
           <Link
             href="/rankings"
             role="menuitem"

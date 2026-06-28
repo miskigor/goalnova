@@ -43,8 +43,15 @@ export async function tryConsumePendingClubInviteWhenPlayerReady(): Promise<void
   if (userRow?.role !== "player") return;
 
   const { rpcClubJoin } = await import("@/lib/supabase/clubs");
+  const { notifyClubPlayerJoin } = await import("@/lib/clubs/notifyClubPlayerJoin.client");
   const result = await rpcClubJoin({ clubCode: code });
   if (result.ok) {
     clearPendingClubInviteCode();
+    if (result.clubId) {
+      void notifyClubPlayerJoin({
+        clubId: result.clubId,
+        membershipId: result.membershipId,
+      });
+    }
   }
 }
