@@ -51,6 +51,8 @@ function mapRpcRowToAugmentedItem(row: ScoutRpcRow): AugmentedHomeFeedItem {
     music_start_seconds: 0,
     music_end_seconds: null,
     music_volume: 1,
+    thumbnail_url: null,
+    poster_url: null,
     created_at: row.video_created_at,
   };
 
