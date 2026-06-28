@@ -133,7 +133,7 @@ export function HomeFeedSoundProvider({
     scrollSnapClearTimerRef.current = window.setTimeout(() => {
       scrollSnapClearTimerRef.current = null;
       setScrollSnapFocusId(null);
-    }, 280);
+    }, 720);
   }, []);
 
   useEffect(() => {

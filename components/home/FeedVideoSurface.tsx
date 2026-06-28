@@ -6,6 +6,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  type RefObject,
 } from "react";
 import { useTranslations } from "next-intl";
 import { devLog, isDev } from "@/lib/devLog";
@@ -22,6 +23,11 @@ import {
   GN_VIDEO_MEDIA_STAGE_FLEX_CLASS,
   gnVideoMediaDataProps,
 } from "@/lib/video/videoMediaDisplayClasses";
+import {
+  homeFeedIntersectionRootMargin,
+  resolveHomeFeedIntersectionRoot,
+} from "@/lib/feed/homeFeedIntersectionRoot";
+import { isHomeFeedMobileViewport } from "@/components/home/homeFeedMobileScrollReset";
 
 type Props = {
   sources: string[];
@@ -45,6 +51,8 @@ type Props = {
     processed_video_url: string | null;
     video_url: string | null;
   };
+  /** Observe visibility on a larger node (e.g. full clean-home slide). Defaults to media wrap. */
+  visibilityObserveRef?: RefObject<Element | null>;
 };
 
 /**
@@ -70,6 +78,7 @@ export function FeedVideoSurface({
   onLoadOk,
   onLoadError,
   debugMeta,
+  visibilityObserveRef,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<PlaybackVideoHandle | null>(null);
@@ -224,48 +233,59 @@ export function FeedVideoSurface({
     logActiveClip,
   ]);
 
-  useEffect(() => {
-    const el = wrapRef.current;
+  useLayoutEffect(() => {
+    const el =
+      visibilityObserveRef?.current ??
+      wrapRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
 
-    const root =
-      el.closest<HTMLElement>("[data-pitchrusch-feed-scroll-root]") ?? null;
+    let obs: IntersectionObserver | null = null;
 
-    const obs = new IntersectionObserver(
-      (entries) => {
-        const e = entries[0];
-        if (!e) return;
-        const ratio = e.isIntersecting ? e.intersectionRatio : 0;
-        if (isDev) {
-          const lo = Math.max(0, HOME_FEED_ACTIVE_CLIP_RATIO_MIN - 0.08);
-          if (ratio === 0 || ratio >= lo) {
-            devLog("[PitchRusch][FeedVideoSurface][IO]", {
-              feedVideoId: videoId,
-              intersectionRatio: ratio,
-              scrollRootFound: Boolean(root),
-            });
+    const attach = () => {
+      obs?.disconnect();
+      const root =
+        el instanceof HTMLElement ? resolveHomeFeedIntersectionRoot(el) : null;
+
+      obs = new IntersectionObserver(
+        (entries) => {
+          const e = entries[0];
+          if (!e) return;
+          const ratio = e.isIntersecting ? e.intersectionRatio : 0;
+          if (isDev) {
+            const lo = Math.max(0, HOME_FEED_ACTIVE_CLIP_RATIO_MIN - 0.08);
+            if (ratio === 0 || ratio >= lo) {
+              devLog("[PitchRusch][FeedVideoSurface][IO]", {
+                feedVideoId: videoId,
+                intersectionRatio: ratio,
+                scrollRootFound: Boolean(root),
+                desktopViewport: !isHomeFeedMobileViewport(),
+              });
+            }
           }
-        }
-        reportVideoVisibility(videoId, ratio);
-      },
-      {
-        root,
-        /** Extra bottom root margin so the incoming slide gains ratio earlier (before snap finishes). */
-        rootMargin: "-18% 0px 48% 0px",
-        /** Dense steps so active clip switches quickly during snap scroll (not only at 25% / 50%). */
-        threshold: [
-          0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6,
-          0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1,
-        ],
-      },
-    );
+          reportVideoVisibility(videoId, ratio);
+        },
+        {
+          root,
+          rootMargin: homeFeedIntersectionRootMargin(),
+          threshold: [
+            0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6,
+            0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1,
+          ],
+        },
+      );
 
-    obs.observe(el);
+      obs.observe(el);
+    };
+
+    attach();
+    window.addEventListener("resize", attach, { passive: true });
+
     return () => {
-      obs.disconnect();
+      window.removeEventListener("resize", attach);
+      obs?.disconnect();
       reportVideoVisibility(videoId, 0);
     };
-  }, [reportVideoVisibility, videoId]);
+  }, [reportVideoVisibility, videoId, visibilityObserveRef]);
 
   /**
    * Whenever this row becomes active/inactive or sound/policy changes, sync the real element

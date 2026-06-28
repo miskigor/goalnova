@@ -131,14 +131,17 @@ export function HomeCleanFeedScroll({ items }: Props) {
     const bindDesktopScroll = () => {
       if (isHomeFeedMobileViewport()) return;
       updateDesktopActiveFromViewport();
-      window.addEventListener("scroll", updateDesktopActiveFromViewport, {
+      document.addEventListener("scroll", updateDesktopActiveFromViewport, {
         passive: true,
+        capture: true,
       });
       window.addEventListener("wheel", unlock, { passive: true });
     };
 
     const unbindDesktopScroll = () => {
-      window.removeEventListener("scroll", updateDesktopActiveFromViewport);
+      document.removeEventListener("scroll", updateDesktopActiveFromViewport, {
+        capture: true,
+      });
       window.removeEventListener("wheel", unlock);
     };
 

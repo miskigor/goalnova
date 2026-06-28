@@ -1,12 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useTranslations } from "next-intl";
-import {
-  PlaybackVideo,
-  type PlaybackVideoHandle,
-} from "@/components/video/PlaybackVideo";
-import { useHomeFeedSound } from "@/components/home/HomeFeedSoundContext";
+import { FeedVideoSurface } from "@/components/home/FeedVideoSurface";
 import { FeedVideoEngagement } from "@/components/home/FeedVideoEngagement";
 import { FeedSoundRailButton } from "@/components/home/FeedSoundRailButton";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
@@ -22,10 +18,8 @@ import {
   homeFeedPlaybackCandidates,
   videoPlaybackUrl,
 } from "@/lib/video/videoPlaybackUrl";
-import { exploreTileVideoPosterAttribute } from "@/lib/video/exploreTileMedia";
 import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 import { PlayerProfileNavLink } from "@/components/player/PlayerProfileNavLink";
-import { isHomeFeedMobileViewport } from "@/components/home/homeFeedMobileScrollReset";
 
 type Props = {
   item: AugmentedHomeFeedItem;
@@ -39,8 +33,7 @@ export function HomeCleanVideoCardV3({
   activeFeedIndex,
 }: Props) {
   const t = useTranslations("homeFeed");
-  const cardRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<PlaybackVideoHandle>(null);
+  const slideRef = useRef<HTMLDivElement>(null);
   const { video, profile, userDisplayName, userAvatarUrl, scoutMetrics, challenge } =
     item;
 
@@ -48,13 +41,10 @@ export function HomeCleanVideoCardV3({
     () => homeFeedPlaybackCandidates(video),
     [video],
   );
+  const renderedPrimarySrc =
+    (playbackSources[0] ?? videoPlaybackUrl(video)).trim();
   const feedVideoKey = feedItemVideoKey(item);
-  const hasUrl =
-    (playbackSources[0] ?? videoPlaybackUrl(video)).trim().length > 0;
-  const posterUrl = useMemo(
-    () => exploreTileVideoPosterAttribute(video, userAvatarUrl),
-    [video, userAvatarUrl],
-  );
+  const hasUrl = renderedPrimarySrc.length > 0;
 
   const userId = (video.user_id ?? "").trim();
   const displayName =
@@ -76,109 +66,14 @@ export function HomeCleanVideoCardV3({
       />
     ) : null;
 
-  const {
-    isSoundEnabled,
-    activeVideoId,
-    reportVideoVisibility,
-    playbackGeneration,
-    feedUserActivationGeneration,
-  } = useHomeFeedSound();
-
-  const isActive = activeVideoId === feedVideoKey;
-  const muted = !isSoundEnabled || !isActive;
-
   const slideOffset = feedIndex - activeFeedIndex;
   const preload: "none" | "metadata" | "auto" =
     slideOffset === 0
       ? "auto"
-      : slideOffset === 1 || slideOffset === -1
+      : Math.abs(slideOffset) <= 2
         ? "metadata"
         : "none";
   const fetchPriority = slideOffset === 0 ? "high" : "low";
-
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-
-    let obs: IntersectionObserver | null = null;
-
-    const attach = () => {
-      obs?.disconnect();
-      // Desktop uses document scroll — IO must use the viewport, not the tall feed wrapper.
-      const root = isHomeFeedMobileViewport()
-        ? el.closest<HTMLElement>("[data-home-clean-v3-scroll-root]")
-        : null;
-
-      obs = new IntersectionObserver(
-        (entries) => {
-          const ratio = entries[0]?.isIntersecting
-            ? (entries[0]?.intersectionRatio ?? 0)
-            : 0;
-          reportVideoVisibility(feedVideoKey, ratio);
-        },
-        {
-          root: root ?? null,
-          threshold: [0, 0.25, 0.5, 0.75, 1],
-        },
-      );
-      obs.observe(el);
-    };
-
-    attach();
-    window.addEventListener("resize", attach, { passive: true });
-
-    return () => {
-      window.removeEventListener("resize", attach);
-      obs?.disconnect();
-      reportVideoVisibility(feedVideoKey, 0);
-    };
-  }, [feedVideoKey, reportVideoVisibility]);
-
-  useEffect(() => {
-    const handle = videoRef.current;
-    if (!handle) return;
-    handle.syncAudioOutput(muted, 1);
-    if (isActive) {
-      void handle.play().catch(() => {
-        if (!isSoundEnabled) return;
-        handle.syncAudioOutput(true, 1);
-        void handle.play().catch(() => undefined);
-      });
-    } else {
-      handle.pause();
-    }
-  }, [
-    feedUserActivationGeneration,
-    isActive,
-    isSoundEnabled,
-    muted,
-    playbackGeneration,
-    playbackSources,
-  ]);
-
-  const retryAudiblePlay = useCallback(() => {
-    const handle = videoRef.current;
-    if (!handle || !isActive || !isSoundEnabled) return;
-    handle.syncAudioOutput(false, 1);
-    void handle.play().catch(() => undefined);
-  }, [isActive, isSoundEnabled]);
-
-  useEffect(() => {
-    const onVisibilityChange = () => {
-      const handle = videoRef.current;
-      if (!handle) return;
-      if (document.visibilityState === "hidden") {
-        handle.pause();
-        return;
-      }
-      if (activeVideoId === feedVideoKey) {
-        void handle.play().catch(() => undefined);
-      }
-    };
-    document.addEventListener("visibilitychange", onVisibilityChange);
-    return () =>
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-  }, [activeVideoId, feedVideoKey]);
 
   const avatar = (
     <ProfileAvatar
@@ -190,25 +85,23 @@ export function HomeCleanVideoCardV3({
   );
 
   return (
-    <div data-home-clean-v3-item>
-      <div
-        ref={cardRef}
-        data-home-clean-v3-card
-        style={HOME_CLEAN_V3_CARD_LOCK_STYLE}
-      >
+    <div ref={slideRef} data-home-clean-v3-item>
+      <div data-home-clean-v3-card style={HOME_CLEAN_V3_CARD_LOCK_STYLE}>
         {!hasUrl ? null : (
-          <PlaybackVideo
-            ref={videoRef}
+          <FeedVideoSurface
             sources={playbackSources}
-            poster={posterUrl}
+            renderedPrimarySrc={renderedPrimarySrc}
+            videoId={feedVideoKey}
             preload={preload}
             fetchPriority={fetchPriority}
-            controls={false}
-            loop
-            muted={muted}
-            volume={1}
-            onCanPlay={retryAudiblePlay}
-            onPlaying={retryAudiblePlay}
+            mediaFit="cover"
+            visibilityObserveRef={slideRef}
+            debugMeta={{
+              videoRowId: video.id ?? null,
+              source_video_url: video.source_video_url,
+              processed_video_url: video.processed_video_url,
+              video_url: video.video_url,
+            }}
             className="absolute inset-0 h-full w-full max-h-full max-w-full object-cover object-center [color-scheme:dark]"
           />
         )}
