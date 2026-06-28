@@ -272,7 +272,7 @@ export async function rpcClubSubmitPartnershipRequest(input: {
   website?: string;
   estimatedPlayers?: number;
   message?: string;
-}): Promise<{ ok: boolean; error?: string }> {
+}): Promise<{ ok: boolean; error?: string; requestId?: string }> {
   const { data, error } = await supabase.rpc("goalnova_club_submit_partnership_request", {
     p_club_name: input.clubName,
     p_country: input.country,
@@ -291,7 +291,10 @@ export async function rpcClubSubmitPartnershipRequest(input: {
   if (!payload.ok) {
     return { ok: false, error: String(payload.error ?? "submit_failed") };
   }
-  return { ok: true };
+  return {
+    ok: true,
+    requestId: payload.request_id ? String(payload.request_id) : undefined,
+  };
 }
 
 export async function rpcAdminClubsList(): Promise<{

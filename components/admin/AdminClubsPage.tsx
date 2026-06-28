@@ -15,15 +15,23 @@ export function AdminClubsPage() {
   const [clubs, setClubs] = useState<Record<string, unknown>[]>([]);
   const [requests, setRequests] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
+    setLoadError(null);
     const [c, r] = await Promise.all([rpcAdminClubsList(), rpcAdminClubRequestsList()]);
-    setClubs(c.rows);
-    setRequests(r.rows);
+    if (c.error || r.error) {
+      setLoadError(c.error ?? r.error ?? t("adminLoadError"));
+      setClubs([]);
+      setRequests([]);
+    } else {
+      setClubs(c.rows);
+      setRequests(r.rows);
+    }
     setLoading(false);
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -31,8 +39,12 @@ export function AdminClubsPage() {
 
   async function approveRequest(id: string) {
     setBusy(id);
-    await rpcAdminClubApproveRequest(id);
+    const result = await rpcAdminClubApproveRequest(id);
     setBusy(null);
+    if (!result.ok) {
+      setLoadError(result.error ?? t("adminApproveError"));
+      return;
+    }
     await load();
   }
 
@@ -50,6 +62,15 @@ export function AdminClubsPage() {
   return (
     <div className="min-w-0 space-y-8 p-4 sm:p-6">
       <h1 className="text-xl font-bold text-zinc-100">{t("adminTitle")}</h1>
+      <p className="text-sm text-zinc-400">{t("adminHint")}</p>
+
+      {loadError ? (
+        <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          {loadError.includes("Could not find the function") || loadError.includes("Forbidden")
+            ? t("adminLoadErrorMigration")
+            : loadError}
+        </div>
+      ) : null}
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">

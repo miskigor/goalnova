@@ -16,6 +16,7 @@ export function AdminOverviewPage() {
         {[
           { href: "/admin/stats", label: t("navStats") },
           { href: "/admin/users", label: t("navUsers") },
+          { href: "/admin/clubs", label: t("navClubs") },
           { href: "/admin/support", label: t("navSupport") },
           { href: "/admin/tasks", label: t("navTasks") },
           { href: "/admin/challenges", label: t("navChallenges") },

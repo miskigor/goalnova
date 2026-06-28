@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { notifyClubPlayerJoin } from "@/lib/clubs/notifyClubPlayerJoin.client";
+import { notifyPartnershipRequest } from "@/lib/clubs/notifyPartnershipRequest.client";
 import { rpcClubJoin, rpcClubSubmitPartnershipRequest } from "@/lib/supabase/clubs";
 import { supabase } from "@/lib/supabase/client";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
@@ -66,10 +67,17 @@ export function BecomePartnerView() {
     });
     setSubmitting(false);
     if (result.ok) {
+      if (result.requestId) void notifyPartnershipRequest(result.requestId);
       setPartnershipStatus(t("partnershipSubmitted"));
       return;
     }
-    setPartnershipStatus(result.error ? t("partnershipSubmitErrorDetail", { error: result.error }) : t("partnershipSubmitError"));
+    setPartnershipStatus(
+      result.error?.includes("Could not find the function")
+        ? t("partnershipSubmitErrorMigration")
+        : result.error
+          ? t("partnershipSubmitErrorDetail", { error: result.error })
+          : t("partnershipSubmitError"),
+    );
   }
 
   async function joinByCode(e: React.FormEvent) {

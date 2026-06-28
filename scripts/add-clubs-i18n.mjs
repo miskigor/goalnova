@@ -46,6 +46,8 @@ const clubs = {
     submitPartnershipRequest: "Submit request",
     partnershipSubmitted: "Thanks! We will review your partnership request.",
     partnershipSubmitError: "Could not submit request. Try again.",
+    partnershipSubmitErrorMigration:
+      "The clubs database is not set up yet on the server. Ask the admin to run the Supabase clubs migration (SQL file in the repo).",
     partnershipSubmitErrorDetail: "Could not submit request: {error}",
     partnershipRequiredHint: "Fields marked with * are required. Instagram, website, and message are optional.",
     partnershipValidationMissing: "Please fill in required fields: {fields}.",
@@ -86,6 +88,11 @@ const clubs = {
     invitePageSubtitle: "You were invited with code {code}. Sign in to request membership.",
     inviteSignInCta: "Sign in to join",
     adminTitle: "Club partnerships",
+    adminHint: "Approve partnership requests here, then share the club invite code with players.",
+    adminLoadError: "Could not load club admin data.",
+    adminLoadErrorMigration:
+      "Club admin functions are missing in Supabase. Run the full clubs migration SQL (20260630120000_club_partnership_system.sql).",
+    adminApproveError: "Could not approve this request.",
     adminPendingRequests: "Partnership requests",
     adminAllClubs: "All clubs",
     adminApproveClub: "Approve & create club",
@@ -131,6 +138,8 @@ const clubs = {
     submitPartnershipRequest: "Pošalji zahtjev",
     partnershipSubmitted: "Hvala! Pregledat ćemo tvoj zahtjev za partnerstvo.",
     partnershipSubmitError: "Zahtjev nije poslan. Pokušaj ponovno.",
+    partnershipSubmitErrorMigration:
+      "Klubovi još nisu postavljeni u bazi. Admin mora pokrenuti Supabase migraciju za klubove (SQL datoteka u repou).",
     partnershipSubmitErrorDetail: "Zahtjev nije poslan: {error}",
     partnershipRequiredHint: "Polja označena s * su obavezna. Instagram, web i poruka su opcionalni.",
     partnershipValidationMissing: "Ispuni obavezna polja: {fields}.",
@@ -171,6 +180,11 @@ const clubs = {
     invitePageSubtitle: "Pozvan si kodom {code}. Prijavi se za zahtjev članstva.",
     inviteSignInCta: "Prijava",
     adminTitle: "Klub partnerstva",
+    adminHint: "Ovdje odobravaš zahtjeve za partnerstvo, zatim podijeli invite kod kluba s igračima.",
+    adminLoadError: "Nije moguće učitati admin podatke za klubove.",
+    adminLoadErrorMigration:
+      "Admin funkcije za klubove nedostaju u Supabaseu. Pokreni punu migraciju (20260630120000_club_partnership_system.sql).",
+    adminApproveError: "Zahtjev nije mogao biti odobren.",
     adminPendingRequests: "Zahtjevi za partnerstvo",
     adminAllClubs: "Svi klubovi",
     adminApproveClub: "Odobri i kreiraj klub",
