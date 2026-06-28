@@ -6,16 +6,23 @@ import { navItemActive } from "@/lib/navigation/navItemActive";
 
 const PRIMARY_LINKS = [
   { href: "/home", labelKey: "home", emoji: "🏠" },
-  { href: "/clubs", labelKey: "clubs", emoji: "🏟" },
   { href: "/explore", labelKey: "explore", emoji: "🔍" },
   { href: "/rankings", labelKey: "rankings" },
   { href: "/challenges", labelKey: "challenges", emoji: "🏆" },
 ] as const;
 
+function isClubsRoute(pathname: string): boolean {
+  return pathname === "/clubs" || pathname.startsWith("/clubs/");
+}
+
 /** Primary horizontal tabs — visible on mobile/tablet where sidebar is hidden. */
 export function AppPrimaryTopNavStrip() {
   const pathname = usePathname() ?? "";
   const t = useTranslations("nav");
+
+  if (isClubsRoute(pathname)) {
+    return null;
+  }
 
   return (
     <nav

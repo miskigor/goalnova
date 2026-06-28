@@ -317,8 +317,37 @@ export function NavUserMenu({
       ) : null}
 
       <div data-account-menu-scroll className={ACCOUNT_MENU_SCROLL_CLASS}>
+      {mobileMoreInMenu && !bottomNavTrigger ? (
+        <>
+          <Link
+            href="/clubs"
+            role="menuitem"
+            className={linkClass}
+            onClick={() => {
+              setOpen(false);
+              onNavigate?.();
+            }}
+          >
+            <NavIcon name="clubs" className="size-4 shrink-0 opacity-90" />
+            {tNav("clubs")}
+          </Link>
+          <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
+        </>
+      ) : null}
       {bottomNavTrigger ? (
         <>
+          <Link
+            href="/clubs"
+            role="menuitem"
+            className={linkClass}
+            onClick={() => {
+              setOpen(false);
+              onNavigate?.();
+            }}
+          >
+            <NavIcon name="clubs" className="size-4 shrink-0 opacity-90" />
+            {tNav("clubs")}
+          </Link>
           <Link
             href="/premium"
             role="menuitem"
@@ -500,18 +529,6 @@ export function NavUserMenu({
               {tNav("explore")}
             </Link>
           ) : null}
-          <Link
-            href="/clubs"
-            role="menuitem"
-            className={linkClass}
-            onClick={() => {
-              setOpen(false);
-              onNavigate?.();
-            }}
-          >
-            <NavIcon name="clubs" className="size-4 shrink-0 opacity-90" />
-            {tNav("clubs")}
-          </Link>
           <Link
             href="/rankings"
             role="menuitem"
