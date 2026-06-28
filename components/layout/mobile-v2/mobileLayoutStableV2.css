@@ -336,7 +336,9 @@
     position: relative;
     flex-direction: row;
     min-height: 100dvh;
+    height: auto;
     overflow-x: clip;
+    overflow-y: visible;
   }
 }
 
@@ -370,6 +372,9 @@
 @media (min-width: 1024px) {
   [data-mobile-layout-stable-v2] [data-mlv2-column] {
     padding-inline-start: 15.5rem;
+    height: auto;
+    max-height: none;
+    overflow: visible;
   }
 }
 
@@ -404,6 +409,22 @@
     padding-top: 2rem;
     padding-bottom: 3rem;
     padding-inline: 1.5rem;
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  /*
+   * Desktop: document scroll (not a trapped inner scrollport).
+   * Mobile keeps overflow-y:auto on [data-mlv2-scroll] — do not change max-width rules above.
+   */
+  [data-mobile-layout-stable-v2] [data-mlv2-scroll] {
+    flex: none;
+    height: auto;
+    min-height: auto;
+    max-height: none;
+    overflow-x: clip;
+    overflow-y: visible !important;
+    overscroll-behavior: auto;
   }
 }
 
