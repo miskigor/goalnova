@@ -74,6 +74,6 @@ export default function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next|_vercel|opengraph-image|twitter-image|og/|robots.txt|sitemap.xml|.*\\..*).*)",
+    "/((?!api|_next|_vercel|og/|robots.txt|sitemap.xml|.*\\..*).*)",
   ],
 };

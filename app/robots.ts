@@ -8,7 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/opengraph-image", "/twitter-image"],
         // Private routes use `noindex` in layout/page metadata — not Disallow here.
         // Disallow + noindex blocks recrawl and causes GSC "indexed though blocked by robots.txt".
       },

@@ -26,12 +26,12 @@ export async function loadOgBrandLogoDataUrl(): Promise<string> {
   }
 
   const fetched = await fetchImageAsDataUrl(brandLogoPublicUrl());
-  if (!fetched) {
-    throw new Error("PitchRusch brand logo unavailable for OG image generation");
+  if (fetched) {
+    cachedLogoDataUrl = fetched;
+    return cachedLogoDataUrl;
   }
 
-  cachedLogoDataUrl = fetched;
-  return cachedLogoDataUrl;
+  return brandLogoPublicUrl();
 }
 
 export async function fetchImageAsDataUrl(url: string): Promise<string | null> {
