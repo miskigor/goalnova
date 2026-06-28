@@ -297,6 +297,21 @@ export async function rpcClubSubmitPartnershipRequest(input: {
   };
 }
 
+function normalizeRpcJsonRows(data: unknown): Record<string, unknown>[] {
+  if (Array.isArray(data)) {
+    return data.filter((row): row is Record<string, unknown> => row !== null && typeof row === "object");
+  }
+  if (typeof data === "string") {
+    try {
+      const parsed = JSON.parse(data) as unknown;
+      return normalizeRpcJsonRows(parsed);
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
 export async function rpcAdminClubsList(): Promise<{
   rows: Record<string, unknown>[];
   error: string | null;
@@ -306,7 +321,7 @@ export async function rpcAdminClubsList(): Promise<{
     logFullSupabaseError("[clubs] goalnova_admin_clubs_list", error);
     return { rows: [], error: error.message };
   }
-  return { rows: (data ?? []) as Record<string, unknown>[], error: null };
+  return { rows: normalizeRpcJsonRows(data), error: null };
 }
 
 export async function rpcAdminClubRequestsList(): Promise<{
@@ -318,7 +333,7 @@ export async function rpcAdminClubRequestsList(): Promise<{
     logFullSupabaseError("[clubs] goalnova_admin_club_requests_list", error);
     return { rows: [], error: error.message };
   }
-  return { rows: (data ?? []) as Record<string, unknown>[], error: null };
+  return { rows: normalizeRpcJsonRows(data), error: null };
 }
 
 export async function rpcAdminClubApproveRequest(

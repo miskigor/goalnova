@@ -93,6 +93,9 @@ const clubs = {
     adminLoadErrorMigration:
       "Club admin functions are missing in Supabase. Run the full clubs migration SQL (20260630120000_club_partnership_system.sql).",
     adminApproveError: "Could not approve this request.",
+    adminNoClubsYet: "No clubs yet. Approve a partnership request above to create one.",
+    adminApprovedSuccess: "Club created! Share invite code {code} with {club} players.",
+    adminViewClubProfile: "View club profile →",
     adminPendingRequests: "Partnership requests",
     adminAllClubs: "All clubs",
     adminApproveClub: "Approve & create club",
@@ -185,6 +188,9 @@ const clubs = {
     adminLoadErrorMigration:
       "Admin funkcije za klubove nedostaju u Supabaseu. Pokreni punu migraciju (20260630120000_club_partnership_system.sql).",
     adminApproveError: "Zahtjev nije mogao biti odobren.",
+    adminNoClubsYet: "Još nema klubova. Odobri zahtjev iznad da se klub kreira.",
+    adminApprovedSuccess: "Klub kreiran! Podijeli invite kod {code} s igračima kluba {club}.",
+    adminViewClubProfile: "Pogledaj profil kluba →",
     adminPendingRequests: "Zahtjevi za partnerstvo",
     adminAllClubs: "Svi klubovi",
     adminApproveClub: "Odobri i kreiraj klub",
