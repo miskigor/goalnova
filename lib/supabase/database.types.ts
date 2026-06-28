@@ -1741,6 +1741,99 @@ export type Database = {
           monthly_xp: number;
         }[];
       };
+      goalnova_clubs_list_public: {
+        Args: { p_search?: string | null; p_limit?: number; p_offset?: number };
+        Returns: {
+          id: string;
+          name: string;
+          slug: string;
+          logo_url: string | null;
+          cover_url: string | null;
+          country: string | null;
+          city: string | null;
+          club_code: string;
+          verified_partner: boolean;
+          partnership_status: string;
+          approved_player_count: number;
+          total_xp: number;
+          total_videos: number;
+          club_score: number;
+          global_rank: number | null;
+        }[];
+      };
+      goalnova_club_rankings_public: {
+        Args: { p_limit?: number };
+        Returns: {
+          id: string;
+          name: string;
+          slug: string;
+          logo_url: string | null;
+          cover_url: string | null;
+          country: string | null;
+          city: string | null;
+          club_code: string;
+          verified_partner: boolean;
+          partnership_status: string;
+          approved_player_count: number;
+          total_xp: number;
+          total_videos: number;
+          club_score: number;
+          global_rank: number | null;
+        }[];
+      };
+      goalnova_club_get_public: {
+        Args: { p_slug: string };
+        Returns: Json;
+      };
+      goalnova_player_club_badge: {
+        Args: { p_user_id: string };
+        Returns: Json;
+      };
+      goalnova_club_join: {
+        Args: { p_club_id?: string | null; p_club_code?: string | null };
+        Returns: Json;
+      };
+      goalnova_club_review_membership: {
+        Args: { p_membership_id: string; p_approve: boolean };
+        Returns: Json;
+      };
+      goalnova_club_accept_partnership_agreement: {
+        Args: { p_club_id: string };
+        Returns: Json;
+      };
+      goalnova_club_dashboard: {
+        Args: { p_club_id: string };
+        Returns: Json;
+      };
+      goalnova_club_submit_partnership_request: {
+        Args: {
+          p_club_name: string;
+          p_country: string;
+          p_contact_person: string;
+          p_email: string;
+          p_instagram?: string | null;
+          p_website?: string | null;
+          p_estimated_players?: number | null;
+          p_message?: string | null;
+        };
+        Returns: Json;
+      };
+      goalnova_admin_clubs_list: {
+        Args: Record<string, never>;
+        Returns: Json;
+      };
+      goalnova_admin_club_requests_list: {
+        Args: Record<string, never>;
+        Returns: Json;
+      };
+      goalnova_admin_club_approve_request: {
+        Args: { p_request_id: string };
+        Returns: Json;
+      };
+      goalnova_admin_club_set_status: {
+        Args: { p_club_id: string; p_status: string };
+        Returns: Json;
+      };
       goalnova_friend_challenge_create: {
         Args: Record<string, never>;
         Returns: Json;

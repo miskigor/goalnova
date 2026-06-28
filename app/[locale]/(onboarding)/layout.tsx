@@ -9,6 +9,7 @@ import { MinimalAppHeader } from "@/components/layout/MinimalAppHeader";
 import { NotificationsInboxProvider } from "@/components/notifications/NotificationsInboxContext";
 import { PremiumProvider } from "@/components/premium/PremiumProvider";
 import { ReferralBootstrap } from "@/components/referrals/ReferralBootstrap";
+import { ClubInviteBootstrap } from "@/components/clubs/ClubInviteBootstrap";
 import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ export default function OnboardingLayout({
         <RequireReauthOnReturn />
         <Suspense fallback={null}>
           <ReferralBootstrap />
+          <ClubInviteBootstrap />
         </Suspense>
         <PremiumProvider>
         <FeedbackProvider>

@@ -121,6 +121,13 @@ export function PublicTopNav({ trailing }: Props) {
             {tNav("explore")}
           </Link>
           <Link
+            href="/clubs"
+            className={desktopLinkClass(pathname, "/clubs")}
+            aria-current={navItemActive(pathname, "/clubs") ? "page" : undefined}
+          >
+            {tNav("clubs")}
+          </Link>
+          <Link
             href="/rankings"
             className={desktopLinkClass(pathname, "/rankings")}
             aria-current={
@@ -260,6 +267,14 @@ export function PublicTopNav({ trailing }: Props) {
                 }
               >
                 {tNav("explore")}
+              </Link>
+              <Link
+                href="/clubs"
+                className={sheetLinkClass(pathname, "/clubs")}
+                onClick={closeMobile}
+                aria-current={navItemActive(pathname, "/clubs") ? "page" : undefined}
+              >
+                {tNav("clubs")}
               </Link>
               <Link
                 href="/rankings"

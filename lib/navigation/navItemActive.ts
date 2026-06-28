@@ -5,6 +5,8 @@
 export function navItemActive(pathname: string, href: string): boolean {
   if (href === "/home") return pathname === "/home";
   if (href === "/explore") return pathname === "/explore";
+  if (href === "/clubs")
+    return pathname === "/clubs" || pathname.startsWith("/clubs/");
   if (href === "/rankings") return pathname === "/rankings";
   if (href === "/premium") return pathname === "/premium";
   if (href === "/benefits") return pathname === "/benefits" || pathname.startsWith("/benefits/");

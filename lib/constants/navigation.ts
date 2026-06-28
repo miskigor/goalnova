@@ -3,6 +3,7 @@ export type NavIconName =
   | "explore"
   | "rankings"
   | "discover"
+  | "clubs"
   | "notifications"
   | "messages"
   | "profile"
@@ -17,6 +18,7 @@ export type AppShellNavItem = {
   href:
     | "/home"
     | "/explore"
+    | "/clubs"
     | "/rankings"
     | "/challenges"
     | "/notifications"
@@ -26,6 +28,7 @@ export type AppShellNavItem = {
   labelKey:
     | "home"
     | "explore"
+    | "clubs"
     | "rankings"
     | "challenges"
     | "notifications"
@@ -79,6 +82,7 @@ export const APP_SHELL_SCOUT_MAIN_NAV_UNVERIFIED: ScoutShellNavItem[] = [
 export const APP_SHELL_MAIN_NAV: AppShellNavItem[] = [
   { href: "/home", labelKey: "home", icon: "home" },
   { href: "/explore", labelKey: "explore", icon: "explore" },
+  { href: "/clubs", labelKey: "clubs", icon: "clubs" },
   { href: "/rankings", labelKey: "rankings", icon: "rankings" },
   { href: "/challenges", labelKey: "challenges", icon: "challenges" },
   { href: "/notifications", labelKey: "notifications", icon: "notifications" },
@@ -94,6 +98,7 @@ export type ShellMobileNavItem = {
     | "/challenges"
     | "/upload"
     | "/explore"
+    | "/clubs"
     | "/premium"
     | "/profile"
     | "/scout-dashboard"
@@ -107,6 +112,7 @@ export type ShellMobileNavItem = {
     | "challenges"
     | "upload"
     | "explore"
+    | "clubs"
     | "premium"
     | "profile"
     | "dashboard"
@@ -164,7 +170,7 @@ export const APP_SHELL_ADMIN_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
 /** Player mobile bottom nav — plain links only. */
 export const APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
   { href: "/home", labelKey: "home", icon: "home" },
-  { href: "/explore", labelKey: "explore", icon: "explore" },
+  { href: "/clubs", labelKey: "clubs", icon: "clubs" },
   { href: "/upload", labelKey: "upload", icon: "upload" },
   { href: "/challenges", labelKey: "challenges", icon: "challenges" },
   { href: "/profile", labelKey: "profile", icon: "profile" },

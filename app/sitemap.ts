@@ -10,6 +10,7 @@ import { hasVideoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 const INDEXABLE_PATHS = [
   "/",
   "/explore",
+  "/clubs",
   "/search",
   "/rankings",
   "/challenges",

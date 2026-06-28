@@ -46,6 +46,21 @@ export function NavIcon({
           <rect x="14" y="14" width="7" height="7" rx="1.25" />
         </svg>
       );
+    case "clubs":
+      return tabBar ? (
+        <svg {...common}>
+          <path d="M4 20h16" />
+          <path d="M6 8h12v12H6z" />
+          <path d="M9 8V5a3 3 0 0 1 6 0v3" />
+        </svg>
+      ) : (
+        <svg {...common}>
+          <path d="M3 21h18" />
+          <path d="M5 9h14v12H5z" />
+          <path d="M8 9V6a4 4 0 0 1 8 0v3" />
+          <path d="M12 13v4" />
+        </svg>
+      );
     case "rankings":
       return tabBar ? (
         <svg {...common}>

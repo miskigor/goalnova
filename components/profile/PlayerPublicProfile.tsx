@@ -29,6 +29,8 @@ import {
   fetchPlayerProfileGamification,
   type PlayerProfileGamification,
 } from "@/lib/supabase/playerProfileGamification";
+import { rpcPlayerClubBadge, type PlayerClubBadge } from "@/lib/supabase/clubs";
+import { VerifiedAcademyBadge } from "@/components/clubs/VerifiedAcademyBadge";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
 import { GN_SUCCESS_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
@@ -140,6 +142,7 @@ export function PlayerPublicProfile({
     initialUserAvatarUrl ?? prefetchedAvatarUrl,
   );
   const [gamification, setGamification] = useState<PlayerProfileGamification | null>(null);
+  const [clubBadge, setClubBadge] = useState<PlayerClubBadge | null>(null);
 
   useEffect(() => {
     if (!publicProfile) return;
@@ -161,12 +164,16 @@ export function PlayerPublicProfile({
     const userId = profile?.id?.trim();
     if (!userId) {
       setGamification(null);
+      setClubBadge(null);
       return;
     }
 
     let cancelled = false;
     void fetchPlayerProfileGamification(userId).then((data) => {
       if (!cancelled) setGamification(data);
+    });
+    void rpcPlayerClubBadge(userId).then(({ badge }) => {
+      if (!cancelled) setClubBadge(badge);
     });
 
     return () => {
@@ -442,9 +449,11 @@ export function PlayerPublicProfile({
             ) : null}
             {profile.founding_player === true ||
             isPlayerPremium(profile) ||
-            gamification?.freestyle_badge ? (
+            gamification?.freestyle_badge ||
+            clubBadge?.verified_academy ? (
               <div className="mt-1 flex min-w-0 max-w-full flex-wrap items-center gap-1 max-lg:mt-0.5">
                 {profile.founding_player === true ? <FoundingPlayerBadge /> : null}
+                {clubBadge?.verified_academy ? <VerifiedAcademyBadge compact /> : null}
                 {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
                 {gamification?.freestyle_badge ? (
                   <ChallengeKingBadge label={tChallenges("badgeName")} />
