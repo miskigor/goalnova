@@ -426,6 +426,16 @@
     overflow-y: visible !important;
     overscroll-behavior: auto;
   }
+
+  /* /home — release height lock so the feed can grow with the page on desktop. */
+  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-content][data-mlv2-route="home"] {
+    display: block;
+    flex: none;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    overflow: visible;
+  }
 }
 
 @media (max-width: 1023px) {

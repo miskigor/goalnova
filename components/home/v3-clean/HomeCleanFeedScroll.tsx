@@ -10,6 +10,7 @@ import {
   homeFeedPlaybackCandidates,
   videoPlaybackUrl,
 } from "@/lib/video/videoPlaybackUrl";
+import { isHomeFeedMobileViewport } from "@/components/home/homeFeedMobileScrollReset";
 
 type Props = {
   items: AugmentedHomeFeedItem[];
@@ -69,16 +70,15 @@ export function HomeCleanFeedScroll({ items }: Props) {
     if (!el) return;
 
     const syncSlideHeight = () => {
+      if (!isHomeFeedMobileViewport()) {
+        el.style.removeProperty("--home-clean-v3-slide-height");
+        return;
+      }
       const height = el.clientHeight;
       if (height > 0) {
         el.style.setProperty("--home-clean-v3-slide-height", `${height}px`);
       }
     };
-
-    syncSlideHeight();
-    const observer = new ResizeObserver(syncSlideHeight);
-    observer.observe(el);
-    window.addEventListener("resize", syncSlideHeight, { passive: true });
 
     const unlock = () => notifyFeedUserActivation();
 
@@ -87,17 +87,39 @@ export function HomeCleanFeedScroll({ items }: Props) {
       updateActiveIndex();
     };
 
-    el.addEventListener("scroll", onScroll, { passive: true });
-    el.addEventListener("touchstart", unlock, { passive: true });
-    el.addEventListener("wheel", unlock, { passive: true });
-    updateActiveIndex();
+    let observer: ResizeObserver | null = null;
 
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", syncSlideHeight);
+    const bindMobileScroll = () => {
+      syncSlideHeight();
+      if (!isHomeFeedMobileViewport()) return;
+
+      observer = new ResizeObserver(syncSlideHeight);
+      observer.observe(el);
+      el.addEventListener("scroll", onScroll, { passive: true });
+      el.addEventListener("touchstart", unlock, { passive: true });
+      el.addEventListener("wheel", unlock, { passive: true });
+      updateActiveIndex();
+    };
+
+    const unbindMobileScroll = () => {
+      observer?.disconnect();
+      observer = null;
       el.removeEventListener("scroll", onScroll);
       el.removeEventListener("touchstart", unlock);
       el.removeEventListener("wheel", unlock);
+    };
+
+    const onViewportChange = () => {
+      unbindMobileScroll();
+      bindMobileScroll();
+    };
+
+    onViewportChange();
+    window.addEventListener("resize", onViewportChange, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", onViewportChange);
+      unbindMobileScroll();
     };
   }, [notifyFeedUserActivation, updateActiveIndex]);
 

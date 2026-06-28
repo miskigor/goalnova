@@ -294,6 +294,38 @@ html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-home-
   }
 }
 
+/*
+ * Desktop — normal page scroll through feed slides (mobile keeps snap scrollport).
+ */
+@media (min-width: 1024px) {
+  [data-home-clean-v3] {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  [data-home-clean-v3-scroll-root] {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: visible;
+    overscroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+
+  [data-home-clean-v3-slide] {
+    flex: none;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+    padding-bottom: 2rem;
+  }
+}
+
 /* Campaign banner — flush top + full device width, opaque over feed scroll */
 @media (max-width: 1023px) {
   html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-world-cup-campaign-banner-slot] {
