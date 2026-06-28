@@ -989,6 +989,7 @@ begin
   where id = p_request_id;
 
   perform public.goalnova_admin_audit_log(
+    null,
     'club_partnership_request_approved',
     jsonb_build_object('request_id', p_request_id, 'club_id', v_club_id)
   );
