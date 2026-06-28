@@ -161,7 +161,7 @@ export const APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED: ShellMobileNavItem[] 
 /** Mobile bottom nav for staff admins. */
 export const APP_SHELL_ADMIN_MOBILE_BOTTOM_NAV: ShellMobileNavItem[] = [
   { href: "/home", labelKey: "home", icon: "home" },
-  { href: "/explore", labelKey: "explore", icon: "explore" },
+  { href: "/clubs", labelKey: "clubs", icon: "clubs" },
   { href: "/upload", labelKey: "upload", icon: "upload" },
   { href: "/admin", labelKey: "adminPanel", icon: "settings" },
   { href: "/profile", labelKey: "profile", icon: "profile" },

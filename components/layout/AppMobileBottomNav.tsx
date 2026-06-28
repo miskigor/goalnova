@@ -32,12 +32,14 @@ import { useDailyQuizStatus } from "@/hooks/useDailyQuizStatus";
 import { challengesNavHref } from "@/lib/quiz/dailyQuizNav";
 
 const BOTTOM_NAV_HOME_EMOJI = "🏠";
+const BOTTOM_NAV_CLUBS_EMOJI = "🏟";
 const BOTTOM_NAV_EXPLORE_EMOJI = "🔍";
 const BOTTOM_NAV_UPLOAD_EMOJI = "📤";
 const BOTTOM_NAV_CHALLENGES_EMOJI = "🏆";
 
 const PLAYER_TAB_EMOJI: Partial<Record<ShellMobileNavItem["href"], string>> = {
   "/home": BOTTOM_NAV_HOME_EMOJI,
+  "/clubs": BOTTOM_NAV_CLUBS_EMOJI,
   "/explore": BOTTOM_NAV_EXPLORE_EMOJI,
   "/challenges": BOTTOM_NAV_CHALLENGES_EMOJI,
 };

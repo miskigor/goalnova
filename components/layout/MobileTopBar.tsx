@@ -26,6 +26,7 @@ export function MobileTopBar() {
   const pathname = usePathname();
   const benefitsActive = navItemActive(pathname, "/benefits");
   const challengesActive = navItemActive(pathname, "/challenges");
+  const clubsActive = navItemActive(pathname, "/clubs");
   const adminActive = navItemActive(pathname, "/admin");
 
   return (
@@ -72,6 +73,22 @@ export function MobileTopBar() {
               >
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
+            </Link>
+          ) : null}
+          {authed && user ? (
+            <Link
+              href="/clubs"
+              className={
+                "flex h-8 min-h-8 min-w-0 max-w-[4.25rem] shrink items-center justify-center rounded-lg border px-1 text-[10px] font-semibold leading-none tracking-tight text-gn-accent transition active:scale-[0.98] hover:bg-gn-accent/10 min-[360px]:max-w-[5rem] min-[360px]:px-1.5 " +
+                (clubsActive
+                  ? "border-gn-accent bg-gn-accent/25"
+                  : "border-gn-accent/55 bg-gn-surface/30")
+              }
+              aria-label={tNav("clubs")}
+              title={tNav("clubs")}
+              aria-current={clubsActive ? "page" : undefined}
+            >
+              <span className="min-w-0 truncate">{tNav("clubs")}</span>
             </Link>
           ) : null}
           {authed && user ? (

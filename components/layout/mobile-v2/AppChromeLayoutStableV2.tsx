@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, type ReactNode } from "react";
 import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
+import { AppPrimaryTopNavStrip } from "@/components/layout/AppPrimaryTopNavStrip";
 import { AppMobileBottomNavSlot } from "@/components/layout/AppMobileBottomNavSlot";
 import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { AppSidebar } from "@/components/layout/AppSidebar";
@@ -37,6 +38,7 @@ export function AppChromeLayoutStableV2({ children }: { children: ReactNode }) {
         <AppSidebar />
         <div data-mlv2-column="true" suppressHydrationWarning>
           <div data-mlv2-scroll="true" suppressHydrationWarning>
+            <AppPrimaryTopNavStrip />
             <MobileLayoutStableV2RouteFrame>
               <ScoutVerificationBanner />
               {children}

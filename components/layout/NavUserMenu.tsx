@@ -500,6 +500,18 @@ export function NavUserMenu({
                 <NavIcon name="explore" className="size-4 shrink-0 opacity-90" />
                 {tNav("explore")}
               </Link>
+              <Link
+                href="/clubs"
+                role="menuitem"
+                className={linkClass}
+                onClick={() => {
+                  setOpen(false);
+                  onNavigate?.();
+                }}
+              >
+                <NavIcon name="clubs" className="size-4 shrink-0 opacity-90" />
+                {tNav("clubs")}
+              </Link>
             </>
           ) : (
             <div className="my-1 h-px bg-gn-border-subtle" role="separator" />

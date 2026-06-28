@@ -8,6 +8,7 @@ import { AppLayoutDebugProbe } from "@/components/layout/AppLayoutDebugProbe";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppShellDebugOverlay } from "@/components/layout/AppShellDebugOverlay";
 import { ScoutVerificationBanner } from "@/components/layout/ScoutVerificationBanner";
+import { AppPrimaryTopNavStrip } from "@/components/layout/AppPrimaryTopNavStrip";
 import { AppMobileBottomNavSlot } from "@/components/layout/AppMobileBottomNavSlot";
 import { AppMobileChromeMetrics } from "@/components/layout/AppMobileChromeMetrics";
 import { AppChromeLayoutStableV2 } from "@/components/layout/mobile-v2/AppChromeLayoutStableV2";
@@ -29,6 +30,7 @@ import { FriendChallengeBootstrap } from "@/components/friendChallenge/FriendCha
 function AppMainColumn({ children }: { children: React.ReactNode }) {
   return (
     <div data-app-column className={APP_SHELL_COLUMN_CLASS}>
+      <AppPrimaryTopNavStrip />
       <main data-app-main className={APP_SHELL_MAIN_CLASS}>
         <div data-app-main-inner className={APP_SHELL_MAIN_INNER_CLASS}>
           <ScoutVerificationBanner />

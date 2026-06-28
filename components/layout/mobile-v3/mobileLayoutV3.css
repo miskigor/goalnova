@@ -70,6 +70,11 @@ html[data-mobile-layout-v3] {
     overflow-x: clip;
   }
 
+  html[data-mobile-layout-v3] [data-app-primary-top-nav] {
+    flex: 0 0 auto;
+    z-index: 2;
+  }
+
   html[data-mobile-layout-v3] [data-mlv3-scroll] {
     box-sizing: border-box;
     flex: 1 1 auto;

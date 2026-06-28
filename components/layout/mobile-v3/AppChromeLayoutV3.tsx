@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, type ReactNode } from "react";
 import { usePathname } from "@/i18n/navigation";
+import { AppPrimaryTopNavStrip } from "@/components/layout/AppPrimaryTopNavStrip";
 import { AppMobileBottomNavSlot } from "@/components/layout/AppMobileBottomNavSlot";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { MobileBottomNavSlotV3 } from "@/components/layout/mobile-v3/MobileBottomNavSlotV3";
@@ -50,6 +51,7 @@ export function AppChromeLayoutV3({ children }: { children: ReactNode }) {
           data-mlv3-main
           data-mlv3-route={routeAttr}
         >
+          <AppPrimaryTopNavStrip />
           <div data-mlv3-scroll>{children}</div>
         </div>
         <MobileBottomNavSlotV3>
