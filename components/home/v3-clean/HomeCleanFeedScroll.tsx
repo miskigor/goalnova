@@ -65,6 +65,33 @@ export function HomeCleanFeedScroll({ items }: Props) {
     if (key) reportScrollSnapBoost(key);
   }, [items.length, reportScrollSnapBoost, snapVideoKeys]);
 
+  const updateDesktopActiveFromViewport = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el || isHomeFeedMobileViewport()) return;
+
+    const slides = el.querySelectorAll("[data-home-clean-v3-slide]");
+    if (slides.length === 0) return;
+
+    const viewportMid = window.innerHeight / 2;
+    let bestIndex = 0;
+    let bestDist = Infinity;
+
+    slides.forEach((node, index) => {
+      if (!(node instanceof HTMLElement)) return;
+      const rect = node.getBoundingClientRect();
+      const mid = rect.top + rect.height / 2;
+      const dist = Math.abs(mid - viewportMid);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestIndex = index;
+      }
+    });
+
+    setActiveIndex(bestIndex);
+    const key = snapVideoKeys[bestIndex];
+    if (key) reportScrollSnapBoost(key);
+  }, [reportScrollSnapBoost, snapVideoKeys]);
+
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -101,6 +128,20 @@ export function HomeCleanFeedScroll({ items }: Props) {
       updateActiveIndex();
     };
 
+    const bindDesktopScroll = () => {
+      if (isHomeFeedMobileViewport()) return;
+      updateDesktopActiveFromViewport();
+      window.addEventListener("scroll", updateDesktopActiveFromViewport, {
+        passive: true,
+      });
+      window.addEventListener("wheel", unlock, { passive: true });
+    };
+
+    const unbindDesktopScroll = () => {
+      window.removeEventListener("scroll", updateDesktopActiveFromViewport);
+      window.removeEventListener("wheel", unlock);
+    };
+
     const unbindMobileScroll = () => {
       observer?.disconnect();
       observer = null;
@@ -111,7 +152,10 @@ export function HomeCleanFeedScroll({ items }: Props) {
 
     const onViewportChange = () => {
       unbindMobileScroll();
+      unbindDesktopScroll();
+      syncSlideHeight();
       bindMobileScroll();
+      bindDesktopScroll();
     };
 
     onViewportChange();
@@ -120,8 +164,13 @@ export function HomeCleanFeedScroll({ items }: Props) {
     return () => {
       window.removeEventListener("resize", onViewportChange);
       unbindMobileScroll();
+      unbindDesktopScroll();
     };
-  }, [notifyFeedUserActivation, updateActiveIndex]);
+  }, [
+    notifyFeedUserActivation,
+    updateActiveIndex,
+    updateDesktopActiveFromViewport,
+  ]);
 
   return (
     <>

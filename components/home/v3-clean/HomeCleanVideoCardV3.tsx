@@ -25,6 +25,7 @@ import {
 import { exploreTileVideoPosterAttribute } from "@/lib/video/exploreTileMedia";
 import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 import { PlayerProfileNavLink } from "@/components/player/PlayerProfileNavLink";
+import { isHomeFeedMobileViewport } from "@/components/home/homeFeedMobileScrollReset";
 
 type Props = {
   item: AugmentedHomeFeedItem;
@@ -99,23 +100,36 @@ export function HomeCleanVideoCardV3({
     const el = cardRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
 
-    const root =
-      el.closest<HTMLElement>("[data-home-clean-v3-scroll-root]") ?? null;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        const ratio = entries[0]?.isIntersecting
-          ? (entries[0]?.intersectionRatio ?? 0)
-          : 0;
-        reportVideoVisibility(feedVideoKey, ratio);
-      },
-      {
-        root,
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-      },
-    );
-    obs.observe(el);
+    let obs: IntersectionObserver | null = null;
+
+    const attach = () => {
+      obs?.disconnect();
+      // Desktop uses document scroll — IO must use the viewport, not the tall feed wrapper.
+      const root = isHomeFeedMobileViewport()
+        ? el.closest<HTMLElement>("[data-home-clean-v3-scroll-root]")
+        : null;
+
+      obs = new IntersectionObserver(
+        (entries) => {
+          const ratio = entries[0]?.isIntersecting
+            ? (entries[0]?.intersectionRatio ?? 0)
+            : 0;
+          reportVideoVisibility(feedVideoKey, ratio);
+        },
+        {
+          root: root ?? null,
+          threshold: [0, 0.25, 0.5, 0.75, 1],
+        },
+      );
+      obs.observe(el);
+    };
+
+    attach();
+    window.addEventListener("resize", attach, { passive: true });
+
     return () => {
-      obs.disconnect();
+      window.removeEventListener("resize", attach);
+      obs?.disconnect();
       reportVideoVisibility(feedVideoKey, 0);
     };
   }, [feedVideoKey, reportVideoVisibility]);
