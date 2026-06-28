@@ -32,6 +32,8 @@ export type QuizTodayPayload = {
   total_quiz_xp?: number;
   weekly_xp?: number;
   weekly_rank?: number;
+  monthly_xp?: number;
+  monthly_rank?: number;
   viewer?: QuizViewerPayload;
   error?: string;
 };
@@ -48,7 +50,18 @@ export type QuizSubmitPayload = {
   total_quiz_xp: number;
   weekly_xp: number;
   weekly_rank: number;
+  monthly_xp: number;
+  monthly_rank: number;
   streak_bonus_awarded: boolean;
+};
+
+export type QuizMonthlyLeaderboardRow = {
+  rank: number;
+  user_id: string;
+  display_name: string;
+  username: string;
+  country: string | null;
+  monthly_xp: number;
 };
 
 export type QuizLeaderboardRow = {
@@ -110,6 +123,32 @@ export async function rpcQuizWeeklyLeaderboard(
       username: r.username,
       country: r.country?.trim() || null,
       weekly_xp: Number(r.weekly_xp),
+    })),
+    error: null,
+  };
+}
+
+export async function rpcQuizMonthlyLeaderboard(
+  locale: string,
+  limit = 10,
+): Promise<{ rows: QuizMonthlyLeaderboardRow[]; error: string | null }> {
+  const { data, error } = await supabase.rpc("goalnova_quiz_monthly_leaderboard", {
+    p_locale: locale,
+    p_limit: limit,
+  });
+  if (error) {
+    logFullSupabaseError("[dailyQuiz] goalnova_quiz_monthly_leaderboard", error);
+    return { rows: [], error: error.message };
+  }
+  const rows = (data ?? []) as QuizMonthlyLeaderboardRow[];
+  return {
+    rows: rows.map((r) => ({
+      rank: Number(r.rank),
+      user_id: r.user_id,
+      display_name: r.display_name,
+      username: r.username,
+      country: r.country?.trim() || null,
+      monthly_xp: Number(r.monthly_xp),
     })),
     error: null,
   };

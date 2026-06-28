@@ -7,11 +7,14 @@ import {
   rpcQuizGetToday,
   rpcQuizSubmitAnswer,
   rpcQuizWeeklyLeaderboard,
+  rpcQuizMonthlyLeaderboard,
   type QuizLeaderboardRow,
+  type QuizMonthlyLeaderboardRow,
   type QuizTodayPayload,
 } from "@/lib/supabase/dailyQuiz";
 import { DailyQuizLeaderboardRow } from "@/components/challenges/DailyQuizLeaderboardRow";
 import { DailyQuizWeeklyLeaderboard } from "@/components/challenges/DailyQuizWeeklyLeaderboard";
+import { DailyQuizMonthlyLeaderboard } from "@/components/challenges/DailyQuizMonthlyLeaderboard";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { QUIZ_CORRECT_XP } from "@/lib/quiz/quizConfig";
 import { notifyDailyQuizStatusChanged } from "@/lib/quiz/dailyQuizStatusEvents";
@@ -52,8 +55,10 @@ export function DailyQuizSection() {
   const [userId, setUserId] = useState<string | null>(null);
   const [payload, setPayload] = useState<QuizTodayPayload | null>(null);
   const [leaderboard, setLeaderboard] = useState<QuizLeaderboardRow[]>([]);
+  const [monthlyLeaderboard, setMonthlyLeaderboard] = useState<QuizMonthlyLeaderboardRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
+  const [monthlyLeaderboardLoading, setMonthlyLeaderboardLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -76,12 +81,20 @@ export function DailyQuizSection() {
 
     if (isAuthed) {
       setLeaderboardLoading(true);
-      const { rows } = await rpcQuizWeeklyLeaderboard(locale, 10);
-      setLeaderboard(rows);
+      setMonthlyLeaderboardLoading(true);
+      const [weekly, monthly] = await Promise.all([
+        rpcQuizWeeklyLeaderboard(locale, 10),
+        rpcQuizMonthlyLeaderboard(locale, 10),
+      ]);
+      setLeaderboard(weekly.rows);
+      setMonthlyLeaderboard(monthly.rows);
       setLeaderboardLoading(false);
+      setMonthlyLeaderboardLoading(false);
     } else {
       setLeaderboard([]);
+      setMonthlyLeaderboard([]);
       setLeaderboardLoading(false);
+      setMonthlyLeaderboardLoading(false);
     }
   }, [locale]);
 
@@ -141,10 +154,16 @@ export function DailyQuizSection() {
         total_quiz_xp: data.total_quiz_xp,
         weekly_xp: data.weekly_xp,
         weekly_rank: data.weekly_rank,
+        monthly_xp: data.monthly_xp,
+        monthly_rank: data.monthly_rank,
       };
     });
-    const { rows } = await rpcQuizWeeklyLeaderboard(locale, 10);
-    setLeaderboard(rows);
+    const [weekly, monthly] = await Promise.all([
+      rpcQuizWeeklyLeaderboard(locale, 10),
+      rpcQuizMonthlyLeaderboard(locale, 10),
+    ]);
+    setLeaderboard(weekly.rows);
+    setMonthlyLeaderboard(monthly.rows);
     invalidateDailyQuizStatusSnapshot();
     notifyDailyQuizStatusChanged();
   }
@@ -187,12 +206,21 @@ export function DailyQuizSection() {
   const inLeaderboard = userId
     ? leaderboard.some((row) => row.user_id === userId)
     : false;
+  const inMonthlyLeaderboard = userId
+    ? monthlyLeaderboard.some((row) => row.user_id === userId)
+    : false;
   const showSelfRankRow =
     authed &&
     viewer &&
     userId &&
     !inLeaderboard &&
     (payload?.already_answered || (payload?.weekly_rank ?? 0) > 0);
+  const showSelfMonthlyRankRow =
+    authed &&
+    viewer &&
+    userId &&
+    !inMonthlyLeaderboard &&
+    (payload?.already_answered || (payload?.monthly_rank ?? 0) > 0);
 
   return (
     <div className="box-border min-w-0 w-full max-w-full space-y-5 overflow-x-clip">
@@ -320,6 +348,29 @@ export function DailyQuizSection() {
         </div>
       ) : null}
 
+      {authed ? (
+        <div className="grid grid-cols-2 gap-2 rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-3 text-center sm:gap-3 sm:p-4">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-gn-text-tertiary">
+              {t("monthlyXpLabel")}
+            </p>
+            <p className="mt-1 text-lg font-bold text-gn-text">
+              {payload?.monthly_xp ?? 0}
+            </p>
+          </div>
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-gn-text-tertiary">
+              {t("monthlyRankLabel")}
+            </p>
+            <p className="mt-1 text-lg font-bold text-gn-text">
+              {(payload?.monthly_rank ?? 0) > 0
+                ? t("rankValue", { rank: payload?.monthly_rank ?? 0 })
+                : "—"}
+            </p>
+          </div>
+        </div>
+      ) : null}
+
       {showSelfRankRow && viewer ? (
         <section className="space-y-2" aria-label={t("yourRankLabel")}>
           <h3 className="text-xs font-semibold uppercase tracking-[0.22em] text-gn-text-tertiary">
@@ -330,7 +381,23 @@ export function DailyQuizSection() {
             displayName={viewer.display_name}
             username={viewer.username}
             country={viewer.country}
-            weeklyXp={payload?.weekly_xp ?? 0}
+            xp={payload?.weekly_xp ?? 0}
+            highlight
+          />
+        </section>
+      ) : null}
+
+      {showSelfMonthlyRankRow && viewer ? (
+        <section className="space-y-2" aria-label={t("monthlyYourRankLabel")}>
+          <h3 className="text-xs font-semibold uppercase tracking-[0.22em] text-gn-text-tertiary">
+            {t("monthlyYourRankLabel")}
+          </h3>
+          <DailyQuizLeaderboardRow
+            rank={payload?.monthly_rank ?? null}
+            displayName={viewer.display_name}
+            username={viewer.username}
+            country={viewer.country}
+            xp={payload?.monthly_xp ?? 0}
             highlight
           />
         </section>
@@ -340,6 +407,14 @@ export function DailyQuizSection() {
         <DailyQuizWeeklyLeaderboard
           rows={leaderboard}
           loading={leaderboardLoading}
+          currentUserId={userId}
+        />
+      ) : null}
+
+      {authed ? (
+        <DailyQuizMonthlyLeaderboard
+          rows={monthlyLeaderboard}
+          loading={monthlyLeaderboardLoading}
           currentUserId={userId}
         />
       ) : null}

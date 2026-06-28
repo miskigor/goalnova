@@ -8,7 +8,7 @@ type Props = {
   displayName: string;
   username?: string | null;
   country?: string | null;
-  weeklyXp: number;
+  xp: number;
   highlight?: boolean;
 };
 
@@ -17,7 +17,7 @@ export function DailyQuizLeaderboardRow({
   displayName,
   username,
   country,
-  weeklyXp,
+  xp,
   highlight = false,
 }: Props) {
   const t = useTranslations("dailyQuiz");
@@ -52,7 +52,7 @@ export function DailyQuizLeaderboardRow({
         </div>
       </div>
       <span className="shrink-0 text-end text-sm font-semibold tabular-nums text-gn-text">
-        {t("weeklyXpShort", { xp: weeklyXp })}
+        {t("weeklyXpShort", { xp })}
       </span>
     </div>
   );

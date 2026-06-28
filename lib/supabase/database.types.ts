@@ -1730,6 +1730,17 @@ export type Database = {
           weekly_xp: number;
         }[];
       };
+      goalnova_quiz_monthly_leaderboard: {
+        Args: { p_locale?: string; p_limit?: number };
+        Returns: {
+          rank: number;
+          user_id: string;
+          display_name: string;
+          username: string;
+          country: string | null;
+          monthly_xp: number;
+        }[];
+      };
       goalnova_friend_challenge_create: {
         Args: Record<string, never>;
         Returns: Json;

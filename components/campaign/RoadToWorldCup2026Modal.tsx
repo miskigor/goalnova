@@ -162,7 +162,7 @@ export function RoadToWorldCup2026Modal({ open, onClose, variant = "full" }: Pro
                           displayName={row.display_name}
                           username={row.username}
                           country={row.country}
-                          weeklyXp={row.weekly_xp}
+                          xp={row.weekly_xp}
                           highlight={Boolean(currentUserId && row.user_id === currentUserId)}
                         />
                       </li>
