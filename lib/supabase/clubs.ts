@@ -338,7 +338,7 @@ export async function rpcAdminClubRequestsList(): Promise<{
 
 export async function rpcAdminClubApproveRequest(
   requestId: string,
-): Promise<{ ok: boolean; slug?: string; clubCode?: string; error?: string }> {
+): Promise<{ ok: boolean; clubId?: string; slug?: string; clubCode?: string; error?: string }> {
   const { data, error } = await supabase.rpc("goalnova_admin_club_approve_request", {
     p_request_id: requestId,
   });
@@ -349,8 +349,26 @@ export async function rpcAdminClubApproveRequest(
   const payload = (data ?? {}) as Record<string, unknown>;
   return {
     ok: Boolean(payload.ok),
+    clubId: payload.club_id ? String(payload.club_id) : undefined,
     slug: payload.slug ? String(payload.slug) : undefined,
     clubCode: payload.club_code ? String(payload.club_code) : undefined,
+    error: payload.error ? String(payload.error) : undefined,
+  };
+}
+
+export async function rpcAdminClubDelete(
+  clubId: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const { data, error } = await supabase.rpc("goalnova_admin_club_delete", {
+    p_club_id: clubId,
+  });
+  if (error) {
+    logFullSupabaseError("[clubs] goalnova_admin_club_delete", error);
+    return { ok: false, error: error.message };
+  }
+  const payload = (data ?? {}) as Record<string, unknown>;
+  return {
+    ok: Boolean(payload.ok),
     error: payload.error ? String(payload.error) : undefined,
   };
 }

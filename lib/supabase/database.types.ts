@@ -1834,6 +1834,10 @@ export type Database = {
         Args: { p_club_id: string; p_status: string };
         Returns: Json;
       };
+      goalnova_admin_club_delete: {
+        Args: { p_club_id: string };
+        Returns: Json;
+      };
       goalnova_friend_challenge_create: {
         Args: Record<string, never>;
         Returns: Json;

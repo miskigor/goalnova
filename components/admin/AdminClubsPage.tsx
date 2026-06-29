@@ -5,10 +5,12 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
   rpcAdminClubApproveRequest,
+  rpcAdminClubDelete,
   rpcAdminClubSetStatus,
   rpcAdminClubRequestsList,
   rpcAdminClubsList,
 } from "@/lib/supabase/clubs";
+import { notifyClubApproved } from "@/lib/clubs/notifyClubApproved.client";
 import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
 function detailLine(label: string, value: unknown): { label: string; value: string } | null {
@@ -60,6 +62,25 @@ export function AdminClubsPage() {
     }
     if (result.clubCode && result.slug) {
       setLastApproved({ clubCode: result.clubCode, slug: result.slug, clubName });
+    }
+    if (result.clubId) void notifyClubApproved(result.clubId);
+    await load();
+  }
+
+  async function deleteClub(clubId: string, clubName: string) {
+    if (!window.confirm(t("adminDeleteClubConfirm", { club: clubName }))) return;
+
+    setBusy(clubId);
+    setLoadError(null);
+    const result = await rpcAdminClubDelete(clubId);
+    setBusy(null);
+    if (!result.ok) {
+      setLoadError(
+        result.error?.includes("Could not find the function")
+          ? t("adminDeleteErrorMigration")
+          : result.error ?? t("adminDeleteError"),
+      );
+      return;
     }
     await load();
   }
@@ -200,6 +221,14 @@ export function AdminClubsPage() {
                     className={`${GN_SECONDARY_BUTTON_CLASS} text-xs`}
                   >
                     {t("adminSuspend")}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={busy === String(club.id)}
+                    onClick={() => void deleteClub(String(club.id), String(club.name))}
+                    className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-200 hover:bg-red-500/20 disabled:opacity-50"
+                  >
+                    {t("adminDeleteClub")}
                   </button>
                 </div>
               </li>

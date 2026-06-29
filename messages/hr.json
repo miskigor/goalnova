@@ -2537,6 +2537,10 @@
     "adminAllClubs": "Svi klubovi",
     "adminApproveClub": "Odobri i kreiraj klub",
     "adminActivate": "Aktiviraj",
-    "adminSuspend": "Suspendiraj"
+    "adminSuspend": "Suspendiraj",
+    "adminDeleteClub": "Obriši klub",
+    "adminDeleteClubConfirm": "Trajno obrisati {club}? Sva članstva će biti uklonjena i igrači će izgubiti klupske benefite.",
+    "adminDeleteError": "Klub se nije mogao obrisati.",
+    "adminDeleteErrorMigration": "Funkcija za brisanje kluba nedostaje u Supabaseu. Pokreni PASTE_club_admin_delete.sql u SQL Editoru."
   }
 }

@@ -2537,6 +2537,10 @@
     "adminAllClubs": "All clubs",
     "adminApproveClub": "Approve & create club",
     "adminActivate": "Activate",
-    "adminSuspend": "Suspend"
+    "adminSuspend": "Suspend",
+    "adminDeleteClub": "Delete club",
+    "adminDeleteClubConfirm": "Permanently delete {club}? All memberships will be removed and player club benefits revoked.",
+    "adminDeleteError": "Could not delete this club.",
+    "adminDeleteErrorMigration": "Club delete function is missing in Supabase. Run PASTE_club_admin_delete.sql in the SQL Editor."
   }
 }
