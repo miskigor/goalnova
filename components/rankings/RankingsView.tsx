@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PublicVideoEntryLink } from "@/components/video/PublicVideoEntryLink";
@@ -14,6 +15,7 @@ import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { VideoMusicCredit } from "@/components/video/VideoMusicCredit";
 import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
+import { useExploreTileMobileLike } from "@/lib/video/exploreTileMobile";
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
 import {
   GN_VIDEO_MEDIA_ELEMENT_ABSOLUTE_CLASS,
@@ -27,11 +29,14 @@ type RankingsThumbLayout = "mobile" | "desktop";
 
 function RankingsVideoThumb({
   sources,
+  stillSrc,
   layout,
 }: {
   sources: string[];
+  stillSrc?: string | null;
   layout: RankingsThumbLayout;
 }) {
+  const isMobileLike = useExploreTileMobileLike();
   const { containerRef, loadMedia } = useMediaNearViewport({
     rootMargin: "200px 0px 200px 0px",
   });
@@ -42,6 +47,8 @@ function RankingsVideoThumb({
   const uniqueKey = useMemo(() => unique.join("|"), [unique]);
   const [sourceIndex, setSourceIndex] = useState(0);
   const activeSrc = unique[sourceIndex] ?? "";
+  const preferStillOnMobile = isMobileLike && Boolean(stillSrc?.trim());
+  const showVideo = Boolean(loadMedia && activeSrc && !preferStillOnMobile);
 
   useEffect(() => {
     setSourceIndex(0);
@@ -50,8 +57,8 @@ function RankingsVideoThumb({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   useIosInlineVideoFirstFrameBump(
     videoRef,
-    Boolean(loadMedia && activeSrc),
-    loadMedia ? activeSrc : "",
+    showVideo,
+    showVideo ? activeSrc : "",
   );
   useEffect(() => {
     const v = videoRef.current;
@@ -72,7 +79,7 @@ function RankingsVideoThumb({
           : `relative aspect-video w-[6.5rem] shrink-0 rounded-lg sm:w-32 ${GN_VIDEO_MEDIA_STAGE_CLASS}`
       }
     >
-      {loadMedia && activeSrc ? (
+      {showVideo ? (
         <video
           ref={videoRef}
           key={activeSrc}
@@ -97,6 +104,15 @@ function RankingsVideoThumb({
             e.currentTarget.pause();
             e.currentTarget.currentTime = 0;
           }}
+        />
+      ) : stillSrc ? (
+        <Image
+          src={stillSrc}
+          alt=""
+          fill
+          sizes={isMobile ? "152px" : "128px"}
+          className="object-cover object-center"
+          unoptimized
         />
       ) : null}
     </div>
@@ -210,7 +226,11 @@ function RankingCard({
           entryFrom="rankings"
           className="box-border block w-full min-w-0 max-w-full overflow-hidden px-3 pt-2 outline-none ring-gn-accent/40 focus-visible:ring-2"
         >
-          <RankingsVideoThumb sources={item.playbackSources} layout="mobile" />
+          <RankingsVideoThumb
+            sources={item.playbackSources}
+            stillSrc={item.previewStillUrl}
+            layout="mobile"
+          />
         </PublicVideoEntryLink>
         <div className="box-border min-w-0 max-w-full overflow-hidden px-3 py-2">
           <RankingCardBody item={item} tab={tab} t={t} metaLine={metaLine} />
@@ -241,7 +261,11 @@ function RankingCard({
             entryFrom="rankings"
             className="flex min-w-0 gap-3 rounded-xl outline-none ring-gn-accent/40 transition-colors hover:bg-white/[0.03] focus-visible:ring-2 sm:min-h-0 sm:flex-1 sm:gap-4"
           >
-            <RankingsVideoThumb sources={item.playbackSources} layout="desktop" />
+            <RankingsVideoThumb
+              sources={item.playbackSources}
+              stillSrc={item.previewStillUrl}
+              layout="desktop"
+            />
             <div className="min-w-0 flex-1 py-0.5">
               <RankingCardBody item={item} tab={tab} t={t} metaLine={metaLine} />
             </div>

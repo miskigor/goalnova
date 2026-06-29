@@ -2,8 +2,11 @@
 
 import { useTranslations } from "next-intl";
 import { useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import type { VideoRow } from "@/lib/supabase/playerPublicProfile";
+import { exploreTilePrimaryImageUrl } from "@/lib/video/exploreTileMedia";
+import { useExploreTileMobileLike } from "@/lib/video/exploreTileMobile";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
@@ -41,7 +44,10 @@ export function ProfileVideoTile({
   onDelete,
 }: Props) {
   const t = useTranslations("playerProfile");
+  const isMobileLike = useExploreTileMobileLike();
   const src = videoPlaybackUrl(video);
+  const stillSrc = exploreTilePrimaryImageUrl(video) ?? null;
+  const preferStillOnMobile = isMobileLike && Boolean(stillSrc);
   const href = useMemo(
     () => (video.id ? `/video/${encodeURIComponent(video.id)}` : null),
     [video.id],
@@ -52,7 +58,13 @@ export function ProfileVideoTile({
     rootMargin: "240px 0px 240px 0px",
   });
 
-  useIosInlineVideoFirstFrameBump(videoRef, Boolean(src && loadMedia), loadMedia ? src : "");
+  useIosInlineVideoFirstFrameBump(
+    videoRef,
+    Boolean(src && loadMedia && !preferStillOnMobile),
+    loadMedia && !preferStillOnMobile ? src : "",
+  );
+
+  const showVideo = Boolean(src && loadMedia && !preferStillOnMobile);
 
   const tile = (
     <div
@@ -61,7 +73,7 @@ export function ProfileVideoTile({
       {...gnVideoMediaDataProps}
       className="absolute inset-0 box-border overflow-hidden rounded-[0.85rem] border border-white/[0.08] bg-black"
     >
-      {src && loadMedia ? (
+      {showVideo ? (
         <video
           ref={videoRef}
           className={PROFILE_GRID_VIDEO_TILE_CLASS}
@@ -76,6 +88,15 @@ export function ProfileVideoTile({
               setDuration(formatDuration(d));
             }
           }}
+        />
+      ) : stillSrc ? (
+        <Image
+          src={stillSrc}
+          alt=""
+          fill
+          sizes="33vw"
+          className="object-cover object-center"
+          unoptimized
         />
       ) : src ? (
         <div className="absolute inset-0 bg-black" aria-hidden />

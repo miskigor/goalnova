@@ -1,6 +1,7 @@
 import type { Database } from "./client";
 import { supabase } from "./client";
 import { logFullSupabaseError, supabaseErrorToUserMessage } from "./logError";
+import { PROFILE_GRID_VIDEO_COLUMNS } from "@/lib/video/videoListColumns";
 import {
   normalizePlayerProfileSlug,
   rpcResolvePublicPlayerProfileBySlug,
@@ -85,7 +86,7 @@ export async function fetchVideosForPlayer(
 ): Promise<{ videos: VideoRow[]; errorMessage: string | null }> {
   const { data, error } = await supabase
     .from("videos")
-    .select("*")
+    .select(PROFILE_GRID_VIDEO_COLUMNS)
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
 
@@ -99,7 +100,7 @@ export async function fetchVideosForPlayer(
     };
   }
 
-  return { videos: data ?? [], errorMessage: null };
+  return { videos: (data ?? []) as VideoRow[], errorMessage: null };
 }
 
 /**

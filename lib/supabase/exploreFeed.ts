@@ -13,6 +13,7 @@ import {
   selectedMusicTrackIdFromVideo,
   type MusicTrackSummary,
 } from "@/lib/supabase/videoMusicSummary";
+import { GRID_VIDEO_COLUMNS } from "@/lib/video/videoListColumns";
 import { sortVideosForScouts } from "@/lib/premium/playerPremium";
 import {
   rpcFetchPublicPlayerProfilesByIds,
@@ -235,7 +236,7 @@ export async function fetchExploreFeed(params: {
 
   let vq = supabase
     .from("videos")
-    .select("*")
+    .select(GRID_VIDEO_COLUMNS)
     .or(PLAYABLE_VIDEO_OR)
     .order("created_at", { ascending: false })
     .limit(pool);

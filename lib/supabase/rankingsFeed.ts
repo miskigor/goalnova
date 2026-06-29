@@ -14,6 +14,11 @@ import {
   rankingsPreviewVideoCandidates,
   videoPlaybackUrl,
 } from "@/lib/video/videoPlaybackUrl";
+import {
+  exploreTilePrimaryImageUrl,
+  type VideoWithOptionalThumbnail,
+} from "@/lib/video/exploreTileMedia";
+import { GRID_VIDEO_COLUMNS } from "@/lib/video/videoListColumns";
 
 export type VideoRow = Database["public"]["Tables"]["videos"]["Row"];
 export type PlayerProfileRow =
@@ -38,15 +43,16 @@ export type RankingsListItem = {
   commentCount: number;
   overallScore: number | null;
   trendingPoints: number;
+  /** First static preview URL (thumbnail/poster) for grid tiles on mobile. */
+  previewStillUrl: string | null;
   musicTrack: MusicTrackSummary | null;
 };
 
-const VIDEO_POOL = 220;
+const VIDEO_POOL = 100;
 const OUT_LIMIT = 50;
 
 /** Columns needed for rankings (avoids wide `*` rows). */
-const VIDEO_COLUMNS =
-  "id,user_id,video_url,processed_video_url,source_video_url,city,country,created_at,selected_music_track_id" as const;
+const VIDEO_COLUMNS = GRID_VIDEO_COLUMNS;
 const FALLBACK_PLAYER_NAME = "Player";
 const FALLBACK_USERNAME_LABEL = "player";
 
@@ -279,6 +285,8 @@ function toRankItem(
     videoUrl: url,
     playbackSources:
       playbackSources.length > 0 ? playbackSources : [url].filter(Boolean),
+    previewStillUrl:
+      exploreTilePrimaryImageUrl(video as VideoWithOptionalThumbnail) ?? null,
     videoCreatedAt: video.created_at ?? null,
     userId,
     playerSlug: buildSlug(profile, video),
