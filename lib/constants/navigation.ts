@@ -84,6 +84,7 @@ export const APP_SHELL_MAIN_NAV: AppShellNavItem[] = [
   { href: "/home", labelKey: "home", icon: "home" },
   { href: "/explore", labelKey: "explore", icon: "explore" },
   { href: "/rankings", labelKey: "rankings", icon: "rankings" },
+  { href: "/clubs", labelKey: "clubs", icon: "clubs" },
   { href: "/challenges", labelKey: "challenges", icon: "challenges" },
   { href: "/notifications", labelKey: "notifications", icon: "notifications" },
   { href: "/profile", labelKey: "profile", icon: "profile" },
