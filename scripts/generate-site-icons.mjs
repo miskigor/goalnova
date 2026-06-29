@@ -32,6 +32,11 @@ copyFileSync(join(pub, "icon-180.png"), join(pub, "apple-touch-icon.png"));
 copyFileSync(join(pub, "icon-512.png"), join(app, "icon.png"));
 copyFileSync(join(pub, "icon-180.png"), join(app, "apple-icon.png"));
 
+execSync(`npx --yes -p sharp node scripts/generate-og-image.mjs "${logo}"`, {
+  cwd: root,
+  stdio: "inherit",
+});
+
 execSync(`npx --yes png-to-ico icon-32.png > favicon.ico`, { cwd: pub, stdio: "inherit" });
 
 console.log("Site icons updated in public/ and app/");

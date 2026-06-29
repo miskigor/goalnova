@@ -8,5 +8,10 @@ export const APP_DISPLAY_NAME = "PitchRusch";
 export const BRAND_LOGO_SRC = "/logo.png";
 
 /** Intrinsic dimensions of the PNG (must match the file; used by `next/image`). */
-export const BRAND_LOGO_WIDTH = 512;
-export const BRAND_LOGO_HEIGHT = 512;
+export const BRAND_LOGO_WIDTH = 1024;
+export const BRAND_LOGO_HEIGHT = 1024;
+
+/** Social share card (Open Graph / Twitter / WhatsApp) — 1.91:1 recommended. */
+export const BRAND_OG_IMAGE_SRC = "/og-image.png";
+export const BRAND_OG_IMAGE_WIDTH = 1200;
+export const BRAND_OG_IMAGE_HEIGHT = 630;

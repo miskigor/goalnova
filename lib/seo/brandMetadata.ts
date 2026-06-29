@@ -16,10 +16,17 @@ export const SITE_SEO_KEYWORDS = [
   "football challenges",
 ] as const;
 
-import { BRAND_LOGO_SRC } from "@/lib/constants/brand";
+import {
+  BRAND_LOGO_SRC,
+  BRAND_OG_IMAGE_HEIGHT,
+  BRAND_OG_IMAGE_SRC,
+  BRAND_OG_IMAGE_WIDTH,
+} from "@/lib/constants/brand";
 
-/** Static brand logo for social link previews (WhatsApp, Instagram, TikTok). */
-export const SITE_SEO_OG_IMAGE_PATH = BRAND_LOGO_SRC;
+/** Static brand image for social link previews (WhatsApp, Instagram, TikTok, iMessage). */
+export const SITE_SEO_OG_IMAGE_PATH = BRAND_OG_IMAGE_SRC;
+export const SITE_SEO_OG_IMAGE_WIDTH = BRAND_OG_IMAGE_WIDTH;
+export const SITE_SEO_OG_IMAGE_HEIGHT = BRAND_OG_IMAGE_HEIGHT;
 
 /** Short line for generated OG / Twitter card images. */
 export const SITE_SEO_OG_TAGLINE =
