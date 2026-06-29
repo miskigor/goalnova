@@ -1,3 +1,4 @@
+import { persistSupabaseSession, normalizeSessionForStorage } from "@/lib/auth/persistSupabaseSession";
 import { clearFreshLogin, setFreshLogin } from "@/lib/auth/freshLogin";
 import { invalidateGateSessionSnapshot, seedGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
 import {
@@ -462,23 +463,30 @@ async function signInViaSameOriginApi({
     throw new Error("Sign-in succeeded but session tokens are missing.");
   }
 
-  const { data, error } = await withTimeout(
-    supabase.auth.setSession({
-      access_token: session.access_token,
-      refresh_token: session.refresh_token,
-    }),
-    15000,
-    "Set session after sign in",
+  const fullSession = normalizeSessionForStorage(
+    session as Session,
+    payload.user ?? session.user ?? null,
   );
 
-  if (error) {
-    logSupabaseError("Supabase: setSession after signIn error", error);
-    throw error;
+  if (!persistSupabaseSession(fullSession)) {
+    throw Object.assign(new Error("Could not save sign-in session locally."), {
+      code: "session_persist_failed",
+    });
   }
 
+  // Best-effort client sync — do not block login (setSession often hangs in in-app browsers).
+  void supabase.auth
+    .setSession({
+      access_token: fullSession.access_token,
+      refresh_token: fullSession.refresh_token,
+    })
+    .catch(() => {
+      // Full-page navigation after login reloads session from localStorage.
+    });
+
   return finalizeEmailPasswordSignIn({
-    session: data.session ?? session,
-    user: data.user ?? payload.user ?? session.user ?? null,
+    session: fullSession,
+    user: fullSession.user ?? payload.user ?? null,
   });
 }
 
