@@ -238,6 +238,26 @@ export async function rpcClubAcceptPartnershipAgreement(
   return { ok: Boolean((data as Record<string, unknown>)?.ok) };
 }
 
+export async function rpcClubUpdateLogo(
+  clubId: string,
+  logoUrl: string | null,
+): Promise<{ ok: boolean; logoUrl?: string | null; error?: string }> {
+  const { data, error } = await supabase.rpc("goalnova_club_update_logo", {
+    p_club_id: clubId,
+    p_logo_url: logoUrl,
+  });
+  if (error) {
+    logFullSupabaseError("[clubs] goalnova_club_update_logo", error);
+    return { ok: false, error: error.message };
+  }
+  const payload = (data ?? {}) as Record<string, unknown>;
+  return {
+    ok: Boolean(payload.ok),
+    logoUrl: payload.logo_url == null ? null : String(payload.logo_url),
+    error: payload.error ? String(payload.error) : undefined,
+  };
+}
+
 export async function rpcClubDashboard(clubId: string): Promise<{
   ok: boolean;
   club: Record<string, unknown> | null;

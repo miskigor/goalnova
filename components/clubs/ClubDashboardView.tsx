@@ -11,6 +11,7 @@ import {
   type ClubDashboardPending,
   type ClubDashboardPlayer,
 } from "@/lib/supabase/clubs";
+import { ClubLogoEditor } from "@/components/clubs/ClubLogoEditor";
 import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
 export function ClubDashboardView() {
@@ -97,6 +98,13 @@ export function ClubDashboardView() {
           })}
         </p>
       </header>
+
+      <ClubLogoEditor
+        clubId={clubId!}
+        clubName={String(club.name ?? "")}
+        logoUrl={club.logo_url ? String(club.logo_url) : null}
+        onLogoUrlChange={(url) => setClub((prev) => (prev ? { ...prev, logo_url: url } : prev))}
+      />
 
       {needsAgreement ? (
         <section className="rounded-2xl border border-gn-accent/35 bg-gn-accent/10 p-4">
