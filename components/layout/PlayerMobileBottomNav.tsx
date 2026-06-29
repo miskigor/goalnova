@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import { NavIcon } from "@/components/icons/NavIcons";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { useNavSession } from "@/components/layout/useNavSession";
 import { supabase } from "@/lib/supabase/client";
@@ -16,50 +15,63 @@ import { navItemActive } from "@/lib/navigation/navItemActive";
 import {
   APP_MOBILE_BOTTOM_NAV_CAROUSEL_TRACK_CLASS,
   APP_MOBILE_BOTTOM_NAV_CLASS,
+  APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_ACTIVE_CLASS,
+  APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_CLASS,
+  APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_INACTIVE_CLASS,
   APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS,
-  APP_MOBILE_BOTTOM_NAV_ITEM_CLASS,
   APP_MOBILE_BOTTOM_NAV_PAGE_CLASS,
   APP_MOBILE_BOTTOM_NAV_PAGER_CLASS,
+  APP_MOBILE_BOTTOM_NAV_TAB_LABEL_CLASS,
+  APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS,
   APP_MOBILE_BOTTOM_NAV_UPLOAD_BUTTON_CLASS,
-  APP_MOBILE_BOTTOM_NAV_UPLOAD_LINK_CLASS,
 } from "@/lib/layout/appShellClasses";
 import { mobileBottomNavDisplayLabel } from "@/lib/layout/mobileBottomNavLabel";
 import { useDailyQuizStatus } from "@/hooks/useDailyQuizStatus";
 import { challengesNavHref } from "@/lib/quiz/dailyQuizNav";
 
-const BOTTOM_NAV_HOME_EMOJI = "🏠";
-const BOTTOM_NAV_EXPLORE_EMOJI = "🔍";
-const BOTTOM_NAV_UPLOAD_EMOJI = "📤";
-const BOTTOM_NAV_CHALLENGES_EMOJI = "🏆";
-
-const TAB_EMOJI: Partial<Record<ShellMobileNavItem["href"], string>> = {
-  "/home": BOTTOM_NAV_HOME_EMOJI,
-  "/explore": BOTTOM_NAV_EXPLORE_EMOJI,
-  "/challenges": BOTTOM_NAV_CHALLENGES_EMOJI,
+/** Full-color emoji for every player bottom-nav destination. */
+const TAB_EMOJI: Record<ShellMobileNavItem["href"], string> = {
+  "/home": "🏠",
+  "/profile": "👤",
+  "/upload": "📤",
+  "/challenges": "🏆",
+  "/explore": "🔍",
+  "/messages": "💬",
+  "/rankings": "🏅",
+  "/clubs": "🏟️",
+  "/premium": "⭐",
+  "/benefits": "🎁",
+  "/support": "🛟",
+  "/settings": "⚙️",
+  "/scout-dashboard": "📋",
+  "/scout-apply": "✅",
+  "/discover": "🔎",
+  "/admin": "🛡️",
 };
 
-const TAB_EMOJI_CLASS = `${APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS} text-[1.3125rem] min-[360px]:text-[1.4375rem]`;
+const TAB_EMOJI_CLASS = `${APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS} text-[1.25rem] min-[360px]:text-[1.3125rem]`;
 
-function tabEmoji(href: ShellMobileNavItem["href"]): string | null {
-  return TAB_EMOJI[href] ?? null;
-}
-
-function uploadButtonClass(pathname: string) {
-  const active = navItemActive(pathname, "/upload");
+function emojiBadgeClass(pathname: string, href: string, isUpload: boolean) {
+  const active = navItemActive(pathname, href);
+  if (isUpload) {
+    return [
+      APP_MOBILE_BOTTOM_NAV_UPLOAD_BUTTON_CLASS,
+      active ? "ring-2 ring-inset ring-orange-200/90" : "",
+    ].join(" ");
+  }
   return [
-    APP_MOBILE_BOTTOM_NAV_UPLOAD_BUTTON_CLASS,
-    active ? "ring-2 ring-inset ring-orange-200/90" : "",
+    APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_CLASS,
+    active
+      ? APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_ACTIVE_CLASS
+      : APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_INACTIVE_CLASS,
   ].join(" ");
 }
 
-function bottomItemClass(pathname: string, href: string) {
+function tabLabelClass(pathname: string, href: string) {
   const active = navItemActive(pathname, href);
   return [
-    APP_MOBILE_BOTTOM_NAV_ITEM_CLASS,
-    "transition-[color,transform] duration-300 ease-gn-smooth motion-reduce:transition-colors",
-    active
-      ? "border-gn-accent/35 bg-gn-accent/10 text-gn-accent"
-      : "text-gn-text-secondary hover:border-gn-border-subtle hover:bg-gn-surface/40 hover:text-gn-text",
+    APP_MOBILE_BOTTOM_NAV_TAB_LABEL_CLASS,
+    active ? "font-semibold text-gn-accent" : "text-gn-text-secondary",
   ].join(" ");
 }
 
@@ -86,81 +98,55 @@ function NavTab({ item, pathname, quizPending, profileAvatarUrl, userDisplayName
       ? `${tNav(item.labelKey)} — ${tQuiz("navPendingHint")}`
       : tNav(item.labelKey);
   const itemKey = `${item.labelKey}-${item.href}`;
-
-  if (item.href === "/upload") {
-    return (
-      <Link
-        key={itemKey}
-        href={item.href}
-        className={APP_MOBILE_BOTTOM_NAV_UPLOAD_LINK_CLASS}
-        aria-current={active ? "page" : undefined}
-        aria-label={title}
-      >
-        <span className={uploadButtonClass(pathname)}>
-          <span className={APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS} aria-hidden>
-            {BOTTOM_NAV_UPLOAD_EMOJI}
-          </span>
-        </span>
-        <span
-          className="w-full min-w-0 max-w-full truncate px-0.5 text-center text-[9px] font-medium leading-none min-[360px]:text-[10px]"
-          title={title}
-        >
-          {label}
-        </span>
-      </Link>
-    );
-  }
+  const emoji = TAB_EMOJI[item.href] ?? "•";
+  const isUpload = item.href === "/upload";
 
   if (item.href === "/profile" && profileAvatarUrl) {
     return (
       <Link
         key={itemKey}
         href={item.href}
-        className={bottomItemClass(pathname, item.href)}
+        className={APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS}
         aria-current={active ? "page" : undefined}
         aria-label={title}
       >
-        <ProfileAvatar
-          imageUrl={profileAvatarUrl}
-          name={userDisplayName ?? tNav("profile")}
-          sizeClassName="h-8 w-8"
-          className="shrink-0"
-        />
         <span
-          className="w-full min-w-0 max-w-full truncate px-0.5 text-center"
-          title={title}
+          className={[
+            APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_CLASS,
+            "overflow-hidden p-0",
+            active
+              ? APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_ACTIVE_CLASS
+              : APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_INACTIVE_CLASS,
+          ].join(" ")}
         >
+          <ProfileAvatar
+            imageUrl={profileAvatarUrl}
+            name={userDisplayName ?? tNav("profile")}
+            sizeClassName="h-9 w-9"
+            className="!size-9 !min-h-9 !min-w-9 shrink-0"
+          />
+        </span>
+        <span className={tabLabelClass(pathname, item.href)} title={title}>
           {label}
         </span>
       </Link>
     );
   }
 
-  const emoji = tabEmoji(item.href);
-
   return (
     <Link
       key={itemKey}
       href={href}
-      className={bottomItemClass(pathname, item.href)}
+      className={APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS}
       aria-current={active ? "page" : undefined}
       aria-label={title}
     >
-      {emoji ? (
+      <span className={emojiBadgeClass(pathname, item.href, isUpload)}>
         <span className={TAB_EMOJI_CLASS} aria-hidden>
           {emoji}
         </span>
-      ) : (
-        <NavIcon
-          name={item.icon}
-          variant="tabBar"
-          className="size-5 shrink-0 min-[360px]:size-[22px]"
-        />
-      )}
-      <span
-        className="w-full min-w-0 max-w-full truncate px-0.5 text-center"
-        title={title}
-      >
+      </span>
+      <span className={tabLabelClass(pathname, item.href)} title={title}>
         {label}
       </span>
     </Link>

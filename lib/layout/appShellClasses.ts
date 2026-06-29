@@ -104,9 +104,25 @@ export const APP_MOBILE_BOTTOM_NAV_UPLOAD_LINK_CLASS =
 export const APP_MOBILE_BOTTOM_NAV_UPLOAD_BUTTON_CLASS =
   "relative box-border flex h-9 w-9 min-h-9 min-w-9 max-h-9 max-w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-orange-500 p-0 shadow-md ring-1 ring-inset ring-orange-300/60 transition active:scale-[0.96] hover:bg-orange-400";
 
+/** Circular emoji badge — matches upload tab size on all carousel pages. */
+export const APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_CLASS =
+  "relative box-border flex h-9 w-9 min-h-9 min-w-9 max-h-9 max-w-9 shrink-0 items-center justify-center overflow-hidden rounded-full p-0 transition active:scale-[0.96]";
+
+export const APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_INACTIVE_CLASS =
+  "bg-gn-surface/50 ring-1 ring-inset ring-gn-border-subtle/90";
+
+export const APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_ACTIVE_CLASS =
+  "bg-gn-accent/20 ring-2 ring-inset ring-gn-accent/50 shadow-[0_0_12px_rgba(249,115,22,0.2)]";
+
+export const APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS =
+  "pointer-events-auto flex h-10 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 border-0 bg-transparent p-0 shadow-none";
+
+export const APP_MOBILE_BOTTOM_NAV_TAB_LABEL_CLASS =
+  "w-full min-w-0 max-w-full truncate px-0.5 text-center text-[9px] font-medium leading-none min-[360px]:text-[10px]";
+
 /** Colored emoji on standard bottom-nav tabs (native color, not muted by tab text). */
 export const APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS =
-  "pointer-events-none block shrink-0 select-none text-[1.125rem] leading-none opacity-100 grayscale-0";
+  "pointer-events-none block shrink-0 select-none text-[1.125rem] leading-none opacity-100 grayscale-0 [font-family:Apple_Color_Emoji,Segoe_UI_Emoji,Noto_Color_Emoji,sans-serif]";
 
 /** Profile tab — opens account overflow menu (far right). */
 export const APP_MOBILE_BOTTOM_NAV_PROFILE_CELL_CLASS =
