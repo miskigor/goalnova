@@ -1,0 +1,2 @@
+/** Runs before paint — hides bottom nav in Instagram / TikTok / Facebook in-app browsers. */
+export const IN_APP_BROWSER_DETECT_SCRIPT = `(function(){try{var ua=navigator.userAgent||"";if(/Instagram|FBAN|FBAV|FB_IAB|Line\\/|Twitter|BytedanceWebview|TikTok|Snapchat/i.test(ua)){document.documentElement.setAttribute("data-gn-in-app-browser","");document.documentElement.style.setProperty("--gn-app-bottom-nav-offset","0px");}}catch(e){}})();`;
