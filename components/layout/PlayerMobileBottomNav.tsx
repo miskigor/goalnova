@@ -35,11 +35,7 @@ import { challengesNavHref } from "@/lib/quiz/dailyQuizNav";
 import "@/components/layout/playerBottomNavCarousel.css";
 
 const PAGE_COUNT = APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV_PAGES.length;
-const SWIPE_THRESHOLD_PX = 48;
-
-function isInteractiveNavTarget(target: EventTarget | null): boolean {
-  return target instanceof Element && Boolean(target.closest("a, button"));
-}
+const SWIPE_THRESHOLD_PX = 36;
 
 /** Full-color emoji for every player bottom-nav destination. */
 const TAB_EMOJI: Record<ShellMobileNavItem["href"], string> = {
@@ -180,10 +176,54 @@ export function PlayerMobileBottomNav() {
   const [viewPage, setViewPage] = useState(() => playerBottomNavPageIndex(pathname));
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null);
+  const navRef = useRef<HTMLElement | null>(null);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const suppressNextClickRef = useRef(false);
 
   const goToPage = useCallback((index: number) => {
     setViewPage(clampPage(index));
+  }, []);
+
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+
+    const onTouchStart = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+      suppressNextClickRef.current = false;
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      const start = touchStartRef.current;
+      touchStartRef.current = null;
+      const touch = e.changedTouches[0];
+      if (!start || !touch) return;
+
+      const dx = touch.clientX - start.x;
+      const dy = touch.clientY - start.y;
+      if (Math.abs(dx) < SWIPE_THRESHOLD_PX || Math.abs(dx) < Math.abs(dy)) return;
+
+      suppressNextClickRef.current = true;
+      e.preventDefault();
+      setViewPage((prev) => clampPage(prev + (dx < 0 ? 1 : -1)));
+    };
+
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchend", onTouchEnd, { passive: false });
+
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchend", onTouchEnd);
+    };
+  }, []);
+
+  const onNavClickCapture = useCallback((e: React.MouseEvent) => {
+    if (!suppressNextClickRef.current) return;
+    e.preventDefault();
+    e.stopPropagation();
+    suppressNextClickRef.current = false;
   }, []);
 
   useEffect(() => {
@@ -217,52 +257,21 @@ export function PlayerMobileBottomNav() {
     };
   }, [user?.id, user?.email]);
 
-  const onTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    if (isInteractiveNavTarget(e.target)) {
-      touchStartRef.current = null;
-      return;
-    }
-    const touch = e.changedTouches[0] ?? e.touches[0];
-    if (!touch) return;
-    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
-  }, []);
-
-  const onTouchEnd = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    if (isInteractiveNavTarget(e.target)) {
-      touchStartRef.current = null;
-      return;
-    }
-    const start = touchStartRef.current;
-    touchStartRef.current = null;
-    const touch = e.changedTouches[0];
-    if (!start || !touch) return;
-
-    const dx = touch.clientX - start.x;
-    const dy = touch.clientY - start.y;
-    if (Math.abs(dx) < SWIPE_THRESHOLD_PX || Math.abs(dx) < Math.abs(dy)) return;
-
-    if (dx < 0) {
-      goToPage(viewPage + 1);
-    } else {
-      goToPage(viewPage - 1);
-    }
-  }, [goToPage, viewPage]);
-
   const visibleItems = APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV_PAGES[viewPage] ?? APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV_PAGES[0];
 
   return (
     <nav
+      ref={navRef}
       data-app-bottom-nav
       data-player-bottom-nav-carousel
       data-player-bottom-nav-view-page={viewPage}
       className={`${APP_MOBILE_BOTTOM_NAV_CLASS} ${APP_MOBILE_BOTTOM_NAV_PLAYER_CLASS} pointer-events-auto`}
       aria-label={tNav("primary")}
+      onClickCapture={onNavClickCapture}
     >
       <div
         data-player-bottom-nav-track
         className={APP_MOBILE_BOTTOM_NAV_TRACK_CLASS}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
       >
         <div
           data-player-bottom-nav-page

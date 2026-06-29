@@ -12,6 +12,7 @@ html[data-mobile-layout-v3]:has([data-player-bottom-nav-carousel]) {
 [data-player-bottom-nav-carousel][data-app-bottom-nav] {
   display: flex !important;
   flex-direction: column !important;
+  touch-action: pan-y pinch-zoom !important;
   min-height: calc(5.25rem + env(safe-area-inset-bottom, 0px)) !important;
   padding-top: 0.25rem !important;
   padding-bottom: max(0.25rem, env(safe-area-inset-bottom, 0px)) !important;
