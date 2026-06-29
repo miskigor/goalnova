@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { LogoutButton } from "@/components/auth/LogoutButton";
 import { PremiumSettingsSection } from "@/components/settings/PremiumSettingsSection";
 import { AppAccountQuickLinks } from "@/components/layout/AppAccountQuickLinks";
 
@@ -60,6 +61,10 @@ export async function SettingsMainPage() {
           </button>
         </li>
       </ul>
+
+      <div className="border-t border-gn-border-subtle pt-4 max-lg:pt-2">
+        <LogoutButton />
+      </div>
     </div>
   );
 }

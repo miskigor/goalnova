@@ -85,6 +85,16 @@ export const APP_MOBILE_BOTTOM_NAV_CLASS = [
 export const APP_MOBILE_BOTTOM_NAV_INNER_CLASS =
   "pointer-events-auto box-border grid h-10 w-full min-w-0 max-w-full grid-cols-5 items-center justify-items-center gap-0 overflow-x-clip ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
+/** One page inside the player 3-page bottom nav carousel (4 items). */
+export const APP_MOBILE_BOTTOM_NAV_PAGE_CLASS =
+  "pointer-events-auto box-border grid h-10 w-full min-w-full max-w-full shrink-0 basis-full snap-center snap-always grid-cols-4 items-center justify-items-center gap-0 ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+
+export const APP_MOBILE_BOTTOM_NAV_CAROUSEL_TRACK_CLASS =
+  "pointer-events-auto flex w-full min-w-0 max-w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
+
+export const APP_MOBILE_BOTTOM_NAV_PAGER_CLASS =
+  "flex items-center justify-center gap-1.5 pb-0.5 pt-1";
+
 export const APP_MOBILE_BOTTOM_NAV_ITEM_CLASS =
   "flex h-10 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-visible rounded-md border border-transparent px-0 py-0 text-[9px] font-medium leading-none tracking-tight min-[360px]:text-[10px]";
 

@@ -166,6 +166,15 @@ export function NavIcon({
           <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z" />
         </svg>
       );
+    case "support":
+      return (
+        <svg {...common}>
+          <path d="M12 22a8 8 0 0 0 8-8v-5a3 3 0 0 0-3-3h-1.5" />
+          <path d="M9 6V4a3 3 0 0 1 6 0v2" />
+          <path d="M4 9v5a8 8 0 0 0 16 0V9" />
+          <path d="M9 18h6" />
+        </svg>
+      );
     case "scoutDashboard":
       return tabBar ? (
         <svg {...common}>

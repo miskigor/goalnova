@@ -35,6 +35,8 @@ export function navItemActive(pathname: string, href: string): boolean {
     return pathname === "/upload" || pathname.startsWith("/upload/");
   if (href === "/settings")
     return pathname === "/settings" || pathname.startsWith("/settings/");
+  if (href === "/support")
+    return pathname === "/support" || pathname.startsWith("/support/");
   if (href === "/admin")
     return pathname === "/admin" || pathname.startsWith("/admin/");
   if (href === "/login") return pathname === "/login";

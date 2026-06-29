@@ -12,7 +12,8 @@ export type NavIconName =
   | "challenges"
   | "premium"
   | "scoutDashboard"
-  | "benefits";
+  | "benefits"
+  | "support";
 
 export type AppShellNavItem = {
   href:
@@ -105,7 +106,10 @@ export type ShellMobileNavItem = {
     | "/discover"
     | "/rankings"
     | "/messages"
-    | "/admin";
+    | "/admin"
+    | "/settings"
+    | "/benefits"
+    | "/support";
   labelKey:
     | "home"
     | "challenges"
@@ -120,7 +124,10 @@ export type ShellMobileNavItem = {
     | "rankings"
     | "messages"
     | "adminPanel"
-    | "savedPlayers";
+    | "savedPlayers"
+    | "settings"
+    | "myBenefits"
+    | "support";
   icon: NavIconName;
   /** Scout mobile: opens dashboard saved tab (`?tab=saved`) instead of plain href. */
   scoutDashboardSection?: "saved";

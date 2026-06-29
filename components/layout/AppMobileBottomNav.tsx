@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
+import { PlayerMobileBottomNav } from "@/components/layout/PlayerMobileBottomNav";
 import { NavIcon } from "@/components/icons/NavIcons";
 import { NavUserMenu } from "@/components/layout/NavUserMenu";
 import { useNavSession } from "@/components/layout/useNavSession";
@@ -145,11 +146,13 @@ export function AppMobileBottomNav() {
     return APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV;
   }, [adminLoaded, isAdmin, loaded, row?.role, isApprovedScout, pathname]);
 
-  const usePlayerEmojis = items === APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV;
+  const usePlayerCarousel = items === APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV;
+  const usePlayerEmojis = usePlayerCarousel;
   const isScoutBottomNav =
     items === APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV ||
     items === APP_SHELL_SCOUT_MOBILE_BOTTOM_NAV_UNVERIFIED;
-  const useProfileAccountMenu = usePlayerEmojis || isScoutBottomNav;
+  const useProfileAccountMenu =
+    !usePlayerCarousel && isScoutBottomNav;
 
   useEffect(() => {
     if (!useProfileAccountMenu || !user?.id) {
@@ -171,6 +174,10 @@ export function AppMobileBottomNav() {
       cancelled = true;
     };
   }, [useProfileAccountMenu, user?.id]);
+
+  if (usePlayerCarousel) {
+    return <PlayerMobileBottomNav />;
+  }
 
   return (
     <nav
