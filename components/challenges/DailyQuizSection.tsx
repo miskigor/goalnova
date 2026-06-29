@@ -15,6 +15,7 @@ import {
 import { DailyQuizLeaderboardRow } from "@/components/challenges/DailyQuizLeaderboardRow";
 import { DailyQuizWeeklyLeaderboard } from "@/components/challenges/DailyQuizWeeklyLeaderboard";
 import { DailyQuizMonthlyLeaderboard } from "@/components/challenges/DailyQuizMonthlyLeaderboard";
+import { DailyQuizMonthlyWeekBreakdown } from "@/components/challenges/DailyQuizMonthlyWeekBreakdown";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { QUIZ_CORRECT_XP } from "@/lib/quiz/quizConfig";
 import { notifyDailyQuizStatusChanged } from "@/lib/quiz/dailyQuizStatusEvents";
@@ -156,6 +157,7 @@ export function DailyQuizSection() {
         weekly_rank: data.weekly_rank,
         monthly_xp: data.monthly_xp,
         monthly_rank: data.monthly_rank,
+        monthly_weeks: data.monthly_weeks,
       };
     });
     const [weekly, monthly] = await Promise.all([
@@ -408,6 +410,13 @@ export function DailyQuizSection() {
           rows={leaderboard}
           loading={leaderboardLoading}
           currentUserId={userId}
+        />
+      ) : null}
+
+      {authed ? (
+        <DailyQuizMonthlyWeekBreakdown
+          weeks={payload?.monthly_weeks ?? []}
+          monthlyXp={payload?.monthly_xp ?? 0}
         />
       ) : null}
 

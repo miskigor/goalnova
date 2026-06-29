@@ -22,6 +22,13 @@ export type QuizViewerPayload = {
   country: string | null;
 };
 
+export type QuizMonthlyWeekRow = {
+  week_index: number;
+  week_start: string;
+  week_end: string;
+  xp: number;
+};
+
 export type QuizTodayPayload = {
   locale: string;
   quiz_date: string;
@@ -34,6 +41,7 @@ export type QuizTodayPayload = {
   weekly_rank?: number;
   monthly_xp?: number;
   monthly_rank?: number;
+  monthly_weeks?: QuizMonthlyWeekRow[];
   viewer?: QuizViewerPayload;
   error?: string;
 };
@@ -52,6 +60,7 @@ export type QuizSubmitPayload = {
   weekly_rank: number;
   monthly_xp: number;
   monthly_rank: number;
+  monthly_weeks: QuizMonthlyWeekRow[];
   streak_bonus_awarded: boolean;
 };
 
