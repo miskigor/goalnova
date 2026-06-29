@@ -90,14 +90,23 @@ export const APP_MOBILE_BOTTOM_NAV_PAGE_CLASS =
   "pointer-events-auto box-border grid w-full min-w-0 max-w-full grid-cols-4 items-end justify-items-center gap-0 ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
 export const APP_MOBILE_BOTTOM_NAV_PLAYER_CLASS =
-  "min-h-[calc(4.75rem+env(safe-area-inset-bottom,0px))]";
+  "flex min-h-[calc(5.25rem+env(safe-area-inset-bottom,0px))] flex-col";
 
 /** Single visible page — no horizontal scroll (swipe handled in JS). */
 export const APP_MOBILE_BOTTOM_NAV_TRACK_CLASS =
-  "pointer-events-auto box-border w-full min-w-0 max-w-full touch-pan-y";
+  "pointer-events-auto box-border w-full min-w-0 max-w-full flex-1 touch-pan-y";
 
 export const APP_MOBILE_BOTTOM_NAV_PAGER_CLASS =
-  "flex items-center justify-center gap-1.5 pb-0.5 pt-1";
+  "flex shrink-0 items-center justify-center gap-1 pb-0.5 pt-0.5";
+
+export const APP_MOBILE_BOTTOM_NAV_PAGER_DOT_CLASS =
+  "box-border h-1.5 w-1.5 min-h-0 min-w-0 max-h-1.5 max-w-1.5 shrink-0 rounded-full border-0 p-0 transition-all duration-200";
+
+export const APP_MOBILE_BOTTOM_NAV_PAGER_DOT_ACTIVE_CLASS =
+  "w-4 max-w-4 bg-gn-accent";
+
+export const APP_MOBILE_BOTTOM_NAV_PAGER_DOT_INACTIVE_CLASS =
+  "bg-gn-text-tertiary/50";
 
 export const APP_MOBILE_BOTTOM_NAV_ITEM_CLASS =
   "flex h-10 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 overflow-visible rounded-md border border-transparent px-0 py-0 text-[9px] font-medium leading-none tracking-tight min-[360px]:text-[10px]";

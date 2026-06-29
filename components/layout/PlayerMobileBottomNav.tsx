@@ -20,6 +20,9 @@ import {
   APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS,
   APP_MOBILE_BOTTOM_NAV_PAGE_CLASS,
   APP_MOBILE_BOTTOM_NAV_PAGER_CLASS,
+  APP_MOBILE_BOTTOM_NAV_PAGER_DOT_ACTIVE_CLASS,
+  APP_MOBILE_BOTTOM_NAV_PAGER_DOT_CLASS,
+  APP_MOBILE_BOTTOM_NAV_PAGER_DOT_INACTIVE_CLASS,
   APP_MOBILE_BOTTOM_NAV_PLAYER_CLASS,
   APP_MOBILE_BOTTOM_NAV_TAB_LABEL_CLASS,
   APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS,
@@ -33,6 +36,10 @@ import "@/components/layout/playerBottomNavCarousel.css";
 
 const PAGE_COUNT = APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV_PAGES.length;
 const SWIPE_THRESHOLD_PX = 48;
+
+function isInteractiveNavTarget(target: EventTarget | null): boolean {
+  return target instanceof Element && Boolean(target.closest("a, button"));
+}
 
 /** Full-color emoji for every player bottom-nav destination. */
 const TAB_EMOJI: Record<ShellMobileNavItem["href"], string> = {
@@ -211,12 +218,20 @@ export function PlayerMobileBottomNav() {
   }, [user?.id, user?.email]);
 
   const onTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (isInteractiveNavTarget(e.target)) {
+      touchStartRef.current = null;
+      return;
+    }
     const touch = e.changedTouches[0] ?? e.touches[0];
     if (!touch) return;
     touchStartRef.current = { x: touch.clientX, y: touch.clientY };
   }, []);
 
   const onTouchEnd = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (isInteractiveNavTarget(e.target)) {
+      touchStartRef.current = null;
+      return;
+    }
     const start = touchStartRef.current;
     touchStartRef.current = null;
     const touch = e.changedTouches[0];
@@ -282,8 +297,10 @@ export function PlayerMobileBottomNav() {
             aria-label={`${index + 1}`}
             onClick={() => goToPage(index)}
             className={[
-              "rounded-full transition-all duration-200",
-              viewPage === index ? "bg-gn-accent" : "bg-gn-text-tertiary/50",
+              APP_MOBILE_BOTTOM_NAV_PAGER_DOT_CLASS,
+              viewPage === index
+                ? APP_MOBILE_BOTTOM_NAV_PAGER_DOT_ACTIVE_CLASS
+                : APP_MOBILE_BOTTOM_NAV_PAGER_DOT_INACTIVE_CLASS,
             ].join(" ")}
           />
         ))}
