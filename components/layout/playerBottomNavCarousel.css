@@ -1,0 +1,120 @@
+/**
+ * Player 3-page bottom nav — keep full height, labels, and pager dots on every route.
+ * Overrides V2 “compact nav” rules that target [data-app-bottom-nav] > div on non-/home pages.
+ */
+
+html[data-mobile-layout-stable-v2]:has([data-player-bottom-nav-carousel]),
+html[data-mobile-layout-v3]:has([data-player-bottom-nav-carousel]) {
+  --mlv2-bottom-nav-height: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  --gn-app-bottom-nav-offset: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+[data-player-bottom-nav-carousel] {
+  min-height: calc(4.75rem + env(safe-area-inset-bottom, 0px)) !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: max(0.25rem, env(safe-area-inset-bottom, 0px)) !important;
+}
+
+[data-player-bottom-nav-carousel] [data-player-bottom-nav-track] {
+  height: auto !important;
+  min-height: 2.875rem !important;
+  max-height: none !important;
+  padding-inline: max(0.5rem, env(safe-area-inset-left, 0px)) !important;
+}
+
+[data-player-bottom-nav-carousel] [data-player-bottom-nav-page] {
+  height: auto !important;
+  min-height: 2.875rem !important;
+  max-height: none !important;
+  align-items: end !important;
+}
+
+[data-player-bottom-nav-carousel] [data-player-bottom-nav-tab] {
+  height: auto !important;
+  min-height: 2.875rem !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+[data-player-bottom-nav-carousel] [data-tab-label] {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  min-height: 0.75rem !important;
+  max-height: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  line-height: 1.1 !important;
+  margin-top: 0.125rem !important;
+}
+
+[data-player-bottom-nav-carousel] [data-tab-emoji-badge] {
+  flex-shrink: 0 !important;
+}
+
+[data-player-bottom-nav-carousel] [data-player-bottom-nav-pager] {
+  height: auto !important;
+  min-height: 0.875rem !important;
+  max-height: none !important;
+  padding-inline: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+[data-player-bottom-nav-carousel] [data-player-bottom-nav-pager] button {
+  width: 0.375rem !important;
+  height: 0.375rem !important;
+  min-width: 0.375rem !important;
+  min-height: 0.375rem !important;
+  max-width: 0.375rem !important;
+  max-height: 0.375rem !important;
+  padding: 0 !important;
+  border-radius: 9999px !important;
+  flex-shrink: 0 !important;
+}
+
+[data-player-bottom-nav-carousel] [data-player-bottom-nav-pager] button[data-pager-active="true"] {
+  width: 1rem !important;
+  min-width: 1rem !important;
+  max-width: 1rem !important;
+  background-color: var(--color-gn-accent, #f97316) !important;
+}
+
+html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
+  [data-mlv2-bottom-nav]
+  [data-player-bottom-nav-carousel] {
+  min-height: calc(4.75rem + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
+  [data-mlv2-bottom-nav]
+  [data-player-bottom-nav-carousel]
+  [data-player-bottom-nav-track],
+html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
+  [data-mlv2-bottom-nav]
+  [data-player-bottom-nav-carousel]
+  [data-player-bottom-nav-pager],
+html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
+  [data-mlv2-bottom-nav]
+  [data-player-bottom-nav-carousel]
+  a,
+html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
+  [data-mlv2-bottom-nav]
+  [data-player-bottom-nav-carousel]
+  [data-player-bottom-nav-page] {
+  height: auto !important;
+  min-height: unset !important;
+  max-height: none !important;
+}
+
+html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
+  [data-mlv2-bottom-nav]
+  [data-player-bottom-nav-carousel]
+  [class*="rounded-full"][class*="bg-orange"] {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  min-width: 2.25rem !important;
+  min-height: 2.25rem !important;
+  max-width: 2.25rem !important;
+  max-height: 2.25rem !important;
+}

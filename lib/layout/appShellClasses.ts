@@ -87,7 +87,10 @@ export const APP_MOBILE_BOTTOM_NAV_INNER_CLASS =
 
 /** One page inside the player 3-page bottom nav carousel (4 items). */
 export const APP_MOBILE_BOTTOM_NAV_PAGE_CLASS =
-  "pointer-events-auto box-border grid h-10 w-full min-w-full max-w-full shrink-0 basis-full snap-center snap-always grid-cols-4 items-center justify-items-center gap-0 ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+  "pointer-events-auto box-border grid w-full min-w-full max-w-full shrink-0 basis-full snap-center snap-always grid-cols-4 items-end justify-items-center gap-0 ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+
+export const APP_MOBILE_BOTTOM_NAV_PLAYER_CLASS =
+  "min-h-[calc(4.75rem+env(safe-area-inset-bottom,0px))]";
 
 export const APP_MOBILE_BOTTOM_NAV_CAROUSEL_TRACK_CLASS =
   "pointer-events-auto flex w-full min-w-0 max-w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
@@ -115,10 +118,10 @@ export const APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_ACTIVE_CLASS =
   "bg-gn-accent/20 ring-2 ring-inset ring-gn-accent/50 shadow-[0_0_12px_rgba(249,115,22,0.2)]";
 
 export const APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS =
-  "pointer-events-auto flex h-10 w-full min-w-0 max-w-full flex-col items-center justify-center gap-0.5 border-0 bg-transparent p-0 shadow-none";
+  "pointer-events-auto flex min-h-[2.875rem] w-full min-w-0 max-w-full flex-col items-center justify-end gap-0.5 border-0 bg-transparent p-0 pb-0.5 shadow-none";
 
 export const APP_MOBILE_BOTTOM_NAV_TAB_LABEL_CLASS =
-  "w-full min-w-0 max-w-full truncate px-0.5 text-center text-[9px] font-medium leading-none min-[360px]:text-[10px]";
+  "block w-full min-w-0 max-w-full truncate px-0.5 text-center text-[9px] font-medium leading-tight min-[360px]:text-[10px]";
 
 /** Colored emoji on standard bottom-nav tabs (native color, not muted by tab text). */
 export const APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS =

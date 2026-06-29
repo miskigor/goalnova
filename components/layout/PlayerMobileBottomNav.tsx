@@ -21,6 +21,7 @@ import {
   APP_MOBILE_BOTTOM_NAV_EMOJI_CLASS,
   APP_MOBILE_BOTTOM_NAV_PAGE_CLASS,
   APP_MOBILE_BOTTOM_NAV_PAGER_CLASS,
+  APP_MOBILE_BOTTOM_NAV_PLAYER_CLASS,
   APP_MOBILE_BOTTOM_NAV_TAB_LABEL_CLASS,
   APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS,
   APP_MOBILE_BOTTOM_NAV_UPLOAD_BUTTON_CLASS,
@@ -28,6 +29,7 @@ import {
 import { mobileBottomNavDisplayLabel } from "@/lib/layout/mobileBottomNavLabel";
 import { useDailyQuizStatus } from "@/hooks/useDailyQuizStatus";
 import { challengesNavHref } from "@/lib/quiz/dailyQuizNav";
+import "@/components/layout/playerBottomNavCarousel.css";
 
 /** Full-color emoji for every player bottom-nav destination. */
 const TAB_EMOJI: Record<ShellMobileNavItem["href"], string> = {
@@ -106,11 +108,13 @@ function NavTab({ item, pathname, quizPending, profileAvatarUrl, userDisplayName
       <Link
         key={itemKey}
         href={item.href}
+        data-player-bottom-nav-tab
         className={APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS}
         aria-current={active ? "page" : undefined}
         aria-label={title}
       >
         <span
+          data-tab-emoji-badge
           className={[
             APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_CLASS,
             "overflow-hidden p-0",
@@ -126,7 +130,7 @@ function NavTab({ item, pathname, quizPending, profileAvatarUrl, userDisplayName
             className="!size-9 !min-h-9 !min-w-9 shrink-0"
           />
         </span>
-        <span className={tabLabelClass(pathname, item.href)} title={title}>
+        <span data-tab-label className={tabLabelClass(pathname, item.href)} title={title}>
           {label}
         </span>
       </Link>
@@ -137,16 +141,17 @@ function NavTab({ item, pathname, quizPending, profileAvatarUrl, userDisplayName
     <Link
       key={itemKey}
       href={href}
+      data-player-bottom-nav-tab
       className={APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS}
       aria-current={active ? "page" : undefined}
       aria-label={title}
     >
-      <span className={emojiBadgeClass(pathname, item.href, isUpload)}>
+      <span data-tab-emoji-badge className={emojiBadgeClass(pathname, item.href, isUpload)}>
         <span className={TAB_EMOJI_CLASS} aria-hidden>
           {emoji}
         </span>
       </span>
-      <span className={tabLabelClass(pathname, item.href)} title={title}>
+      <span data-tab-label className={tabLabelClass(pathname, item.href)} title={title}>
         {label}
       </span>
     </Link>
@@ -224,13 +229,18 @@ export function PlayerMobileBottomNav() {
     <nav
       data-app-bottom-nav
       data-player-bottom-nav-carousel
-      className={`${APP_MOBILE_BOTTOM_NAV_CLASS} pointer-events-auto`}
+      className={`${APP_MOBILE_BOTTOM_NAV_CLASS} ${APP_MOBILE_BOTTOM_NAV_PLAYER_CLASS} pointer-events-auto`}
       aria-label={tNav("primary")}
     >
-      <div ref={trackRef} className={APP_MOBILE_BOTTOM_NAV_CAROUSEL_TRACK_CLASS}>
+      <div
+        ref={trackRef}
+        data-player-bottom-nav-track
+        className={APP_MOBILE_BOTTOM_NAV_CAROUSEL_TRACK_CLASS}
+      >
         {APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV_PAGES.map((page, pageIndex) => (
           <div
             key={`bottom-nav-page-${pageIndex}`}
+            data-player-bottom-nav-page
             className={APP_MOBILE_BOTTOM_NAV_PAGE_CLASS}
             aria-label={`${tNav("primary")} ${pageIndex + 1}`}
           >
@@ -247,17 +257,26 @@ export function PlayerMobileBottomNav() {
           </div>
         ))}
       </div>
-      <div className={APP_MOBILE_BOTTOM_NAV_PAGER_CLASS} aria-hidden>
+      <div
+        data-player-bottom-nav-pager
+        className={APP_MOBILE_BOTTOM_NAV_PAGER_CLASS}
+        role="tablist"
+        aria-label={tNav("sections")}
+      >
         {APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV_PAGES.map((_, index) => (
           <button
             key={`pager-${index}`}
             type="button"
-            tabIndex={-1}
+            role="tab"
+            aria-selected={activePage === index}
+            data-pager-active={activePage === index ? "true" : "false"}
             aria-label={`${index + 1}`}
             onClick={() => scrollToPage(index)}
             className={[
-              "h-1.5 rounded-full transition-all duration-200",
-              activePage === index ? "w-4 bg-gn-accent" : "w-1.5 bg-gn-text-tertiary/50",
+              "rounded-full transition-all duration-200",
+              activePage === index
+                ? "bg-gn-accent"
+                : "bg-gn-text-tertiary/50",
             ].join(" ")}
           />
         ))}
