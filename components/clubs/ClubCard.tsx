@@ -4,15 +4,13 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { VerifiedAcademyBadge } from "@/components/clubs/VerifiedAcademyBadge";
 import type { ClubListRow } from "@/lib/supabase/clubs";
-import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
 type Props = {
   club: ClubListRow;
-  onJoin?: (clubId: string) => void;
-  joining?: boolean;
 };
 
-export function ClubCard({ club, onJoin, joining = false }: Props) {
+export function ClubCard({ club }: Props) {
   const t = useTranslations("clubs");
   const isVerified =
     club.verified_partner && club.partnership_status === "active";
@@ -87,23 +85,13 @@ export function ClubCard({ club, onJoin, joining = false }: Props) {
           </div>
         </dl>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-4">
           <Link
             href={`/clubs/${club.slug}`}
-            className={`${GN_SECONDARY_BUTTON_CLASS} min-h-10 flex-1 justify-center text-sm`}
+            className={`${GN_SECONDARY_BUTTON_CLASS} min-h-10 w-full justify-center text-sm`}
           >
             {t("viewClub")}
           </Link>
-          {onJoin ? (
-            <button
-              type="button"
-              disabled={joining}
-              onClick={() => onJoin(club.id)}
-              className={`${GN_PRIMARY_BUTTON_CLASS} min-h-10 flex-1 justify-center text-sm disabled:opacity-50`}
-            >
-              {t("joinClub")}
-            </button>
-          ) : null}
         </div>
       </div>
     </article>

@@ -567,17 +567,31 @@ begin
   end if;
 
   insert into public.club_memberships (club_id, user_id, status, joined_via_code)
-  values (v_club.id, v_uid, 'pending', nullif(v_code, ''))
+  values (
+    v_club.id,
+    v_uid,
+    case when v_code <> '' then 'approved'::public.club_membership_status else 'pending'::public.club_membership_status end,
+    nullif(v_code, '')
+  )
   on conflict (club_id, user_id) do update
-  set status = 'pending', updated_at = now()
+  set
+    status = case when v_code <> '' then 'approved'::public.club_membership_status else excluded.status end,
+    joined_via_code = coalesce(excluded.joined_via_code, club_memberships.joined_via_code),
+    updated_at = now()
   returning id into v_membership_id;
+
+  if v_code <> '' then
+    perform public.goalnova_club_sync_member_premium(v_uid);
+    perform public.goalnova_club_refresh_stats(v_club.id);
+    perform public.goalnova_club_try_activate_partnership(v_club.id);
+  end if;
 
   return jsonb_build_object(
     'ok', true,
     'membership_id', v_membership_id,
     'club_id', v_club.id,
     'club_name', v_club.name,
-    'status', 'pending'
+    'status', case when v_code <> '' then 'approved' else 'pending' end
   );
 end;
 $$;

@@ -3,10 +3,8 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { notifyClubPlayerJoin } from "@/lib/clubs/notifyClubPlayerJoin.client";
 import { notifyPartnershipRequest } from "@/lib/clubs/notifyPartnershipRequest.client";
-import { rpcClubJoin, rpcClubSubmitPartnershipRequest } from "@/lib/supabase/clubs";
-import { supabase } from "@/lib/supabase/client";
+import { rpcClubSubmitPartnershipRequest } from "@/lib/supabase/clubs";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,18 +21,8 @@ export function BecomePartnerView() {
     estimatedPlayers: "",
     message: "",
   });
-  const [clubCode, setClubCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [joining, setJoining] = useState(false);
-  const [joinStatus, setJoinStatus] = useState<string | null>(null);
   const [partnershipStatus, setPartnershipStatus] = useState<string | null>(null);
-
-  function joinErrorMessage(code?: string): string {
-    if (code === "already_member") return t("alreadyMember");
-    if (code === "club_not_found") return t("joinErrorClubNotFound");
-    if (code === "Not authenticated") return t("joinErrorNotSignedIn");
-    return t("joinError");
-  }
 
   async function submitPartnership(e: React.FormEvent) {
     e.preventDefault();
@@ -80,36 +68,6 @@ export function BecomePartnerView() {
     );
   }
 
-  async function joinByCode(e: React.FormEvent) {
-    e.preventDefault();
-    setJoinStatus(null);
-
-    const code = clubCode.trim().toUpperCase();
-    if (!code) {
-      setJoinStatus(t("joinErrorCodeRequired"));
-      return;
-    }
-
-    const { data: sessionData } = await supabase.auth.getSession();
-    if (!sessionData.session?.user) {
-      setJoinStatus(t("joinErrorNotSignedIn"));
-      return;
-    }
-
-    setJoining(true);
-    const result = await rpcClubJoin({ clubCode: code });
-    setJoining(false);
-    if (result.ok && result.clubId) {
-      void notifyClubPlayerJoin({
-        clubId: result.clubId,
-        membershipId: result.membershipId,
-      });
-      setJoinStatus(t("joinPending", { club: result.clubName ?? code }));
-      return;
-    }
-    setJoinStatus(joinErrorMessage(result.error));
-  }
-
   return (
     <div className="mx-auto min-w-0 max-w-2xl space-y-10 px-4 py-8 sm:px-6">
       <header className="space-y-2">
@@ -119,28 +77,6 @@ export function BecomePartnerView() {
         <h1 className="text-2xl font-bold text-gn-text">{t("becomePartnerTitle")}</h1>
         <p className="text-sm text-gn-text-secondary">{t("becomePartnerSubtitle")}</p>
       </header>
-
-      <section className="rounded-2xl border border-gn-border-subtle bg-gn-surface/40 p-5">
-        <h2 className="text-base font-semibold text-gn-text">{t("joinWithCodeTitle")}</h2>
-        <p className="mt-1 text-sm text-gn-text-secondary">{t("joinWithCodeHint")}</p>
-        <form noValidate onSubmit={(e) => void joinByCode(e)} className="mt-4 flex flex-col gap-3 sm:flex-row">
-          <input
-            value={clubCode}
-            onChange={(e) => setClubCode(e.target.value.toUpperCase())}
-            placeholder="DINAMO2026"
-            aria-label={t("joinWithCodeTitle")}
-            className="min-h-11 flex-1 rounded-xl border border-gn-border-subtle bg-black/40 px-4 font-mono text-sm uppercase tracking-wider text-gn-text outline-none focus:border-gn-accent/50"
-          />
-          <button type="submit" disabled={joining} className={`${GN_PRIMARY_BUTTON_CLASS} min-h-11`}>
-            {t("joinClub")}
-          </button>
-        </form>
-        {joinStatus ? (
-          <p role="status" className="mt-3 rounded-xl border border-gn-accent/30 bg-gn-accent/10 px-4 py-3 text-sm text-gn-text">
-            {joinStatus}
-          </p>
-        ) : null}
-      </section>
 
       <form
         noValidate

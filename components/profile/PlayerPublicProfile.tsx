@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, useCallback, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ChallengeFriendButton } from "@/components/friendChallenge/ChallengeFriendButton";
+import { ProfilePartnerClubSection } from "@/components/profile/ProfilePartnerClubSection";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import {
   deleteOwnVideoById,
@@ -143,6 +144,14 @@ export function PlayerPublicProfile({
   );
   const [gamification, setGamification] = useState<PlayerProfileGamification | null>(null);
   const [clubBadge, setClubBadge] = useState<PlayerClubBadge | null>(null);
+
+  const refreshClubBadge = useCallback(() => {
+    const userId = profile?.id?.trim();
+    if (!userId) return;
+    void rpcPlayerClubBadge(userId).then(({ badge }) => {
+      setClubBadge(badge);
+    });
+  }, [profile?.id]);
 
   useEffect(() => {
     if (!publicProfile) return;
@@ -450,9 +459,15 @@ export function PlayerPublicProfile({
             {profile.founding_player === true ||
             isPlayerPremium(profile) ||
             gamification?.freestyle_badge ||
+            clubBadge?.has_club ||
             clubBadge?.verified_academy ? (
               <div className="mt-1 flex min-w-0 max-w-full flex-wrap items-center gap-1 max-lg:mt-0.5">
                 {profile.founding_player === true ? <FoundingPlayerBadge /> : null}
+                {clubBadge?.has_club && clubBadge.club_name ? (
+                  <span className="inline-flex max-w-full items-center rounded-full border border-gn-border-subtle bg-gn-surface/50 px-2 py-0.5 text-[10px] font-semibold text-gn-text-secondary">
+                    🏟 {clubBadge.club_name}
+                  </span>
+                ) : null}
                 {clubBadge?.verified_academy ? <VerifiedAcademyBadge compact /> : null}
                 {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
                 {gamification?.freestyle_badge ? (
@@ -475,6 +490,9 @@ export function PlayerPublicProfile({
             </Link>
             <div className="mt-2">
               <ChallengeFriendButton fullWidth />
+            </div>
+            <div className="mt-2">
+              <ProfilePartnerClubSection clubBadge={clubBadge} onMembershipChange={refreshClubBadge} />
             </div>
           </div>
         ) : null}

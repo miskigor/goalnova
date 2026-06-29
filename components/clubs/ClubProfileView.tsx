@@ -4,15 +4,13 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { VerifiedAcademyBadge } from "@/components/clubs/VerifiedAcademyBadge";
-import { notifyClubPlayerJoin } from "@/lib/clubs/notifyClubPlayerJoin.client";
 import {
   rpcClubGetPublic,
-  rpcClubJoin,
   type ClubPublicDetail,
   type ClubRecentVideo,
   type ClubTopPlayer,
 } from "@/lib/supabase/clubs";
-import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { supabase } from "@/lib/supabase/client";
 
 type Props = {
@@ -26,8 +24,6 @@ export function ClubProfileView({ slug }: Props) {
   const [recentVideos, setRecentVideos] = useState<ClubRecentVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [joining, setJoining] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
@@ -57,30 +53,6 @@ export function ClubProfileView({ slug }: Props) {
     });
   }, []);
 
-  async function handleJoin() {
-    if (!club) return;
-    if (!authed) {
-      setMessage(t("signInToJoin"));
-      return;
-    }
-    setJoining(true);
-    const result = await rpcClubJoin({ clubId: club.id });
-    setJoining(false);
-    if (result.ok) {
-      void notifyClubPlayerJoin({
-        clubId: club.id,
-        membershipId: result.membershipId,
-      });
-      setMessage(t("joinPending", { club: club.name }));
-    } else if (result.error === "already_member") {
-      setMessage(t("alreadyMember"));
-    } else if (result.error === "club_not_found") {
-      setMessage(t("joinErrorClubNotFound"));
-    } else {
-      setMessage(t("joinError"));
-    }
-  }
-
   if (loading) {
     return <p className="px-4 py-10 text-center text-sm text-gn-text-secondary">{t("loading")}</p>;
   }
@@ -89,7 +61,7 @@ export function ClubProfileView({ slug }: Props) {
     return (
       <div className="mx-auto max-w-lg px-4 py-16 text-center">
         <p className="text-lg font-semibold text-gn-text">{t("clubNotFound")}</p>
-        <Link href="/clubs" className={`${GN_PRIMARY_BUTTON_CLASS} mt-4 inline-flex`}>
+        <Link href="/clubs" className={`${GN_SECONDARY_BUTTON_CLASS} mt-4 inline-flex`}>
           {t("backToClubs")}
         </Link>
       </div>
@@ -132,26 +104,18 @@ export function ClubProfileView({ slug }: Props) {
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-2 pb-1">
-            <button
-              type="button"
-              disabled={joining}
-              onClick={() => void handleJoin()}
-              className={`${GN_PRIMARY_BUTTON_CLASS} min-h-11`}
-            >
-              {t("joinClub")}
-            </button>
-            <Link href={`/clubs/dashboard?club=${club.id}`} className={`${GN_SECONDARY_BUTTON_CLASS} min-h-11 inline-flex items-center`}>
-              {t("clubDashboard")}
-            </Link>
-          </div>
+          {authed ? (
+            <div className="flex flex-wrap gap-2 pb-1">
+              <Link href={`/clubs/dashboard?club=${club.id}`} className={`${GN_SECONDARY_BUTTON_CLASS} min-h-11 inline-flex items-center`}>
+                {t("clubDashboard")}
+              </Link>
+            </div>
+          ) : null}
         </div>
 
-        {message ? (
-          <p role="status" className="mt-4 rounded-xl border border-gn-accent/30 bg-gn-accent/10 px-4 py-3 text-sm">
-            {message}
-          </p>
-        ) : null}
+        <p className="mt-4 rounded-xl border border-gn-border-subtle bg-gn-surface/30 px-4 py-3 text-sm text-gn-text-secondary">
+          {t("profilePartnerClubsHint")}
+        </p>
 
         {club.showcase_public && isVerified ? (
           <section className="mt-6 rounded-2xl border border-gn-accent/35 bg-gradient-to-br from-gn-accent/10 to-transparent p-5">
