@@ -42,6 +42,7 @@ export default async function LoginPage({ params }: Props) {
     rateLimited: tLogin("rateLimited"),
     networkError: tLogin("networkError"),
     loginTimedOut: tLogin("loginTimedOut"),
+    inAppBrowserHint: tLogin("inAppBrowserHint"),
     alreadySignedInTitle: tLogin("alreadySignedInTitle"),
     alreadySignedInHint: tLogin("alreadySignedInHint"),
     continueToHome: tLogin("continueToHome"),

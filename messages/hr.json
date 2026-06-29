@@ -1138,6 +1138,7 @@
     "rateLimited": "Previše pokušaja prijave. Pričekaj minutu pa pokušaj ponovno.",
     "networkError": "Ne možemo se spojiti na poslužitelj za prijavu. Provjeri internet, VPN ili vatrozid, pa pokušaj ponovno.",
     "loginTimedOut": "Prijava je predugo trajala. Pokušaj ponovno ili provjeri vezu.",
+    "inAppBrowserHint": "Ako si otvorio link iz Instagrama, pritisni ⋯ i odaberi „Otvori u pregledniku” (Safari ili Chrome), pa se ponovno prijavi.",
     "alreadySignedInTitle": "Već si prijavljen",
     "alreadySignedInHint": "Za prijavu e-poštom i lozinkom ili drugim računom prvo se odjavi.",
     "continueToHome": "Nastavi na početnu",

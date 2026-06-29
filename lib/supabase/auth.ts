@@ -5,6 +5,7 @@ import {
 } from "@/lib/auth/staleSessionRecovery";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import { supabase, assertSupabaseConfigured, type Database } from "./client";
+import type { Session, User } from "@supabase/supabase-js";
 import {
   classifySupabaseSignupError,
   SignupAuthError,
@@ -381,6 +382,106 @@ export async function signUpWithEmailPassword({
   };
 }
 
+type SignInSessionPayload = {
+  session: Session | null;
+  user: User | null;
+};
+
+async function finalizeEmailPasswordSignIn(data: SignInSessionPayload) {
+  const signedInUser = data.user ?? data.session?.user ?? null;
+  if (!isEmailConfirmed(signedInUser)) {
+    await supabase.auth.signOut({ scope: "local" });
+    const notConfirmed = Object.assign(new Error("Email not confirmed"), {
+      code: "email_not_confirmed",
+    });
+    throw notConfirmed;
+  }
+
+  seedGateSessionSnapshot(data.session ?? null);
+
+  void withTimeout(ensureUserRow({}), 20000, "Post-login user row sync")
+    .then((ensureResult) => {
+      if (!ensureResult.success) {
+        console.error("Supabase: ensureUserRow after signIn failed", ensureResult.error);
+      }
+    })
+    .catch((err) => {
+      console.error("Supabase: ensureUserRow after signIn error", err);
+    });
+
+  setFreshLogin();
+
+  return data;
+}
+
+async function signInViaSameOriginApi({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}): Promise<SignInSessionPayload> {
+  const res = await fetch("/api/auth/sign-in", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+    credentials: "same-origin",
+  });
+
+  let payload: {
+    session?: SignInSessionPayload["session"];
+    user?: SignInSessionPayload["user"];
+    error?: { message?: string; code?: string | null; status?: number | null };
+  } = {};
+
+  try {
+    payload = (await res.json()) as typeof payload;
+  } catch {
+    payload = {};
+  }
+
+  if (!res.ok) {
+    const apiErr = payload.error;
+    const message =
+      typeof apiErr?.message === "string" && apiErr.message.trim().length > 0
+        ? apiErr.message.trim()
+        : `Sign in failed (${res.status})`;
+    throw Object.assign(new Error(message), {
+      code: typeof apiErr?.code === "string" ? apiErr.code : undefined,
+      status:
+        typeof apiErr?.status === "number"
+          ? apiErr.status
+          : res.status >= 400
+            ? res.status
+            : undefined,
+    });
+  }
+
+  const session = payload.session;
+  if (!session?.access_token || !session.refresh_token) {
+    throw new Error("Sign-in succeeded but session tokens are missing.");
+  }
+
+  const { data, error } = await withTimeout(
+    supabase.auth.setSession({
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+    }),
+    15000,
+    "Set session after sign in",
+  );
+
+  if (error) {
+    logSupabaseError("Supabase: setSession after signIn error", error);
+    throw error;
+  }
+
+  return finalizeEmailPasswordSignIn({
+    session: data.session ?? session,
+    user: data.user ?? payload.user ?? session.user ?? null,
+  });
+}
+
 export async function signInWithEmailPassword({
   email,
   password,
@@ -389,6 +490,10 @@ export async function signInWithEmailPassword({
   password: string;
 }) {
   assertSupabaseConfigured();
+
+  if (typeof window !== "undefined") {
+    return signInViaSameOriginApi({ email, password });
+  }
 
   const { data, error } = await withTimeout(
     supabase.auth.signInWithPassword({
@@ -405,39 +510,16 @@ export async function signInWithEmailPassword({
       info.code === "invalid_credentials" ||
       /invalid login credentials|invalid email or password/i.test(info.message);
 
-    // Wrong email/password is a normal auth outcome; avoid noisy console errors.
     if (!isExpectedInvalidCredentials) {
       logSupabaseError("Supabase: signIn error", error);
     }
     throw error;
   }
 
-  const signedInUser = data.user ?? data.session?.user ?? null;
-  if (!isEmailConfirmed(signedInUser)) {
-    await supabase.auth.signOut({ scope: "local" });
-    const notConfirmed = Object.assign(new Error("Email not confirmed"), {
-      code: "email_not_confirmed",
-    });
-    throw notConfirmed;
-  }
-
-  // Warm gate cache before navigation so EmailConfirmation/Role gates skip getSession().
-  seedGateSessionSnapshot(data.session ?? null);
-
-  // Do not block navigation on profile sync (multiple DB round-trips + getUser); runs in background.
-  void withTimeout(ensureUserRow({}), 20000, "Post-login user row sync")
-    .then((ensureResult) => {
-      if (!ensureResult.success) {
-        console.error("Supabase: ensureUserRow after signIn failed", ensureResult.error);
-      }
-    })
-    .catch((err) => {
-      console.error("Supabase: ensureUserRow after signIn error", err);
-    });
-
-  setFreshLogin();
-
-  return data;
+  return finalizeEmailPasswordSignIn({
+    session: data.session ?? null,
+    user: data.user ?? data.session?.user ?? null,
+  });
 }
 
 export type ResendConfirmationResult =

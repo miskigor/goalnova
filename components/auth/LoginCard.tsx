@@ -10,6 +10,7 @@ import {
 } from "@/lib/auth/consumeAuthRedirectFromUrl";
 import { readGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
 import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
+import { isLikelyInAppBrowser } from "@/lib/auth/inAppBrowser";
 import { setFreshLogin } from "@/lib/auth/freshLogin";
 import { signInWithEmailPassword } from "@/lib/supabase/auth";
 import {
@@ -42,6 +43,7 @@ export type LoginFormLabels = {
   rateLimited: string;
   networkError: string;
   loginTimedOut: string;
+  inAppBrowserHint: string;
   alreadySignedInTitle: string;
   alreadySignedInHint: string;
   continueToHome: string;
@@ -195,9 +197,13 @@ function detailForLoginFailure(
 ): string | null {
   if (kind === "invalid_credentials") return null;
   const primary = sanitizeDetail(raw, code);
-  if (primary) return primary;
+  if (primary && primary !== "{}") return primary;
   if (kind === "unknown" || kind === "network" || kind === "timeout") {
-    return safeSerializeError(err);
+    const serialized = safeSerializeError(err);
+    if (!serialized || serialized === "{}" || serialized === "Unknown error (empty server response).") {
+      return null;
+    }
+    return serialized;
   }
   return null;
 }
@@ -213,6 +219,7 @@ export function LoginCard({ labels }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<FieldError>(null);
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
+  const [showInAppHint, setShowInAppHint] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   /** Prevents useLayoutEffect from sending fresh sign-ins to /home before /role + referral. */
   const signInFlowRef = useRef(false);
@@ -252,6 +259,7 @@ export function LoginCard({ labels }: Props) {
   async function onSubmit() {
     setError(null);
     setErrorDetail(null);
+    setShowInAppHint(false);
 
     const trimmedEmail = email.trim();
     if (!trimmedEmail.includes("@")) {
@@ -297,6 +305,9 @@ export function LoginCard({ labels }: Props) {
 
       setError(msg);
       setErrorDetail(detailForLoginFailure(err, kind, raw, code));
+      setShowInAppHint(
+        (kind === "network" || kind === "timeout") && isLikelyInAppBrowser(),
+      );
       setRedirecting(false);
     } finally {
       setLoading(false);
@@ -371,6 +382,9 @@ export function LoginCard({ labels }: Props) {
             className="min-w-0 max-w-full space-y-2 overflow-x-clip rounded-xl border border-red-500/35 bg-red-950/20 px-3.5 py-2 text-sm text-red-100/90"
           >
             <p className="break-words">{error}</p>
+            {showInAppHint ? (
+              <p className="break-words text-red-100/85">{labels.inAppBrowserHint}</p>
+            ) : null}
             {errorDetail ? (
               <pre className="max-w-full overflow-x-auto whitespace-pre-wrap break-words font-mono text-[11px] leading-snug text-red-100/75">
                 {errorDetail}
