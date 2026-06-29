@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
+import { useExploreTileMobileLike } from "@/lib/video/exploreTileMobile";
 import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
 import {
   exploreTilePrimaryImageUrl,
@@ -50,6 +51,7 @@ export function ChallengeCompactVideoThumb({
   ariaLabel,
   className = "",
 }: Props) {
+  const isMobileLike = useExploreTileMobileLike();
   const { containerRef, loadMedia } = useMediaNearViewport({
     rootMargin: "200px 0px 200px 0px",
   });
@@ -61,7 +63,8 @@ export function ChallengeCompactVideoThumb({
   const stillSrc = rasterImage || poster || null;
 
   const [videoFailed, setVideoFailed] = useState(false);
-  const showVideo = Boolean(src && loadMedia && !videoFailed);
+  const preferStillOnMobile = isMobileLike && Boolean(stillSrc);
+  const showVideo = Boolean(src && loadMedia && !videoFailed && !preferStillOnMobile);
 
   useIosInlineVideoFirstFrameBump(videoRef, showVideo, showVideo ? src : "");
 

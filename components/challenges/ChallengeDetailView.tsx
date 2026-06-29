@@ -25,10 +25,13 @@ import type { ExploreFeedItem, ExploreSort } from "@/lib/supabase/exploreFeed";
 import { ChallengesPageScrollLock } from "@/components/challenges/ChallengesPageScrollLock";
 import { videoPlaybackUrl } from "@/lib/video/videoPlaybackUrl";
 import {
+  exploreTilePrimaryImageUrl,
   exploreTileVideoPosterAttribute,
   exploreTileVideoSrcCandidates,
 } from "@/lib/video/exploreTileMedia";
+import { useExploreTileMobileLike } from "@/lib/video/exploreTileMobile";
 import { useIosInlineVideoFirstFrameBump } from "@/lib/video/useIosInlineVideoFirstFrameBump";
+import { useMediaNearViewport } from "@/lib/video/useMediaNearViewport";
 import { gnVideoMediaDataProps } from "@/lib/video/videoMediaDisplayClasses";
 
 type Props = { slug: string };
@@ -55,6 +58,10 @@ function toScoringRows(value: unknown): Array<{ key: string; value: number }> {
 
 function ChallengeTikTokCard({ item }: { item: ExploreFeedItem }) {
   const t = useTranslations("explore");
+  const isMobileLike = useExploreTileMobileLike();
+  const { containerRef, loadMedia } = useMediaNearViewport({
+    rootMargin: "240px 0px 240px 0px",
+  });
   const { video, profile } = item;
   const username =
     profile?.username?.trim() || profile?.full_name?.trim() || t("unknownPlayer");
@@ -64,13 +71,17 @@ function ChallengeTikTokCard({ item }: { item: ExploreFeedItem }) {
   const candidates = exploreTileVideoSrcCandidates(video);
   const src = candidates[0] ?? videoPlaybackUrl(video) ?? "";
   const poster = exploreTileVideoPosterAttribute(video, item.userAvatarUrl);
-  useIosInlineVideoFirstFrameBump(videoRef, Boolean(src), src);
+  const stillSrc = exploreTilePrimaryImageUrl(video) || poster || null;
+  const preferStillOnMobile = isMobileLike && Boolean(stillSrc);
+  const showVideo = Boolean(src && loadMedia && !preferStillOnMobile);
+  useIosInlineVideoFirstFrameBump(videoRef, showVideo, showVideo ? src : "");
   return (
     <div
+      ref={containerRef}
       {...gnVideoMediaDataProps}
       className="relative h-full w-full overflow-hidden rounded-2xl border border-gn-border-subtle bg-black"
     >
-      {src ? (
+      {showVideo ? (
         <video
           ref={videoRef}
           src={src}
@@ -79,6 +90,13 @@ function ChallengeTikTokCard({ item }: { item: ExploreFeedItem }) {
           playsInline
           controls
           preload="metadata"
+        />
+      ) : stillSrc ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={stillSrc}
+          alt=""
+          className="absolute inset-0 size-full object-cover object-center"
         />
       ) : (
         <div className="flex h-full items-center justify-center p-6 text-sm text-gn-text-secondary">

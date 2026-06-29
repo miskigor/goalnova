@@ -11,8 +11,11 @@ const PRIMARY_LINKS = [
   { href: "/challenges", labelKey: "challenges", emoji: "🏆" },
 ] as const;
 
-function isClubsRoute(pathname: string): boolean {
-  return pathname === "/clubs" || pathname.startsWith("/clubs/");
+function shouldHidePrimaryTopNav(pathname: string): boolean {
+  if (pathname === "/clubs" || pathname.startsWith("/clubs/")) return true;
+  if (pathname === "/explore") return true;
+  if (pathname === "/challenges" || pathname.startsWith("/challenges/")) return true;
+  return false;
 }
 
 /** Primary horizontal tabs — visible on mobile/tablet where sidebar is hidden. */
@@ -20,7 +23,7 @@ export function AppPrimaryTopNavStrip() {
   const pathname = usePathname() ?? "";
   const t = useTranslations("nav");
 
-  if (isClubsRoute(pathname)) {
+  if (shouldHidePrimaryTopNav(pathname)) {
     return null;
   }
 

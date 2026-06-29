@@ -3,7 +3,6 @@
 import {
   useCallback,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
   type ReactNode,
@@ -38,6 +37,7 @@ import {
   gnVideoMediaDataProps,
 } from "@/lib/video/videoMediaDisplayClasses";
 import { devWarn } from "@/lib/devLog";
+import { useExploreTileMobileLike } from "@/lib/video/exploreTileMobile";
 import { PlayerProfileFiltersModal } from "@/components/search/PlayerProfileFiltersModal";
 import { PlayerDiscoverCard } from "@/components/discover/PlayerDiscoverCard";
 import type { PlayerProfileRow } from "@/lib/supabase/discoverPlayers";
@@ -50,30 +50,6 @@ import {
 } from "@/lib/playerProfileSearchFilters";
 
 const SEARCH_DEBOUNCE_MS = 360;
-
-function exploreTileMobileLikeSnapshot(): boolean {
-  if (typeof navigator === "undefined") return false;
-  const ua = navigator.userAgent;
-  const iOS =
-    /iP(hone|ad|od)/i.test(ua) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  const coarse =
-    typeof window !== "undefined" &&
-    Boolean(window.matchMedia?.("(pointer: coarse)")?.matches);
-  return iOS || coarse;
-}
-
-/**
- * iOS / coarse-pointer: used so Explore never promotes `<video>` over raster thumbnails
- * (inline video often paints black on iPhone until full decode / play).
- */
-function useExploreTileMobileLike(): boolean {
-  const [isMobileLike, setIsMobileLike] = useState(exploreTileMobileLikeSnapshot);
-  useLayoutEffect(() => {
-    setIsMobileLike(exploreTileMobileLikeSnapshot());
-  }, []);
-  return isMobileLike;
-}
 
 /**
  * Explore grid tile media — field-aware `<img>` vs `<video>`,
@@ -119,8 +95,13 @@ function ExploreTileMedia({
 
   const activeVideoSrc = videoCandidates[videoIdx] ?? "";
   const hasVideoCandidates = videoCandidates.length > 0;
+  const stillFrameSrc = primaryImage || videoPosterUrl || null;
+  const preferStillOnMobile = isMobileLike && Boolean(stillFrameSrc);
   const showVideo =
-    hasVideoCandidates && !videoExhausted && Boolean(activeVideoSrc);
+    !preferStillOnMobile &&
+    hasVideoCandidates &&
+    !videoExhausted &&
+    Boolean(activeVideoSrc);
   const displayImageSrc = !showVideo && !imageBroken
     ? primaryImage || videoPosterUrl || null
     : null;

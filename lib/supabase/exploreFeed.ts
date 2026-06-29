@@ -48,8 +48,8 @@ export type ExploreFeedItem = {
 export type ExploreSort = "newest" | "most_liked" | "leaderboard";
 
 const OUT_LIMIT = 48;
-const POOL_NEWEST = 72;
-const POOL_MOST_LIKED = 160;
+const POOL_NEWEST = 48;
+const POOL_MOST_LIKED = 120;
 const PROFILE_MATCH_LIMIT = 100;
 
 /** Match home feed + RLS — any non-empty playback column qualifies. */
@@ -321,16 +321,17 @@ export async function fetchExploreFeed(params: {
   const videoIds = videos.map((v) => v.id).filter((id): id is string => Boolean(id));
 
   let aiByVideoId = new Map<string, number>();
+  let likesByVideoId = new Map<string, number>();
 
   if (
     (params.sort === "most_liked" || params.sort === "leaderboard") &&
     videoIds.length > 0
   ) {
-    const sortLikes = await fetchLikeCountsByVideoId(videoIds);
+    likesByVideoId = await fetchLikeCountsByVideoId(videoIds);
     if (params.sort === "most_liked") {
       videos = [...videos].sort((a, b) => {
-        const ca = a.id ? (sortLikes.get(a.id) ?? 0) : 0;
-        const cb = b.id ? (sortLikes.get(b.id) ?? 0) : 0;
+        const ca = a.id ? (likesByVideoId.get(a.id) ?? 0) : 0;
+        const cb = b.id ? (likesByVideoId.get(b.id) ?? 0) : 0;
         if (cb !== ca) return cb - ca;
         const ta = new Date(a.created_at ?? 0).getTime();
         const tb = new Date(b.created_at ?? 0).getTime();
@@ -340,7 +341,7 @@ export async function fetchExploreFeed(params: {
       aiByVideoId = await fetchAiOverallScoresByVideoId(videoIds);
       let maxLikes = 0;
       for (const vid of videoIds) {
-        const n = sortLikes.get(vid) ?? 0;
+        const n = likesByVideoId.get(vid) ?? 0;
         if (n > maxLikes) maxLikes = n;
       }
       const compById = new Map<string, number>();
@@ -348,7 +349,7 @@ export async function fetchExploreFeed(params: {
         const vid = v.id;
         if (!vid) continue;
         const ai = aiByVideoId.get(vid);
-        const likes = sortLikes.get(vid) ?? 0;
+        const likes = likesByVideoId.get(vid) ?? 0;
         compById.set(vid, computeCompetitionScore(ai ?? null, likes, maxLikes));
       }
       videos = [...videos].sort((a, b) => {
@@ -362,8 +363,8 @@ export async function fetchExploreFeed(params: {
         if (hasA && !hasB) return -1;
         if (!hasA && hasB) return 1;
         if (hasA && hasB && sb !== sa) return (sb as number) - (sa as number);
-        const la = a.id ? (sortLikes.get(a.id) ?? 0) : 0;
-        const lb = b.id ? (sortLikes.get(b.id) ?? 0) : 0;
+        const la = a.id ? (likesByVideoId.get(a.id) ?? 0) : 0;
+        const lb = b.id ? (likesByVideoId.get(b.id) ?? 0) : 0;
         if (lb !== la) return lb - la;
         return (
           new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime()
@@ -378,7 +379,13 @@ export async function fetchExploreFeed(params: {
     .map((v) => v.id)
     .filter((id): id is string => Boolean(id));
   const displayLikes =
-    displayIds.length > 0 ? await fetchLikeCountsByVideoId(displayIds) : new Map<string, number>();
+    likesByVideoId.size > 0
+      ? new Map(
+          displayIds.map((id) => [id, likesByVideoId.get(id) ?? 0] as const),
+        )
+      : displayIds.length > 0
+        ? await fetchLikeCountsByVideoId(displayIds)
+        : new Map<string, number>();
 
   const challengeIds = [
     ...new Set(
