@@ -1,4 +1,134 @@
--- Monthly quiz: per-week XP breakdown within calendar month (Europe/Zagreb).
+-- =============================================================================
+-- PASTE u Supabase SQL Editor (cijeli file odjednom).
+-- Uključuje mjesečni kviz + breakdown po tjednima (sve u jednom).
+-- Sigurno za ponovni run: CREATE OR REPLACE.
+-- =============================================================================
+
+-- --- Part 1: Monthly bounds, XP, rank, leaderboard -------------------------
+
+create or replace function public.goalnova_quiz_zagreb_month_bounds(p_date date)
+returns table (month_start date, month_end date)
+language sql
+stable
+as $$
+  select
+    date_trunc('month', p_date)::date as month_start,
+    (date_trunc('month', p_date) + interval '1 month' - interval '1 day')::date as month_end;
+$$;
+
+create or replace function public.goalnova_quiz_monthly_xp(p_user_id uuid, p_date date)
+returns integer
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  with bounds as (
+    select month_start, month_end
+    from public.goalnova_quiz_zagreb_month_bounds(p_date)
+  )
+  select coalesce(sum(a.xp_awarded), 0)::int
+  from public.quiz_user_answers a
+  cross join bounds b
+  where a.user_id = p_user_id
+    and a.quiz_date between b.month_start and b.month_end;
+$$;
+
+create or replace function public.goalnova_quiz_monthly_rank(p_user_id uuid, p_date date)
+returns integer
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  with bounds as (
+    select month_start, month_end
+    from public.goalnova_quiz_zagreb_month_bounds(p_date)
+  ),
+  monthly as (
+    select
+      a.user_id,
+      sum(a.xp_awarded)::bigint as monthly_xp
+    from public.quiz_user_answers a
+    cross join bounds b
+    where a.quiz_date between b.month_start and b.month_end
+    group by a.user_id
+  ),
+  my_monthly as (
+    select coalesce(m.monthly_xp, 0) as monthly_xp
+    from (select p_user_id as user_id) u
+    left join monthly m on m.user_id = u.user_id
+  ),
+  participant_count as (
+    select count(*)::int as cnt from monthly
+  ),
+  ranked as (
+    select
+      user_id,
+      rank() over (order by monthly_xp desc, user_id asc) as rnk
+    from monthly
+    where monthly_xp > 0
+  )
+  select case
+    when (select monthly_xp from my_monthly) > 0 then
+      coalesce((select rnk::int from ranked where user_id = p_user_id), 0)
+    when (select monthly_xp from my_monthly) = 0
+      and (select cnt from participant_count) = 1
+      and exists (select 1 from monthly where user_id = p_user_id) then
+      1
+    else 0
+  end;
+$$;
+
+create or replace function public.goalnova_quiz_monthly_leaderboard(
+  p_locale text default 'en',
+  p_limit int default 10
+)
+returns table (
+  rank bigint,
+  user_id uuid,
+  display_name text,
+  username text,
+  country text,
+  monthly_xp bigint
+)
+language sql
+volatile
+security definer
+set search_path = public
+as $$
+  with bounds as (
+    select month_start, month_end
+    from public.goalnova_quiz_zagreb_month_bounds(public.goalnova_quiz_zagreb_today())
+  ),
+  monthly as (
+    select
+      a.user_id,
+      sum(a.xp_awarded)::bigint as monthly_xp
+    from public.quiz_user_answers a
+    cross join bounds b
+    where a.quiz_date between b.month_start and b.month_end
+    group by a.user_id
+  ),
+  ranked as (
+    select
+      rank() over (order by m.monthly_xp desc, m.user_id asc) as rank,
+      m.user_id,
+      coalesce(nullif(trim(pp.full_name), ''), nullif(trim(pp.username), ''), 'Player') as display_name,
+      coalesce(nullif(trim(pp.username), ''), '') as username,
+      nullif(trim(pp.country), '') as country,
+      m.monthly_xp
+    from monthly m
+    left join public.player_profiles pp on pp.id = m.user_id
+    where m.monthly_xp > 0
+  )
+  select rank, user_id, display_name, username, country, monthly_xp
+  from ranked
+  order by rank asc
+  limit greatest(least(coalesce(p_limit, 10), 50), 1);
+$$;
+
+-- --- Part 2: Weekly breakdown within month -----------------------------------
 
 create or replace function public.goalnova_quiz_monthly_week_breakdown(p_user_id uuid, p_date date)
 returns jsonb
@@ -62,9 +192,8 @@ as $$
   from with_xp;
 $$;
 
-revoke all on function public.goalnova_quiz_monthly_week_breakdown(uuid, date) from public;
+-- --- Part 3: RPC payloads (get_today + submit_answer) ------------------------
 
--- Extend get_today + submit_answer payloads with monthly week breakdown.
 create or replace function public.goalnova_quiz_get_today(p_locale text default 'en')
 returns jsonb
 language plpgsql
@@ -267,5 +396,11 @@ begin
 end;
 $$;
 
+revoke all on function public.goalnova_quiz_zagreb_month_bounds(date) from public;
+revoke all on function public.goalnova_quiz_monthly_xp(uuid, date) from public;
+revoke all on function public.goalnova_quiz_monthly_rank(uuid, date) from public;
+revoke all on function public.goalnova_quiz_monthly_week_breakdown(uuid, date) from public;
+
 grant execute on function public.goalnova_quiz_get_today(text) to anon, authenticated;
 grant execute on function public.goalnova_quiz_submit_answer(smallint, text) to authenticated;
+grant execute on function public.goalnova_quiz_monthly_leaderboard(text, int) to authenticated;
