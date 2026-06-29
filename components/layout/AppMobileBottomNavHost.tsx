@@ -1,9 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { hasPersistedSupabaseSession } from "@/lib/auth/hasPersistedSupabaseSession";
-import { isLikelyInAppBrowser } from "@/lib/auth/inAppBrowser";
 import { normalizeAppPathname } from "@/lib/layout/normalizeAppPathname";
 import { shouldRenderMobileBottomNav } from "@/lib/layout/mobileBottomNavVisibility";
 import { AppMobileBottomNav } from "@/components/layout/AppMobileBottomNav";
@@ -16,20 +14,11 @@ import { APP_MOBILE_BOTTOM_NAV_MOUNT_CLASS } from "@/lib/layout/appShellClasses"
 export function AppMobileBottomNavHost() {
   const { authed } = useNavSession();
   const pathname = normalizeAppPathname(usePathname());
-  const [hideForInAppBrowser, setHideForInAppBrowser] = useState(false);
-
-  useLayoutEffect(() => {
-    setHideForInAppBrowser(isLikelyInAppBrowser());
-  }, []);
 
   const persistedSession =
     typeof window !== "undefined" && hasPersistedSupabaseSession();
 
   if (!shouldRenderMobileBottomNav(pathname, authed, persistedSession)) {
-    return null;
-  }
-
-  if (hideForInAppBrowser) {
     return null;
   }
 

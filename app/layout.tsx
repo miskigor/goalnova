@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Bebas_Neue, Geist, Noto_Sans_Arabic } from "next/font/google";
 import { PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS } from "@/lib/loading/criticalFirstPaint";
-import { IN_APP_BROWSER_DETECT_SCRIPT } from "@/lib/auth/inAppBrowserDetectScript";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -65,10 +64,6 @@ export default function RootLayout({ children }: Props) {
         <style
           id="pitchrusch-critical-first-paint"
           dangerouslySetInnerHTML={{ __html: PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS }}
-        />
-        <script
-          id="pitchrusch-in-app-browser-detect"
-          dangerouslySetInnerHTML={{ __html: IN_APP_BROWSER_DETECT_SCRIPT }}
         />
       </head>
       <body

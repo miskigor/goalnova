@@ -21,27 +21,6 @@
   --gn-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Instagram / TikTok / Facebook in-app browsers — hide fixed bottom nav (overlaps host UI). */
-html[data-gn-in-app-browser] {
-  --gn-app-bottom-nav-offset: 0px !important;
-  --gn-app-bottom-nav-offset-measured: 0px !important;
-}
-
-@media (max-width: 1023px) {
-  html[data-gn-in-app-browser] [data-app-mobile-bottom-nav-mount],
-  html[data-gn-in-app-browser] [data-mlv2-bottom-nav],
-  html[data-gn-in-app-browser] [data-mlv3-bottom-nav] {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    height: 0 !important;
-    min-height: 0 !important;
-    max-height: 0 !important;
-    overflow: hidden !important;
-    opacity: 0 !important;
-  }
-}
-
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-display: var(--font-bebas);
