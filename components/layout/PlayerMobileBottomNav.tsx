@@ -13,7 +13,6 @@ import {
 } from "@/lib/constants/playerMobileBottomNav";
 import { navItemActive } from "@/lib/navigation/navItemActive";
 import {
-  APP_MOBILE_BOTTOM_NAV_CAROUSEL_TRACK_CLASS,
   APP_MOBILE_BOTTOM_NAV_CLASS,
   APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_ACTIVE_CLASS,
   APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_CLASS,
@@ -24,12 +23,16 @@ import {
   APP_MOBILE_BOTTOM_NAV_PLAYER_CLASS,
   APP_MOBILE_BOTTOM_NAV_TAB_LABEL_CLASS,
   APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS,
+  APP_MOBILE_BOTTOM_NAV_TRACK_CLASS,
   APP_MOBILE_BOTTOM_NAV_UPLOAD_BUTTON_CLASS,
 } from "@/lib/layout/appShellClasses";
 import { mobileBottomNavDisplayLabel } from "@/lib/layout/mobileBottomNavLabel";
 import { useDailyQuizStatus } from "@/hooks/useDailyQuizStatus";
 import { challengesNavHref } from "@/lib/quiz/dailyQuizNav";
 import "@/components/layout/playerBottomNavCarousel.css";
+
+const PAGE_COUNT = APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV_PAGES.length;
+const SWIPE_THRESHOLD_PX = 48;
 
 /** Full-color emoji for every player bottom-nav destination. */
 const TAB_EMOJI: Record<ShellMobileNavItem["href"], string> = {
@@ -75,6 +78,10 @@ function tabLabelClass(pathname: string, href: string) {
     APP_MOBILE_BOTTOM_NAV_TAB_LABEL_CLASS,
     active ? "font-semibold text-gn-accent" : "text-gn-text-secondary",
   ].join(" ");
+}
+
+function clampPage(index: number): number {
+  return Math.min(PAGE_COUNT - 1, Math.max(0, index));
 }
 
 type NavTabProps = {
@@ -163,25 +170,18 @@ export function PlayerMobileBottomNav() {
   const tNav = useTranslations("nav");
   const { pending: quizPending } = useDailyQuizStatus();
   const { user } = useNavSession();
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const [activePage, setActivePage] = useState(() => playerBottomNavPageIndex(pathname));
+  const [viewPage, setViewPage] = useState(() => playerBottomNavPageIndex(pathname));
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
-  const scrollToPage = useCallback((index: number, behavior: ScrollBehavior = "smooth") => {
-    const track = trackRef.current;
-    if (!track) return;
-    const width = track.clientWidth;
-    if (width <= 0) return;
-    track.scrollTo({ left: index * width, behavior });
-    setActivePage(index);
+  const goToPage = useCallback((index: number) => {
+    setViewPage(clampPage(index));
   }, []);
 
   useEffect(() => {
-    const page = playerBottomNavPageIndex(pathname);
-    setActivePage(page);
-    scrollToPage(page, "instant");
-  }, [pathname, scrollToPage]);
+    goToPage(playerBottomNavPageIndex(pathname));
+  }, [pathname, goToPage]);
 
   useEffect(() => {
     if (!user?.id) {
@@ -210,52 +210,61 @@ export function PlayerMobileBottomNav() {
     };
   }, [user?.id, user?.email]);
 
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    const onScroll = () => {
-      const width = track.clientWidth;
-      if (width <= 0) return;
-      const page = Math.round(track.scrollLeft / width);
-      setActivePage(Math.min(APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV_PAGES.length - 1, Math.max(0, page)));
-    };
-
-    track.addEventListener("scroll", onScroll, { passive: true });
-    return () => track.removeEventListener("scroll", onScroll);
+  const onTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.changedTouches[0] ?? e.touches[0];
+    if (!touch) return;
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
   }, []);
+
+  const onTouchEnd = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    const start = touchStartRef.current;
+    touchStartRef.current = null;
+    const touch = e.changedTouches[0];
+    if (!start || !touch) return;
+
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) < SWIPE_THRESHOLD_PX || Math.abs(dx) < Math.abs(dy)) return;
+
+    if (dx < 0) {
+      goToPage(viewPage + 1);
+    } else {
+      goToPage(viewPage - 1);
+    }
+  }, [goToPage, viewPage]);
+
+  const visibleItems = APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV_PAGES[viewPage] ?? APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV_PAGES[0];
 
   return (
     <nav
       data-app-bottom-nav
       data-player-bottom-nav-carousel
+      data-player-bottom-nav-view-page={viewPage}
       className={`${APP_MOBILE_BOTTOM_NAV_CLASS} ${APP_MOBILE_BOTTOM_NAV_PLAYER_CLASS} pointer-events-auto`}
       aria-label={tNav("primary")}
     >
       <div
-        ref={trackRef}
         data-player-bottom-nav-track
-        className={APP_MOBILE_BOTTOM_NAV_CAROUSEL_TRACK_CLASS}
+        className={APP_MOBILE_BOTTOM_NAV_TRACK_CLASS}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
-        {APP_SHELL_PLAYER_MOBILE_BOTTOM_NAV_PAGES.map((page, pageIndex) => (
-          <div
-            key={`bottom-nav-page-${pageIndex}`}
-            data-player-bottom-nav-page
-            className={APP_MOBILE_BOTTOM_NAV_PAGE_CLASS}
-            aria-label={`${tNav("primary")} ${pageIndex + 1}`}
-          >
-            {page.map((item) => (
-              <NavTab
-                key={`${item.labelKey}-${item.href}`}
-                item={item}
-                pathname={pathname}
-                quizPending={quizPending}
-                profileAvatarUrl={profileAvatarUrl}
-                userDisplayName={userDisplayName}
-              />
-            ))}
-          </div>
-        ))}
+        <div
+          data-player-bottom-nav-page
+          className={APP_MOBILE_BOTTOM_NAV_PAGE_CLASS}
+          aria-label={`${tNav("primary")} ${viewPage + 1}`}
+        >
+          {visibleItems.map((item) => (
+            <NavTab
+              key={`${item.labelKey}-${item.href}`}
+              item={item}
+              pathname={pathname}
+              quizPending={quizPending}
+              profileAvatarUrl={profileAvatarUrl}
+              userDisplayName={userDisplayName}
+            />
+          ))}
+        </div>
       </div>
       <div
         data-player-bottom-nav-pager
@@ -268,15 +277,13 @@ export function PlayerMobileBottomNav() {
             key={`pager-${index}`}
             type="button"
             role="tab"
-            aria-selected={activePage === index}
-            data-pager-active={activePage === index ? "true" : "false"}
+            aria-selected={viewPage === index}
+            data-pager-active={viewPage === index ? "true" : "false"}
             aria-label={`${index + 1}`}
-            onClick={() => scrollToPage(index)}
+            onClick={() => goToPage(index)}
             className={[
               "rounded-full transition-all duration-200",
-              activePage === index
-                ? "bg-gn-accent"
-                : "bg-gn-text-tertiary/50",
+              viewPage === index ? "bg-gn-accent" : "bg-gn-text-tertiary/50",
             ].join(" ")}
           />
         ))}

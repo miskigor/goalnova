@@ -1,6 +1,6 @@
 /**
- * Player 3-page bottom nav — keep full height, labels, and pager dots on every route.
- * Overrides V2 “compact nav” rules that target [data-app-bottom-nav] > div on non-/home pages.
+ * Player 3-page bottom nav — one grid visible at a time (no horizontal scroll).
+ * Overrides V2 compact nav rules on all non-/home routes.
  */
 
 html[data-mobile-layout-stable-v2]:has([data-player-bottom-nav-carousel]),
@@ -9,16 +9,33 @@ html[data-mobile-layout-v3]:has([data-player-bottom-nav-carousel]) {
   --gn-app-bottom-nav-offset: calc(4.75rem + env(safe-area-inset-bottom, 0px));
 }
 
-[data-player-bottom-nav-carousel] {
+[data-player-bottom-nav-carousel][data-app-bottom-nav] {
   min-height: calc(4.75rem + env(safe-area-inset-bottom, 0px)) !important;
   padding-top: 0.25rem !important;
   padding-bottom: max(0.25rem, env(safe-area-inset-bottom, 0px)) !important;
+  box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-player-bottom-nav-carousel][data-app-bottom-nav] {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: calc(4.75rem + env(safe-area-inset-bottom, 0px)) !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: max(0.25rem, env(safe-area-inset-bottom, 0px)) !important;
+}
+
+html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-player-bottom-nav-carousel] > div {
+  height: auto !important;
+  min-height: unset !important;
+  max-height: none !important;
+  padding-inline: 0 !important;
 }
 
 [data-player-bottom-nav-carousel] [data-player-bottom-nav-track] {
   height: auto !important;
   min-height: 2.875rem !important;
   max-height: none !important;
+  overflow: visible !important;
   padding-inline: max(0.5rem, env(safe-area-inset-left, 0px)) !important;
 }
 
@@ -34,6 +51,7 @@ html[data-mobile-layout-v3]:has([data-player-bottom-nav-carousel]) {
   min-height: 2.875rem !important;
   max-height: none !important;
   overflow: visible !important;
+  touch-action: manipulation;
 }
 
 [data-player-bottom-nav-carousel] [data-tab-label] {
@@ -71,6 +89,7 @@ html[data-mobile-layout-v3]:has([data-player-bottom-nav-carousel]) {
   padding: 0 !important;
   border-radius: 9999px !important;
   flex-shrink: 0 !important;
+  border: 0 !important;
 }
 
 [data-player-bottom-nav-carousel] [data-player-bottom-nav-pager] button[data-pager-active="true"] {
@@ -80,37 +99,23 @@ html[data-mobile-layout-v3]:has([data-player-bottom-nav-carousel]) {
   background-color: var(--color-gn-accent, #f97316) !important;
 }
 
-html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
-  [data-mlv2-bottom-nav]
-  [data-player-bottom-nav-carousel] {
-  min-height: calc(4.75rem + env(safe-area-inset-bottom, 0px)) !important;
-}
-
-html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
-  [data-mlv2-bottom-nav]
-  [data-player-bottom-nav-carousel]
-  [data-player-bottom-nav-track],
-html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
-  [data-mlv2-bottom-nav]
-  [data-player-bottom-nav-carousel]
-  [data-player-bottom-nav-pager],
-html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
-  [data-mlv2-bottom-nav]
-  [data-player-bottom-nav-carousel]
-  a,
-html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
-  [data-mlv2-bottom-nav]
-  [data-player-bottom-nav-carousel]
-  [data-player-bottom-nav-page] {
+html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-player-bottom-nav-carousel] a {
   height: auto !important;
-  min-height: unset !important;
+  min-height: 2.875rem !important;
   max-height: none !important;
 }
 
-html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
-  [data-mlv2-bottom-nav]
-  [data-player-bottom-nav-carousel]
-  [class*="rounded-full"][class*="bg-orange"] {
+html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-player-bottom-nav-carousel] [data-tab-emoji-badge],
+html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-player-bottom-nav-carousel] [class*="rounded-full"] {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  min-width: 2.25rem !important;
+  min-height: 2.25rem !important;
+  max-width: 2.25rem !important;
+  max-height: 2.25rem !important;
+}
+
+html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-player-bottom-nav-carousel] [class*="bg-orange"] {
   width: 2.25rem !important;
   height: 2.25rem !important;
   min-width: 2.25rem !important;

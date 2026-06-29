@@ -87,13 +87,14 @@ export const APP_MOBILE_BOTTOM_NAV_INNER_CLASS =
 
 /** One page inside the player 3-page bottom nav carousel (4 items). */
 export const APP_MOBILE_BOTTOM_NAV_PAGE_CLASS =
-  "pointer-events-auto box-border grid w-full min-w-full max-w-full shrink-0 basis-full snap-center snap-always grid-cols-4 items-end justify-items-center gap-0 ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
+  "pointer-events-auto box-border grid w-full min-w-0 max-w-full grid-cols-4 items-end justify-items-center gap-0 ps-[max(0.5rem,env(safe-area-inset-left,0px))] pe-[max(0.5rem,env(safe-area-inset-right,0px))]";
 
 export const APP_MOBILE_BOTTOM_NAV_PLAYER_CLASS =
   "min-h-[calc(4.75rem+env(safe-area-inset-bottom,0px))]";
 
-export const APP_MOBILE_BOTTOM_NAV_CAROUSEL_TRACK_CLASS =
-  "pointer-events-auto flex w-full min-w-0 max-w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
+/** Single visible page — no horizontal scroll (swipe handled in JS). */
+export const APP_MOBILE_BOTTOM_NAV_TRACK_CLASS =
+  "pointer-events-auto box-border w-full min-w-0 max-w-full touch-pan-y";
 
 export const APP_MOBILE_BOTTOM_NAV_PAGER_CLASS =
   "flex items-center justify-center gap-1.5 pb-0.5 pt-1";
