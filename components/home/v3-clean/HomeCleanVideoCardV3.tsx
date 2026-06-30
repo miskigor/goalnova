@@ -70,7 +70,7 @@ export function HomeCleanVideoCardV3({
   const preload: "none" | "metadata" | "auto" =
     slideOffset === 0
       ? "auto"
-      : Math.abs(slideOffset) <= 2
+      : Math.abs(slideOffset) <= 3
         ? "metadata"
         : "none";
   const fetchPriority = slideOffset === 0 ? "high" : "low";

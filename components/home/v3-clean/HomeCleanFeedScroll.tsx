@@ -11,14 +11,25 @@ import {
   videoPlaybackUrl,
 } from "@/lib/video/videoPlaybackUrl";
 import { isHomeFeedMobileViewport } from "@/components/home/homeFeedMobileScrollReset";
+import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 
 type Props = {
   items: AugmentedHomeFeedItem[];
+  /** Fired when the user scrolls near the end of the loaded list (throttled). */
+  onNearEnd?: () => void;
+  loadingMore?: boolean;
 };
 
-export function HomeCleanFeedScroll({ items }: Props) {
+export function HomeCleanFeedScroll({
+  items,
+  onNearEnd,
+  loadingMore = false,
+}: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const lastNearEndAtRef = useRef(0);
+  const onNearEndRef = useRef(onNearEnd);
+  onNearEndRef.current = onNearEnd;
   const { activeVideoId, notifyFeedUserActivation, reportScrollSnapBoost } =
     useHomeFeedSound();
 
@@ -112,6 +123,38 @@ export function HomeCleanFeedScroll({ items }: Props) {
     if (key) reportScrollSnapBoost(key);
   }, [reportScrollSnapBoost, snapVideoKeys]);
 
+  const maybeLoadMore = useCallback(() => {
+    const cb = onNearEndRef.current;
+    if (!cb) return;
+
+    const now = Date.now();
+    if (now - lastNearEndAtRef.current < 650) return;
+
+    const el = scrollRef.current;
+    let nearEnd = false;
+
+    if (el && isHomeFeedMobileViewport()) {
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      if (clientHeight > 0 && scrollHeight > 0) {
+        nearEnd =
+          scrollHeight - scrollTop - clientHeight <= clientHeight * 0.65;
+      }
+    } else {
+      const scrollTop =
+        window.scrollY || document.documentElement.scrollTop || 0;
+      const clientHeight = window.innerHeight;
+      const scrollHeight = document.documentElement.scrollHeight;
+      if (clientHeight > 0 && scrollHeight > 0) {
+        nearEnd =
+          scrollHeight - scrollTop - clientHeight <= clientHeight * 0.65;
+      }
+    }
+
+    if (!nearEnd) return;
+    lastNearEndAtRef.current = now;
+    cb();
+  }, []);
+
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -132,6 +175,7 @@ export function HomeCleanFeedScroll({ items }: Props) {
     const onScroll = () => {
       if (el.scrollLeft !== 0) el.scrollLeft = 0;
       updateActiveIndex();
+      maybeLoadMore();
     };
 
     let observer: ResizeObserver | null = null;
@@ -150,18 +194,26 @@ export function HomeCleanFeedScroll({ items }: Props) {
 
     const bindDesktopScroll = () => {
       if (isHomeFeedMobileViewport()) return;
+      const onDesktopScroll = () => {
+        updateDesktopActiveFromViewport();
+        maybeLoadMore();
+      };
       updateDesktopActiveFromViewport();
-      document.addEventListener("scroll", updateDesktopActiveFromViewport, {
+      maybeLoadMore();
+      document.addEventListener("scroll", onDesktopScroll, {
         passive: true,
         capture: true,
       });
       window.addEventListener("wheel", unlock, { passive: true });
+      return onDesktopScroll;
     };
 
-    const unbindDesktopScroll = () => {
-      document.removeEventListener("scroll", updateDesktopActiveFromViewport, {
-        capture: true,
-      });
+    const unbindDesktopScroll = (onDesktopScroll?: () => void) => {
+      if (onDesktopScroll) {
+        document.removeEventListener("scroll", onDesktopScroll, {
+          capture: true,
+        });
+      }
       window.removeEventListener("wheel", unlock);
     };
 
@@ -173,12 +225,14 @@ export function HomeCleanFeedScroll({ items }: Props) {
       el.removeEventListener("wheel", unlock);
     };
 
+    let desktopScrollHandler: (() => void) | undefined;
+
     const onViewportChange = () => {
       unbindMobileScroll();
-      unbindDesktopScroll();
+      unbindDesktopScroll(desktopScrollHandler);
       syncSlideHeight();
       bindMobileScroll();
-      bindDesktopScroll();
+      desktopScrollHandler = bindDesktopScroll();
     };
 
     onViewportChange();
@@ -187,9 +241,10 @@ export function HomeCleanFeedScroll({ items }: Props) {
     return () => {
       window.removeEventListener("resize", onViewportChange);
       unbindMobileScroll();
-      unbindDesktopScroll();
+      unbindDesktopScroll(desktopScrollHandler);
     };
   }, [
+    maybeLoadMore,
     notifyFeedUserActivation,
     updateActiveIndex,
     updateDesktopActiveFromViewport,
@@ -218,6 +273,22 @@ export function HomeCleanFeedScroll({ items }: Props) {
               />
             </div>
           ))}
+          {loadingMore ? (
+            <div data-home-clean-v3-slide data-home-clean-v3-slide-loading>
+              <div data-home-clean-v3-page>
+                <div
+                  data-home-clean-v3-card
+                  style={HOME_CLEAN_V3_CARD_LOCK_STYLE}
+                >
+                  <div
+                    data-home-clean-v3-loading-spinner
+                    role="status"
+                    aria-busy
+                  />
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </>
