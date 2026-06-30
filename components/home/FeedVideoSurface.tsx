@@ -360,13 +360,31 @@ export function FeedVideoSurface({
           actualMutedAfterReject: after?.muted,
           err,
         });
-        if (isSoundEnabled && isActive) setBrowserPolicyMuted(true);
+        if (!isActive) return;
+
         const blocked =
           typeof err === "object" &&
           err !== null &&
           "name" in err &&
           (err as { name?: string }).name === "NotAllowedError";
-        if (isActive && blocked) setNeedsTapToPlay(true);
+
+        if (!outputMuted) {
+          setBrowserPolicyMuted(true);
+          h.syncAudioOutput(true, 1);
+          void h
+            .play()
+            .then(() => {
+              setNeedsTapToPlay(false);
+              if (isSoundEnabled) scheduleAudiblePromotion();
+            })
+            .catch(() => {
+              if (blocked) setNeedsTapToPlay(true);
+            });
+          return;
+        }
+
+        if (isSoundEnabled) setBrowserPolicyMuted(true);
+        if (blocked) setNeedsTapToPlay(true);
       });
   }, [
     activeVideoId,

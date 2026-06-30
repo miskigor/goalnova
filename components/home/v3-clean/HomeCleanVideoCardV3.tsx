@@ -98,7 +98,6 @@ export function HomeCleanVideoCardV3({
             fetchPriority={fetchPriority}
             mediaFit="cover"
             poster={posterUrl}
-            loadWatchdogMs={3000}
             visibilityObserveRef={slideRef}
             debugMeta={{
               videoRowId: video.id ?? null,

@@ -79,7 +79,9 @@ export function HomeFeedSoundProvider({
   });
   const [visibility, setVisibility] = useState<Record<string, number>>({});
   /** Scroll-snap center row wins `activeVideoId` briefly so playback beats slow IntersectionObserver updates. */
-  const [scrollSnapFocusId, setScrollSnapFocusId] = useState<string | null>(null);
+  const [scrollSnapFocusId, setScrollSnapFocusId] = useState<string | null>(
+    () => bootstrapActiveVideoId?.trim() || null,
+  );
   const [playbackGeneration, setPlaybackGeneration] = useState(0);
   const [feedUserActivationGeneration, setFeedUserActivationGeneration] =
     useState(0);
@@ -87,6 +89,11 @@ export function HomeFeedSoundProvider({
   const lastFeedInteractionBumpRef = useRef(0);
   /** When the focused clip changes, retry audio policy + play() for the new active surface. */
   const prevActiveVideoIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const boot = bootstrapActiveVideoId?.trim();
+    if (boot) setScrollSnapFocusId(boot);
+  }, [bootstrapActiveVideoId]);
 
   const setSoundEnabled = useCallback(
     (value: boolean | ((prev: boolean) => boolean)) => {

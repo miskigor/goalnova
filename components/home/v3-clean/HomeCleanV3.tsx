@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { HomeCleanFeedScroll } from "@/components/home/v3-clean/HomeCleanFeedScroll";
+import { HomeFeedMediaGestureUnlock } from "@/components/home/HomeFeedMediaGestureUnlock";
 import {
   HomeFeedSoundProvider,
 } from "@/components/home/HomeFeedSoundContext";
@@ -101,9 +102,10 @@ export function HomeCleanV3({
   return (
     <HomeFeedSoundProvider
       bootstrapActiveVideoId={bootstrapActiveVideoId}
-      defaultSoundEnabled={false}
+      defaultSoundEnabled
     >
       <div data-home-clean-v3>
+        <HomeFeedMediaGestureUnlock />
         {showInitialLoading ? (
           <div data-home-clean-v3-page>
             <div
