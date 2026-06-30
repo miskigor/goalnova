@@ -5,7 +5,9 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { resolveGateAuthEventAction } from "@/lib/auth/gateAuthEvent";
 import { hasFreshLogin } from "@/lib/auth/freshLogin";
-import { readGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
+import {
+  readGateSessionSnapshot,
+} from "@/lib/auth/gateSessionSnapshot";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { supabase } from "@/lib/supabase/client";
@@ -53,7 +55,7 @@ function GateSpinner({ label }: { label: string }) {
 export function EmailConfirmationGate({ children }: Props) {
   const tCommon = useTranslations("authCommon");
   const router = useRouter();
-  const [allowed, setAllowed] = useState(false);
+  const [allowed, setAllowed] = useState(true);
   const didRedirectRef = useRef(false);
   const allowedRef = useRef(false);
   const trackedUserIdRef = useRef<string | null>(null);
@@ -110,7 +112,7 @@ export function EmailConfirmationGate({ children }: Props) {
       }
     }
 
-    void evaluate({ blockShell: true });
+    void evaluate({ blockShell: false });
 
     const {
       data: { subscription },

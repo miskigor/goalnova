@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { applyGateSessionSnapshot } from "@/lib/auth/applyGateSessionSnapshot";
+import { applyGateSessionSnapshot, type AuthSnapshotState } from "@/lib/auth/applyGateSessionSnapshot";
 import { clearFreshLogin, setFreshLogin } from "@/lib/auth/freshLogin";
 import {
   readGateSessionSnapshot,
+  readSyncGateSessionSnapshot,
   seedGateSessionSnapshot,
 } from "@/lib/auth/gateSessionSnapshot";
 import {
@@ -50,7 +51,39 @@ const GUEST_MANUAL_AUTH_PATHS = new Set([
   CONFIRM_EMAIL_PATH,
 ]);
 
-const INITIAL_SESSION_GRACE_MS = 250;
+const INITIAL_SESSION_GRACE_MS = 0;
+
+function readInitialAuthState(): AuthSnapshotState & { checking: boolean } {
+  if (typeof window === "undefined") {
+    return {
+      checking: true,
+      session: null,
+      isAuthenticated: false,
+      emailConfirmed: null,
+    };
+  }
+
+  if (!oauthReturnLikely() && !hasSupabaseAuthStorage()) {
+    return {
+      checking: false,
+      session: null,
+      isAuthenticated: false,
+      emailConfirmed: null,
+    };
+  }
+
+  const snapshot = readSyncGateSessionSnapshot();
+  if (snapshot.session || snapshot.user?.id) {
+    return { checking: false, ...applyGateSessionSnapshot(snapshot) };
+  }
+
+  return {
+    checking: true,
+    session: null,
+    isAuthenticated: false,
+    emailConfirmed: null,
+  };
+}
 
 export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const router = useRouter();
@@ -62,6 +95,14 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const [checking, setChecking] = useState(true);
 
   const didRedirectRef = useRef(false);
+
+  useLayoutEffect(() => {
+    const initial = readInitialAuthState();
+    setSession(initial.session);
+    setIsAuthenticated(initial.isAuthenticated);
+    setEmailConfirmed(initial.emailConfirmed);
+    setChecking(initial.checking);
+  }, []);
 
   useEffect(() => {
     const ms = oauthReturnLikely() ? 22_000 : 10_000;

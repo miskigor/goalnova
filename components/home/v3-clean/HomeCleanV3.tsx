@@ -9,6 +9,7 @@ import {
 import {
   hasHomeCleanV3FeedCache,
   readHomeCleanV3FeedCache,
+  seedHomeCleanV3FeedCache,
   writeHomeCleanV3FeedCache,
 } from "@/components/home/v3-clean/homeCleanV3FeedCache";
 import { feedItemVideoKey } from "@/lib/feed/feedItemVideoKey";
@@ -23,12 +24,19 @@ import "@/components/home/v3-clean/homeCleanV3.css";
 import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 
 /** Production `/home` — canonical clean feed for all users. Layout locked in homeCleanV3.tokens.css. */
-export function HomeCleanV3() {
+export function HomeCleanV3({
+  initialFeedItems = [],
+}: {
+  initialFeedItems?: AugmentedHomeFeedItem[];
+}) {
   const t = useTranslations("homeFeed");
-  const [items, setItems] = useState<AugmentedHomeFeedItem[]>(() =>
-    readHomeCleanV3FeedCache(),
+  const [items, setItems] = useState<AugmentedHomeFeedItem[]>(() => {
+    if (initialFeedItems.length > 0) return initialFeedItems;
+    return readHomeCleanV3FeedCache();
+  });
+  const [loading, setLoading] = useState(
+    () => initialFeedItems.length === 0 && !hasHomeCleanV3FeedCache(),
   );
-  const [loading, setLoading] = useState(() => !hasHomeCleanV3FeedCache());
   const [feedLoadFailed, setFeedLoadFailed] = useState(false);
 
   const loadFeed = useCallback(async () => {
@@ -52,8 +60,15 @@ export function HomeCleanV3() {
   }, []);
 
   useEffect(() => {
+    if (initialFeedItems.length > 0) {
+      seedHomeCleanV3FeedCache(initialFeedItems);
+    }
+  }, [initialFeedItems]);
+
+  useEffect(() => {
     let cancelled = false;
-    const hadCache = hasHomeCleanV3FeedCache();
+    const hadCache =
+      initialFeedItems.length > 0 || hasHomeCleanV3FeedCache();
     if (!hadCache) {
       setLoading(true);
       setFeedLoadFailed(false);
@@ -72,7 +87,7 @@ export function HomeCleanV3() {
     return () => {
       cancelled = true;
     };
-  }, [loadFeed]);
+  }, [initialFeedItems.length, loadFeed]);
 
   const bootstrapActiveVideoId =
     items[0] != null ? feedItemVideoKey(items[0]) : null;
@@ -82,7 +97,7 @@ export function HomeCleanV3() {
   return (
     <HomeFeedSoundProvider
       bootstrapActiveVideoId={bootstrapActiveVideoId}
-      defaultSoundEnabled
+      defaultSoundEnabled={false}
     >
       <div data-home-clean-v3>
         {showInitialLoading ? (

@@ -40,6 +40,31 @@ function snapshotFromSession(session: Session | null): GateSessionSnapshot {
   return { session, user: session?.user ?? null };
 }
 
+/**
+ * Synchronous session read from memory cache or localStorage — no await on auth init.
+ * Use for instant shell render on repeat visits.
+ */
+export function readSyncGateSessionSnapshot(): GateSessionSnapshot {
+  const now = Date.now();
+  if (cachedSnapshot && now - cachedAt < SNAPSHOT_CACHE_TTL_MS) {
+    return cachedSnapshot;
+  }
+
+  const persistedSession = readPersistedSessionFromStorage();
+  if (persistedSession) {
+    const user =
+      persistedSession.user ??
+      readPersistedUserFromStorage(supabaseStorageKey() ?? "") ??
+      null;
+    return writeCache({
+      session: persistedSession,
+      user,
+    });
+  }
+
+  return { session: null, user: null };
+}
+
 function supabaseStorageKey(): string | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!url) return null;

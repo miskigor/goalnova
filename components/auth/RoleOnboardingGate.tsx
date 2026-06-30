@@ -6,6 +6,10 @@ import { resolveGateAuthEventAction } from "@/lib/auth/gateAuthEvent";
 import { hasFreshLogin } from "@/lib/auth/freshLogin";
 import { readGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
 import { needsRoleOnboardingWithTimeout } from "@/lib/auth/needsRoleOnboardingWithTimeout";
+import {
+  readCachedRoleOnboardingComplete,
+  writeCachedRoleOnboardingComplete,
+} from "@/lib/auth/roleOnboardingCache";
 import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
 import {
   resolvePostOnboardingHomePath,
@@ -64,7 +68,7 @@ function GateSpinner({ label }: { label: string }) {
 export function RoleOnboardingGate({ mode, children }: Props) {
   const locale = useLocale();
   const tCommon = useTranslations("authCommon");
-  const [allowed, setAllowed] = useState(false);
+  const [allowed, setAllowed] = useState(true);
   const didRedirectRef = useRef(false);
   const allowedRef = useRef(false);
   const trackedUserIdRef = useRef<string | null>(null);
@@ -100,6 +104,15 @@ export function RoleOnboardingGate({ mode, children }: Props) {
       const userId = trackedUserIdRef.current;
       const freshLogin = hasFreshLogin();
 
+      if (
+        mode === "require-onboarding" &&
+        userId &&
+        readCachedRoleOnboardingComplete(userId)
+      ) {
+        if (!cancelled) setAllowed(true);
+        return;
+      }
+
       if (freshLogin && mode === "require-onboarding") {
         if (!cancelled) setAllowed(true);
         void syncPendingReferralCodeToUserMetadata();
@@ -126,6 +139,7 @@ export function RoleOnboardingGate({ mode, children }: Props) {
           return;
         }
         didRedirectRef.current = false;
+        if (userId) writeCachedRoleOnboardingComplete(userId);
         void tryConsumePendingReferralWhenPlayerReady();
         if (!cancelled) setAllowed(true);
         return;
@@ -146,7 +160,7 @@ export function RoleOnboardingGate({ mode, children }: Props) {
       if (!cancelled) setAllowed(true);
     }
 
-    void evaluate({ blockShell: true });
+    void evaluate({ blockShell: false });
 
     const {
       data: { subscription },
