@@ -2,18 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { rpcClubUpdateLogo } from "@/lib/supabase/clubs";
 import { supabase } from "@/lib/supabase/client";
-import { logFullSupabaseError } from "@/lib/supabase/logError";
-import {
-  CLUB_LOGO_BUCKET,
-  CLUB_LOGO_MAX_MB,
-  buildClubLogoObjectPath,
-  isStorageBucketNotFoundError,
-  normalizedImageMime,
-  storageObjectPathFromClubLogoUrl,
-  validateClubLogoFile,
-} from "@/lib/storage/clubLogo";
+import { CLUB_LOGO_MAX_MB, validateClubLogoFile } from "@/lib/storage/clubLogo";
 
 type Props = {
   clubId: string;
@@ -22,13 +12,12 @@ type Props = {
   onLogoUrlChange: (url: string | null) => void;
 };
 
-async function removeStoredFile(publicUrl: string) {
-  const path = storageObjectPathFromClubLogoUrl(publicUrl);
-  if (!path) return;
-  const { error } = await supabase.storage.from(CLUB_LOGO_BUCKET).remove([path]);
-  if (error) {
-    logFullSupabaseError("[ClubLogoEditor] storage remove", error, { path });
-  }
+function mapUploadError(reason: string, t: ReturnType<typeof useTranslations<"clubs">>): string {
+  if (reason === "invalid_type") return t("clubLogoInvalidType");
+  if (reason === "file_too_large") return t("clubLogoTooLarge", { maxMb: CLUB_LOGO_MAX_MB });
+  if (reason === "bucket_not_found") return t("clubLogoBucketMissing");
+  if (reason === "forbidden") return t("dashboardForbidden");
+  return t("clubLogoUploadFailed");
 }
 
 export function ClubLogoEditor({ clubId, clubName, logoUrl, onLogoUrlChange }: Props) {
@@ -63,6 +52,11 @@ export function ClubLogoEditor({ clubId, clubName, logoUrl, onLogoUrlChange }: P
     };
   }, []);
 
+  async function authToken(): Promise<string | null> {
+    const { data } = await supabase.auth.getSession();
+    return data.session?.access_token ?? null;
+  }
+
   async function onPickFiles(files: FileList | null) {
     setLocalError(null);
     const file = files?.[0];
@@ -78,57 +72,45 @@ export function ClubLogoEditor({ clubId, clubName, logoUrl, onLogoUrlChange }: P
       return;
     }
 
+    const token = await authToken();
+    if (!token) {
+      setLocalError(t("clubLogoUploadFailed"));
+      return;
+    }
+
     setPreviewFromFile(file);
     setBusy(true);
-    const path = buildClubLogoObjectPath(clubId, file);
     const prev = logoUrl?.trim() || null;
-    const contentType = normalizedImageMime(file) || "image/jpeg";
 
     try {
-      const { data: uploaded, error: uploadError } = await supabase.storage
-        .from(CLUB_LOGO_BUCKET)
-        .upload(path, file, {
-          upsert: true,
-          cacheControl: "3600",
-          contentType,
-        });
+      const form = new FormData();
+      form.set("clubId", clubId);
+      form.set("file", file);
+      if (prev) form.set("previousLogoUrl", prev);
 
-      if (uploadError || !uploaded?.path) {
-        setLocalError(
-          uploadError && isStorageBucketNotFoundError(uploadError)
-            ? t("clubLogoBucketMissing")
-            : t("clubLogoUploadFailed"),
-        );
-        if (uploadError) {
-          logFullSupabaseError("[ClubLogoEditor] storage.upload", uploadError, { path });
-        }
+      const res = await fetch("/api/clubs/upload-logo", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: form,
+      });
+
+      const payload = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        reason?: string;
+        logoUrl?: string;
+      };
+
+      if (!res.ok || !payload.ok || !payload.logoUrl) {
+        setLocalError(mapUploadError(payload.reason ?? "upload_failed", t));
         clearPreview();
         return;
       }
 
-      const { data: pub } = supabase.storage.from(CLUB_LOGO_BUCKET).getPublicUrl(uploaded.path);
-      const publicUrl = pub.publicUrl;
-
-      const result = await rpcClubUpdateLogo(clubId, publicUrl);
-      if (!result.ok) {
-        setLocalError(result.error ?? t("clubLogoUploadFailed"));
-        await supabase.storage.from(CLUB_LOGO_BUCKET).remove([uploaded.path]);
-        clearPreview();
-        return;
-      }
-
-      if (prev) await removeStoredFile(prev);
-      onLogoUrlChange(publicUrl);
+      onLogoUrlChange(payload.logoUrl);
       setLocalError(null);
       clearPreview();
-    } catch (e) {
-      logFullSupabaseError("[ClubLogoEditor] upload", e);
+    } catch {
       setLocalError(t("clubLogoUploadFailed"));
-      try {
-        await supabase.storage.from(CLUB_LOGO_BUCKET).remove([path]);
-      } catch {
-        /* ignore */
-      }
       clearPreview();
     } finally {
       setBusy(false);
@@ -145,18 +127,32 @@ export function ClubLogoEditor({ clubId, clubName, logoUrl, onLogoUrlChange }: P
       return;
     }
 
+    const token = await authToken();
+    if (!token) {
+      setLocalError(t("clubLogoUploadFailed"));
+      return;
+    }
+
     setBusy(true);
     try {
-      const result = await rpcClubUpdateLogo(clubId, null);
-      if (!result.ok) {
-        setLocalError(result.error ?? t("clubLogoUploadFailed"));
+      const res = await fetch("/api/clubs/upload-logo", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ clubId, logoUrl: prev }),
+      });
+
+      const payload = (await res.json().catch(() => ({}))) as { ok?: boolean; reason?: string };
+      if (!res.ok || !payload.ok) {
+        setLocalError(mapUploadError(payload.reason ?? "save_failed", t));
         return;
       }
-      await removeStoredFile(prev!);
+
       onLogoUrlChange(null);
       clearPreview();
-    } catch (e) {
-      logFullSupabaseError("[ClubLogoEditor] remove", e);
+    } catch {
       setLocalError(t("clubLogoUploadFailed"));
     } finally {
       setBusy(false);

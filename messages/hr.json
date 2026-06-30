@@ -2515,7 +2515,7 @@
     "clubLogoInvalidType": "Koristi JPG, PNG ili WebP sliku.",
     "clubLogoTooLarge": "Slika je prevelika (max {maxMb} MB).",
     "clubLogoUploadFailed": "Logo kluba nije mogao biti spremljen.",
-    "clubLogoBucketMissing": "Storage za logotipe klubova nije postavljen. Pokreni PASTE_club_logo_upload.sql u Supabaseu.",
+    "clubLogoBucketMissing": "U Supabaseu otvori Storage i kreiraj javni bucket naziva club-logos.",
     "dashboardStats": "{players} igrača · {xp} XP · {videos} video",
     "partnershipAgreementBody": "Prihvati PitchRusch Partnership Agreement za aktivaciju verified academy kad dosegnete 20 odobrenih igrača.",
     "acceptPartnershipAgreement": "Prihvati partnership agreement",

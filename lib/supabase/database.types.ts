@@ -1809,6 +1809,10 @@ export type Database = {
         Args: { p_club_id: string; p_logo_url: string | null };
         Returns: Json;
       };
+      goalnova_club_user_can_manage: {
+        Args: { p_club_id: string; p_user_id?: string };
+        Returns: boolean;
+      };
       goalnova_club_submit_partnership_request: {
         Args: {
           p_club_name: string;

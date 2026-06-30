@@ -3,10 +3,9 @@
  * V1/V2 legacy home feeds must not define competing measures.
  */
 [data-home-clean-v3] {
-  --home-clean-v3-card-width: 272px;
-  --home-clean-v3-card-height: 483px;
-  --home-clean-v3-top-offset: 166px;
-  /** Space reserved below the card for avatar, name, and caption. */
-  --home-clean-v3-meta-reserve: 100px;
-  --home-clean-v3-slide-padding-bottom: 16px;
+  --home-clean-v3-card-width: 100%;
+  --home-clean-v3-card-height: 100%;
+  --home-clean-v3-top-offset: 0px;
+  --home-clean-v3-meta-reserve: 0px;
+  --home-clean-v3-slide-padding-bottom: 0px;
 }

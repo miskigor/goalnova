@@ -2515,7 +2515,7 @@
     "clubLogoInvalidType": "Use a JPG, PNG or WebP image.",
     "clubLogoTooLarge": "Image is too large (max {maxMb} MB).",
     "clubLogoUploadFailed": "Could not save club logo.",
-    "clubLogoBucketMissing": "Club logo storage is not set up yet. Run PASTE_club_logo_upload.sql in Supabase.",
+    "clubLogoBucketMissing": "Create a public Storage bucket named club-logos in Supabase Dashboard → Storage.",
     "dashboardStats": "{players} players · {xp} XP · {videos} videos",
     "partnershipAgreementBody": "Accept the PitchRusch Partnership Agreement to activate your verified academy when you reach 20 approved players.",
     "acceptPartnershipAgreement": "Accept partnership agreement",

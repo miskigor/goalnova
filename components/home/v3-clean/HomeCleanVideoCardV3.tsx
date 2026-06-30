@@ -131,41 +131,41 @@ export function HomeCleanVideoCardV3({
             />
           </div>
         ) : null}
-      </div>
 
-      <div data-home-clean-v3-meta>
-        <div data-home-clean-v3-meta-row>
-          {userId ? (
-            <PlayerProfileNavLink
-              userId={userId}
-              username={profile?.username}
-              className="shrink-0"
-              data-home-clean-v3-avatar
-              aria-label={t("viewPlayerProfileAria", { name: displayName })}
-            >
-              {avatar}
-            </PlayerProfileNavLink>
-          ) : (
-            <span data-home-clean-v3-avatar className="shrink-0">
-              {avatar}
-            </span>
-          )}
-          {userId ? (
-            <PlayerProfileNavLink
-              userId={userId}
-              username={profile?.username}
-              data-home-clean-v3-meta-name
-              aria-label={t("viewPlayerProfileAria", { name: displayName })}
-            >
-              {displayName}
-            </PlayerProfileNavLink>
-          ) : (
-            <p data-home-clean-v3-meta-name>{displayName}</p>
-          )}
+        <div data-home-clean-v3-meta>
+          <div data-home-clean-v3-meta-row>
+            {userId ? (
+              <PlayerProfileNavLink
+                userId={userId}
+                username={profile?.username}
+                className="shrink-0"
+                data-home-clean-v3-avatar
+                aria-label={t("viewPlayerProfileAria", { name: displayName })}
+              >
+                {avatar}
+              </PlayerProfileNavLink>
+            ) : (
+              <span data-home-clean-v3-avatar className="shrink-0">
+                {avatar}
+              </span>
+            )}
+            {userId ? (
+              <PlayerProfileNavLink
+                userId={userId}
+                username={profile?.username}
+                data-home-clean-v3-meta-name
+                aria-label={t("viewPlayerProfileAria", { name: displayName })}
+              >
+                {displayName}
+              </PlayerProfileNavLink>
+            ) : (
+              <p data-home-clean-v3-meta-name>{displayName}</p>
+            )}
+          </div>
+          {captionText ? (
+            <p data-home-clean-v3-caption>{captionText}</p>
+          ) : null}
         </div>
-        {captionText ? (
-          <p data-home-clean-v3-caption>{captionText}</p>
-        ) : null}
       </div>
     </div>
   );

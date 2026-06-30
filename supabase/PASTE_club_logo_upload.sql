@@ -1,4 +1,6 @@
 -- Paste in Supabase SQL Editor (requires club partnership migration).
+-- After this runs: Supabase Dashboard → Storage → New bucket → name: club-logos → Public bucket ON.
+-- Do NOT paste storage.objects policies here (SQL Editor lacks owner on storage.objects).
 
 -- Club logo upload: contact person (contact_email) + club admins can set clubs.logo_url.
 
@@ -312,54 +314,5 @@ begin
 end;
 $$;
 
--- Storage bucket for club logos (public read).
-alter table if exists storage.objects enable row level security;
-
-insert into storage.buckets (id, name, public)
-values ('club-logos', 'club-logos', true)
-on conflict (id) do update set public = excluded.public;
-
-drop policy if exists "club_logos_public_read" on storage.objects;
-drop policy if exists "club_logos_insert_manage" on storage.objects;
-drop policy if exists "club_logos_update_manage" on storage.objects;
-drop policy if exists "club_logos_delete_manage" on storage.objects;
-
-create policy "club_logos_public_read"
-on storage.objects
-for select
-using (bucket_id = 'club-logos');
-
-create policy "club_logos_insert_manage"
-on storage.objects
-for insert
-to authenticated
-with check (
-  bucket_id = 'club-logos'
-  and split_part(name, '/', 1) ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
-  and public.goalnova_club_user_can_manage(split_part(name, '/', 1)::uuid)
-);
-
-create policy "club_logos_update_manage"
-on storage.objects
-for update
-to authenticated
-using (
-  bucket_id = 'club-logos'
-  and split_part(name, '/', 1) ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
-  and public.goalnova_club_user_can_manage(split_part(name, '/', 1)::uuid)
-)
-with check (
-  bucket_id = 'club-logos'
-  and split_part(name, '/', 1) ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
-  and public.goalnova_club_user_can_manage(split_part(name, '/', 1)::uuid)
-);
-
-create policy "club_logos_delete_manage"
-on storage.objects
-for delete
-to authenticated
-using (
-  bucket_id = 'club-logos'
-  and split_part(name, '/', 1) ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
-  and public.goalnova_club_user_can_manage(split_part(name, '/', 1)::uuid)
-);
+-- Storage: create bucket `club-logos` (public) in Supabase Dashboard → Storage → New bucket.
+-- Uploads go through /api/clubs/upload-logo (service role) — no storage.objects SQL policies needed.
