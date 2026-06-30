@@ -1,4 +1,5 @@
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
+import { ensureStripeCustomer } from "@/lib/stripe/customer";
 import { appUrlForRequest, createStripeServerClient, resolveAuthenticatedUserIdFromBearer } from "@/lib/stripe/server";
 import { envPriceIdForPlan, isPaidSubscriptionPlan, type PaidSubscriptionPlan } from "@/lib/stripe/plans";
 import { locales, routing } from "@/i18n/routing";
@@ -51,21 +52,12 @@ export async function POST(request: Request) {
       return Response.json({ error: "Profile not found." }, { status: 404 });
     }
 
-    let customerId = String((userRow as { stripe_customer_id?: string | null }).stripe_customer_id ?? "").trim();
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: userRow.email ?? undefined,
-        metadata: { user_id: userId },
-      });
-      customerId = customer.id;
-      await sb.from("users").update({ stripe_customer_id: customerId }).eq("id", userId);
-      const role = String((userRow as { role?: string | null }).role ?? "").trim();
-      if (role === "player") {
-        await sb.from("player_profiles").update({ stripe_customer_id: customerId }).eq("id", userId);
-      } else if (role === "scout") {
-        await sb.from("scout_profiles").update({ stripe_customer_id: customerId }).eq("id", userId);
-      }
-    }
+    const customerId = await ensureStripeCustomer(stripe, sb, {
+      userId,
+      email: userRow.email,
+      role: (userRow as { role?: string | null }).role,
+      existingCustomerId: (userRow as { stripe_customer_id?: string | null }).stripe_customer_id,
+    });
 
     const root = appUrlForRequest(request).replace(/\/$/, "");
     const successPath = withLocalePrefix("/payment/success", locale);
