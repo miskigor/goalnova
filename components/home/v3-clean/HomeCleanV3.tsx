@@ -56,7 +56,11 @@ export function HomeCleanV3({
     setFeedLoadFailed(false);
     const augmented = next as AugmentedHomeFeedItem[];
     writeHomeCleanV3FeedCache(augmented);
-    setItems(augmented);
+    setItems((prev) => {
+      const prevKey = prev.map((i) => i.video.id).join("\n");
+      const nextKey = augmented.map((i) => i.video.id).join("\n");
+      return prevKey === nextKey ? prev : augmented;
+    });
   }, []);
 
   useEffect(() => {

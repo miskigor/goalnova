@@ -46,8 +46,7 @@ type HomeFeedSoundContextValue = {
   /** `force` skips throttle (e.g. Tap to play) so the next clip can autoplay immediately. */
   notifyFeedUserActivation: (force?: boolean) => void;
   /**
-   * Scroll-snap center index (from `scrollTop / clientHeight`): briefly forces that clip as `activeVideoId`
-   * so playback starts before IntersectionObserver catches up.
+   * Scroll-snap index: authoritative active clip until the next scroll update.
    */
   reportScrollSnapBoost: (videoId: string) => void;
 };
@@ -88,7 +87,6 @@ export function HomeFeedSoundProvider({
   const lastFeedInteractionBumpRef = useRef(0);
   /** When the focused clip changes, retry audio policy + play() for the new active surface. */
   const prevActiveVideoIdRef = useRef<string | null>(null);
-  const scrollSnapClearTimerRef = useRef<number | null>(null);
 
   const setSoundEnabled = useCallback(
     (value: boolean | ((prev: boolean) => boolean)) => {
@@ -127,21 +125,6 @@ export function HomeFeedSoundProvider({
     const id = videoId.trim();
     if (!id) return;
     setScrollSnapFocusId(id);
-    if (scrollSnapClearTimerRef.current != null) {
-      window.clearTimeout(scrollSnapClearTimerRef.current);
-    }
-    scrollSnapClearTimerRef.current = window.setTimeout(() => {
-      scrollSnapClearTimerRef.current = null;
-      setScrollSnapFocusId(null);
-    }, 720);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (scrollSnapClearTimerRef.current != null) {
-        window.clearTimeout(scrollSnapClearTimerRef.current);
-      }
-    };
   }, []);
 
   const reportVideoVisibility = useCallback(

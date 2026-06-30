@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { HomeCleanVideoCardV3 } from "@/components/home/v3-clean/HomeCleanVideoCardV3";
 import { FeedVideoHeadPreloads } from "@/components/home/FeedVideoHeadPreloads";
 import { useHomeFeedSound } from "@/components/home/HomeFeedSoundContext";
@@ -19,7 +19,7 @@ type Props = {
 export function HomeCleanFeedScroll({ items }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const { activeVideoId, notifyFeedUserActivation, reportScrollSnapBoost } =
+  const { notifyFeedUserActivation, reportScrollSnapBoost } =
     useHomeFeedSound();
 
   const snapVideoKeys = useMemo(
@@ -27,11 +27,7 @@ export function HomeCleanFeedScroll({ items }: Props) {
     [items],
   );
 
-  const activeFeedIndex = useMemo(() => {
-    if (!activeVideoId) return activeIndex;
-    const i = items.findIndex((it) => feedItemVideoKey(it) === activeVideoId);
-    return i >= 0 ? i : activeIndex;
-  }, [activeVideoId, activeIndex, items]);
+  const activeFeedIndex = activeIndex;
 
   const firstPreloadHref = useMemo(() => {
     if (items.length === 0) return null;
@@ -51,6 +47,27 @@ export function HomeCleanFeedScroll({ items }: Props) {
     ).trim();
     return href.length > 0 ? href : null;
   }, [activeFeedIndex, items]);
+
+  useLayoutEffect(() => {
+    const el = scrollRef.current;
+    if (!el || items.length === 0) return;
+
+    const resetToFirstSlide = () => {
+      const height = el.clientHeight;
+      if (height > 0 && isHomeFeedMobileViewport()) {
+        el.style.setProperty("--home-clean-v3-slide-height", `${height}px`);
+      }
+      if (el.scrollTop !== 0) {
+        el.scrollTop = 0;
+      }
+      setActiveIndex(0);
+      const key = snapVideoKeys[0];
+      if (key) reportScrollSnapBoost(key);
+    };
+
+    resetToFirstSlide();
+    requestAnimationFrame(resetToFirstSlide);
+  }, [items, reportScrollSnapBoost, snapVideoKeys]);
 
   const updateActiveIndex = useCallback(() => {
     const el = scrollRef.current;
@@ -196,7 +213,6 @@ export function HomeCleanFeedScroll({ items }: Props) {
                 item={item}
                 feedIndex={index}
                 activeFeedIndex={activeFeedIndex}
-                mountVideo={Math.abs(index - activeFeedIndex) <= 1}
               />
             </div>
           ))}
