@@ -4,8 +4,7 @@ import type { CSSProperties } from "react";
 export const HOME_CLEAN_V3_CARD_WIDTH_PX = 272;
 export const HOME_CLEAN_V3_CARD_HEIGHT_PX = 483;
 
-/** Prevent V3 scroll rules from growing the card; dimensions come from homeCleanV3.css. */
+/** Inline lock for home cards; dimensions come from homeCleanV3.css (fullscreen flex fill). */
 export const HOME_CLEAN_V3_CARD_LOCK_STYLE: CSSProperties = {
   boxSizing: "border-box",
-  flex: "none",
 };

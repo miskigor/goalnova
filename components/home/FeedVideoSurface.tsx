@@ -53,10 +53,6 @@ type Props = {
   };
   /** Observe visibility on a larger node (e.g. full clean-home slide). Defaults to media wrap. */
   visibilityObserveRef?: RefObject<Element | null>;
-  /** Still frame while the clip buffers. */
-  poster?: string;
-  /** Timeout before trying the next playback URL (feed uses a shorter watchdog). */
-  loadWatchdogMs?: number;
 };
 
 /**
@@ -83,8 +79,6 @@ export function FeedVideoSurface({
   onLoadError,
   debugMeta,
   visibilityObserveRef,
-  poster,
-  loadWatchdogMs,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<PlaybackVideoHandle | null>(null);
@@ -521,13 +515,11 @@ export function FeedVideoSurface({
           }}
           onLoadOk={onMediaLoaded}
           onLoadError={onLoadError}
-          poster={poster}
-          loadWatchdogMs={loadWatchdogMs}
           className={videoClassName}
         />
       </div>
 
-      {isActive && !mediaReady && renderedPrimarySrc && !poster ? (
+      {isActive && !mediaReady && renderedPrimarySrc ? (
         <div
           className="pointer-events-none absolute inset-0 z-[18] flex flex-col items-center justify-center bg-gradient-to-b from-black/80 via-black/55 to-black/85"
           aria-busy

@@ -5,6 +5,7 @@
 [data-home-clean-v3] {
   --home-clean-v3-card-width: 100%;
   --home-clean-v3-card-height: 100%;
+  --home-clean-v3-slide-height: 100dvh;
   --home-clean-v3-top-offset: 0px;
   --home-clean-v3-meta-reserve: 0px;
   --home-clean-v3-slide-padding-bottom: 0px;

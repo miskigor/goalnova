@@ -46,7 +46,8 @@ type HomeFeedSoundContextValue = {
   /** `force` skips throttle (e.g. Tap to play) so the next clip can autoplay immediately. */
   notifyFeedUserActivation: (force?: boolean) => void;
   /**
-   * Scroll-snap index: authoritative active clip until the next scroll update.
+   * Scroll-snap center index (from `scrollTop / clientHeight`): briefly forces that clip as `activeVideoId`
+   * so playback starts before IntersectionObserver catches up.
    */
   reportScrollSnapBoost: (videoId: string) => void;
 };
@@ -79,9 +80,7 @@ export function HomeFeedSoundProvider({
   });
   const [visibility, setVisibility] = useState<Record<string, number>>({});
   /** Scroll-snap center row wins `activeVideoId` briefly so playback beats slow IntersectionObserver updates. */
-  const [scrollSnapFocusId, setScrollSnapFocusId] = useState<string | null>(
-    () => bootstrapActiveVideoId?.trim() || null,
-  );
+  const [scrollSnapFocusId, setScrollSnapFocusId] = useState<string | null>(null);
   const [playbackGeneration, setPlaybackGeneration] = useState(0);
   const [feedUserActivationGeneration, setFeedUserActivationGeneration] =
     useState(0);
@@ -89,11 +88,7 @@ export function HomeFeedSoundProvider({
   const lastFeedInteractionBumpRef = useRef(0);
   /** When the focused clip changes, retry audio policy + play() for the new active surface. */
   const prevActiveVideoIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    const boot = bootstrapActiveVideoId?.trim();
-    if (boot) setScrollSnapFocusId(boot);
-  }, [bootstrapActiveVideoId]);
+  const scrollSnapClearTimerRef = useRef<number | null>(null);
 
   const setSoundEnabled = useCallback(
     (value: boolean | ((prev: boolean) => boolean)) => {
@@ -132,6 +127,21 @@ export function HomeFeedSoundProvider({
     const id = videoId.trim();
     if (!id) return;
     setScrollSnapFocusId(id);
+    if (scrollSnapClearTimerRef.current != null) {
+      window.clearTimeout(scrollSnapClearTimerRef.current);
+    }
+    scrollSnapClearTimerRef.current = window.setTimeout(() => {
+      scrollSnapClearTimerRef.current = null;
+      setScrollSnapFocusId(null);
+    }, 720);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (scrollSnapClearTimerRef.current != null) {
+        window.clearTimeout(scrollSnapClearTimerRef.current);
+      }
+    };
   }, []);
 
   const reportVideoVisibility = useCallback(
@@ -167,7 +177,7 @@ export function HomeFeedSoundProvider({
         bestR = r;
       }
     }
-    if (best != null && bestR >= MIN_VISIBILITY) return best;
+    if (best != null && bestR >= HOME_FEED_ACTIVE_CLIP_RATIO_MIN) return best;
     const boot =
       typeof bootstrapActiveVideoId === "string"
         ? bootstrapActiveVideoId.trim()

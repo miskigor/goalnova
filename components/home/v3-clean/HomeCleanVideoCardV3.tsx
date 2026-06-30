@@ -20,7 +20,6 @@ import {
 } from "@/lib/video/videoPlaybackUrl";
 import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 import { PlayerProfileNavLink } from "@/components/player/PlayerProfileNavLink";
-import { exploreTileThumbnailOrPosterImageUrl } from "@/lib/video/exploreTileMedia";
 
 type Props = {
   item: AugmentedHomeFeedItem;
@@ -55,7 +54,6 @@ export function HomeCleanVideoCardV3({
     t("unknownPlayer");
 
   const captionText = video.caption?.trim();
-  const posterUrl = exploreTileThumbnailOrPosterImageUrl(video);
 
   const shareTrailing =
     video.id != null ? (
@@ -72,7 +70,7 @@ export function HomeCleanVideoCardV3({
   const preload: "none" | "metadata" | "auto" =
     slideOffset === 0
       ? "auto"
-      : slideOffset === 1
+      : Math.abs(slideOffset) <= 2
         ? "metadata"
         : "none";
   const fetchPriority = slideOffset === 0 ? "high" : "low";
@@ -97,7 +95,6 @@ export function HomeCleanVideoCardV3({
             preload={preload}
             fetchPriority={fetchPriority}
             mediaFit="cover"
-            poster={posterUrl}
             visibilityObserveRef={slideRef}
             debugMeta={{
               videoRowId: video.id ?? null,

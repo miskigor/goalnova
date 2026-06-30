@@ -19,40 +19,34 @@ type Props = {
 export function HomeCleanFeedScroll({ items }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const {
-    notifyFeedUserActivation,
-    reportScrollSnapBoost,
-    requestPlaybackRetry,
-    setSoundEnabled,
-  } = useHomeFeedSound();
-
-  const itemIdsKey = useMemo(
-    () => items.map((item) => item.video.id ?? feedItemVideoKey(item)).join("\n"),
-    [items],
-  );
+  const { activeVideoId, notifyFeedUserActivation, reportScrollSnapBoost } =
+    useHomeFeedSound();
 
   const snapVideoKeys = useMemo(
     () => items.map((item) => feedItemVideoKey(item)),
     [items],
   );
 
-  const activeFeedIndex = activeIndex;
+  const activeFeedIndex = useMemo(() => {
+    if (!activeVideoId) return activeIndex;
+    const i = items.findIndex((it) => feedItemVideoKey(it) === activeVideoId);
+    return i >= 0 ? i : activeIndex;
+  }, [activeVideoId, activeIndex, items]);
 
   const firstPreloadHref = useMemo(() => {
     if (items.length === 0) return null;
-    const candidates = homeFeedPlaybackCandidates(items[activeFeedIndex]?.video ?? items[0].video);
-    const href = (
-      candidates[0] ?? videoPlaybackUrl(items[activeFeedIndex]?.video ?? items[0].video)
-    ).trim();
+    const candidates = homeFeedPlaybackCandidates(items[0].video);
+    const href = (candidates[0] ?? videoPlaybackUrl(items[0].video)).trim();
     return href.length > 0 ? href : null;
-  }, [activeFeedIndex, items]);
+  }, [items]);
 
   const nextPreloadHref = useMemo(() => {
-    const nextIndex = activeFeedIndex + 1;
-    if (nextIndex >= items.length) return null;
-    const candidates = homeFeedPlaybackCandidates(items[nextIndex].video);
+    if (activeFeedIndex + 1 >= items.length) return null;
+    const candidates = homeFeedPlaybackCandidates(
+      items[activeFeedIndex + 1].video,
+    );
     const href = (
-      candidates[0] ?? videoPlaybackUrl(items[nextIndex].video)
+      candidates[0] ?? videoPlaybackUrl(items[activeFeedIndex + 1].video)
     ).trim();
     return href.length > 0 ? href : null;
   }, [activeFeedIndex, items]);
@@ -61,33 +55,21 @@ export function HomeCleanFeedScroll({ items }: Props) {
     const el = scrollRef.current;
     if (!el || items.length === 0) return;
 
-    const resetToFirstSlide = () => {
-      const height = el.clientHeight;
-      if (height > 0 && isHomeFeedMobileViewport()) {
-        el.style.setProperty("--home-clean-v3-slide-height", `${height}px`);
+    const sync = () => {
+      if (isHomeFeedMobileViewport()) {
+        const height = el.clientHeight;
+        if (height > 0) {
+          el.style.setProperty("--home-clean-v3-slide-height", `${height}px`);
+        }
       }
-      if (el.scrollTop !== 0) {
-        el.scrollTop = 0;
-      }
-      setActiveIndex(0);
       const key = snapVideoKeys[0];
       if (key) reportScrollSnapBoost(key);
+      setActiveIndex(0);
     };
 
-    resetToFirstSlide();
-    requestAnimationFrame(resetToFirstSlide);
-  }, [itemIdsKey, items.length, reportScrollSnapBoost, snapVideoKeys]);
-
-  useEffect(() => {
-    setSoundEnabled(true);
-    notifyFeedUserActivation(true);
-    requestPlaybackRetry();
-  }, [
-    itemIdsKey,
-    notifyFeedUserActivation,
-    requestPlaybackRetry,
-    setSoundEnabled,
-  ]);
+    sync();
+    requestAnimationFrame(sync);
+  }, [items.length, reportScrollSnapBoost, snapVideoKeys]);
 
   const updateActiveIndex = useCallback(() => {
     const el = scrollRef.current;
@@ -100,11 +82,8 @@ export function HomeCleanFeedScroll({ items }: Props) {
     );
     setActiveIndex(index);
     const key = snapVideoKeys[index];
-    if (key) {
-      reportScrollSnapBoost(key);
-      requestPlaybackRetry();
-    }
-  }, [items.length, reportScrollSnapBoost, requestPlaybackRetry, snapVideoKeys]);
+    if (key) reportScrollSnapBoost(key);
+  }, [items.length, reportScrollSnapBoost, snapVideoKeys]);
 
   const updateDesktopActiveFromViewport = useCallback(() => {
     const el = scrollRef.current;
@@ -130,11 +109,8 @@ export function HomeCleanFeedScroll({ items }: Props) {
 
     setActiveIndex(bestIndex);
     const key = snapVideoKeys[bestIndex];
-    if (key) {
-      reportScrollSnapBoost(key);
-      requestPlaybackRetry();
-    }
-  }, [reportScrollSnapBoost, requestPlaybackRetry, snapVideoKeys]);
+    if (key) reportScrollSnapBoost(key);
+  }, [reportScrollSnapBoost, snapVideoKeys]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -151,10 +127,7 @@ export function HomeCleanFeedScroll({ items }: Props) {
       }
     };
 
-    const unlock = () => {
-      notifyFeedUserActivation(true);
-      requestPlaybackRetry();
-    };
+    const unlock = () => notifyFeedUserActivation();
 
     const onScroll = () => {
       if (el.scrollLeft !== 0) el.scrollLeft = 0;
@@ -170,8 +143,7 @@ export function HomeCleanFeedScroll({ items }: Props) {
       observer = new ResizeObserver(syncSlideHeight);
       observer.observe(el);
       el.addEventListener("scroll", onScroll, { passive: true });
-      el.addEventListener("pointerdown", unlock, { capture: true, passive: true });
-      el.addEventListener("touchstart", unlock, { capture: true, passive: true });
+      el.addEventListener("touchstart", unlock, { passive: true });
       el.addEventListener("wheel", unlock, { passive: true });
       updateActiveIndex();
     };
@@ -197,8 +169,7 @@ export function HomeCleanFeedScroll({ items }: Props) {
       observer?.disconnect();
       observer = null;
       el.removeEventListener("scroll", onScroll);
-      el.removeEventListener("pointerdown", unlock, { capture: true });
-      el.removeEventListener("touchstart", unlock, { capture: true });
+      el.removeEventListener("touchstart", unlock);
       el.removeEventListener("wheel", unlock);
     };
 
@@ -220,7 +191,6 @@ export function HomeCleanFeedScroll({ items }: Props) {
     };
   }, [
     notifyFeedUserActivation,
-    requestPlaybackRetry,
     updateActiveIndex,
     updateDesktopActiveFromViewport,
   ]);

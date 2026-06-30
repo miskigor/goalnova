@@ -47,7 +47,7 @@ export type AugmentedHomeFeedItem = HomeFeedItem & {
  * Page size for `/home` feed — small first batch for fast initial load; use `offset` in
  * `fetchHomeFeedData` for additional pages (see `HomeFeed` infinite scroll).
  */
-export const HOME_FEED_PAGE_SIZE = 8;
+export const HOME_FEED_PAGE_SIZE = 12;
 
 /** Batch-load `public.users.avatar_url` for feed cards. */
 export async function fetchUserAvatarUrlsByUserIds(
