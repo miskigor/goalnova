@@ -2,45 +2,67 @@
 
 import { useEffect } from "react";
 
+type PreloadKind = "active" | "next";
+
+function upsertVideoPreload(href: string, kind: PreloadKind, priority: "high" | "low") {
+  const attr = `data-pitchrusch-feed-video-preload-${kind}`;
+  let link = document.querySelector<HTMLLinkElement>(`link[${attr}]`);
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "video";
+    link.setAttribute(attr, "");
+    document.head.appendChild(link);
+  }
+  if (link.href !== href) link.href = href;
+  link.setAttribute("fetchpriority", priority);
+}
+
+function removeVideoPreload(kind: PreloadKind) {
+  document
+    .querySelector(`link[data-pitchrusch-feed-video-preload-${kind}]`)
+    ?.remove();
+}
+
 /**
- * Optional `<link rel="preload" as="video">` for the active home-feed clip only.
- * Deferred until after first paint so navigation does not compete with shell/feed UI.
- * N+1 / N+2 are not head-preloaded on open (see {@link FeedItemCard} preload tiers).
+ * Head preloads for the active home-feed clip and the next slide (low priority).
  */
 export function FeedVideoHeadPreloads({
   firstHref,
+  nextHref,
 }: {
   firstHref: string | null;
-  /** @deprecated Not used on initial load — kept for {@link HomeFeed} call-site stability. */
   nextHref?: string | null;
-  /** @deprecated Not used on initial load — kept for {@link HomeFeed} call-site stability. */
+  /** @deprecated Not used — kept for {@link HomeFeed} call-site stability. */
   thirdHref?: string | null;
 }) {
   useEffect(() => {
-    if (typeof document === "undefined" || !firstHref) return;
+    if (typeof document === "undefined") return;
 
-    let cancelled = false;
-    let link: HTMLLinkElement | null = null;
+    if (!firstHref) {
+      removeVideoPreload("active");
+      return;
+    }
 
-    const inject = () => {
-      if (cancelled || link) return;
-      link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "video";
-      link.href = firstHref;
-      link.setAttribute("fetchpriority", "high");
-      link.setAttribute("data-pitchrusch-feed-video-preload", "active");
-      document.head.appendChild(link);
-    };
-
-    inject();
-
+    upsertVideoPreload(firstHref, "active", "high");
     return () => {
-      cancelled = true;
-      link?.remove();
-      link = null;
+      removeVideoPreload("active");
     };
   }, [firstHref]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    if (!nextHref) {
+      removeVideoPreload("next");
+      return;
+    }
+
+    upsertVideoPreload(nextHref, "next", "low");
+    return () => {
+      removeVideoPreload("next");
+    };
+  }, [nextHref]);
 
   return null;
 }

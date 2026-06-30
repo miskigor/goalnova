@@ -47,7 +47,7 @@ export type AugmentedHomeFeedItem = HomeFeedItem & {
  * Page size for `/home` feed — small first batch for fast initial load; use `offset` in
  * `fetchHomeFeedData` for additional pages (see `HomeFeed` infinite scroll).
  */
-export const HOME_FEED_PAGE_SIZE = 12;
+export const HOME_FEED_PAGE_SIZE = 8;
 
 /** Batch-load `public.users.avatar_url` for feed cards. */
 export async function fetchUserAvatarUrlsByUserIds(
@@ -285,9 +285,15 @@ export async function fetchHomeFeedData(
 
   const profileByUserId = new Map<string, HomeFeedPlayerProfile>();
 
+  let avatarByUserId = new Map<string, string | null>();
+
   if (userIds.length > 0) {
-    const { rows: profiles, errorMessage: profilesError } =
-      await rpcFetchPublicPlayerProfilesByIds(supabase, userIds);
+    const [{ rows: profiles, errorMessage: profilesError }, avatars] =
+      await Promise.all([
+        rpcFetchPublicPlayerProfilesByIds(supabase, userIds),
+        fetchUserAvatarUrlsByUserIds(supabase, userIds),
+      ]);
+    avatarByUserId = avatars;
 
     if (profilesError) {
       logFullSupabaseError(
@@ -302,8 +308,6 @@ export async function fetchHomeFeedData(
     }
   }
 
-  const avatarByUserId = await fetchUserAvatarUrlsByUserIds(supabase, userIds);
-
   const items: HomeFeedItem[] = visibleNormalized.map(({ video, embedChallenge }) => {
     const profile = profileByUserId.get(video.user_id) ?? null;
     const uid = video.user_id?.trim() || "";
@@ -313,12 +317,11 @@ export async function fetchHomeFeedData(
     return { video, profile, userDisplayName, userAvatarUrl, challenge };
   });
 
-  const withChallenges = await attachChallengesToHomeFeedItems(supabase, items);
-
-  const trackIds = withChallenges.map((i) =>
-    selectedMusicTrackIdFromVideo(i.video),
-  );
-  const musicMap = await fetchMusicTrackSummariesByIds(supabase, trackIds);
+  const trackIds = items.map((i) => selectedMusicTrackIdFromVideo(i.video));
+  const [withChallenges, musicMap] = await Promise.all([
+    attachChallengesToHomeFeedItems(supabase, items),
+    fetchMusicTrackSummariesByIds(supabase, trackIds),
+  ]);
   const merged = withChallenges.map((i) => {
     const tid = selectedMusicTrackIdFromVideo(i.video);
     return {

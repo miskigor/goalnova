@@ -53,7 +53,7 @@ export function ChallengesHub() {
       return;
     }
     setChallenges(list);
-    const countMap = await fetchVideoCountsByChallengeId();
+    const countMap = await fetchVideoCountsByChallengeId(list.map((c) => c.id));
     setCounts(countMap);
     setLoading(false);
     setRetryBusy(false);

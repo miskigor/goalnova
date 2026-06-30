@@ -225,13 +225,19 @@ export async function fetchChallengeBySlugOrId(
   return fetchChallengeBySlug(s);
 }
 
-/** Count videos per challenge_id in one round trip. */
-export async function fetchVideoCountsByChallengeId(): Promise<Map<string, number>> {
+/** Count videos per challenge_id — scoped to known challenge ids when provided. */
+export async function fetchVideoCountsByChallengeId(
+  challengeIds?: string[],
+): Promise<Map<string, number>> {
   const map = new Map<string, number>();
-  const { data, error } = await supabase
-    .from("videos")
-    .select("challenge_id")
-    .not("challenge_id", "is", null);
+  const ids = [...new Set((challengeIds ?? []).filter(Boolean))];
+
+  let query = supabase.from("videos").select("challenge_id").not("challenge_id", "is", null);
+  if (ids.length > 0) {
+    query = query.in("challenge_id", ids);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     logFullSupabaseError("[challenges] fetchVideoCountsByChallengeId", error);

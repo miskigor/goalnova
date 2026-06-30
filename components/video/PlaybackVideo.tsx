@@ -48,6 +48,8 @@ type PlaybackVideoProps = {
   fetchPriority?: "high" | "low" | "auto";
   /** Still frame while the clip buffers (feed return / cold start). */
   poster?: string;
+  /** Milliseconds before advancing to the next source when load stalls. */
+  loadWatchdogMs?: number;
 };
 
 export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVideoProps>(
@@ -68,6 +70,7 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
       onPlaying,
       fetchPriority,
       poster,
+      loadWatchdogMs = 10_000,
     },
     ref,
   ) {
@@ -110,7 +113,7 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
 
       // Some URLs never emit `error` but also never reach `loadeddata`. Do not use `waiting`/`stalled`
       // for fallback — those fire during normal re-buffering and swapping `src` feels like start–stop–start.
-      const LOAD_WATCHDOG_MS = 10_000;
+      const LOAD_WATCHDOG_MS = loadWatchdogMs;
       loadWatchdogRef.current = window.setTimeout(() => {
         advanceToNextSource();
       }, LOAD_WATCHDOG_MS);
@@ -118,7 +121,7 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
       return () => {
         clearLoadWatchdog();
       };
-    }, [advanceToNextSource, canFallback, clearLoadWatchdog, currentSrc]);
+    }, [advanceToNextSource, canFallback, clearLoadWatchdog, currentSrc, loadWatchdogMs]);
 
     useEffect(() => {
       const v = videoRef.current;

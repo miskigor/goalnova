@@ -35,9 +35,8 @@ export function rankingsPreviewVideoCandidates(video: VideoPlaybackFields): stri
  */
 export function homeFeedPlaybackCandidates(video: VideoPlaybackFields): string[] {
   const processed = (video.processed_video_url ?? "").trim();
-  const source = (video.source_video_url ?? "").trim();
   const primary = (video.video_url ?? "").trim();
-  return Array.from(new Set([primary, processed, source].filter(Boolean)));
+  return Array.from(new Set([primary, processed].filter(Boolean)));
 }
 
 /**

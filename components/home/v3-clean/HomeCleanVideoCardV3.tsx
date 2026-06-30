@@ -20,17 +20,22 @@ import {
 } from "@/lib/video/videoPlaybackUrl";
 import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 import { PlayerProfileNavLink } from "@/components/player/PlayerProfileNavLink";
+import { exploreTileThumbnailOrPosterImageUrl } from "@/lib/video/exploreTileMedia";
+import { GN_VIDEO_MEDIA_POSTER_ABSOLUTE_CLASS } from "@/lib/video/videoMediaDisplayClasses";
 
 type Props = {
   item: AugmentedHomeFeedItem;
   feedIndex: number;
   activeFeedIndex: number;
+  /** Only mount `<video>` near the active slide to cut decode/network contention. */
+  mountVideo: boolean;
 };
 
 export function HomeCleanVideoCardV3({
   item,
   feedIndex,
   activeFeedIndex,
+  mountVideo,
 }: Props) {
   const t = useTranslations("homeFeed");
   const slideRef = useRef<HTMLDivElement>(null);
@@ -54,6 +59,7 @@ export function HomeCleanVideoCardV3({
     t("unknownPlayer");
 
   const captionText = video.caption?.trim();
+  const posterUrl = exploreTileThumbnailOrPosterImageUrl(video);
 
   const shareTrailing =
     video.id != null ? (
@@ -68,11 +74,13 @@ export function HomeCleanVideoCardV3({
 
   const slideOffset = feedIndex - activeFeedIndex;
   const preload: "none" | "metadata" | "auto" =
-    slideOffset === 0
-      ? "auto"
-      : Math.abs(slideOffset) <= 2
-        ? "metadata"
-        : "none";
+    !mountVideo
+      ? "none"
+      : slideOffset === 0
+        ? "auto"
+        : slideOffset === 1
+          ? "metadata"
+          : "none";
   const fetchPriority = slideOffset === 0 ? "high" : "low";
 
   const avatar = (
@@ -87,7 +95,7 @@ export function HomeCleanVideoCardV3({
   return (
     <div ref={slideRef} data-home-clean-v3-item>
       <div data-home-clean-v3-card style={HOME_CLEAN_V3_CARD_LOCK_STYLE}>
-        {!hasUrl ? null : (
+        {!hasUrl ? null : mountVideo ? (
           <FeedVideoSurface
             sources={playbackSources}
             renderedPrimarySrc={renderedPrimarySrc}
@@ -95,6 +103,8 @@ export function HomeCleanVideoCardV3({
             preload={preload}
             fetchPriority={fetchPriority}
             mediaFit="cover"
+            poster={posterUrl}
+            loadWatchdogMs={3000}
             visibilityObserveRef={slideRef}
             debugMeta={{
               videoRowId: video.id ?? null,
@@ -104,6 +114,16 @@ export function HomeCleanVideoCardV3({
             }}
             className="absolute inset-0 h-full w-full max-h-full max-w-full object-cover object-center [color-scheme:dark]"
           />
+        ) : posterUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={posterUrl}
+            alt=""
+            className={GN_VIDEO_MEDIA_POSTER_ABSOLUTE_CLASS}
+            decoding="async"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-black" aria-hidden />
         )}
 
         {challenge ? (

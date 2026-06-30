@@ -35,18 +35,19 @@ export function HomeCleanFeedScroll({ items }: Props) {
 
   const firstPreloadHref = useMemo(() => {
     if (items.length === 0) return null;
-    const candidates = homeFeedPlaybackCandidates(items[0].video);
-    const href = (candidates[0] ?? videoPlaybackUrl(items[0].video)).trim();
+    const candidates = homeFeedPlaybackCandidates(items[activeFeedIndex]?.video ?? items[0].video);
+    const href = (
+      candidates[0] ?? videoPlaybackUrl(items[activeFeedIndex]?.video ?? items[0].video)
+    ).trim();
     return href.length > 0 ? href : null;
-  }, [items]);
+  }, [activeFeedIndex, items]);
 
   const nextPreloadHref = useMemo(() => {
-    if (activeFeedIndex + 1 >= items.length) return null;
-    const candidates = homeFeedPlaybackCandidates(
-      items[activeFeedIndex + 1].video,
-    );
+    const nextIndex = activeFeedIndex + 1;
+    if (nextIndex >= items.length) return null;
+    const candidates = homeFeedPlaybackCandidates(items[nextIndex].video);
     const href = (
-      candidates[0] ?? videoPlaybackUrl(items[activeFeedIndex + 1].video)
+      candidates[0] ?? videoPlaybackUrl(items[nextIndex].video)
     ).trim();
     return href.length > 0 ? href : null;
   }, [activeFeedIndex, items]);
@@ -195,6 +196,7 @@ export function HomeCleanFeedScroll({ items }: Props) {
                 item={item}
                 feedIndex={index}
                 activeFeedIndex={activeFeedIndex}
+                mountVideo={Math.abs(index - activeFeedIndex) <= 1}
               />
             </div>
           ))}
