@@ -15,18 +15,25 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
+/**
+ * Meta link-preview bots only — NOT Instagram/WhatsApp in-app browsers
+ * (those UAs also contain "Instagram" / "WhatsApp" but include Mozilla/WebKit).
+ */
 export function isMetaLinkPreviewCrawler(userAgent: string | null): boolean {
-  const ua = (userAgent ?? "").toLowerCase();
-  return (
-    ua.includes("facebookexternalhit") ||
-    ua.includes("externalhit") ||
-    ua.includes("facebot") ||
-    ua.includes("whatsapp") ||
-    ua.includes("instagram") ||
-    ua.includes("meta-externalagent") ||
-    ua.includes("meta-externalfetcher") ||
-    ua.includes("meta-webindexer")
-  );
+  const ua = (userAgent ?? "").trim();
+  if (!ua) return false;
+  const lower = ua.toLowerCase();
+
+  if (lower.includes("facebookexternalhit")) return true;
+  if (lower.includes("facebot")) return true;
+  if (lower.includes("meta-externalagent")) return true;
+  if (lower.includes("meta-externalfetcher")) return true;
+  if (lower.includes("meta-webindexer")) return true;
+
+  // WhatsApp preview bot — "WhatsApp/2.x" without a normal browser prefix.
+  if (/^whatsapp\/[\d.]+/i.test(ua) && !lower.includes("mozilla")) return true;
+
+  return false;
 }
 
 /** Public marketing landing only — `/` or `/{locale}`. */
