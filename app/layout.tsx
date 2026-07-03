@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Bebas_Neue, Geist, Noto_Sans_Arabic } from "next/font/google";
 import { PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS } from "@/lib/loading/criticalFirstPaint";
+import { buildBrandLinkPreviewMetadata } from "@/lib/seo/englishLinkPreview";
+import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,7 +25,14 @@ const notoArabic = Noto_Sans_Arabic({
   preload: false,
 });
 
+const siteOrigin = getServerSiteOrigin();
+const rootLinkPreview = buildBrandLinkPreviewMetadata({
+  canonicalPath: "/",
+  origin: siteOrigin,
+});
+
 export const metadata: Metadata = {
+  metadataBase: siteMetadataBase(siteOrigin),
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -33,6 +42,8 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
   },
   manifest: "/site.webmanifest",
+  openGraph: rootLinkPreview.openGraph,
+  twitter: rootLinkPreview.twitter,
 };
 
 export const viewport: Viewport = {

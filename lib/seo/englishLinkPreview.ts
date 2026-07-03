@@ -4,6 +4,7 @@ import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 import {
   SITE_SEO_DESCRIPTION,
   SITE_SEO_OG_IMAGE_HEIGHT,
+  SITE_SEO_OG_IMAGE_MIME,
   SITE_SEO_OG_IMAGE_PATH,
   SITE_SEO_OG_IMAGE_WIDTH,
   SITE_SEO_TITLE,
@@ -55,7 +56,7 @@ export function buildBrandLinkPreviewMetadata({
           width: SITE_SEO_OG_IMAGE_WIDTH,
           height: SITE_SEO_OG_IMAGE_HEIGHT,
           alt: `${APP_DISPLAY_NAME} — Football talent discovery`,
-          type: "image/png",
+          type: SITE_SEO_OG_IMAGE_MIME,
         },
       ],
     },

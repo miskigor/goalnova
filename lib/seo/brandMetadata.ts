@@ -19,12 +19,14 @@ export const SITE_SEO_KEYWORDS = [
 import {
   BRAND_LOGO_SRC,
   BRAND_OG_IMAGE_HEIGHT,
+  BRAND_OG_IMAGE_MIME,
   BRAND_OG_IMAGE_SRC,
   BRAND_OG_IMAGE_WIDTH,
 } from "@/lib/constants/brand";
 
 /** Static brand image for social link previews (WhatsApp, Instagram, TikTok, iMessage). */
 export const SITE_SEO_OG_IMAGE_PATH = BRAND_OG_IMAGE_SRC;
+export const SITE_SEO_OG_IMAGE_MIME = BRAND_OG_IMAGE_MIME;
 export const SITE_SEO_OG_IMAGE_WIDTH = BRAND_OG_IMAGE_WIDTH;
 export const SITE_SEO_OG_IMAGE_HEIGHT = BRAND_OG_IMAGE_HEIGHT;
 
