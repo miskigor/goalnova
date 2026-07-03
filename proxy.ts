@@ -8,6 +8,11 @@ import {
 } from "./lib/i18n/localePreference";
 import { hrefWithLocale, routing } from "./i18n/routing";
 import { VIDEO_ENTRY_COOKIE } from "./lib/video/videoEntryCookie";
+import {
+  buildMetaCrawlerHtml,
+  isMetaLinkPreviewCrawler,
+  isPublicLandingPath,
+} from "./lib/seo/metaCrawlerHtml";
 
 const handleI18nRouting = createMiddleware(routing);
 
@@ -52,6 +57,18 @@ export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (isMalformedPathname(pathname)) {
     return new NextResponse(null, { status: 404 });
+  }
+
+  const userAgent = request.headers.get("user-agent");
+  if (isMetaLinkPreviewCrawler(userAgent) && isPublicLandingPath(pathname)) {
+    const pageUrl = new URL(pathname, request.nextUrl.origin).href.replace(/\/$/, "") || request.nextUrl.origin;
+    const html = buildMetaCrawlerHtml(pageUrl, request.nextUrl.origin);
+    return new NextResponse(html, {
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "public, max-age=0, must-revalidate",
+      },
+    });
   }
 
   const urlLocale = localeFromPathname(pathname);

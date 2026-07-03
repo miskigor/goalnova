@@ -4,13 +4,14 @@ import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 import {
   SITE_SEO_OG_IMAGE_HEIGHT,
   SITE_SEO_OG_IMAGE_MIME,
-  SITE_SEO_OG_IMAGE_PATH,
-  SITE_SEO_OG_IMAGE_SQUARE_PATH,
-  SITE_SEO_OG_IMAGE_SQUARE_SIZE,
   SITE_SEO_OG_IMAGE_WIDTH,
   SITE_SEO_OG_SHARE_DESCRIPTION,
   SITE_SEO_OG_SHARE_TITLE,
 } from "@/lib/seo/brandMetadata";
+import {
+  SITE_OG_IMAGE_CACHE_VERSION,
+  siteOgImageAbsoluteUrl,
+} from "@/lib/seo/metaCrawlerHtml";
 
 const DEFAULT_SITE_ORIGIN = "https://pitchrusch.com";
 
@@ -41,8 +42,7 @@ export function buildBrandLinkPreviewMetadata({
   const siteOrigin = normalizeOrigin(origin);
   const path = canonicalPath.startsWith("/") ? canonicalPath : `/${canonicalPath}`;
   const pageUrl = absoluteUrl(siteOrigin, path);
-  const squareImageUrl = absoluteUrl(siteOrigin, SITE_SEO_OG_IMAGE_SQUARE_PATH);
-  const landscapeImageUrl = absoluteUrl(siteOrigin, SITE_SEO_OG_IMAGE_PATH);
+  const imageUrl = siteOgImageAbsoluteUrl(siteOrigin);
 
   return {
     openGraph: {
@@ -54,19 +54,11 @@ export function buildBrandLinkPreviewMetadata({
       url: pageUrl,
       images: [
         {
-          url: squareImageUrl,
-          secureUrl: squareImageUrl,
-          width: SITE_SEO_OG_IMAGE_SQUARE_SIZE,
-          height: SITE_SEO_OG_IMAGE_SQUARE_SIZE,
-          alt: `${APP_DISPLAY_NAME} — Football talent discovery`,
-          type: SITE_SEO_OG_IMAGE_MIME,
-        },
-        {
-          url: landscapeImageUrl,
-          secureUrl: landscapeImageUrl,
+          url: imageUrl,
+          secureUrl: imageUrl,
           width: SITE_SEO_OG_IMAGE_WIDTH,
           height: SITE_SEO_OG_IMAGE_HEIGHT,
-          alt: `${APP_DISPLAY_NAME} — Football talent discovery`,
+          alt: `${APP_DISPLAY_NAME} - Football talent discovery`,
           type: SITE_SEO_OG_IMAGE_MIME,
         },
       ],
@@ -75,12 +67,14 @@ export function buildBrandLinkPreviewMetadata({
       card: "summary_large_image",
       title: SITE_SEO_OG_SHARE_TITLE,
       description: SITE_SEO_OG_SHARE_DESCRIPTION,
-      images: [landscapeImageUrl],
+      images: [imageUrl],
     },
   };
 }
 
-/** Absolute OG image URL for hardcoded `<head>` fallbacks (WhatsApp crawlers). */
+/** @deprecated Use siteOgImageAbsoluteUrl from metaCrawlerHtml */
 export function brandOgImageAbsoluteUrl(origin?: string | null): string {
-  return absoluteUrl(normalizeOrigin(origin), SITE_SEO_OG_IMAGE_SQUARE_PATH);
+  return siteOgImageAbsoluteUrl(normalizeOrigin(origin));
 }
+
+export { SITE_OG_IMAGE_CACHE_VERSION };

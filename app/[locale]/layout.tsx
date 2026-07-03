@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import { LocaleIntlProviders } from "@/components/i18n/LocaleIntlProviders";
 import type { AppLocale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
-import { buildBrandLinkPreviewMetadata } from "@/lib/seo/englishLinkPreview";
 import { buildLocaleAlternates, localizedCanonicalPath } from "@/lib/seo/alternates";
 import { PUBLIC_INDEX_ROBOTS } from "@/lib/seo/publicIndexRobots";
 import { buildSiteVerificationMetadata } from "@/lib/seo/siteVerification";
@@ -32,7 +31,6 @@ export async function generateMetadata({
   const origin = getServerSiteOrigin();
   const metadataBase = siteMetadataBase(origin);
   const canonicalPath = localizedCanonicalPath(locale, "/");
-  const linkPreview = buildBrandLinkPreviewMetadata({ canonicalPath, origin });
 
   return {
     metadataBase,
@@ -46,8 +44,6 @@ export async function generateMetadata({
       canonical: canonicalPath,
     },
     robots: PUBLIC_INDEX_ROBOTS,
-    openGraph: linkPreview.openGraph,
-    twitter: linkPreview.twitter,
     ...buildSiteVerificationMetadata(),
   };
 }

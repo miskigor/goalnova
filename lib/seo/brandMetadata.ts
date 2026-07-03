@@ -6,7 +6,7 @@ export const SITE_SEO_DESCRIPTION =
   "Upload football highlights, join weekly skill challenges, and get discovered by scouts and clubs on PitchRusch.";
 
 /** WhatsApp-friendly OG title (≤35 chars). */
-export const SITE_SEO_OG_SHARE_TITLE = "PitchRusch — Football Talent";
+export const SITE_SEO_OG_SHARE_TITLE = "PitchRusch - Football Talent";
 
 /** WhatsApp-friendly OG description (≤65 chars). */
 export const SITE_SEO_OG_SHARE_DESCRIPTION =
