@@ -13,6 +13,9 @@ export const BRAND_LOGO_HEIGHT = 1024;
 
 /** Social share card (Open Graph / Twitter / WhatsApp) — 1.91:1 recommended. */
 export const BRAND_OG_IMAGE_SRC = "/og-image.jpg";
+/** Square share card — WhatsApp / iMessage thumbnails prefer 1:1. */
+export const BRAND_OG_IMAGE_SQUARE_SRC = "/og-image-square.jpg";
 export const BRAND_OG_IMAGE_MIME = "image/jpeg";
 export const BRAND_OG_IMAGE_WIDTH = 1200;
 export const BRAND_OG_IMAGE_HEIGHT = 630;
+export const BRAND_OG_IMAGE_SQUARE_SIZE = 1200;

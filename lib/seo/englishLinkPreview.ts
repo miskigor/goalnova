@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
 import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 import {
-  SITE_SEO_DESCRIPTION,
   SITE_SEO_OG_IMAGE_HEIGHT,
   SITE_SEO_OG_IMAGE_MIME,
   SITE_SEO_OG_IMAGE_PATH,
+  SITE_SEO_OG_IMAGE_SQUARE_PATH,
+  SITE_SEO_OG_IMAGE_SQUARE_SIZE,
   SITE_SEO_OG_IMAGE_WIDTH,
-  SITE_SEO_TITLE,
+  SITE_SEO_OG_SHARE_DESCRIPTION,
+  SITE_SEO_OG_SHARE_TITLE,
 } from "@/lib/seo/brandMetadata";
 
 const DEFAULT_SITE_ORIGIN = "https://pitchrusch.com";
@@ -39,20 +41,29 @@ export function buildBrandLinkPreviewMetadata({
   const siteOrigin = normalizeOrigin(origin);
   const path = canonicalPath.startsWith("/") ? canonicalPath : `/${canonicalPath}`;
   const pageUrl = absoluteUrl(siteOrigin, path);
-  const imageUrl = absoluteUrl(siteOrigin, SITE_SEO_OG_IMAGE_PATH);
+  const squareImageUrl = absoluteUrl(siteOrigin, SITE_SEO_OG_IMAGE_SQUARE_PATH);
+  const landscapeImageUrl = absoluteUrl(siteOrigin, SITE_SEO_OG_IMAGE_PATH);
 
   return {
     openGraph: {
       type: "website",
       siteName: APP_DISPLAY_NAME,
-      title: SITE_SEO_TITLE,
-      description: SITE_SEO_DESCRIPTION,
+      title: SITE_SEO_OG_SHARE_TITLE,
+      description: SITE_SEO_OG_SHARE_DESCRIPTION,
       locale: "en_US",
       url: pageUrl,
       images: [
         {
-          url: imageUrl,
-          secureUrl: imageUrl,
+          url: squareImageUrl,
+          secureUrl: squareImageUrl,
+          width: SITE_SEO_OG_IMAGE_SQUARE_SIZE,
+          height: SITE_SEO_OG_IMAGE_SQUARE_SIZE,
+          alt: `${APP_DISPLAY_NAME} — Football talent discovery`,
+          type: SITE_SEO_OG_IMAGE_MIME,
+        },
+        {
+          url: landscapeImageUrl,
+          secureUrl: landscapeImageUrl,
           width: SITE_SEO_OG_IMAGE_WIDTH,
           height: SITE_SEO_OG_IMAGE_HEIGHT,
           alt: `${APP_DISPLAY_NAME} — Football talent discovery`,
@@ -62,9 +73,14 @@ export function buildBrandLinkPreviewMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: SITE_SEO_TITLE,
-      description: SITE_SEO_DESCRIPTION,
-      images: [imageUrl],
+      title: SITE_SEO_OG_SHARE_TITLE,
+      description: SITE_SEO_OG_SHARE_DESCRIPTION,
+      images: [landscapeImageUrl],
     },
   };
+}
+
+/** Absolute OG image URL for hardcoded `<head>` fallbacks (WhatsApp crawlers). */
+export function brandOgImageAbsoluteUrl(origin?: string | null): string {
+  return absoluteUrl(normalizeOrigin(origin), SITE_SEO_OG_IMAGE_SQUARE_PATH);
 }

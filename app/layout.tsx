@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Bebas_Neue, Geist, Noto_Sans_Arabic } from "next/font/google";
 import { PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS } from "@/lib/loading/criticalFirstPaint";
-import { buildBrandLinkPreviewMetadata } from "@/lib/seo/englishLinkPreview";
+import { buildBrandLinkPreviewMetadata, brandOgImageAbsoluteUrl } from "@/lib/seo/englishLinkPreview";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 import "./globals.css";
 
@@ -30,6 +30,7 @@ const rootLinkPreview = buildBrandLinkPreviewMetadata({
   canonicalPath: "/",
   origin: siteOrigin,
 });
+const ogImageUrl = brandOgImageAbsoluteUrl(siteOrigin);
 
 export const metadata: Metadata = {
   metadataBase: siteMetadataBase(siteOrigin),
@@ -72,6 +73,12 @@ export default function RootLayout({ children }: Props) {
       <head>
         <meta name="color-scheme" content="dark" />
         <meta name="google" content="notranslate" />
+        <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:image:secure_url" content={ogImageUrl} />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="1200" />
+        <link rel="image_src" href={ogImageUrl} />
         <style
           id="pitchrusch-critical-first-paint"
           dangerouslySetInnerHTML={{ __html: PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS }}
