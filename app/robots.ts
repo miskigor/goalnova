@@ -11,6 +11,10 @@ export default function robots(): MetadataRoute.Robots {
         // Private routes use `noindex` in layout/page metadata — not Disallow here.
         // Disallow + noindex blocks recrawl and causes GSC "indexed though blocked by robots.txt".
       },
+      {
+        userAgent: "facebookexternalhit",
+        allow: "/",
+      },
     ],
     sitemap: `${origin}/sitemap.xml`,
     host: origin,

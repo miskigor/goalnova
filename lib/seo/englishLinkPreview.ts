@@ -8,10 +8,7 @@ import {
   SITE_SEO_OG_SHARE_DESCRIPTION,
   SITE_SEO_OG_SHARE_TITLE,
 } from "@/lib/seo/brandMetadata";
-import {
-  SITE_OG_IMAGE_CACHE_VERSION,
-  siteOgImageAbsoluteUrl,
-} from "@/lib/seo/metaCrawlerHtml";
+import { siteOgImageAbsoluteUrl } from "@/lib/seo/metaCrawlerHtml";
 
 const DEFAULT_SITE_ORIGIN = "https://pitchrusch.com";
 
@@ -76,5 +73,3 @@ export function buildBrandLinkPreviewMetadata({
 export function brandOgImageAbsoluteUrl(origin?: string | null): string {
   return siteOgImageAbsoluteUrl(normalizeOrigin(origin));
 }
-
-export { SITE_OG_IMAGE_CACHE_VERSION };
