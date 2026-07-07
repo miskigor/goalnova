@@ -10,6 +10,7 @@ import {
   homeFeedPlaybackCandidates,
   videoPlaybackUrl,
 } from "@/lib/video/videoPlaybackUrl";
+import { exploreTileVideoPosterAttribute } from "@/lib/video/exploreTileMedia";
 import { isHomeFeedMobileViewport } from "@/components/home/homeFeedMobileScrollReset";
 import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 
@@ -46,10 +47,18 @@ export function HomeCleanFeedScroll({
 
   const firstPreloadHref = useMemo(() => {
     if (items.length === 0) return null;
-    const candidates = homeFeedPlaybackCandidates(items[0].video);
-    const href = (candidates[0] ?? videoPlaybackUrl(items[0].video)).trim();
+    const activeItem = items[activeFeedIndex] ?? items[0];
+    const candidates = homeFeedPlaybackCandidates(activeItem.video);
+    const href = (candidates[0] ?? videoPlaybackUrl(activeItem.video)).trim();
     return href.length > 0 ? href : null;
-  }, [items]);
+  }, [activeFeedIndex, items]);
+
+  const activePosterPreloadHref = useMemo(() => {
+    const item = items[activeFeedIndex];
+    if (!item) return null;
+    const href = exploreTileVideoPosterAttribute(item.video, item.userAvatarUrl);
+    return href?.trim() || null;
+  }, [activeFeedIndex, items]);
 
   const nextPreloadHref = useMemo(() => {
     if (activeFeedIndex + 1 >= items.length) return null;
@@ -250,6 +259,28 @@ export function HomeCleanFeedScroll({
     updateDesktopActiveFromViewport,
   ]);
 
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const attr = "data-pitchrusch-feed-poster-preload";
+    if (!activePosterPreloadHref) {
+      document.querySelector(`link[${attr}]`)?.remove();
+      return;
+    }
+    let link = document.querySelector<HTMLLinkElement>(`link[${attr}]`);
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.setAttribute(attr, "");
+      document.head.appendChild(link);
+    }
+    if (link.href !== activePosterPreloadHref) link.href = activePosterPreloadHref;
+    link.setAttribute("fetchpriority", "high");
+    return () => {
+      document.querySelector(`link[${attr}]`)?.remove();
+    };
+  }, [activePosterPreloadHref]);
+
   return (
     <>
       {firstPreloadHref ? (
@@ -269,7 +300,7 @@ export function HomeCleanFeedScroll({
               <HomeCleanVideoCardV3
                 item={item}
                 feedIndex={index}
-                activeFeedIndex={activeFeedIndex}
+                scrollActiveIndex={activeIndex}
               />
             </div>
           ))}

@@ -15,6 +15,7 @@ import { feedItemVideoKey } from "@/lib/feed/feedItemVideoKey";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
   fetchHomeFeedData,
+  HOME_FEED_INITIAL_SIZE,
   HOME_FEED_PAGE_SIZE,
   type AugmentedHomeFeedItem,
 } from "@/lib/supabase/homeFeed";
@@ -48,19 +49,20 @@ export function HomeCleanV3() {
   const [loading, setLoading] = useState(() => !hasHomeCleanV3FeedCache());
   const [feedLoadFailed, setFeedLoadFailed] = useState(false);
   const [hasMore, setHasMore] = useState(
-    () => cachedOnMount.length >= HOME_FEED_PAGE_SIZE,
+    () => cachedOnMount.length >= HOME_FEED_INITIAL_SIZE,
   );
   const [loadingMore, setLoadingMore] = useState(false);
   const loadMoreInFlightRef = useRef(false);
   /** Next Supabase `range` offset (not filtered list length — avoids gaps when rows are skipped). */
   const dbFetchOffsetRef = useRef(
-    cachedOnMount.length > 0 ? HOME_FEED_PAGE_SIZE : 0,
+    cachedOnMount.length > 0 ? HOME_FEED_INITIAL_SIZE : 0,
   );
 
   const loadFeed = useCallback(async () => {
     const { items: next, error } = await fetchHomeFeedData(supabase, {
-      limit: HOME_FEED_PAGE_SIZE,
+      limit: HOME_FEED_INITIAL_SIZE,
       offset: 0,
+      skipMusic: true,
     });
     if (error) {
       logFullSupabaseError(
@@ -74,8 +76,8 @@ export function HomeCleanV3() {
     }
     setFeedLoadFailed(false);
     const augmented = next as AugmentedHomeFeedItem[];
-    dbFetchOffsetRef.current = HOME_FEED_PAGE_SIZE;
-    setHasMore(next.length >= HOME_FEED_PAGE_SIZE);
+    dbFetchOffsetRef.current = HOME_FEED_INITIAL_SIZE;
+    setHasMore(next.length >= HOME_FEED_INITIAL_SIZE);
     writeHomeCleanV3FeedCache(augmented);
     setItems(augmented);
   }, []);
@@ -97,6 +99,7 @@ export function HomeCleanV3() {
       const { items: batch, error } = await fetchHomeFeedData(supabase, {
         limit: HOME_FEED_PAGE_SIZE,
         offset,
+        skipMusic: true,
       });
       if (error) {
         logFullSupabaseError(

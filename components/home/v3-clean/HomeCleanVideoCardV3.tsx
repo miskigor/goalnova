@@ -18,19 +18,21 @@ import {
   homeFeedPlaybackCandidates,
   videoPlaybackUrl,
 } from "@/lib/video/videoPlaybackUrl";
+import { exploreTileVideoPosterAttribute } from "@/lib/video/exploreTileMedia";
 import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 import { PlayerProfileNavLink } from "@/components/player/PlayerProfileNavLink";
 
 type Props = {
   item: AugmentedHomeFeedItem;
   feedIndex: number;
-  activeFeedIndex: number;
+  /** Scroll-snapped index — used for mount/preload window (immediate). */
+  scrollActiveIndex: number;
 };
 
 export function HomeCleanVideoCardV3({
   item,
   feedIndex,
-  activeFeedIndex,
+  scrollActiveIndex,
 }: Props) {
   const t = useTranslations("homeFeed");
   const slideRef = useRef<HTMLDivElement>(null);
@@ -66,11 +68,13 @@ export function HomeCleanVideoCardV3({
       />
     ) : null;
 
-  const slideOffset = feedIndex - activeFeedIndex;
+  const slideOffset = feedIndex - scrollActiveIndex;
+  const shouldMountVideo = Math.abs(slideOffset) <= 1;
+  const posterUrl = exploreTileVideoPosterAttribute(video, userAvatarUrl);
   const preload: "none" | "metadata" | "auto" =
     slideOffset === 0
       ? "auto"
-      : Math.abs(slideOffset) <= 3
+      : Math.abs(slideOffset) === 1
         ? "metadata"
         : "none";
   const fetchPriority = slideOffset === 0 ? "high" : "low";
@@ -87,13 +91,15 @@ export function HomeCleanVideoCardV3({
   return (
     <div ref={slideRef} data-home-clean-v3-item>
       <div data-home-clean-v3-card style={HOME_CLEAN_V3_CARD_LOCK_STYLE}>
-        {!hasUrl ? null : (
+        {!hasUrl ? null : shouldMountVideo ? (
           <FeedVideoSurface
             sources={playbackSources}
             renderedPrimarySrc={renderedPrimarySrc}
             videoId={feedVideoKey}
+            poster={posterUrl}
             preload={preload}
             fetchPriority={fetchPriority}
+            loadWatchdogMs={7000}
             mediaFit="cover"
             visibilityObserveRef={slideRef}
             debugMeta={{
@@ -103,6 +109,19 @@ export function HomeCleanVideoCardV3({
               video_url: video.video_url,
             }}
             className="absolute inset-0 h-full w-full max-h-full max-w-full object-cover object-center [color-scheme:dark]"
+          />
+        ) : posterUrl ? (
+          <img
+            src={posterUrl}
+            alt=""
+            decoding="async"
+            fetchPriority="low"
+            className="pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover object-center"
+          />
+        ) : (
+          <div
+            className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-neutral-950 via-black to-neutral-950"
+            aria-hidden
           />
         )}
 

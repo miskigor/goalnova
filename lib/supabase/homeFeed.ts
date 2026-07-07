@@ -44,10 +44,12 @@ export type AugmentedHomeFeedItem = HomeFeedItem & {
 };
 
 /**
- * Page size for `/home` feed — small first batch for fast initial load; use `offset` in
- * `fetchHomeFeedData` for additional pages (see `HomeFeed` infinite scroll).
+ * Page size for `/home` feed infinite scroll (load-more batches).
  */
 export const HOME_FEED_PAGE_SIZE = 12;
+
+/** Smaller first batch on `/home` — faster time-to-first-video. */
+export const HOME_FEED_INITIAL_SIZE = 8;
 
 /** Batch-load `public.users.avatar_url` for feed cards. */
 export async function fetchUserAvatarUrlsByUserIds(
@@ -138,6 +140,8 @@ export type FetchHomeFeedOptions = {
   limit?: number;
   /** Row offset for pagination (ordered by `created_at` desc). */
   offset?: number;
+  /** Skip music track resolution (clean home feed does not render music UI). */
+  skipMusic?: boolean;
 };
 
 /**
@@ -317,11 +321,14 @@ export async function fetchHomeFeedData(
     return { video, profile, userDisplayName, userAvatarUrl, challenge };
   });
 
-  const trackIds = items.map((i) => selectedMusicTrackIdFromVideo(i.video));
-  const [withChallenges, musicMap] = await Promise.all([
-    attachChallengesToHomeFeedItems(supabase, items),
-    fetchMusicTrackSummariesByIds(supabase, trackIds),
-  ]);
+  const withChallenges = await attachChallengesToHomeFeedItems(supabase, items);
+
+  if (options?.skipMusic) {
+    return { items: withChallenges, error: null };
+  }
+
+  const trackIds = withChallenges.map((i) => selectedMusicTrackIdFromVideo(i.video));
+  const musicMap = await fetchMusicTrackSummariesByIds(supabase, trackIds);
   const merged = withChallenges.map((i) => {
     const tid = selectedMusicTrackIdFromVideo(i.video);
     return {

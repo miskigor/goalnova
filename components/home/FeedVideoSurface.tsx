@@ -53,6 +53,10 @@ type Props = {
   };
   /** Observe visibility on a larger node (e.g. full clean-home slide). Defaults to media wrap. */
   visibilityObserveRef?: RefObject<Element | null>;
+  /** Still frame while the clip buffers. */
+  poster?: string;
+  /** Milliseconds before advancing to the next source when load stalls. */
+  loadWatchdogMs?: number;
 };
 
 /**
@@ -79,6 +83,8 @@ export function FeedVideoSurface({
   onLoadError,
   debugMeta,
   visibilityObserveRef,
+  poster,
+  loadWatchdogMs = 10_000,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<PlaybackVideoHandle | null>(null);
@@ -484,12 +490,23 @@ export function FeedVideoSurface({
         className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-neutral-950 via-black to-neutral-950"
         aria-hidden
       />
+      {poster && !mediaReady ? (
+        <img
+          src={poster}
+          alt=""
+          decoding="async"
+          fetchPriority={fetchPriority === "high" ? "high" : "low"}
+          className="pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover object-center"
+        />
+      ) : null}
       <div ref={wrapRef} className={mediaStageClass}>
         <PlaybackVideo
           ref={videoRef}
           sources={sources}
           preload={preload}
           fetchPriority={fetchPriority}
+          poster={poster}
+          loadWatchdogMs={loadWatchdogMs}
           controls={false}
           loop
           autoPlay
@@ -521,23 +538,33 @@ export function FeedVideoSurface({
 
       {isActive && !mediaReady && renderedPrimarySrc ? (
         <div
-          className="pointer-events-none absolute inset-0 z-[18] flex flex-col items-center justify-center bg-gradient-to-b from-black/80 via-black/55 to-black/85"
+          className={`pointer-events-none absolute inset-0 z-[18] flex flex-col items-center justify-end pb-10 ${
+            poster ? "bg-black/25" : "bg-gradient-to-b from-black/80 via-black/55 to-black/85"
+          }`}
           aria-busy
           aria-label={tFeed("videoBufferingAria")}
         >
-          <div className="flex size-14 items-center justify-center rounded-full border border-white/15 bg-white/5 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-sm">
-            <svg
-              className="size-7 text-white/85"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden
-            >
-              <path d="M8 5v14l11-7L8 5z" />
-            </svg>
-          </div>
-          <div className="mt-4 h-1 w-24 overflow-hidden rounded-full bg-white/10">
-            <div className="h-full w-2/3 animate-pulse rounded-full bg-gradient-to-r from-orange-500 to-orange-400" />
-          </div>
+          {!poster ? (
+            <>
+              <div className="flex size-14 items-center justify-center rounded-full border border-white/15 bg-white/5 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-sm">
+                <svg
+                  className="size-7 text-white/85"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden
+                >
+                  <path d="M8 5v14l11-7L8 5z" />
+                </svg>
+              </div>
+              <div className="mt-4 h-1 w-24 overflow-hidden rounded-full bg-white/10">
+                <div className="h-full w-2/3 animate-pulse rounded-full bg-gradient-to-r from-orange-500 to-orange-400" />
+              </div>
+            </>
+          ) : (
+            <div className="h-1 w-28 overflow-hidden rounded-full bg-white/15">
+              <div className="h-full w-2/3 animate-pulse rounded-full bg-gradient-to-r from-orange-500 to-orange-400" />
+            </div>
+          )}
         </div>
       ) : null}
 
