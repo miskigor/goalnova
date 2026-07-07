@@ -50,7 +50,7 @@ function setLocaleCookie(response: NextResponse, locale: string) {
   });
 }
 
-export default function proxy(request: NextRequest) {
+function runProxy(request: NextRequest): NextResponse {
   const videoFromRedirect = maybeRedirectVideoFromQuery(request);
   if (videoFromRedirect) return videoFromRedirect;
 
@@ -87,6 +87,21 @@ export default function proxy(request: NextRequest) {
   const localeToStore = urlLocale ?? preferred ?? routing.defaultLocale;
   setLocaleCookie(response, localeToStore);
   return response;
+}
+
+export default function proxy(request: NextRequest) {
+  try {
+    return runProxy(request);
+  } catch (err) {
+    console.error("[PitchRusch proxy] unhandled error — falling back to i18n routing", err);
+    try {
+      const response = handleI18nRouting(request);
+      setLocaleCookie(response, routing.defaultLocale);
+      return response;
+    } catch {
+      return NextResponse.next();
+    }
+  }
 }
 
 export const config = {
