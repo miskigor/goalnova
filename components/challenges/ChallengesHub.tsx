@@ -11,6 +11,10 @@ import {
 } from "@/lib/supabase/challenges";
 import { ChallengeHubCard } from "@/components/challenges/ChallengeHubCard";
 import { DailyQuizHubCard } from "@/components/challenges/DailyQuizHubCard";
+import {
+  readViewCache,
+  writeViewCache,
+} from "@/lib/cache/clientViewCache";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
   GN_PRIMARY_BUTTON_CLASS,
@@ -29,25 +33,46 @@ function sortByNewestFirst(rows: ChallengeRow[]): ChallengeRow[] {
   });
 }
 
+type ChallengesHubCache = {
+  challenges: ChallengeRow[];
+  counts: Map<string, number>;
+};
+
+const CHALLENGES_HUB_CACHE_KEY = "challenges:hub";
+
 export function ChallengesHub() {
   const t = useTranslations("challenges");
   const locale = useLocale();
   const uploadEligibility = useVideoUploadEligibility();
 
-  const [challenges, setChallenges] = useState<ChallengeRow[]>([]);
-  const [counts, setCounts] = useState<Map<string, number>>(new Map());
-  const [loading, setLoading] = useState(true);
+  const cached = readViewCache<ChallengesHubCache>(CHALLENGES_HUB_CACHE_KEY);
+  const [challenges, setChallenges] = useState<ChallengeRow[]>(
+    () => cached?.challenges ?? [],
+  );
+  const [counts, setCounts] = useState<Map<string, number>>(
+    () => cached?.counts ?? new Map(),
+  );
+  const [loading, setLoading] = useState(() => !cached);
   const [loadFailed, setLoadFailed] = useState(false);
   const [retryBusy, setRetryBusy] = useState(false);
 
   const load = useCallback(async () => {
-    setLoading(true);
+    const prior = readViewCache<ChallengesHubCache>(CHALLENGES_HUB_CACHE_KEY);
+    if (prior) {
+      setChallenges(prior.challenges);
+      setCounts(prior.counts);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
     setLoadFailed(false);
     const { challenges: list, error: chErr } = await fetchAllChallengesOrdered();
     if (chErr) {
       logFullSupabaseError("[ChallengesHub] fetchAllChallengesOrdered", new Error(chErr));
-      setLoadFailed(true);
-      setChallenges([]);
+      if (!prior) {
+        setLoadFailed(true);
+        setChallenges([]);
+      }
       setLoading(false);
       setRetryBusy(false);
       return;
@@ -55,6 +80,10 @@ export function ChallengesHub() {
     setChallenges(list);
     const countMap = await fetchVideoCountsByChallengeId(list.map((c) => c.id));
     setCounts(countMap);
+    writeViewCache<ChallengesHubCache>(CHALLENGES_HUB_CACHE_KEY, {
+      challenges: list,
+      counts: countMap,
+    });
     setLoading(false);
     setRetryBusy(false);
   }, []);

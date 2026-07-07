@@ -17,6 +17,11 @@ import {
   type ExploreFeedItem,
   type ExploreSort,
 } from "@/lib/supabase/exploreFeed";
+import {
+  hasFreshViewCache,
+  readViewCache,
+  writeViewCache,
+} from "@/lib/cache/clientViewCache";
 import { devLog } from "@/lib/devLog";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
@@ -400,6 +405,40 @@ export function ExploreVideoCard({
   );
 }
 
+type ExploreCache = {
+  items: ExploreFeedItem[];
+  playerMatches: PlayerProfileRow[];
+};
+
+function exploreCacheKey(params: {
+  search: string;
+  extra: PlayerProfileExtraFilters;
+  recentOnly: boolean;
+  sort: ExploreSort;
+}): string {
+  const { search, extra, recentOnly, sort } = params;
+  return [
+    "explore",
+    search.trim(),
+    extra.position.trim(),
+    extra.country.trim(),
+    extra.city.trim(),
+    extra.ageMinStr.trim(),
+    extra.ageMaxStr.trim(),
+    extra.preferredFoot.trim(),
+    extra.club.trim(),
+    recentOnly ? "recent" : "all",
+    sort,
+  ].join("|");
+}
+
+const EXPLORE_DEFAULT_CACHE_KEY = exploreCacheKey({
+  search: "",
+  extra: EMPTY_PLAYER_PROFILE_EXTRA,
+  recentOnly: false,
+  sort: "newest",
+});
+
 export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
   const t = useTranslations("explore");
   const ts = useTranslations("search");
@@ -413,9 +452,15 @@ export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
   const [recentOnly, setRecentOnly] = useState(false);
   const [sort, setSort] = useState<ExploreSort>("newest");
 
-  const [items, setItems] = useState<ExploreFeedItem[]>([]);
-  const [playerMatches, setPlayerMatches] = useState<PlayerProfileRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<ExploreFeedItem[]>(
+    () => readViewCache<ExploreCache>(EXPLORE_DEFAULT_CACHE_KEY)?.items ?? [],
+  );
+  const [playerMatches, setPlayerMatches] = useState<PlayerProfileRow[]>(
+    () => readViewCache<ExploreCache>(EXPLORE_DEFAULT_CACHE_KEY)?.playerMatches ?? [],
+  );
+  const [loading, setLoading] = useState(
+    () => !hasFreshViewCache(EXPLORE_DEFAULT_CACHE_KEY),
+  );
   const [loadFailed, setLoadFailed] = useState(false);
 
   const requestId = useRef(0);
@@ -449,7 +494,20 @@ export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
 
   const load = useCallback(async () => {
     const rid = ++requestId.current;
-    setLoading(true);
+    const cacheKey = exploreCacheKey({
+      search: debouncedName,
+      extra: extraFilters,
+      recentOnly,
+      sort,
+    });
+    const cached = readViewCache<ExploreCache>(cacheKey);
+    if (cached) {
+      setItems(cached.items);
+      setPlayerMatches(cached.playerMatches);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
     setLoadFailed(false);
     const ageMin = parseAgeInput(extraFilters.ageMinStr);
     const ageMax = parseAgeInput(extraFilters.ageMaxStr);
@@ -468,12 +526,18 @@ export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
     if (rid !== requestId.current) return;
     if (err) {
       logFullSupabaseError("[PitchRusch explore] feed load", new Error(err));
-      setLoadFailed(true);
-      setItems([]);
-      setPlayerMatches([]);
+      if (!cached) {
+        setLoadFailed(true);
+        setItems([]);
+        setPlayerMatches([]);
+      }
     } else {
       setItems(next);
       setPlayerMatches(nextPlayers);
+      writeViewCache<ExploreCache>(cacheKey, {
+        items: next,
+        playerMatches: nextPlayers,
+      });
       setLoadFailed(false);
     }
     setLoading(false);

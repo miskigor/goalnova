@@ -11,6 +11,11 @@ import {
   type RankingsListItem,
   type RankingsTab,
 } from "@/lib/supabase/rankingsFeed";
+import {
+  hasFreshViewCache,
+  readViewCache,
+  writeViewCache,
+} from "@/lib/cache/clientViewCache";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { VideoMusicCredit } from "@/components/video/VideoMusicCredit";
@@ -323,27 +328,44 @@ const TABS: { id: RankingsTab; labelKey: "tabTrending" | "tabTopRated" | "tabMos
     { id: "most_liked", labelKey: "tabMostLiked" },
   ];
 
+function rankingsCacheKey(tab: RankingsTab): string {
+  return `rankings:${tab}`;
+}
+
 export function RankingsView() {
   const t = useTranslations("rankings");
   const tNav = useTranslations("nav");
   const [tab, setTab] = useState<RankingsTab>("trending");
-  const [rows, setRows] = useState<RankingsListItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [rows, setRows] = useState<RankingsListItem[]>(
+    () => readViewCache<RankingsListItem[]>(rankingsCacheKey("trending")) ?? [],
+  );
+  const [loading, setLoading] = useState(
+    () => !hasFreshViewCache(rankingsCacheKey("trending")),
+  );
   const [loadFailed, setLoadFailed] = useState(false);
   const [retryBusy, setRetryBusy] = useState(false);
 
   const load = useCallback(async (next: RankingsTab) => {
-    setLoading(true);
+    const cached = readViewCache<RankingsListItem[]>(rankingsCacheKey(next));
+    if (cached) {
+      setRows(cached);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
     setLoadFailed(false);
     const { rows: nextRows, error: err } = await fetchRankings(next);
     if (err) {
       logFullSupabaseError("[rankings] fetchRankings", new Error(err), {
         tab: next,
       });
-      setRows([]);
-      setLoadFailed(true);
+      if (!cached) {
+        setRows([]);
+        setLoadFailed(true);
+      }
     } else {
       setRows(nextRows);
+      writeViewCache(rankingsCacheKey(next), nextRows);
       setLoadFailed(false);
     }
     setLoading(false);

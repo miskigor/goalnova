@@ -368,12 +368,13 @@ export async function fetchTrendingRankings(): Promise<{
 
   const top = scored.slice(0, OUT_LIMIT);
   const userIds = dedupeUserIds(top.map((s) => s.video.user_id));
-  const profileByUser = await loadProfilesForUserIds(userIds);
-
-  const musicMap = await fetchMusicTrackSummariesByIds(
-    supabase,
-    top.map((s) => selectedMusicTrackIdFromVideo(s.video)),
-  );
+  const [profileByUser, musicMap] = await Promise.all([
+    loadProfilesForUserIds(userIds),
+    fetchMusicTrackSummariesByIds(
+      supabase,
+      top.map((s) => selectedMusicTrackIdFromVideo(s.video)),
+    ),
+  ]);
 
   const rows: RankingsListItem[] = [];
   let rank = 1;
@@ -460,12 +461,13 @@ export async function fetchMostLikedRankings(): Promise<{
 
   const top = scored.slice(0, OUT_LIMIT);
   const userIds = dedupeUserIds(top.map((s) => s.video.user_id));
-  const profileByUser = await loadProfilesForUserIds(userIds);
-
-  const musicMapMost = await fetchMusicTrackSummariesByIds(
-    supabase,
-    top.map((s) => selectedMusicTrackIdFromVideo(s.video)),
-  );
+  const [profileByUser, musicMapMost] = await Promise.all([
+    loadProfilesForUserIds(userIds),
+    fetchMusicTrackSummariesByIds(
+      supabase,
+      top.map((s) => selectedMusicTrackIdFromVideo(s.video)),
+    ),
+  ]);
 
   const rows: RankingsListItem[] = [];
   let rank = 1;
@@ -562,12 +564,13 @@ export async function fetchTopRatedRankings(): Promise<{
   const userIds = dedupeUserIds(
     ordered.map((a) => videoById.get(a.video_id)?.user_id),
   );
-  const profileByUser = await loadProfilesForUserIds(userIds);
-
-  const musicMapTop = await fetchMusicTrackSummariesByIds(
-    supabase,
-    ordered.map((a) => selectedMusicTrackIdFromVideo(videoById.get(a.video_id))),
-  );
+  const [profileByUser, musicMapTop] = await Promise.all([
+    loadProfilesForUserIds(userIds),
+    fetchMusicTrackSummariesByIds(
+      supabase,
+      ordered.map((a) => selectedMusicTrackIdFromVideo(videoById.get(a.video_id))),
+    ),
+  ]);
 
   const rows: RankingsListItem[] = [];
   let rank = 1;
