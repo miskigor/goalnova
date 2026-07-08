@@ -6,6 +6,7 @@ export type SignupErrorKind =
   | "signup_disabled"
   | "rate_limited"
   | "email_provider_disabled"
+  | "confirmation_email_failed"
   | "generic";
 
 export class SignupAuthError extends Error {
@@ -109,7 +110,29 @@ export function classifySupabaseSignupError(error: {
     return "rate_limited";
   }
 
+  if (isConfirmationEmailSendFailure(error)) {
+    return "confirmation_email_failed";
+  }
+
   return "generic";
+}
+
+/** Supabase Auth SMTP failure — signup rejected before the user row is created. */
+export function isConfirmationEmailSendFailure(error: {
+  message?: string;
+  msg?: string;
+  code?: string;
+  error_code?: string;
+} | null | undefined): boolean {
+  if (!error) return false;
+  const msg = String(error.message ?? error.msg ?? "").toLowerCase();
+  const code = String(error.code ?? error.error_code ?? "").toLowerCase();
+  return (
+    msg.includes("error sending confirmation email") ||
+    (code === "unexpected_failure" &&
+      msg.includes("email") &&
+      (msg.includes("confirmation") || msg.includes("confirm")))
+  );
 }
 
 /** Translation key under `authSignup` for each kind (except generic → authCommon). */
@@ -123,4 +146,5 @@ export const SIGNUP_ERROR_I18N_KEY: Record<
   signup_disabled: "signupErrorSignupDisabled",
   rate_limited: "signupErrorRateLimited",
   email_provider_disabled: "signupErrorEmailProviderDisabled",
+  confirmation_email_failed: "signupErrorConfirmationEmail",
 };

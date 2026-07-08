@@ -10,6 +10,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import {
   classifySupabaseSignupError,
   SignupAuthError,
+  type SignupErrorKind,
 } from "./signupAuthErrors";
 
 export type SignupResult = {
@@ -303,6 +304,156 @@ export async function signUpWithEmailPassword({
   emailRedirectTo?: string;
 }): Promise<SignupResult> {
   assertSupabaseConfigured();
+
+  if (typeof window !== "undefined") {
+    return signUpViaSameOriginApi({
+      email,
+      password,
+      fullName,
+      pendingReferralCode,
+      emailRedirectTo,
+    });
+  }
+
+  return signUpWithEmailPasswordDirect({
+    email,
+    password,
+    fullName,
+    pendingReferralCode,
+    emailRedirectTo,
+  });
+}
+
+async function signUpViaSameOriginApi({
+  email,
+  password,
+  fullName,
+  pendingReferralCode,
+  emailRedirectTo,
+}: {
+  email: string;
+  password: string;
+  fullName?: string;
+  pendingReferralCode?: string | null;
+  emailRedirectTo?: string;
+}): Promise<SignupResult> {
+  const res = await fetch("/api/auth/sign-up", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      password,
+      fullName,
+      pendingReferralCode,
+      emailRedirectTo,
+    }),
+    credentials: "same-origin",
+  });
+
+  let payload: {
+    user?: User | null;
+    session?: Session | null;
+    requiresEmailConfirmation?: boolean;
+    error?: {
+      message?: string;
+      code?: string | null;
+      kind?: string;
+    };
+  } = {};
+
+  try {
+    payload = (await res.json()) as typeof payload;
+  } catch {
+    payload = {};
+  }
+
+  if (!res.ok) {
+    const apiErr = payload.error;
+    const message =
+      typeof apiErr?.message === "string" && apiErr.message.trim().length > 0
+        ? apiErr.message.trim()
+        : `Sign up failed (${res.status})`;
+    const kind =
+      typeof apiErr?.kind === "string"
+        ? (apiErr.kind as SignupErrorKind)
+        : classifySupabaseSignupError({
+            message: message,
+            code: apiErr?.code ?? undefined,
+          });
+    if (kind === "email_exists") {
+      throw new SignupEmailAlreadyExistsError();
+    }
+    throw new SignupAuthError(kind);
+  }
+
+  const authUser = payload.user ?? null;
+  if (!authUser?.id) {
+    throw new SignupGenericError();
+  }
+
+  const userId = authUser.id;
+  const userEmail = authUser.email ?? email;
+  const requiresEmailConfirmation = Boolean(payload.requiresEmailConfirmation);
+
+  if (requiresEmailConfirmation) {
+    return {
+      userId,
+      userEmail,
+      requiresEmailConfirmation: true,
+    };
+  }
+
+  const session = payload.session;
+  if (session?.access_token && session.refresh_token) {
+    const fullSession = normalizeSessionForStorage(
+      session as Session,
+      authUser,
+    );
+    if (!persistSupabaseSession(fullSession)) {
+      throw new SignupAuthError("generic");
+    }
+    seedGateSessionSnapshot(fullSession);
+    void supabase.auth
+      .setSession({
+        access_token: fullSession.access_token,
+        refresh_token: fullSession.refresh_token,
+      })
+      .catch(() => {
+        /* session already in localStorage */
+      });
+  }
+
+  const ensureResult = await ensureUserRow({
+    providedAuthUser: { id: userId, email: userEmail ?? null },
+  });
+
+  if (!ensureResult.success) {
+    console.error("Supabase: ensureUserRow after signUp failed", ensureResult.error);
+    throw new SignupAuthError("generic");
+  }
+
+  setFreshLogin();
+
+  return {
+    userId,
+    userEmail,
+    requiresEmailConfirmation: false,
+  };
+}
+
+async function signUpWithEmailPasswordDirect({
+  email,
+  password,
+  fullName,
+  pendingReferralCode,
+  emailRedirectTo,
+}: {
+  email: string;
+  password: string;
+  fullName?: string;
+  pendingReferralCode?: string | null;
+  emailRedirectTo?: string;
+}): Promise<SignupResult> {
   const trimmedFullName = fullName?.trim() || "";
   const refMeta = (pendingReferralCode ?? "").trim().toUpperCase();
   const signUpMeta: Record<string, string> = {};

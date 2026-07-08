@@ -1171,6 +1171,7 @@
     "signupErrorSignupDisabled": "Registracija trenutno nije dostupna.",
     "signupErrorRateLimited": "Previše pokušaja. Pokušajte kasnije.",
     "signupErrorEmailProviderDisabled": "Registracija putem e-pošte trenutno nije omogućena.",
+    "signupErrorConfirmationEmail": "Trenutno ne možemo poslati potvrdni email. Pokušajte ponovno za nekoliko minuta ili otvorite PitchRusch u Safariju/Chromeu.",
     "confirmEmailResend": "Pošalji email ponovno",
     "confirmEmailResending": "Slanje…",
     "confirmEmailResent": "Email za potvrdu je poslan. Provjeri ulaznu poštu.",
