@@ -19,6 +19,8 @@
 [context.production.environment]
   NEXT_PUBLIC_SITE_URL = "https://pitchrusch.com"
   NEXT_PUBLIC_MOBILE_LAYOUT_STABLE_V2 = "true"
+  # Supabase built-in SMTP cannot send confirmation mail — use fast server-side signup.
+  SIGNUP_DIRECT_CREATE = "true"
 
 # FFmpeg merge runs inside the Next server handler; more memory = more CPU on Netlify.
 [functions]

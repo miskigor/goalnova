@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Session, User } from "@supabase/supabase-js";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import type { Database } from "@/lib/supabase/database.types";
@@ -18,7 +18,9 @@ const JSON_HEADERS = {
   "Cache-Control": "no-store",
 } as const;
 
-function createAnonAuthClient() {
+type AnonClient = SupabaseClient<Database>;
+
+function createAnonAuthClient(): AnonClient | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
   if (!url || !anon) return null;
@@ -29,6 +31,15 @@ function createAnonAuthClient() {
       detectSessionInUrl: false,
     },
   });
+}
+
+/**
+ * When Supabase Auth SMTP cannot send confirmation mail, skip the slow failing
+ * `signUp` call (~5s) and create a confirmed user via service role instead.
+ */
+function shouldUseDirectSignup(): boolean {
+  const v = process.env.SIGNUP_DIRECT_CREATE?.trim().toLowerCase();
+  return v === "true" || v === "1" || v === "yes";
 }
 
 function isDuplicateEmailUser(user: User | null): boolean {
@@ -49,11 +60,10 @@ function isAdminEmailExistsError(error: { message?: string; code?: string }): bo
 }
 
 async function signInFreshUser(
-  client: ReturnType<typeof createAnonAuthClient>,
+  client: AnonClient,
   email: string,
   password: string,
 ): Promise<{ session: Session | null; user: User | null; error: string | null }> {
-  if (!client) return { session: null, user: null, error: "config" };
   const { data, error } = await client.auth.signInWithPassword({ email, password });
   if (error) {
     return { session: null, user: null, error: error.message };
@@ -63,6 +73,24 @@ async function signInFreshUser(
     user: data.user ?? data.session?.user ?? null,
     error: null,
   };
+}
+
+async function ensurePublicUserRow(userId: string, email: string | null): Promise<boolean> {
+  const admin = createServiceRoleClient();
+  if (!admin) return false;
+  const { error } = await admin.from("users").upsert(
+    {
+      id: userId,
+      email,
+      language_preference: "en",
+    },
+    { onConflict: "id" },
+  );
+  if (error) {
+    console.error("[sign-up] users upsert failed", error.message);
+    return false;
+  }
+  return true;
 }
 
 async function createConfirmedUserViaAdmin({
@@ -114,6 +142,89 @@ async function createConfirmedUserViaAdmin({
   }
 
   return { ok: true, user };
+}
+
+async function finishInstantSignup({
+  client,
+  email,
+  password,
+  user,
+}: {
+  client: AnonClient;
+  email: string;
+  password: string;
+  user: User;
+}): Promise<NextResponse> {
+  const signedIn = await signInFreshUser(client, email, password);
+  if (!signedIn.session) {
+    return NextResponse.json(
+      {
+        error: {
+          message:
+            signedIn.error ??
+            "Account was created but sign-in failed. Try logging in.",
+          code: "sign_in_after_signup_failed",
+          kind: "generic",
+        },
+      },
+      { status: 500, headers: JSON_HEADERS },
+    );
+  }
+
+  const userRowReady = await ensurePublicUserRow(
+    user.id,
+    signedIn.user?.email ?? user.email ?? email,
+  );
+
+  return NextResponse.json(
+    {
+      user: signedIn.user ?? user,
+      session: signedIn.session,
+      requiresEmailConfirmation: false,
+      userRowReady,
+      instantSignup: true,
+    },
+    { headers: JSON_HEADERS },
+  );
+}
+
+async function signupViaAdminFallback({
+  client,
+  email,
+  password,
+  userMetadata,
+}: {
+  client: AnonClient;
+  email: string;
+  password: string;
+  userMetadata: Record<string, string>;
+}): Promise<NextResponse> {
+  const created = await createConfirmedUserViaAdmin({
+    email,
+    password,
+    userMetadata,
+  });
+
+  if (!created.ok) {
+    const status = created.kind === "email_exists" ? 400 : 503;
+    return NextResponse.json(
+      {
+        error: {
+          message: created.message,
+          code: created.kind,
+          kind: created.kind,
+        },
+      },
+      { status, headers: JSON_HEADERS },
+    );
+  }
+
+  return finishInstantSignup({
+    client,
+    email,
+    password,
+    user: created.user,
+  });
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -182,6 +293,10 @@ export async function POST(request: Request): Promise<NextResponse> {
     userMetadata.pending_referral_code = pendingReferralCode;
   }
 
+  if (shouldUseDirectSignup()) {
+    return signupViaAdminFallback({ client, email, password, userMetadata });
+  }
+
   const signUpOptions: {
     data?: Record<string, string>;
     emailRedirectTo?: string;
@@ -214,62 +329,27 @@ export async function POST(request: Request): Promise<NextResponse> {
       await client.auth.signOut({ scope: "local" });
     }
 
+    let userRowReady = false;
+    if (!requiresEmailConfirmation && data.session && data.user.id) {
+      userRowReady = await ensurePublicUserRow(
+        data.user.id,
+        data.user.email ?? email,
+      );
+    }
+
     return NextResponse.json(
       {
         user: data.user,
         session: requiresEmailConfirmation ? null : data.session,
         requiresEmailConfirmation,
+        userRowReady,
       },
       { headers: JSON_HEADERS },
     );
   }
 
   if (error && isConfirmationEmailSendFailure(error)) {
-    const created = await createConfirmedUserViaAdmin({
-      email,
-      password,
-      userMetadata,
-    });
-
-    if (!created.ok) {
-      const status = created.kind === "email_exists" ? 400 : 503;
-      return NextResponse.json(
-        {
-          error: {
-            message: created.message,
-            code: created.kind,
-            kind: created.kind,
-          },
-        },
-        { status, headers: JSON_HEADERS },
-      );
-    }
-
-    const signedIn = await signInFreshUser(client, email, password);
-    if (!signedIn.session) {
-      return NextResponse.json(
-        {
-          error: {
-            message:
-              signedIn.error ??
-              "Account was created but sign-in failed. Try logging in.",
-            code: "sign_in_after_signup_failed",
-            kind: "generic",
-          },
-        },
-        { status: 500, headers: JSON_HEADERS },
-      );
-    }
-
-    return NextResponse.json(
-      {
-        user: signedIn.user ?? created.user,
-        session: signedIn.session,
-        requiresEmailConfirmation: false,
-        recoveredFromEmailDeliveryFailure: true,
-      },
-      { headers: JSON_HEADERS },
-    );
+    return signupViaAdminFallback({ client, email, password, userMetadata });
   }
 
   if (error) {

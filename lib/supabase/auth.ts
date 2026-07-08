@@ -354,6 +354,7 @@ async function signUpViaSameOriginApi({
     user?: User | null;
     session?: Session | null;
     requiresEmailConfirmation?: boolean;
+    userRowReady?: boolean;
     error?: {
       message?: string;
       code?: string | null;
@@ -423,13 +424,15 @@ async function signUpViaSameOriginApi({
       });
   }
 
-  const ensureResult = await ensureUserRow({
-    providedAuthUser: { id: userId, email: userEmail ?? null },
-  });
+  if (!payload.userRowReady) {
+    const ensureResult = await ensureUserRow({
+      providedAuthUser: { id: userId, email: userEmail ?? null },
+    });
 
-  if (!ensureResult.success) {
-    console.error("Supabase: ensureUserRow after signUp failed", ensureResult.error);
-    throw new SignupAuthError("generic");
+    if (!ensureResult.success) {
+      console.error("Supabase: ensureUserRow after signUp failed", ensureResult.error);
+      throw new SignupAuthError("generic");
+    }
   }
 
   setFreshLogin();
