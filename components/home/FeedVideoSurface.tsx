@@ -106,6 +106,14 @@ export function FeedVideoSurface({
   /** Poništava zakasnjele pokušaje uključivanja zvuka pri promjeni klipa. */
   const audibleRetryGenerationRef = useRef(0);
   const lastAudiblePromoteAtRef = useRef(0);
+  const audiblePromotionTimeoutsRef = useRef<number[]>([]);
+
+  const clearAudiblePromotionTimeouts = useCallback(() => {
+    for (const id of audiblePromotionTimeoutsRef.current) {
+      window.clearTimeout(id);
+    }
+    audiblePromotionTimeoutsRef.current = [];
+  }, []);
 
   const [browserPolicyMuted, setBrowserPolicyMuted] = useState(false);
   /** Hidden until first `playing` — avoids empty black frame while buffering. */
@@ -172,17 +180,19 @@ export function FeedVideoSurface({
 
   const scheduleAudiblePromotion = useCallback(() => {
     if (!isSoundEnabledRef.current || !isActiveRef.current) return;
+    clearAudiblePromotionTimeouts();
     const gen = ++audibleRetryGenerationRef.current;
     const delays = [0, 90, 220, 450];
     for (const ms of delays) {
-      window.setTimeout(() => {
+      const timeoutId = window.setTimeout(() => {
         if (audibleRetryGenerationRef.current !== gen) return;
         if (!isActiveRef.current || !isSoundEnabledRef.current) return;
         if (!videoRef.current?.getVideoState?.().muted) return;
         tryPromoteToAudible();
       }, ms);
+      audiblePromotionTimeoutsRef.current.push(timeoutId);
     }
-  }, [tryPromoteToAudible]);
+  }, [clearAudiblePromotionTimeouts, tryPromoteToAudible]);
 
   const logActiveClip = useCallback(
     (reason: "playing" | "state") => {
@@ -292,6 +302,16 @@ export function FeedVideoSurface({
       reportVideoVisibility(videoId, 0);
     };
   }, [reportVideoVisibility, videoId, visibilityObserveRef]);
+
+  useEffect(() => {
+    return () => {
+      clearAudiblePromotionTimeouts();
+      audibleRetryGenerationRef.current += 1;
+      const h = videoRef.current;
+      h?.pause();
+      h?.syncAudioOutput?.(true, 0);
+    };
+  }, [clearAudiblePromotionTimeouts]);
 
   /**
    * Whenever this row becomes active/inactive or sound/policy changes, sync the real element

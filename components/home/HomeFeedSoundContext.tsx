@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { isDev, devLog } from "@/lib/devLog";
+import { pauseHomeFeedMedia } from "@/lib/video/pauseHomeFeedMedia";
 
 /** Session: user completed one tap on the feed so programmatic media can start (iOS / strict mobile WebKit). */
 export const HOME_FEED_MEDIA_GESTURE_SESSION_KEY = "pitchrusch-feed-media-gesture";
@@ -141,6 +142,7 @@ export function HomeFeedSoundProvider({
       if (scrollSnapClearTimerRef.current != null) {
         window.clearTimeout(scrollSnapClearTimerRef.current);
       }
+      pauseHomeFeedMedia();
     };
   }, []);
 

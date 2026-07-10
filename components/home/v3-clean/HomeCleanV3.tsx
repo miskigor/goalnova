@@ -20,6 +20,7 @@ import {
   type AugmentedHomeFeedItem,
 } from "@/lib/supabase/homeFeed";
 import { supabase } from "@/lib/supabase/client";
+import { pauseHomeFeedMedia } from "@/lib/video/pauseHomeFeedMedia";
 import "@/components/home/v3-clean/homeCleanV3.css";
 import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 
@@ -151,6 +152,8 @@ export function HomeCleanV3() {
 
   const bootstrapActiveVideoId =
     items[0] != null ? feedItemVideoKey(items[0]) : null;
+
+  useEffect(() => () => pauseHomeFeedMedia(), []);
 
   const showInitialLoading = loading && items.length === 0;
 

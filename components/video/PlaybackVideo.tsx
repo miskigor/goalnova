@@ -104,6 +104,20 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
     useIosInlineVideoFirstFrameBump(videoRef, Boolean(currentSrc), currentSrc);
 
     useEffect(() => {
+      return () => {
+        const v = videoRef.current;
+        if (!v) return;
+        try {
+          v.pause();
+          v.muted = true;
+          v.volume = 0;
+        } catch {
+          /* ignore */
+        }
+      };
+    }, []);
+
+    useEffect(() => {
       setSourceIndex(0);
     }, [uniqueSources]);
 

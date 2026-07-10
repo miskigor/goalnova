@@ -29,6 +29,7 @@ import {
   isMobileLayoutV3ShellRoute,
 } from "@/lib/layout/mobileLayoutV3Flag";
 import { FriendChallengeBootstrap } from "@/components/friendChallenge/FriendChallengeBootstrap";
+import { HomeFeedRouteAudioGuard } from "@/components/home/HomeFeedRouteAudioGuard";
 
 function AppMainColumn({ children }: { children: React.ReactNode }) {
   return (
@@ -82,6 +83,7 @@ export function AppChromeLayout({ children }: { children: React.ReactNode }) {
           <Suspense fallback={null}>
             <FriendChallengeBootstrap />
           </Suspense>
+          <HomeFeedRouteAudioGuard />
           {useV3Shell ? (
             <AppChromeLayoutV3>{children}</AppChromeLayoutV3>
           ) : isMobileLayoutStableV2Enabled() ? (
