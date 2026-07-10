@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
+import { UnreadNotificationBadge } from "@/components/notifications/UnreadNotificationBadge";
+import { useNotificationsInbox } from "@/components/notifications/NotificationsInboxContext";
 import { useNavSession } from "@/components/layout/useNavSession";
 import { supabase } from "@/lib/supabase/client";
 import type { ShellMobileNavItem } from "@/lib/constants/navigation";
@@ -93,11 +95,20 @@ type NavTabProps = {
   quizPending: boolean;
   profileAvatarUrl: string | null;
   userDisplayName: string | null;
+  dmUnreadCount: number;
 };
 
-function NavTab({ item, pathname, quizPending, profileAvatarUrl, userDisplayName }: NavTabProps) {
+function NavTab({
+  item,
+  pathname,
+  quizPending,
+  profileAvatarUrl,
+  userDisplayName,
+  dmUnreadCount,
+}: NavTabProps) {
   const tNav = useTranslations("nav");
   const tQuiz = useTranslations("dailyQuiz");
+  const tMessages = useTranslations("messages");
 
   const label = mobileBottomNavDisplayLabel(tNav(item.labelKey));
   const href =
@@ -105,10 +116,13 @@ function NavTab({ item, pathname, quizPending, profileAvatarUrl, userDisplayName
       ? challengesNavHref(true)
       : item.href;
   const active = navItemActive(pathname, item.href);
+  const isMessagesTab = item.href === "/messages";
   const title =
     item.href === "/challenges" && quizPending
       ? `${tNav(item.labelKey)} — ${tQuiz("navPendingHint")}`
-      : tNav(item.labelKey);
+      : isMessagesTab && dmUnreadCount > 0
+        ? tMessages("inboxLinkAriaUnread", { count: dmUnreadCount })
+        : tNav(item.labelKey);
   const itemKey = `${item.labelKey}-${item.href}`;
   const emoji = TAB_EMOJI[item.href] ?? "•";
   const isUpload = item.href === "/upload";
@@ -160,6 +174,9 @@ function NavTab({ item, pathname, quizPending, profileAvatarUrl, userDisplayName
         <span className={TAB_EMOJI_CLASS} aria-hidden>
           {emoji}
         </span>
+        {isMessagesTab ? (
+          <UnreadNotificationBadge count={dmUnreadCount} variant="navCompact" />
+        ) : null}
       </span>
       <span data-tab-label className={tabLabelClass(pathname, item.href)} title={title}>
         {label}
@@ -173,6 +190,7 @@ export function PlayerMobileBottomNav() {
   const tNav = useTranslations("nav");
   const { pending: quizPending } = useDailyQuizStatus();
   const { user } = useNavSession();
+  const { unreadCount: dmUnreadCount } = useNotificationsInbox();
   const [viewPage, setViewPage] = useState(() => playerBottomNavPageIndex(pathname));
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null);
@@ -286,6 +304,7 @@ export function PlayerMobileBottomNav() {
               quizPending={quizPending}
               profileAvatarUrl={profileAvatarUrl}
               userDisplayName={userDisplayName}
+              dmUnreadCount={dmUnreadCount}
             />
           ))}
         </div>

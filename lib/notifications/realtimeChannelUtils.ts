@@ -12,5 +12,8 @@ export function logNotificationsRealtimeStatus(
   void err;
 }
 
-export const NOTIFICATIONS_UNREAD_POLL_MS = 45_000;
+/** Fallback when Realtime is unhealthy — keep badge reasonably fresh on mobile. */
+export const NOTIFICATIONS_UNREAD_POLL_MS = 15_000;
 export const NOTIFICATIONS_LIST_POLL_MS = 45_000;
+/** Always-on badge refresh so DMs are visible even when Realtime is silent. */
+export const NOTIFICATIONS_BADGE_REFRESH_MS = 12_000;

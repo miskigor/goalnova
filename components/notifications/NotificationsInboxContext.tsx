@@ -17,9 +17,14 @@ import { devWarn } from "@/lib/devLog";
 import { fetchUnreadMessageThreadCount } from "@/lib/supabase/messages";
 import {
   logNotificationsRealtimeStatus,
+  NOTIFICATIONS_BADGE_REFRESH_MS,
   NOTIFICATIONS_UNREAD_POLL_MS,
 } from "@/lib/notifications/realtimeChannelUtils";
 import { hasPersistedSupabaseSession } from "@/lib/auth/hasPersistedSupabaseSession";
+import {
+  readGateSessionSnapshot,
+  readSyncGateSessionSnapshot,
+} from "@/lib/auth/gateSessionSnapshot";
 import { supabase } from "@/lib/supabase/client";
 import {
   isLikelyTransientNetworkFailure,
@@ -197,8 +202,7 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
       channelRef.current = ch;
     };
 
-    const sync = async (session: Session | null) => {
-      const uid = session?.user?.id ?? null;
+    const syncUserId = async (uid: string | null) => {
       userIdRef.current = uid;
       if (!uid) {
         attachGen += 1;
@@ -212,24 +216,45 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
       attachChannel(uid);
     };
 
+    const resolveUserId = async (
+      session?: Session | null,
+    ): Promise<string | null> => {
+      const fromSession = session?.user?.id?.trim();
+      if (fromSession) return fromSession;
+      const snapshot = await readGateSessionSnapshot("NotificationsInboxProvider");
+      return snapshot.user?.id ?? snapshot.session?.user?.id ?? null;
+    };
+
+    const bootSnapshot = readSyncGateSessionSnapshot();
+    void resolveUserId(bootSnapshot.session).then((uid) => {
+      if (cancelled) return;
+      void syncUserId(uid);
+    });
+
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (cancelled) return;
-      void sync(session);
-    });
-    void supabase.auth
-      .getSession()
-      .then(({ data }) => {
+      void resolveUserId(session).then((uid) => {
         if (cancelled) return;
-        void sync(data.session);
-      })
-      .catch((err) => {
-        if (cancelled) return;
-        logFullSupabaseError("[dm inbox] getSession initial sync failed", err);
+        void syncUserId(uid);
       });
+    });
+
+    const badgePollId = window.setInterval(() => {
+      if (!userIdRef.current) return;
+      void refreshUnreadCount();
+    }, NOTIFICATIONS_BADGE_REFRESH_MS);
+
+    const onVisible = () => {
+      if (document.visibilityState !== "visible" || !userIdRef.current) return;
+      void refreshUnreadCount();
+    };
+    document.addEventListener("visibilitychange", onVisible);
 
     return () => {
       cancelled = true;
       attachGen += 1;
+      window.clearInterval(badgePollId);
+      document.removeEventListener("visibilitychange", onVisible);
       sub.subscription.unsubscribe();
       teardownChannel();
     };

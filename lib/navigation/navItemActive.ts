@@ -22,7 +22,12 @@ export function navItemActive(pathname: string, href: string): boolean {
   if (href === "/profile")
     return pathname === "/profile" || pathname.startsWith("/profile/");
   if (href === "/messages")
-    return pathname === "/messages" || pathname.startsWith("/messages/");
+    return (
+      pathname === "/messages" ||
+      pathname.startsWith("/messages/") ||
+      pathname === "/notifications" ||
+      pathname.startsWith("/notifications/")
+    );
   if (href === "/discover")
     return pathname === "/discover" || pathname.startsWith("/discover/");
   if (href === "/scout-dashboard")

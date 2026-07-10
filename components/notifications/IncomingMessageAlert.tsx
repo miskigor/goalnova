@@ -5,6 +5,10 @@ import { useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { useAppFeedback } from "@/components/feedback/feedbackContext";
 import { useNotificationsInboxOptional } from "@/components/notifications/NotificationsInboxContext";
+import {
+  readGateSessionSnapshot,
+  readSyncGateSessionSnapshot,
+} from "@/lib/auth/gateSessionSnapshot";
 import { NOTIFICATIONS_UNREAD_POLL_MS } from "@/lib/notifications/realtimeChannelUtils";
 import { fetchDisplayNamesForUserIds } from "@/lib/supabase/messages";
 import { supabase } from "@/lib/supabase/client";
@@ -206,10 +210,16 @@ export function IncomingMessageAlert() {
       attach(uid);
     };
 
-    void supabase.auth.getSession().then(({ data }) => {
+    void (async () => {
+      const boot = readSyncGateSessionSnapshot();
+      let uid = boot.user?.id ?? boot.session?.user?.id ?? null;
+      if (!uid) {
+        const snapshot = await readGateSessionSnapshot("IncomingMessageAlert");
+        uid = snapshot.user?.id ?? snapshot.session?.user?.id ?? null;
+      }
       if (cancelled) return;
-      sync(data.session?.user?.id ?? null);
-    });
+      sync(uid);
+    })();
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (cancelled) return;
