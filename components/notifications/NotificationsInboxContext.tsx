@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { usePathname } from "@/i18n/navigation";
 import { IncomingMessageAlert } from "@/components/notifications/IncomingMessageAlert";
 import { IncomingMessageAlertBoundary } from "@/components/notifications/IncomingMessageAlertBoundary";
 import { devWarn } from "@/lib/devLog";
@@ -51,6 +52,7 @@ const UNHEALTHY_STATUSES = new Set([
 ]);
 
 export function NotificationsInboxProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const [unreadCount, setUnreadCount] = useState(0);
   const [realtimeHealthy, setRealtimeHealthy] = useState(true);
   const userIdRef = useRef<string | null>(null);
@@ -78,13 +80,6 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
       );
       const { count: messageThreadUnread } = await fetchUnreadMessageThreadCount(uid);
       const notificationPeers = unreadDmRes.error ? 0 : dmPeers.size;
-      // Prefer notification rows; if insert/trigger failed, fall back to latest incoming threads.
-      const finalBadge =
-        unreadDmRes.error
-          ? messageThreadUnread
-          : notificationPeers > 0
-            ? notificationPeers
-            : messageThreadUnread;
 
       if (unreadDmRes.error) {
         if (isLikelyTransientNetworkFailure(unreadDmRes.error)) {
@@ -101,7 +96,33 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
         return;
       }
 
-      setUnreadCount(finalBadge);
+      if (notificationPeers > 0) {
+        setUnreadCount(notificationPeers);
+        return;
+      }
+
+      if (messageThreadUnread === 0) {
+        setUnreadCount(0);
+        return;
+      }
+
+      // Unread notifications cleared — do not keep badge from "latest incoming message"
+      // thread heuristic. Only use threads when DM notification rows never existed (trigger off).
+      const { count: dmNotificationHistory, error: historyError } = await supabase
+        .from("notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", uid)
+        .in("type", ["message", "admin_notice"]);
+
+      if (historyError) {
+        logFullSupabaseError("[notifications inbox] dm notification history count failed", historyError, {
+          uid,
+        });
+        setUnreadCount(0);
+        return;
+      }
+
+      setUnreadCount((dmNotificationHistory ?? 0) === 0 ? messageThreadUnread : 0);
     } catch (err) {
       if (isLikelyTransientNetworkFailure(err)) {
         devWarn("[notifications inbox] refreshUnreadCount skipped (network)", err);
@@ -111,6 +132,11 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
       setUnreadCount(0);
     }
   }, []);
+
+  useEffect(() => {
+    if (!userIdRef.current) return;
+    void refreshUnreadCount();
+  }, [pathname, refreshUnreadCount]);
 
   useEffect(() => {
     if (realtimeHealthy) return;
