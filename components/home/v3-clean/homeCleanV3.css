@@ -105,19 +105,13 @@ html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-scro
   width: 100%;
   min-width: 0;
   max-width: calc(100% - 3.25rem);
-  padding-top: 2.5rem;
+  padding-top: 0;
   padding-right: 0.5rem;
   padding-bottom: max(
     calc(0.75rem + var(--gn-mobile-visual-bottom-inset, 0px)),
     calc(0.75rem + env(safe-area-inset-bottom, 0px))
   );
   padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
-  background: linear-gradient(
-    to top,
-    rgb(0 0 0 / 0.92) 0%,
-    rgb(0 0 0 / 0.55) 45%,
-    transparent 100%
-  );
 }
 
 [data-home-clean-v3-meta] a,
