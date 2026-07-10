@@ -69,6 +69,14 @@ function emojiBadgeClass(pathname: string, href: string, isUpload: boolean) {
       active ? "ring-2 ring-inset ring-orange-200/90" : "",
     ].join(" ");
   }
+  // Messages: keep 💬 on a neutral circle; active state is label color only.
+  if (href === "/messages") {
+    return [
+      APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_CLASS,
+      APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_INACTIVE_CLASS,
+      "overflow-visible",
+    ].join(" ");
+  }
   return [
     APP_MOBILE_BOTTOM_NAV_EMOJI_BADGE_CLASS,
     active
@@ -166,24 +174,25 @@ function NavTab({
       key={itemKey}
       href={href}
       data-player-bottom-nav-tab
-      className={APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS}
+      className={[
+        APP_MOBILE_BOTTOM_NAV_TAB_LINK_CLASS,
+        isMessagesTab ? "relative overflow-visible" : "",
+      ].join(" ")}
       aria-current={active ? "page" : undefined}
       aria-label={title}
     >
       <span
         data-tab-emoji-badge
-        className={[
-          emojiBadgeClass(pathname, item.href, isUpload),
-          isMessagesTab ? "overflow-visible" : "",
-        ].join(" ")}
+        data-messages-tab={isMessagesTab ? "true" : undefined}
+        className={emojiBadgeClass(pathname, item.href, isUpload)}
       >
         <span className={TAB_EMOJI_CLASS} aria-hidden>
           {emoji}
         </span>
-        {isMessagesTab ? (
-          <UnreadNotificationBadge count={dmUnreadCount} variant="bottomNav" />
-        ) : null}
       </span>
+      {isMessagesTab ? (
+        <UnreadNotificationBadge count={dmUnreadCount} variant="bottomNav" />
+      ) : null}
       <span data-tab-label className={tabLabelClass(pathname, item.href)} title={title}>
         {label}
       </span>

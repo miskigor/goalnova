@@ -793,6 +793,48 @@
     white-space: nowrap;
   }
 
+  [data-mobile-layout-stable-v2]
+    [data-mlv2-bottom-nav]
+    [data-app-bottom-nav]
+    [data-tab-emoji-badge],
+  [data-mobile-layout-stable-v2]
+    [data-mlv2-bottom-nav]
+    [data-app-bottom-nav]
+    [data-tab-emoji-badge]
+    span,
+  [data-mobile-layout-stable-v2]
+    [data-mlv2-bottom-nav]
+    [data-app-bottom-nav]
+    [data-dm-unread-count],
+  [data-mobile-layout-stable-v2]
+    [data-mlv2-bottom-nav]
+    [data-player-bottom-nav-carousel]
+    [data-player-bottom-nav-tab] {
+    overflow: visible !important;
+  }
+
+  [data-mobile-layout-stable-v2]
+    [data-mlv2-bottom-nav]
+    [data-app-bottom-nav]
+    [data-tab-label] {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  [data-mobile-layout-stable-v2]
+    [data-mlv2-bottom-nav]
+    [data-app-bottom-nav]
+    [data-dm-unread-count] {
+    display: flex !important;
+    width: auto !important;
+    height: 1rem !important;
+    min-width: 1rem !important;
+    max-width: none !important;
+    max-height: 1rem !important;
+    white-space: nowrap !important;
+  }
+
   [data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [class*="rounded-full"][class*="bg-orange"] {
     width: min(2.25rem, 44px) !important;
     height: min(2.25rem, 44px) !important;

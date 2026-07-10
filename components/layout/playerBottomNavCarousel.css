@@ -148,6 +148,33 @@ html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"]))
   overflow: visible !important;
 }
 
+[data-player-bottom-nav-carousel] [data-tab-emoji-badge] [aria-hidden="true"] {
+  display: block !important;
+  overflow: visible !important;
+  line-height: 1 !important;
+  font-size: 1.25rem !important;
+}
+
+[data-player-bottom-nav-carousel] [data-messages-tab="true"] {
+  overflow: visible !important;
+}
+
+[data-player-bottom-nav-carousel] [data-dm-unread-count] {
+  position: absolute !important;
+  width: auto !important;
+  height: 1rem !important;
+  min-width: 1rem !important;
+  min-height: 1rem !important;
+  max-width: none !important;
+  max-height: 1rem !important;
+  padding-inline: 0.25rem !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  z-index: 5 !important;
+  overflow: visible !important;
+  border-radius: 0.25rem !important;
+}
+
 [data-player-bottom-nav-carousel] [data-player-bottom-nav-pager] {
   position: relative !important;
   z-index: 1 !important;
