@@ -224,49 +224,10 @@
     display: none !important;
   }
 
-  /*
-   * Non-home only — compact bottom nav (/home uses mobileLayoutStableV2Content.css).
-   */
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) {
-    --mlv2-bottom-nav-height: calc(3.5rem + env(safe-area-inset-bottom, 0px));
-    --gn-app-bottom-nav-offset: var(--mlv2-bottom-nav-height);
-  }
-
   html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] {
     width: 100% !important;
     max-width: var(--mlv2-content-max, min(100%, 390px)) !important;
     margin-inline: auto !important;
-  }
-
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [data-app-bottom-nav] {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 3.5rem !important;
-    padding-top: 0 !important;
-    padding-bottom: 0.125rem !important;
-    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.4) !important;
-  }
-
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [data-app-bottom-nav] > div {
-    height: 2.25rem !important;
-    min-height: 2.25rem !important;
-    padding-inline: 2.5rem !important;
-  }
-
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [data-app-bottom-nav] a,
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > *,
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > div {
-    height: 2.25rem !important;
-    min-height: 2.25rem !important;
-  }
-
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [class*="rounded-full"][class*="bg-orange"] {
-    width: 2rem !important;
-    height: 2rem !important;
-    min-width: 2rem !important;
-    min-height: 2rem !important;
-    max-width: 2rem !important;
-    max-height: 2rem !important;
   }
 
   html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) body:has([data-premium-fit-viewport]) [data-mlv2-bottom-nav] [data-app-bottom-nav] {
@@ -841,36 +802,6 @@
     max-height: 44px !important;
   }
 
-  /*
-   * Non-home compact nav — after base 4.5rem rules (/home uses content.css only).
-   */
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [data-app-bottom-nav] {
-    min-height: 3.5rem !important;
-    padding-top: 0 !important;
-    padding-bottom: 0.125rem !important;
-    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.4) !important;
-  }
-
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [data-app-bottom-nav] > div {
-    height: 2.25rem !important;
-    min-height: 2.25rem !important;
-  }
-
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [data-app-bottom-nav] a,
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > *,
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > div {
-    height: 2.25rem !important;
-    min-height: 2.25rem !important;
-  }
-
-  html[data-mobile-layout-stable-v2]:not(:has([data-mlv2-route="home"])) [data-mlv2-bottom-nav] [class*="rounded-full"][class*="bg-orange"] {
-    width: 2rem !important;
-    height: 2rem !important;
-    min-width: 2rem !important;
-    min-height: 2rem !important;
-    max-width: 2rem !important;
-    max-height: 2rem !important;
-  }
 }
 
 /* /debug/mobile-layout-v2 — colored shell regions */

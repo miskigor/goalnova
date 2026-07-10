@@ -1,6 +1,6 @@
 /**
- * Mobile shell V3: production `/home` always uses the clean home shell (all users).
- * Debug V3 routes remain opt-in via {@link isMobileLayoutV3Enabled}.
+ * Mobile shell V3 — debug routes only (opt-in via {@link isMobileLayoutV3Enabled}).
+ * Production `/home` uses the same V2 shell as all other app routes for stable chrome.
  */
 
 export function isMobileLayoutV3Enabled(): boolean {
@@ -12,15 +12,12 @@ export function isMobileLayoutV3HomeRoute(pathname: string): boolean {
   return normalizePathname(pathname) === "/home";
 }
 
-/** V3 shell on `/home` always; debug routes only when the flag is on. */
+/** V3 shell only on debug routes when the flag is on (never production `/home`). */
 export function isMobileLayoutV3ShellRoute(pathname: string): boolean {
-  const path = normalizePathname(pathname);
-  if (path === "/home") {
-    return true;
-  }
   if (!isMobileLayoutV3Enabled()) {
     return false;
   }
+  const path = normalizePathname(pathname);
   return (
     path === "/debug/mobile-layout-v3" ||
     path === "/debug/mobile-layout-v3/home-mock" ||

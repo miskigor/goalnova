@@ -1,7 +1,7 @@
 "use client";
 
 import { FeedVideoEngagement } from "@/components/home/FeedVideoEngagement";
-import { VideoShareButton } from "@/components/share/VideoShareButton";
+import { VideoRailTrailingActions } from "@/components/video/VideoRailTrailingActions";
 import { PlaybackVideo } from "@/components/video/PlaybackVideo";
 import {
   GN_VIDEO_MEDIA_ELEMENT_CLASS,
@@ -62,13 +62,11 @@ export function PublicVideoWatchPlayer({
             videoId={videoId}
             variant="rail"
             trailingActions={
-              <VideoShareButton
+              <VideoRailTrailingActions
                 videoId={videoId}
                 playerDisplayName={playerDisplayName}
                 caption={caption}
-                iconOnly
-                stopPropagation
-                className={SHARE_RAIL_CLASS}
+                shareButtonClassName={SHARE_RAIL_CLASS}
               />
             }
           />

@@ -6,6 +6,7 @@ import { ProfileVideoTile } from "@/components/profile/ProfileVideoTile";
 type Props = {
   videos: VideoRow[];
   canDelete?: boolean;
+  canAdminDownload?: boolean;
   deletingVideoId?: string | null;
   onDelete?: (videoId: string) => void;
   /** `/player/[slug]` public profile (not own `/profile`). */
@@ -15,6 +16,7 @@ type Props = {
 export function ProfileVideoGrid({
   videos,
   canDelete = false,
+  canAdminDownload = false,
   deletingVideoId = null,
   onDelete,
   publicProfile = false,
@@ -42,6 +44,7 @@ export function ProfileVideoGrid({
           <ProfileVideoTile
             video={video}
             canDelete={canDelete}
+            canAdminDownload={canAdminDownload}
             deleting={Boolean(video.id && deletingVideoId === video.id)}
             onDelete={onDelete}
           />

@@ -9,8 +9,12 @@ import {
   type ScoutVerificationStatus,
 } from "@/lib/scoutVerification";
 import {
+  careerHistoryFromDb,
+  careerHistoryToDb,
   handleProfileFieldPaste,
+  PROFILE_FIELD_LIMITS,
   sanitizeBio,
+  sanitizeCareerHistory,
   sanitizeFullName,
   sanitizeOrganizationField,
   sanitizeShortProfileField,
@@ -309,11 +313,7 @@ export function ProfileEditor() {
           setIsLookingForClub(Boolean(result.data.profile.is_looking_for_club));
           setProfileHighlight(result.data.profile.profile_highlight ?? "");
           setAchievements((result.data.profile.achievements ?? []).join(", "));
-          setCareerHistory(
-            Array.isArray(result.data.profile.career_history)
-              ? JSON.stringify(result.data.profile.career_history)
-              : "",
-          );
+          setCareerHistory(careerHistoryFromDb(result.data.profile.career_history));
           const [{ profile: pp }, { data: myVideoRows }] = await Promise.all([
             fetchMyPlayerPremiumProfile(),
             supabase
@@ -418,14 +418,7 @@ export function ProfileEditor() {
             .split(",")
             .map((v) => v.trim())
             .filter((v) => v.length > 0),
-          career_history: (() => {
-            try {
-              const parsed = JSON.parse(careerHistory || "[]");
-              return Array.isArray(parsed) ? parsed : [];
-            } catch {
-              return [];
-            }
-          })(),
+          career_history: careerHistoryToDb(sanitizeCareerHistory(careerHistory)),
         });
         if (!res.success) {
           logFullSupabaseError(
@@ -903,7 +896,9 @@ export function ProfileEditor() {
             <label className={labelClass}>{t("bio")}</label>
             <textarea
               suppressHydrationWarning
-              className={`${inputClass} resize-none break-words max-lg:min-h-[3.25rem] max-lg:h-auto lg:min-h-[110px]`}
+              rows={8}
+              maxLength={PROFILE_FIELD_LIMITS.bio}
+              className={`${inputClass} min-h-[11rem] resize-y break-words leading-relaxed max-lg:min-h-[10rem] sm:min-h-[12rem] lg:min-h-[14rem]`}
               value={bio}
               onChange={(e) => setBio(sanitizeBio(e.target.value))}
               onPaste={(e) =>
@@ -917,7 +912,17 @@ export function ProfileEditor() {
                 )
               }
               placeholder={t("bioPlaceholder")}
+              aria-describedby="profile-bio-char-count"
             />
+            <p
+              id="profile-bio-char-count"
+              className="mt-1.5 text-right text-xs tabular-nums text-gn-text-tertiary"
+            >
+              {t("bioCharCount", {
+                current: bio.length,
+                max: PROFILE_FIELD_LIMITS.bio,
+              })}
+            </p>
           </div>
 
           {role === "player" ? (
@@ -963,10 +968,34 @@ export function ProfileEditor() {
             <div className={fieldBlockClass}>
               <label className={labelClass}>{t("careerHistory")}</label>
               <textarea
-                className={`${inputClass} resize-none max-lg:min-h-[2.75rem] max-lg:h-auto lg:min-h-[88px]`}
+                suppressHydrationWarning
+                rows={6}
+                maxLength={PROFILE_FIELD_LIMITS.careerHistory}
+                className={`${inputClass} min-h-[9rem] resize-y break-words leading-relaxed max-lg:min-h-[8rem] sm:min-h-[10rem] lg:min-h-[12rem]`}
                 value={careerHistory}
-                onChange={(e) => setCareerHistory(e.target.value)}
+                onChange={(e) => setCareerHistory(sanitizeCareerHistory(e.target.value))}
+                onPaste={(e) =>
+                  handleProfileFieldPaste(
+                    e,
+                    careerHistory,
+                    sanitizeCareerHistory,
+                    sanitizeCareerHistory,
+                    setCareerHistory,
+                    flashPasteBlocked,
+                  )
+                }
+                placeholder={t("careerHistoryPlaceholder")}
+                aria-describedby="profile-career-char-count"
               />
+              <p
+                id="profile-career-char-count"
+                className="mt-1.5 text-right text-xs tabular-nums text-gn-text-tertiary"
+              >
+                {t("careerHistoryCharCount", {
+                  current: careerHistory.length,
+                  max: PROFILE_FIELD_LIMITS.careerHistory,
+                })}
+              </p>
             </div>
             {playerPremiumActive ? (
               <div className={fieldBlockClass}>

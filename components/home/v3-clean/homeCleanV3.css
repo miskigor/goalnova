@@ -4,7 +4,8 @@
 
 @import "./homeCleanV3.tokens.css";
 
-html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] {
+html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"],
+html[data-mobile-layout-stable-v2] [data-mlv2-content][data-mlv2-route="home"] {
   box-sizing: border-box;
   display: flex;
   flex: 1 1 auto;
@@ -13,7 +14,8 @@ html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] {
   overflow: hidden;
 }
 
-html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-mlv3-scroll] {
+html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-mlv3-scroll],
+html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-scroll] {
   box-sizing: border-box;
   display: flex;
   flex: 1 1 auto;
@@ -201,8 +203,9 @@ a[data-home-clean-v3-meta-name]:hover {
   isolation: isolate;
 }
 
-/* Beat mobileLayoutV3 `[data-mlv3-scroll] * { max-width: 100% }` on /home. */
-html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-home-clean-v3-card] {
+/* Beat shell scroll `* { max-width: 100% }` rules on /home cards. */
+html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-home-clean-v3-card],
+html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-home-clean-v3-card] {
   width: var(--home-clean-v3-card-width-effective) !important;
   height: var(--home-clean-v3-card-height-effective) !important;
   min-width: 0 !important;
@@ -268,7 +271,8 @@ html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-home-
   object-position: center;
 }
 
-html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-home-clean-v3-card] video {
+html[data-mobile-layout-v3] [data-mlv3-main][data-mlv3-route="home"] [data-home-clean-v3-card] video,
+html[data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-home-clean-v3-card] video {
   width: 100% !important;
   height: 100% !important;
   max-width: 100% !important;

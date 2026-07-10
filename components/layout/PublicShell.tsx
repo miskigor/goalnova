@@ -34,12 +34,10 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
     setMounted(true);
   }, []);
 
-  if (authed) {
-    return <AppChromeLayout>{children}</AppChromeLayout>;
-  }
+  const preferAppChrome =
+    authed === true || (mounted && hasPersistedSupabaseSession());
 
-  // hasPersistedSupabaseSession() uses localStorage — false on SSR, true on client → hydration mismatch.
-  if (authed === null && mounted && hasPersistedSupabaseSession()) {
+  if (preferAppChrome) {
     return <AppChromeLayout>{children}</AppChromeLayout>;
   }
 

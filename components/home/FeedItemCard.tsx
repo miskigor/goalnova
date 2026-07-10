@@ -13,7 +13,7 @@ import {
   challengeDisplayTitle,
   challengeLinkSegment,
 } from "@/lib/challenges/challengeRowUtils";
-import { VideoShareButton } from "@/components/share/VideoShareButton";
+import { VideoRailTrailingActions } from "@/components/video/VideoRailTrailingActions";
 import { VideoMusicCredit } from "@/components/video/VideoMusicCredit";
 import {
   feedCardProps,
@@ -154,13 +154,11 @@ export function FeedItemCard({
 
   const shareTrailing =
     video.id ? (
-      <VideoShareButton
+      <VideoRailTrailingActions
         videoId={video.id}
         playerDisplayName={displayName}
         caption={video.caption}
-        iconOnly
-        stopPropagation
-        className="[&_button]:flex [&_button]:!h-6 [&_button]:!w-6 max-lg:[&_button]:!h-11 max-lg:[&_button]:!w-11 [&_button]:items-center [&_button]:justify-center [&_button]:rounded-full [&_button]:border-0 [&_button]:bg-white/10 [&_button]:p-0 [&_button]:text-white [&_button]:shadow-[0_2px_10px_rgba(0,0,0,0.35)] [&_button]:backdrop-blur-md [&_button]:hover:bg-white/16 [&_svg]:h-3 [&_svg]:w-3 max-lg:[&_svg]:!h-[22px] max-lg:[&_svg]:!w-[22px]"
+        shareButtonClassName="[&_button]:flex [&_button]:!h-6 [&_button]:!w-6 max-lg:[&_button]:!h-11 max-lg:[&_button]:!w-11 [&_button]:items-center [&_button]:justify-center [&_button]:rounded-full [&_button]:border-0 [&_button]:bg-white/10 [&_button]:p-0 [&_button]:text-white [&_button]:shadow-[0_2px_10px_rgba(0,0,0,0.35)] [&_button]:backdrop-blur-md [&_button]:hover:bg-white/16 [&_svg]:h-3 [&_svg]:w-3 max-lg:[&_svg]:!h-[22px] max-lg:[&_svg]:!w-[22px]"
       />
     ) : null;
 

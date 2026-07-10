@@ -12,7 +12,7 @@ import { supabase } from "@/lib/supabase/client";
 const LOCALE_PREFIX_RE =
   /^\/(en|hr|de|bs|es|pt|sr|fr|it|nl|tr|ar)(?=\/)/;
 
-const DM_POLL_MS = 20_000;
+const DM_POLL_MS = 8_000;
 
 function senderIdFromPathname(pathname: string): string | null {
   const normalized = pathname.replace(LOCALE_PREFIX_RE, "");

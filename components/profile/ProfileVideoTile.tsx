@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminVideoDownloadButton } from "@/components/admin/AdminVideoDownloadButton";
 import { useTranslations } from "next-intl";
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
@@ -18,6 +19,7 @@ import {
 type Props = {
   video: VideoRow;
   canDelete?: boolean;
+  canAdminDownload?: boolean;
   deleting?: boolean;
   onDelete?: (videoId: string) => void;
 };
@@ -40,6 +42,7 @@ function PlayGlyph() {
 export function ProfileVideoTile({
   video,
   canDelete = false,
+  canAdminDownload = false,
   deleting = false,
   onDelete,
 }: Props) {
@@ -134,10 +137,16 @@ export function ProfileVideoTile({
       </button>
     ) : null;
 
+  const downloadButton =
+    canAdminDownload && video.id ? (
+      <AdminVideoDownloadButton videoId={video.id} variant="profileTile" />
+    ) : null;
+
   if (!href) {
     return (
       <div className="relative size-full">
         {tile}
+        {downloadButton}
         {deleteButton}
       </div>
     );
@@ -150,6 +159,7 @@ export function ProfileVideoTile({
       >
         {tile}
       </Link>
+      {downloadButton}
       {deleteButton}
     </div>
   );

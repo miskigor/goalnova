@@ -73,8 +73,13 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
       );
       const { count: messageThreadUnread } = await fetchUnreadMessageThreadCount(uid);
       const notificationPeers = unreadDmRes.error ? 0 : dmPeers.size;
-      // Use notification peers only — thread heuristic stays high after read (no per-message read flag).
-      const finalBadge = unreadDmRes.error ? messageThreadUnread : notificationPeers;
+      // Prefer notification rows; if insert/trigger failed, fall back to latest incoming threads.
+      const finalBadge =
+        unreadDmRes.error
+          ? messageThreadUnread
+          : notificationPeers > 0
+            ? notificationPeers
+            : messageThreadUnread;
 
       if (unreadDmRes.error) {
         if (isLikelyTransientNetworkFailure(unreadDmRes.error)) {

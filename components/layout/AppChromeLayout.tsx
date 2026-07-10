@@ -24,7 +24,10 @@ import {
 import {
   isMobileLayoutStableV2Enabled,
 } from "@/lib/layout/mobileLayoutStableV2Flag";
-import { isMobileLayoutV3ShellRoute } from "@/lib/layout/mobileLayoutV3Flag";
+import {
+  isMobileLayoutV3Enabled,
+  isMobileLayoutV3ShellRoute,
+} from "@/lib/layout/mobileLayoutV3Flag";
 import { FriendChallengeBootstrap } from "@/components/friendChallenge/FriendChallengeBootstrap";
 
 function AppMainColumn({ children }: { children: React.ReactNode }) {
@@ -65,10 +68,12 @@ function AppChromeLayoutV1({ children }: { children: React.ReactNode }) {
 /**
  * Logged-in shell: desktop sidebar + mobile bottom nav always mounted in-layout.
  * V2 rebuild is opt-in via `NEXT_PUBLIC_MOBILE_LAYOUT_STABLE_V2=true`.
+ * V3 is debug-only — all production routes share one shell so chrome does not swap on navigation.
  */
 export function AppChromeLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const useV3Shell = isMobileLayoutV3ShellRoute(pathname);
+  const useV3Shell =
+    isMobileLayoutV3Enabled() && isMobileLayoutV3ShellRoute(pathname);
 
   return (
     <FeedbackProvider>

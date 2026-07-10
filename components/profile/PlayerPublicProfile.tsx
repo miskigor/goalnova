@@ -367,6 +367,8 @@ export function PlayerPublicProfile({
     !scoutGate.row ||
     userMayMessagePlayers(scoutGate.row);
   const isOwnProfile = Boolean(userId && profile.id === userId);
+  const canAdminDownloadVideo =
+    adminLoaded && (isSuperAdmin || isModerator);
   const canAdminDeleteVideo =
     adminLoaded && (isSuperAdmin || isModerator) && !isOwnProfile;
   const canDeleteVideos = isOwnProfile || canAdminDeleteVideo;
@@ -605,6 +607,7 @@ export function PlayerPublicProfile({
           <ProfileVideoGrid
             videos={videos}
             canDelete={canDeleteVideos}
+            canAdminDownload={canAdminDownloadVideo}
             deletingVideoId={deletingVideoId}
             onDelete={onDeleteVideo}
             publicProfile={publicProfile}

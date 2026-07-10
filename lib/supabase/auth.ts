@@ -765,7 +765,7 @@ export type RequestPasswordResetEmailResult =
   | { status: "send_failed" };
 
 /**
- * Sends Supabase's password recovery email (`redirectTo` must be allow-listed in Supabase Auth).
+ * Sends password recovery email via same-origin API (Resend when configured, else Supabase Auth).
  */
 export async function requestPasswordResetEmail(
   email: string,
@@ -777,31 +777,41 @@ export async function requestPasswordResetEmail(
     return { status: "send_failed" };
   }
 
-  const { error } = await withTimeout(
-    supabase.auth.resetPasswordForEmail(trimmed, { redirectTo }),
-    20000,
-    "Password reset email",
-  );
+  try {
+    const res = await withTimeout(
+      fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed, redirectTo }),
+        credentials: "same-origin",
+      }),
+      20000,
+      "Password reset email",
+    );
 
-  if (!error) {
-    return { status: "sent" };
+    let payload: { status?: RequestPasswordResetEmailResult["status"] } = {};
+    try {
+      payload = (await res.json()) as typeof payload;
+    } catch {
+      payload = {};
+    }
+
+    if (
+      payload.status === "sent" ||
+      payload.status === "rate_limited" ||
+      payload.status === "send_failed"
+    ) {
+      return { status: payload.status };
+    }
+
+    if (res.status === 429) {
+      return { status: "rate_limited" };
+    }
+
+    return { status: "send_failed" };
+  } catch (e) {
+    logSupabaseError("Password reset API", e);
+    return { status: "send_failed" };
   }
-
-  logSupabaseError("Supabase: resetPasswordForEmail", error);
-
-  const msg = (error.message ?? "").toLowerCase();
-  const status = typeof (error as { status?: number }).status === "number"
-    ? (error as { status: number }).status
-    : undefined;
-
-  if (
-    status === 429 ||
-    msg.includes("rate limit") ||
-    msg.includes("too many requests")
-  ) {
-    return { status: "rate_limited" };
-  }
-
-  return { status: "send_failed" };
 }
 

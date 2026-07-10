@@ -26,6 +26,7 @@ import {
   type ChallengeRow,
 } from "@/lib/supabase/challenges";
 import { isEffectiveSuperAdmin } from "@/lib/supabase/adminScoutVerification";
+import { challengeSlugCompletionXp } from "@/lib/challenges/challengeCompletionXp";
 import { recordChallengeEntryForNewVideo } from "@/lib/supabase/challengeEntries";
 import { runAndPersistChallengeVideoAiAnalysis } from "@/lib/ai/challengeUploadAiAnalysis";
 import { MusicTrackPicker } from "@/components/upload/MusicTrackPicker";
@@ -585,9 +586,12 @@ export function UploadForm() {
       case "ai_analyzing":
         return t("uploadStatusAiAnalyzing");
       case "success": {
+        const challengeXp = challengeSlugCompletionXp(challengeUrlContext.row?.slug);
         const base = effectiveJoinChallengeId.trim()
           ? lastChallengeAiOk
-            ? t("challengeUploadCompleteSuccess")
+            ? challengeXp > 0
+              ? t("challengeUploadCompleteSuccess", { xp: challengeXp })
+              : t("challengeUploadCompleteSuccessPlain")
             : t("challengeUploadAiIncomplete")
           : t("videoUploadedSuccess");
         return uploadSuccessWarning ? `${base} ${uploadSuccessWarning}` : base;
@@ -606,6 +610,7 @@ export function UploadForm() {
     effectiveJoinChallengeId,
     lastChallengeAiOk,
     wizardStep,
+    challengeUrlContext.row?.slug,
   ]);
 
   const runUpload = useCallback(
@@ -1341,14 +1346,26 @@ export function UploadForm() {
               className="mt-2 w-full rounded-xl border border-gn-border-subtle bg-gn-bg px-3 py-2.5 text-sm text-gn-text"
             >
               <option value="">{tCh("joinChallengePickerNone")}</option>
-              {activeChallengesPick.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.title}
-                </option>
-              ))}
+              {activeChallengesPick.map((c) => {
+                const xp = challengeSlugCompletionXp(c.slug);
+                return (
+                  <option key={c.id} value={c.id}>
+                    {xp > 0 ? tCh("joinChallengePickerOptionWithXp", { title: c.title, xp }) : c.title}
+                  </option>
+                );
+              })}
             </select>
           </label>
           <p className="mt-2 text-xs text-gn-text-tertiary">{tCh("joinChallengePickerHint")}</p>
+        </div>
+      ) : null}
+
+      {!isChallengeUploadFlow && playerGate === "allowed" ? (
+        <div
+          role="note"
+          className="rounded-xl border border-amber-500/35 bg-amber-950/25 px-4 py-3 text-sm leading-relaxed text-amber-100/95"
+        >
+          {t("generalUploadNoXpNotice")}
         </div>
       ) : null}
 

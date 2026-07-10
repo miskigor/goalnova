@@ -9,6 +9,7 @@ import { ChallengeLeaderboardList } from "@/components/challenges/ChallengeLeade
 import { ChallengeRewardBanner } from "@/components/challenges/ChallengeRewardBanner";
 import { ChallengeWinnersSection } from "@/components/challenges/ChallengeWinnersSection";
 import { withLocalizedChallengeContent } from "@/lib/challenges/challengeContent";
+import { challengeSlugCompletionXp } from "@/lib/challenges/challengeCompletionXp";
 import { challengeLinkSegment } from "@/lib/challenges/challengeRowUtils";
 import { timeRemainingUntil } from "@/lib/challenges/challengeTime";
 import { ExploreVideoCard } from "@/components/explore/ExploreView";
@@ -361,6 +362,9 @@ export function ChallengeDetailView({ slug }: Props) {
   }
 
   const ch = withLocalizedChallengeContent(challenge, t, locale);
+  const completionXp = challengeSlugCompletionXp(ch.slug);
+  const showSubmissionXpBanner =
+    Boolean(highlightVideoId) && completionXp > 0;
   const timeLeft = timeRemainingUntil(ch.expires_at);
   const statusEnded = ch.status === "ended";
   const equipment = toStringArray(ch.equipment);
@@ -557,6 +561,21 @@ export function ChallengeDetailView({ slug }: Props) {
         </section>
       ) : null}
 
+      {showSubmissionXpBanner ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="rounded-2xl border border-emerald-500/35 bg-gradient-to-br from-emerald-950/30 via-gn-surface/40 to-gn-surface/25 px-4 py-3.5 text-sm text-emerald-100"
+        >
+          <p className="font-semibold text-emerald-200">
+            {t("submissionXpEarnedTitle", { xp: completionXp })}
+          </p>
+          <p className="mt-1 text-xs leading-relaxed text-emerald-100/85">
+            {t("submissionXpEarnedBody")}
+          </p>
+        </div>
+      ) : null}
+
       <fieldset className="rounded-2xl border border-gn-border-subtle bg-gn-surface/30 p-4">
         <legend className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
           {tEx("sort")}
@@ -639,6 +658,7 @@ export function ChallengeDetailView({ slug }: Props) {
         <ChallengeLeaderboardList
           items={items}
           highlightVideoId={highlightVideoId}
+          completionXp={completionXp}
         />
       ) : null}
 

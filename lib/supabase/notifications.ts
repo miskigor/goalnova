@@ -386,15 +386,54 @@ export function scheduleMessageNotification(
   senderId: string,
   messageText: string,
 ): void {
+  const recipient = receiverId.trim();
+  const sender = senderId.trim();
+  if (!recipient || !sender || recipient === sender) return;
+
   const preview = messageText.trim();
   const body =
-    preview.length > 120 ? `${preview.slice(0, 120)}…` : preview;
-  void safeCreateNotification(client, {
-    recipientUserId: receiverId,
-    type: "message",
-    message: body,
-    relatedUserId: senderId,
-  });
+    preview.length > 120 ? `${preview.slice(0, 120)}…` : preview || " ";
+
+  void (async () => {
+    const { data: existing, error: selectError } = await client
+      .from("notifications")
+      .select("id")
+      .eq("user_id", recipient)
+      .eq("type", "message")
+      .eq("related_user_id", sender)
+      .eq("is_read", false)
+      .maybeSingle();
+
+    if (selectError) {
+      logFullSupabaseError(
+        "[notifications] scheduleMessageNotification select unread",
+        selectError,
+        { recipient, sender },
+      );
+    }
+
+    if (existing?.id) {
+      const { error: updateError } = await client
+        .from("notifications")
+        .update({ message: body, created_at: new Date().toISOString() })
+        .eq("id", existing.id);
+      if (updateError) {
+        logFullSupabaseError(
+          "[notifications] scheduleMessageNotification update unread",
+          updateError,
+          { recipient, sender, notificationId: existing.id },
+        );
+      }
+      return;
+    }
+
+    await safeCreateNotification(client, {
+      recipientUserId: recipient,
+      type: "message",
+      message: body,
+      relatedUserId: sender,
+    });
+  })();
 }
 
 export function scheduleAiAnalysisNotification(

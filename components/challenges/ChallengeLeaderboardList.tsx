@@ -10,9 +10,14 @@ import { ChallengeCompactVideoThumb } from "@/components/challenges/ChallengeCom
 type Props = {
   items: ExploreFeedItem[];
   highlightVideoId: string | null;
+  completionXp?: number;
 };
 
-export function ChallengeLeaderboardList({ items, highlightVideoId }: Props) {
+export function ChallengeLeaderboardList({
+  items,
+  highlightVideoId,
+  completionXp = 0,
+}: Props) {
   const t = useTranslations("challenges");
   const tEx = useTranslations("explore");
   const highlightRef = useRef<HTMLLIElement | null>(null);
@@ -120,6 +125,11 @@ export function ChallengeLeaderboardList({ items, highlightVideoId }: Props) {
                   {compLabel != null ? (
                     <span className="rounded-lg border border-amber-400/35 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-amber-200/95">
                       {t("competitionScoreLabel")}: {compLabel}
+                    </span>
+                  ) : null}
+                  {completionXp > 0 ? (
+                    <span className="rounded-lg border border-emerald-400/35 bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-emerald-200/95">
+                      {t("leaderboardCompletionXpLabel", { xp: completionXp })}
                     </span>
                   ) : null}
                 </div>

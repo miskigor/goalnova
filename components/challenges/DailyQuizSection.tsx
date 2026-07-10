@@ -432,7 +432,7 @@ export function DailyQuizSection() {
         <div className="rounded-2xl border border-gn-border-subtle bg-gn-surface/25 px-4 py-4 text-center">
           <p className="text-sm font-medium text-gn-text-secondary">{t("uploadCtaBody")}</p>
           <Link
-            href="/upload"
+            href="/challenges"
             className={`${GN_PRIMARY_BUTTON_CLASS} mt-3 inline-flex justify-center`}
           >
             {t("uploadCtaButton")}

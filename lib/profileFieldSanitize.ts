@@ -1,4 +1,5 @@
 import type { ClipboardEvent } from "react";
+import type { Json } from "@/lib/supabase/database.types";
 
 /**
  * Client-safe sanitization for profile and related free-text fields.
@@ -8,7 +9,8 @@ import type { ClipboardEvent } from "react";
 export const PROFILE_FIELD_LIMITS = {
   full_name: 200,
   username: 40,
-  bio: 4000,
+  bio: 6000,
+  careerHistory: 4000,
   shortText: 120,
   organization: 200,
   scoutDescription: 4000,
@@ -82,13 +84,62 @@ export function sanitizeUsername(input: string): string {
   return clampLength(s, PROFILE_FIELD_LIMITS.username);
 }
 
-export function sanitizeBio(input: string): string {
+export function sanitizeLongProfileText(input: string, max: number): string {
   let s = removeNullBytes(String(input ?? ""));
   s = stripSqlishFragments(s);
   s = stripSqlKeywords(s);
   s = s.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
   s = s.replace(/\n{5,}/g, "\n\n\n\n");
-  return clampLength(s, PROFILE_FIELD_LIMITS.bio);
+  return clampLength(s, max);
+}
+
+export function sanitizeBio(input: string): string {
+  return sanitizeLongProfileText(input, PROFILE_FIELD_LIMITS.bio);
+}
+
+export function sanitizeCareerHistory(input: string): string {
+  return sanitizeLongProfileText(input, PROFILE_FIELD_LIMITS.careerHistory);
+}
+
+/** Plain-text editor value from `player_profiles.career_history` jsonb. */
+export function careerHistoryFromDb(value: Json | null | undefined): string {
+  if (value == null) return "";
+  if (typeof value === "string") return value;
+  if (!Array.isArray(value)) {
+    if (
+      typeof value === "object" &&
+      value !== null &&
+      "text" in value &&
+      typeof (value as { text: unknown }).text === "string"
+    ) {
+      return (value as { text: string }).text;
+    }
+    return "";
+  }
+  if (value.length === 0) return "";
+  if (value.every((item) => typeof item === "string")) {
+    return value.join("\n\n");
+  }
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return "";
+  }
+}
+
+/** Save plain-text career notes into jsonb (empty → `[]`). */
+export function careerHistoryToDb(text: string): Json {
+  const trimmed = text.trim();
+  if (!trimmed) return [];
+  if (trimmed.startsWith("[") || trimmed.startsWith("{")) {
+    try {
+      const parsed = JSON.parse(trimmed) as Json;
+      if (Array.isArray(parsed)) return parsed;
+    } catch {
+      /* free text */
+    }
+  }
+  return [trimmed];
 }
 
 export function sanitizeShortProfileField(input: string): string {

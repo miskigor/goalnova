@@ -28,36 +28,36 @@
     --gn-page-content-top-inset: calc(0.75rem + env(safe-area-inset-top, 0px));
   }
 
-  /* /home — slightly shorter bottom nav; video sits flush above it */
-  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) {
-    --mlv2-bottom-nav-height: calc(3.5rem + env(safe-area-inset-bottom, 0px));
-    --gn-app-bottom-nav-offset: var(--mlv2-bottom-nav-height);
-  }
-
-  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-bottom-nav] [data-app-bottom-nav] {
-    min-height: 3.5rem !important;
+  /* /home — clean feed (data-home-clean-v3) fills the scroll band like legacy pitchrusch feed */
+  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-scroll] {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    max-height: 100%;
     padding-top: 0 !important;
-    padding-bottom: 0.125rem !important;
+    padding-inline: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden;
+    overflow-x: clip;
   }
 
-  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-bottom-nav] [data-app-bottom-nav] > div {
-    height: 2.25rem !important;
-    min-height: 2.25rem !important;
+  [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-home-clean-v3] {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
-  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-bottom-nav] [data-app-bottom-nav] a,
-  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-bottom-nav] [data-app-bottom-nav] > div > * {
-    height: 2.25rem !important;
-    min-height: 2.25rem !important;
-  }
-
-  html[data-mobile-layout-stable-v2]:has([data-mlv2-route="home"]) [data-mlv2-bottom-nav] [class*="rounded-full"][class*="bg-orange"] {
-    width: 2rem !important;
-    height: 2rem !important;
-    min-width: 2rem !important;
-    min-height: 2rem !important;
-    max-width: 2rem !important;
-    max-height: 2rem !important;
+  [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-home-clean-v3-scroll-root] {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
   }
 
   [data-mobile-layout-stable-v2] [data-mlv2-route="home"] [data-pitchrusch-home-feed],

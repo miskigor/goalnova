@@ -33,7 +33,7 @@ import {
 } from "@/components/video/PlaybackVideo";
 import { ChallengeTagPill } from "@/components/challenges/ChallengeTagPill";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
-import { VideoShareButton } from "@/components/share/VideoShareButton";
+import { VideoRailTrailingActions } from "@/components/video/VideoRailTrailingActions";
 import { VideoMusicCredit } from "@/components/video/VideoMusicCredit";
 import {
   challengeDisplayTitle,
@@ -461,12 +461,10 @@ function HomeFeedV3Card({
 
   const shareTrailing =
     video.id ? (
-      <VideoShareButton
+      <VideoRailTrailingActions
         videoId={video.id}
         playerDisplayName={displayName}
         caption={video.caption}
-        iconOnly
-        stopPropagation
       />
     ) : null;
 

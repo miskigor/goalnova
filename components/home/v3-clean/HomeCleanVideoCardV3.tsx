@@ -6,7 +6,7 @@ import { FeedVideoSurface } from "@/components/home/FeedVideoSurface";
 import { FeedVideoEngagement } from "@/components/home/FeedVideoEngagement";
 import { FeedSoundRailButton } from "@/components/home/FeedSoundRailButton";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
-import { VideoShareButton } from "@/components/share/VideoShareButton";
+import { VideoRailTrailingActions } from "@/components/video/VideoRailTrailingActions";
 import { ChallengeTagPill } from "@/components/challenges/ChallengeTagPill";
 import {
   challengeDisplayTitle,
@@ -59,12 +59,10 @@ export function HomeCleanVideoCardV3({
 
   const shareTrailing =
     video.id != null ? (
-      <VideoShareButton
+      <VideoRailTrailingActions
         videoId={video.id}
         playerDisplayName={displayName}
         caption={video.caption}
-        iconOnly
-        stopPropagation
       />
     ) : null;
 
