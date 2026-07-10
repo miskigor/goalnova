@@ -1,9 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { markPostAuthProfileLandingComplete } from "@/lib/auth/postAuthLanding";
+import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
+import { readAuthUserWithTimeout } from "@/lib/auth/readAuthUserWithTimeout";
+import { writeCachedRoleOnboardingComplete } from "@/lib/auth/roleOnboardingCache";
 import { devError } from "@/lib/devLog";
 import { supabase } from "@/lib/supabase/client";
 import { signOut } from "@/lib/supabase/auth";
@@ -73,6 +76,7 @@ function RoleSpinner() {
 export function RoleSelectionCard() {
   const t = useTranslations("onboardingRole");
   const tCommon = useTranslations("authCommon");
+  const locale = useLocale();
   const router = useRouter();
 
   const [selected, setSelected] = useState<Role>("player");
@@ -100,40 +104,51 @@ export function RoleSelectionCard() {
 
   useEffect(() => {
     // If already onboarded (role is set AND corresponding profile exists), skip.
+    let cancelled = false;
+
     async function init() {
+      setChecking(true);
+      setError(null);
       try {
-        const { data: authData } = await supabase.auth.getUser();
-        const user = authData.user;
-        if (!user?.id) {
-          setChecking(false);
+        const authUser = await readAuthUserWithTimeout("RoleSelectionCard-init");
+        if (cancelled) return;
+        if (!authUser?.id) {
           return;
         }
 
         const { data: userRow } = await supabase
           .from("users")
           .select("role")
-          .eq("id", user.id)
+          .eq("id", authUser.id)
           .maybeSingle();
+
+        if (cancelled) return;
 
         const role = (userRow?.role as Role | undefined) ?? undefined;
         if (role === "player" || role === "scout") {
           setSelected(role);
         }
 
-        const needsRole = await needsRoleOnboardingPage();
+        const needsRole = await needsRoleOnboardingPage(authUser.id);
+        if (cancelled) return;
         if (!needsRole) {
-          router.replace(await resolvePostOnboardingHomePath());
-          return;
+          navigateAfterAuth(
+            await resolvePostOnboardingHomePath(authUser.id),
+            locale,
+          );
         }
       } catch (e) {
         devError("RoleSelection init error", e);
       } finally {
-        setChecking(false);
+        if (!cancelled) setChecking(false);
       }
     }
 
-    init();
-  }, [router]);
+    void init();
+    return () => {
+      cancelled = true;
+    };
+  }, [locale]);
 
   async function chooseRole(role: Role) {
     setError(null);
@@ -141,14 +156,7 @@ export function RoleSelectionCard() {
     try {
       setSelected(role);
 
-      const { data: authData, error: authError } = await supabase.auth.getUser();
-      if (authError) {
-        logFullSupabaseError("[RoleSelection] getUser error", authError);
-        setError(supabaseErrorMessage(authError));
-        return;
-      }
-
-      const authUser = authData.user;
+      const authUser = await readAuthUserWithTimeout("RoleSelectionCard-chooseRole");
       const userId = authUser?.id;
       const signupFullNameRaw =
         typeof authUser?.user_metadata?.full_name === "string"
@@ -268,7 +276,8 @@ export function RoleSelectionCard() {
       if (role === "player") {
         markPostAuthProfileLandingComplete(userId);
       }
-      router.replace(role === "scout" ? "/scout-apply" : "/profile");
+      writeCachedRoleOnboardingComplete(userId);
+      navigateAfterAuth(role === "scout" ? "/scout-apply" : "/profile", locale);
 
       if (role === "player") {
         void (async () => {

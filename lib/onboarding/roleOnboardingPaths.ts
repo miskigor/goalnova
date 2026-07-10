@@ -2,9 +2,19 @@ import {
   hasCompletedPostAuthProfileLanding,
   markPostAuthProfileLandingComplete,
 } from "@/lib/auth/postAuthLanding";
+import { readAuthUserWithTimeout } from "@/lib/auth/readAuthUserWithTimeout";
 import { isRoleOnboardingExempt } from "@/lib/onboarding/roleOnboarding";
 import { supabase } from "@/lib/supabase/client";
-import { resolvePendingReferralCode } from "@/lib/supabase/referrals";
+import {
+  peekPendingReferralCode,
+  resolvePendingReferralCode,
+} from "@/lib/supabase/referrals";
+
+/** Sync `/role` href — safe inside auth gates (never awaits hung `getUser`). */
+export function roleOnboardingHrefSync(): string {
+  const pendingRef = peekPendingReferralCode();
+  return pendingRef ? `/role?ref=${encodeURIComponent(pendingRef)}` : "/role";
+}
 
 /** `/role` with pending referral query when available. */
 export async function roleOnboardingHref(): Promise<string> {
@@ -18,8 +28,8 @@ export async function resolvePostOnboardingHomePath(
 ): Promise<string> {
   let resolvedUserId = userId?.trim() || null;
   if (!resolvedUserId) {
-    const { data: auth } = await supabase.auth.getUser();
-    resolvedUserId = auth.user?.id ?? null;
+    resolvedUserId =
+      (await readAuthUserWithTimeout("resolvePostOnboardingHomePath"))?.id ?? null;
   }
   if (!resolvedUserId) return "/home";
 

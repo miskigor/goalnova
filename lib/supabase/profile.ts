@@ -5,6 +5,7 @@ import {
   type ScoutProfileSanitizedPatch,
 } from "@/lib/profileFieldSanitize";
 import { isAppRole } from "@/lib/onboarding/roleOnboarding";
+import { readAuthUserWithTimeout } from "@/lib/auth/readAuthUserWithTimeout";
 import { isDev } from "@/lib/devLog";
 import { supabase, type Database } from "./client";
 
@@ -87,11 +88,10 @@ export type ProfileLoad =
     };
 
 export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
-  const { data: authData, error: authError } = await supabase.auth.getUser();
-  if (authError) logSupabaseError("Supabase: getUser error", authError);
+  const authUser = await readAuthUserWithTimeout("loadAndEnsureProfile");
 
-  const authUser = authData.user;
-  if (!authUser?.id) {
+  const authUserId = authUser?.id;
+  if (!authUserId) {
     return {
       success: false,
       data: null,
@@ -104,7 +104,7 @@ export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
     };
   }
 
-  const userId = authUser.id;
+  const userId = authUserId;
 
   const { data: userRow, error: userError } = await supabase
     .from("users")

@@ -1,3 +1,4 @@
+import { readAuthUserWithTimeout } from "@/lib/auth/readAuthUserWithTimeout";
 import { supabase } from "@/lib/supabase/client";
 import { devLog, isDev } from "@/lib/devLog";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
@@ -178,8 +179,8 @@ export async function resolvePendingReferralCode(): Promise<string | null> {
   if (fromStorage) return fromStorage;
 
   try {
-    const { data } = await supabase.auth.getUser();
-    const meta = data.user?.user_metadata?.pending_referral_code;
+    const user = await readAuthUserWithTimeout("resolvePendingReferralCode");
+    const meta = user?.user_metadata?.pending_referral_code;
     if (typeof meta === "string") {
       const code = meta.trim().toUpperCase();
       if (code.length >= 4) {

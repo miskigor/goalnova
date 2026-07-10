@@ -13,6 +13,7 @@ import {
   SIGNUP_ERROR_I18N_KEY,
 } from "@/lib/supabase/signupAuthErrors";
 import { setFreshLogin } from "@/lib/auth/freshLogin";
+import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { rememberReferralCodeFromQuery, peekPendingReferralCode } from "@/lib/supabase/referrals";
 import { devError, isDev } from "@/lib/devLog";
@@ -119,7 +120,7 @@ export function SignupCard() {
       setFreshLogin();
       const pending = peekPendingReferralCode();
       const roleHref = pending ? `/role?ref=${encodeURIComponent(pending)}` : "/role";
-      router.replace(roleHref);
+      navigateAfterAuth(roleHref, locale);
     } catch (err) {
       devError("Signup error:", err);
       const authKind = getSignupAuthErrorKind(err);

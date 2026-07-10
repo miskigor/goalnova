@@ -1,3 +1,4 @@
+import { readAuthUserWithTimeout } from "@/lib/auth/readAuthUserWithTimeout";
 import { isStaffUser } from "@/lib/supabase/adminScoutVerification";
 import { supabase } from "@/lib/supabase/client";
 
@@ -49,8 +50,8 @@ export async function needsRoleOnboardingPage(
 ): Promise<boolean> {
   let resolvedUserId = userId?.trim() || null;
   if (!resolvedUserId) {
-    const { data: auth } = await supabase.auth.getUser();
-    resolvedUserId = auth.user?.id ?? null;
+    resolvedUserId =
+      (await readAuthUserWithTimeout("needsRoleOnboardingPage"))?.id ?? null;
   }
   if (!resolvedUserId) return false;
 

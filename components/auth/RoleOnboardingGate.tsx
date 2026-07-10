@@ -13,7 +13,7 @@ import {
 import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
 import {
   resolvePostOnboardingHomePath,
-  roleOnboardingHref,
+  roleOnboardingHrefSync,
 } from "@/lib/onboarding/roleOnboardingPaths";
 import {
   syncPendingReferralCodeToUserMetadata,
@@ -79,6 +79,9 @@ export function RoleOnboardingGate({ mode, children }: Props) {
 
   useEffect(() => {
     let cancelled = false;
+    const failsafeId = window.setTimeout(() => {
+      if (!cancelled) setAllowed(true);
+    }, 6_000);
 
     async function evaluate(options?: {
       session?: Session | null;
@@ -121,7 +124,7 @@ export function RoleOnboardingGate({ mode, children }: Props) {
           const needsRole = await needsRoleOnboardingWithTimeout(userId);
           if (cancelled || !needsRole || didRedirectRef.current) return;
           didRedirectRef.current = true;
-          navigateAfterAuth(await roleOnboardingHref(), locale);
+          navigateAfterAuth(roleOnboardingHrefSync(), locale);
         })();
         return;
       }
@@ -134,8 +137,9 @@ export function RoleOnboardingGate({ mode, children }: Props) {
         if (needsRole) {
           if (!didRedirectRef.current) {
             didRedirectRef.current = true;
-            navigateAfterAuth(await roleOnboardingHref(), locale);
+            navigateAfterAuth(roleOnboardingHrefSync(), locale);
           }
+          if (!cancelled) setAllowed(true);
           return;
         }
         didRedirectRef.current = false;
@@ -180,6 +184,7 @@ export function RoleOnboardingGate({ mode, children }: Props) {
 
     return () => {
       cancelled = true;
+      window.clearTimeout(failsafeId);
       subscription.unsubscribe();
     };
   }, [locale, mode]);

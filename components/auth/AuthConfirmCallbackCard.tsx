@@ -2,15 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/brand/Logo";
 import { consumeAuthRedirectFromUrl } from "@/lib/auth/consumeAuthRedirectFromUrl";
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import { setFreshLogin } from "@/lib/auth/freshLogin";
-import { supabase } from "@/lib/supabase/client";
+import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
+import { readAuthUserWithTimeout } from "@/lib/auth/readAuthUserWithTimeout";
 import {
   resolvePostOnboardingHomePath,
-  roleOnboardingHref,
+  roleOnboardingHrefSync,
 } from "@/lib/onboarding/roleOnboardingPaths";
 import { needsRoleOnboardingPage } from "@/lib/supabase/referrals";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
@@ -23,7 +24,6 @@ type Status = "working" | "confirmed" | "failed";
 export function AuthConfirmCallbackCard() {
   const tSignup = useTranslations("authSignup");
   const locale = useLocale();
-  const router = useRouter();
   const [status, setStatus] = useState<Status>("working");
   const settledRef = useRef(false);
 
@@ -34,22 +34,27 @@ export function AuthConfirmCallbackCard() {
       await consumeAuthRedirectFromUrl();
       if (cancelled || settledRef.current) return;
 
-      const { data: userData, error } = await supabase.auth.getUser();
-      if (error) {
+      const authUser = await readAuthUserWithTimeout("AuthConfirmCallbackCard");
+      if (cancelled || settledRef.current) return;
+
+      if (!authUser) {
         setStatus("failed");
         settledRef.current = true;
         return;
       }
 
-      if (isEmailConfirmed(userData.user)) {
+      if (isEmailConfirmed(authUser)) {
         settledRef.current = true;
         setStatus("confirmed");
         setFreshLogin();
-        const needsRole = await needsRoleOnboardingPage();
+        const needsRole = await needsRoleOnboardingPage(authUser.id);
         if (needsRole) {
-          router.replace(await roleOnboardingHref());
+          navigateAfterAuth(roleOnboardingHrefSync(), locale);
         } else {
-          router.replace(await resolvePostOnboardingHomePath());
+          navigateAfterAuth(
+            await resolvePostOnboardingHomePath(authUser.id),
+            locale,
+          );
         }
         return;
       }
@@ -63,7 +68,7 @@ export function AuthConfirmCallbackCard() {
     return () => {
       cancelled = true;
     };
-  }, [locale, router]);
+  }, [locale]);
 
   return (
     <div
