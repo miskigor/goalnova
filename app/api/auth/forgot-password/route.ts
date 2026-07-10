@@ -79,10 +79,9 @@ async function sendRecoveryViaResend(
   }
 
   const resetLink =
-    (typeof data?.properties?.action_link === "string" && data.properties.action_link) ||
-    (typeof (data as { action_link?: string } | null)?.action_link === "string"
-      ? (data as { action_link: string }).action_link
-      : "");
+    typeof data?.properties?.action_link === "string"
+      ? data.properties.action_link
+      : "";
 
   if (!resetLink) {
     console.error("[forgot-password] generateLink returned no action_link");
