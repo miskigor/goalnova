@@ -1,6 +1,6 @@
 "use client";
 
-type Variant = "header" | "navCompact" | "navSidebar";
+type Variant = "header" | "navCompact" | "navSidebar" | "bottomNav";
 
 /**
  * Minimal unread count pill; renders nothing when count is 0.
@@ -18,15 +18,18 @@ export function UnreadNotificationBadge({
   const text = count > 99 ? "99+" : String(count);
 
   const layout =
-    variant === "navCompact"
-      ? "absolute end-0 top-0 h-3.5 min-w-3.5 -translate-y-1/4 px-[3px] text-[8px]"
-      : variant === "navSidebar"
-        ? "absolute end-0 top-0 -translate-y-1/3 h-[1.125rem] min-w-[1.125rem] px-1 text-[10px]"
-        : "absolute end-0 top-0 -translate-y-1/4 h-[1.125rem] min-w-[1.125rem] px-1 text-[10px]";
+    variant === "bottomNav"
+      ? "absolute -end-0.5 -top-0.5 z-[3] h-4 min-w-4 px-1 text-[10px] leading-none ring-2 ring-gn-bg"
+      : variant === "navCompact"
+        ? "absolute end-0 top-0 h-3.5 min-w-3.5 -translate-y-1/4 px-[3px] text-[8px]"
+        : variant === "navSidebar"
+          ? "absolute end-0 top-0 -translate-y-1/3 h-[1.125rem] min-w-[1.125rem] px-1 text-[10px]"
+          : "absolute end-0 top-0 -translate-y-1/4 h-[1.125rem] min-w-[1.125rem] px-1 text-[10px]";
 
   return (
     <span
-      className={`${layout} flex items-center justify-center rounded-full bg-gn-accent font-bold tabular-nums leading-none text-gn-bg`}
+      data-dm-unread-count
+      className={`${layout} pointer-events-none flex items-center justify-center rounded-full bg-gn-accent font-bold tabular-nums text-gn-bg`}
       aria-hidden
     >
       {text}

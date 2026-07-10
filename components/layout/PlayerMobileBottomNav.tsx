@@ -170,12 +170,18 @@ function NavTab({
       aria-current={active ? "page" : undefined}
       aria-label={title}
     >
-      <span data-tab-emoji-badge className={emojiBadgeClass(pathname, item.href, isUpload)}>
+      <span
+        data-tab-emoji-badge
+        className={[
+          emojiBadgeClass(pathname, item.href, isUpload),
+          isMessagesTab ? "overflow-visible" : "",
+        ].join(" ")}
+      >
         <span className={TAB_EMOJI_CLASS} aria-hidden>
           {emoji}
         </span>
         {isMessagesTab ? (
-          <UnreadNotificationBadge count={dmUnreadCount} variant="navCompact" />
+          <UnreadNotificationBadge count={dmUnreadCount} variant="bottomNav" />
         ) : null}
       </span>
       <span data-tab-label className={tabLabelClass(pathname, item.href)} title={title}>

@@ -191,13 +191,32 @@ html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-player-bottom-na
 }
 
 html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-player-bottom-nav-carousel] [data-tab-emoji-badge],
-html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-player-bottom-nav-carousel] [class*="rounded-full"] {
+html[data-mobile-layout-stable-v2]
+  [data-mlv2-bottom-nav]
+  [data-player-bottom-nav-carousel]
+  [class*="rounded-full"]:not([data-dm-unread-count]) {
   width: 2.25rem !important;
   height: 2.25rem !important;
   min-width: 2.25rem !important;
   min-height: 2.25rem !important;
   max-width: 2.25rem !important;
   max-height: 2.25rem !important;
+}
+
+html[data-mobile-layout-stable-v2]
+  [data-mlv2-bottom-nav]
+  [data-player-bottom-nav-carousel]
+  [data-dm-unread-count] {
+  width: auto !important;
+  height: 1rem !important;
+  min-width: 1rem !important;
+  min-height: 1rem !important;
+  max-width: none !important;
+  max-height: 1rem !important;
+  padding-inline: 0.25rem !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  z-index: 3 !important;
 }
 
 html[data-mobile-layout-stable-v2] [data-mlv2-bottom-nav] [data-player-bottom-nav-carousel] [class*="bg-orange"] {
