@@ -36,10 +36,12 @@ function createAnonAuthClient(): AnonClient | null {
 /**
  * When Supabase Auth SMTP cannot send confirmation mail, skip the slow failing
  * `signUp` call (~5s) and create a confirmed user via service role instead.
+ * Default ON — set SIGNUP_DIRECT_CREATE=false only for local experiments.
  */
 function shouldUseDirectSignup(): boolean {
   const v = process.env.SIGNUP_DIRECT_CREATE?.trim().toLowerCase();
-  return v === "true" || v === "1" || v === "yes";
+  if (v === "false" || v === "0" || v === "no") return false;
+  return true;
 }
 
 function isDuplicateEmailUser(user: User | null): boolean {

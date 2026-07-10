@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
+import {
+  confirmAuthUserEmailByEmail,
+  confirmAuthUserEmailById,
+  isEmailNotConfirmedAuthError,
+  userNeedsEmailConfirmation,
+} from "@/lib/auth/confirmAuthUserEmail.server";
+import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,6 +16,16 @@ const JSON_HEADERS = {
   "Content-Type": "application/json; charset=utf-8",
   "Cache-Control": "no-store",
 } as const;
+
+function createAnonClient(url: string, anon: string) {
+  return createClient<Database>(url, anon, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+    },
+  });
+}
 
 export async function POST(request: Request): Promise<NextResponse> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
@@ -51,15 +68,21 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  const client = createClient<Database>(url, anon, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false,
-    },
-  });
+  const client = createAnonClient(url, anon);
 
-  const { data, error } = await client.auth.signInWithPassword({ email, password });
+  let { data, error } = await client.auth.signInWithPassword({ email, password });
+
+  if (error && isEmailNotConfirmedAuthError(error)) {
+    const admin = createServiceRoleClient();
+    if (admin) {
+      const confirmed = await confirmAuthUserEmailByEmail(admin, email);
+      if (confirmed) {
+        const retry = await client.auth.signInWithPassword({ email, password });
+        data = retry.data;
+        error = retry.error;
+      }
+    }
+  }
 
   if (error) {
     const status =
@@ -88,10 +111,23 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
+  let user = data.user;
+  if (userNeedsEmailConfirmation(user)) {
+    const admin = createServiceRoleClient();
+    if (admin && user?.id) {
+      await confirmAuthUserEmailById(admin, user.id);
+      const refreshed = await client.auth.signInWithPassword({ email, password });
+      if (refreshed.data.session) {
+        data = refreshed.data;
+        user = refreshed.data.user;
+      }
+    }
+  }
+
   return NextResponse.json(
     {
       session: data.session,
-      user: data.user,
+      user,
     },
     { headers: JSON_HEADERS },
   );
