@@ -17,6 +17,7 @@ import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { rememberReferralCodeFromQuery, peekPendingReferralCode } from "@/lib/supabase/referrals";
 import { devError, isDev } from "@/lib/devLog";
+import { isLikelyInAppBrowser } from "@/lib/auth/inAppBrowser";
 import { buildSignupEmailConfirmRedirectUrl } from "@/lib/site/signupEmailRedirect";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
@@ -48,6 +49,7 @@ function Spinner() {
 
 export function SignupCard() {
   const tSignup = useTranslations("authSignup");
+  const tLogin = useTranslations("authLogin");
   const tCommon = useTranslations("authCommon");
   const locale = useLocale();
   const router = useRouter();
@@ -59,11 +61,13 @@ export function SignupCard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showLoginCta, setShowLoginCta] = useState(false);
+  const [showInAppBrowserHint, setShowInAppBrowserHint] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const ref = new URLSearchParams(window.location.search).get("ref");
     rememberReferralCodeFromQuery(ref);
+    setShowInAppBrowserHint(isLikelyInAppBrowser());
   }, []);
 
   const canSubmit = useMemo(() => {
@@ -154,6 +158,15 @@ export function SignupCard() {
         </h1>
         <p className="mt-2 text-sm text-gn-text-secondary">{tSignup("subtitle")}</p>
       </div>
+
+      {showInAppBrowserHint ? (
+        <div
+          role="status"
+          className="mb-4 rounded-xl border border-amber-400/35 bg-amber-950/25 px-3.5 py-3 text-sm text-amber-50/95"
+        >
+          <p className="break-words">{tLogin("inAppBrowserHint")}</p>
+        </div>
+      ) : null}
 
       <form
         className="space-y-4"

@@ -51,6 +51,10 @@ const GUEST_MANUAL_AUTH_PATHS = new Set([
   CONFIRM_EMAIL_PATH,
 ]);
 
+function isManualGuestAuthPath(pathname: string): boolean {
+  return GUEST_MANUAL_AUTH_PATHS.has(pathname);
+}
+
 const INITIAL_SESSION_GRACE_MS = 0;
 
 function readInitialAuthState(): AuthSnapshotState & { checking: boolean } {
@@ -98,16 +102,31 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
 
   useLayoutEffect(() => {
     const initial = readInitialAuthState();
+    if (
+      mode === "guest" &&
+      isManualGuestAuthPath(pathname) &&
+      !oauthReturnLikely()
+    ) {
+      setSession(initial.session);
+      setIsAuthenticated(initial.isAuthenticated ?? false);
+      setEmailConfirmed(initial.emailConfirmed);
+      setChecking(false);
+      return;
+    }
     setSession(initial.session);
     setIsAuthenticated(initial.isAuthenticated);
     setEmailConfirmed(initial.emailConfirmed);
     setChecking(initial.checking);
-  }, []);
+  }, [mode, pathname]);
 
   useEffect(() => {
     const ms = oauthReturnLikely() ? 22_000 : 10_000;
     const id = window.setTimeout(() => {
-      setChecking((c) => (c ? false : c));
+      setChecking((c) => {
+        if (!c) return c;
+        setIsAuthenticated((prev) => (prev === null ? false : prev));
+        return false;
+      });
     }, ms);
     return () => window.clearTimeout(id);
   }, []);
@@ -125,6 +144,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     const finishInit = () => {
       if (!mounted || initSettled) return;
       initSettled = true;
+      setIsAuthenticated((prev) => (prev === null ? false : prev));
       setChecking(false);
     };
 
@@ -169,6 +189,15 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     );
 
     async function init() {
+      if (
+        mode === "guest" &&
+        isManualGuestAuthPath(pathname) &&
+        !oauthReturnLikely()
+      ) {
+        finishInit();
+        return;
+      }
+
       if (urlHasPendingAuthRedirect()) {
         await consumeAuthRedirectFromUrl();
       }
@@ -204,7 +233,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
       mounted = false;
       subscription.subscription.unsubscribe();
     };
-  }, []);
+  }, [mode, pathname]);
 
   useEffect(() => {
     if (checking) return;
