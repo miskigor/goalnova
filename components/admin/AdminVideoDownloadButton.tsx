@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { supabase } from "@/lib/supabase/client";
+import { triggerClientVideoDownload } from "@/lib/video/triggerClientVideoDownload";
 
 type Props = {
   videoId: string;
@@ -88,14 +89,10 @@ export function AdminVideoDownloadButton({
           throw new Error(payload?.reason ?? "download_failed");
         }
 
-        const anchor = document.createElement("a");
-        anchor.href = payload.url;
-        anchor.download = payload.filename ?? "";
-        anchor.rel = "noopener noreferrer";
-        anchor.target = "_blank";
-        document.body.appendChild(anchor);
-        anchor.click();
-        anchor.remove();
+        await triggerClientVideoDownload(
+          payload.url,
+          payload.filename ?? `pitchrusch-${id.slice(0, 8)}.mp4`,
+        );
       } catch {
         window.alert(t("videoDownloadFailed"));
       } finally {
