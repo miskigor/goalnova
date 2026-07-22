@@ -2,14 +2,9 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { HomeCleanVideoCardV3 } from "@/components/home/v3-clean/HomeCleanVideoCardV3";
-import { FeedVideoHeadPreloads } from "@/components/home/FeedVideoHeadPreloads";
 import { useHomeFeedSound } from "@/components/home/HomeFeedSoundContext";
 import { feedItemVideoKey } from "@/lib/feed/feedItemVideoKey";
 import type { AugmentedHomeFeedItem } from "@/lib/supabase/homeFeed";
-import {
-  homeFeedPlaybackCandidates,
-  videoPlaybackUrl,
-} from "@/lib/video/videoPlaybackUrl";
 import { exploreTileVideoPosterAttribute } from "@/lib/video/exploreTileMedia";
 import { isHomeFeedMobileViewport } from "@/components/home/homeFeedMobileScrollReset";
 import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
@@ -45,30 +40,11 @@ export function HomeCleanFeedScroll({
     return i >= 0 ? i : activeIndex;
   }, [activeVideoId, activeIndex, items]);
 
-  const firstPreloadHref = useMemo(() => {
-    if (items.length === 0) return null;
-    const activeItem = items[activeFeedIndex] ?? items[0];
-    const candidates = homeFeedPlaybackCandidates(activeItem.video);
-    const href = (candidates[0] ?? videoPlaybackUrl(activeItem.video)).trim();
-    return href.length > 0 ? href : null;
-  }, [activeFeedIndex, items]);
-
   const activePosterPreloadHref = useMemo(() => {
     const item = items[activeFeedIndex];
     if (!item) return null;
     const href = exploreTileVideoPosterAttribute(item.video, item.userAvatarUrl);
     return href?.trim() || null;
-  }, [activeFeedIndex, items]);
-
-  const nextPreloadHref = useMemo(() => {
-    if (activeFeedIndex + 1 >= items.length) return null;
-    const candidates = homeFeedPlaybackCandidates(
-      items[activeFeedIndex + 1].video,
-    );
-    const href = (
-      candidates[0] ?? videoPlaybackUrl(items[activeFeedIndex + 1].video)
-    ).trim();
-    return href.length > 0 ? href : null;
   }, [activeFeedIndex, items]);
 
   useLayoutEffect(() => {
@@ -283,12 +259,6 @@ export function HomeCleanFeedScroll({
 
   return (
     <>
-      {firstPreloadHref ? (
-        <FeedVideoHeadPreloads
-          firstHref={firstPreloadHref}
-          nextHref={nextPreloadHref}
-        />
-      ) : null}
       <div ref={scrollRef} data-home-clean-v3-scroll-root>
         <div data-home-clean-v3-feed>
           {items.map((item, index) => (

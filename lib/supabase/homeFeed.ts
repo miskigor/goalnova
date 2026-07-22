@@ -48,8 +48,12 @@ export type AugmentedHomeFeedItem = HomeFeedItem & {
  */
 export const HOME_FEED_PAGE_SIZE = 12;
 
-/** Smaller first batch on `/home` — faster time-to-first-video. */
-export const HOME_FEED_INITIAL_SIZE = 8;
+/** First paint batch on `/home` — keep small so the first clip starts sooner. */
+export const HOME_FEED_INITIAL_SIZE = 3;
+
+/** Slim video columns for feed cards (avoid `select *` payload bloat). */
+const HOME_FEED_VIDEO_SELECT_COLUMNS =
+  "id, user_id, video_url, source_video_url, processed_video_url, caption, challenge_id, selected_music_track_id, thumbnail_url, poster_url, created_at" as const;
 
 /** Batch-load `public.users.avatar_url` for feed cards. */
 export async function fetchUserAvatarUrlsByUserIds(
@@ -165,7 +169,7 @@ export async function fetchHomeFeedData(
     const { data: embedded, error: embedError } = await supabase
       .from("videos")
       .select(
-        `*,
+        `${HOME_FEED_VIDEO_SELECT_COLUMNS},
         challenge:challenges!videos_challenge_id_fkey (${cols})`,
       )
       .or(
@@ -195,7 +199,7 @@ export async function fetchHomeFeedData(
     }
     const { data: videos, error: videosError } = await supabase
       .from("videos")
-      .select("*")
+      .select(HOME_FEED_VIDEO_SELECT_COLUMNS)
       .or(
         "video_url.not.is.null,processed_video_url.not.is.null,source_video_url.not.is.null",
       )

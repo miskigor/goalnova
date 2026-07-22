@@ -147,8 +147,10 @@ export function FeedVideoEngagement({
     setLikesCountError(null);
     setCommentsCountError(null);
 
-    const likeRes = await fetchLikeCount(supabase, videoId);
-    const commentRes = await fetchCommentCount(supabase, videoId);
+    const [likeRes, commentRes] = await Promise.all([
+      fetchLikeCount(supabase, videoId),
+      fetchCommentCount(supabase, videoId),
+    ]);
 
     if (likeRes.error) {
       logFullSupabaseError(
@@ -230,11 +232,18 @@ export function FeedVideoEngagement({
       setLikeToggleError(null);
       return;
     }
-    void refreshCounts();
+    // Defer engagement network so the active clip can claim bandwidth first.
+    const timer = window.setTimeout(() => {
+      void refreshCounts();
+    }, 350);
+    return () => window.clearTimeout(timer);
   }, [videoId, refreshCounts]);
 
   useEffect(() => {
-    void refreshLiked();
+    const timer = window.setTimeout(() => {
+      void refreshLiked();
+    }, 350);
+    return () => window.clearTimeout(timer);
   }, [refreshLiked, userId]);
 
   function requireAuthOrRedirect(): boolean {

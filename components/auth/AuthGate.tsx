@@ -120,7 +120,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   }, [mode, pathname]);
 
   useEffect(() => {
-    const ms = oauthReturnLikely() ? 22_000 : 10_000;
+    const ms = oauthReturnLikely() ? 12_000 : 4_000;
     const id = window.setTimeout(() => {
       setChecking((c) => {
         if (!c) return c;
