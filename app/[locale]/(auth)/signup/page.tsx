@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { InAppBrowserContinue } from "@/components/auth/InAppBrowserContinue";
 import { SignupCard } from "@/components/auth/SignupCard";
 import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
 
@@ -16,9 +15,5 @@ export default async function SignupPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return (
-    <InAppBrowserContinue>
-      <SignupCard />
-    </InAppBrowserContinue>
-  );
+  return <SignupCard />;
 }

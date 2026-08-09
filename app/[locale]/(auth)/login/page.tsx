@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { InAppBrowserContinue } from "@/components/auth/InAppBrowserContinue";
 import { LoginCard } from "@/components/auth/LoginCard";
 import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
 
@@ -50,9 +49,5 @@ export default async function LoginPage({ params }: Props) {
     signOutToSwitchAccount: tLogin("signOutToSwitchAccount"),
   };
 
-  return (
-    <InAppBrowserContinue>
-      <LoginCard labels={labels} />
-    </InAppBrowserContinue>
-  );
+  return <LoginCard labels={labels} />;
 }
