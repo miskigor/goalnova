@@ -1157,7 +1157,11 @@
     "signUpLink": "Registracija",
     "inAppBrowserHintExtra": "Unutar Instagrama forma često ne radi. Otvori Safari ili Chrome, zalijepi link, pa stvori račun.",
     "inAppBrowserCopyLink": "Kopiraj link za registraciju",
-    "inAppBrowserLinkCopied": "Link kopiran — zalijepi ga u Safari ili Chrome"
+    "inAppBrowserLinkCopied": "Link kopiran — zalijepi ga u Safari ili Chrome",
+    "inAppContinueTitle": "Nastavi na PitchRusch",
+    "inAppContinueBody": "Pritisni Nastavi da otvoriš PitchRusch i stvoriš račun.",
+    "inAppContinueCta": "Nastavi",
+    "inAppContinueStay": "Ostani na ovoj stranici"
   },
   "authSignup": {
     "title": "Kreirajte račun",

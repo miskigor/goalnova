@@ -1157,7 +1157,11 @@
     "signUpLink": "Registracija",
     "inAppBrowserHintExtra": "Unutar Instagrama forma često ne radi. Otvori Safari ili Chrome, nalepi link, pa napravi nalog.",
     "inAppBrowserCopyLink": "Kopiraj link za registraciju",
-    "inAppBrowserLinkCopied": "Link kopiran — nalepi ga u Safari ili Chrome"
+    "inAppBrowserLinkCopied": "Link kopiran — nalepi ga u Safari ili Chrome",
+    "inAppContinueTitle": "Nastavi na PitchRusch",
+    "inAppContinueBody": "Pritisni Nastavi da otvoriš PitchRusch i napraviš nalog.",
+    "inAppContinueCta": "Nastavi",
+    "inAppContinueStay": "Ostani na ovoj stranici"
   },
   "authSignup": {
     "title": "Napravite nalog",

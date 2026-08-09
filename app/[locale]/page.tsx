@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { InAppBrowserContinue } from "@/components/auth/InAppBrowserContinue";
 import { LandingAuthedHomeRedirect } from "@/components/landing/LandingAuthedHomeRedirect";
 import { LandingImmersiveEntry } from "@/components/landing/LandingImmersiveEntry";
 import { LandingSteps } from "@/components/landing/LandingSteps";
@@ -89,40 +90,42 @@ export default async function LandingPage({ params }: Props) {
 
       <LandingAuthedHomeRedirect />
 
-      <LandingImmersiveEntry
-        signupHref={h("/signup")}
-        loginHref={h("/login")}
-        headline={t("headline")}
-        subhead={t("subhead")}
-        ctaNewHere={t("ctaNewHere")}
-        ctaHaveAccount={t("ctaHaveAccount")}
-        changeLanguageLabel={tLang("changeLanguage")}
-      />
-
-      <main>
-        <LandingSteps steps={steps} />
-
-        <LandingFoundingPlayer
+      <InAppBrowserContinue targetHref={h("/signup")}>
+        <LandingImmersiveEntry
           signupHref={h("/signup")}
-          title={t("foundingTitle")}
-          body={t("foundingBody")}
-          bullets={[t("foundingBullet1"), t("foundingBullet2"), t("foundingBullet3")]}
-          cta={t("foundingCta")}
+          loginHref={h("/login")}
+          headline={t("headline")}
+          subhead={t("subhead")}
+          ctaNewHere={t("ctaNewHere")}
+          ctaHaveAccount={t("ctaHaveAccount")}
+          changeLanguageLabel={tLang("changeLanguage")}
         />
-      </main>
 
-      <LandingFooter
-        footerText={t("footer", { year })}
-        termsHref={h("/terms")}
-        privacyHref={h("/privacy")}
-        contentPolicyHref={h("/content-policy")}
-        contactHref={h("/contact")}
-        termsLabel={legal("footer.terms")}
-        privacyLabel={legal("footer.privacy")}
-        contentPolicyLabel={legal("footer.contentPolicy")}
-        contactLabel={legal("footer.contact")}
-        navAriaLabel={legal("footer.navAriaLabel")}
-      />
+        <main>
+          <LandingSteps steps={steps} />
+
+          <LandingFoundingPlayer
+            signupHref={h("/signup")}
+            title={t("foundingTitle")}
+            body={t("foundingBody")}
+            bullets={[t("foundingBullet1"), t("foundingBullet2"), t("foundingBullet3")]}
+            cta={t("foundingCta")}
+          />
+        </main>
+
+        <LandingFooter
+          footerText={t("footer", { year })}
+          termsHref={h("/terms")}
+          privacyHref={h("/privacy")}
+          contentPolicyHref={h("/content-policy")}
+          contactHref={h("/contact")}
+          termsLabel={legal("footer.terms")}
+          privacyLabel={legal("footer.privacy")}
+          contentPolicyLabel={legal("footer.contentPolicy")}
+          contactLabel={legal("footer.contact")}
+          navAriaLabel={legal("footer.navAriaLabel")}
+        />
+      </InAppBrowserContinue>
     </div>
   );
 }

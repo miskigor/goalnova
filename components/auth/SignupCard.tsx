@@ -17,7 +17,6 @@ import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { rememberReferralCodeFromQuery, peekPendingReferralCode } from "@/lib/supabase/referrals";
 import { devError, isDev } from "@/lib/devLog";
-import { isLikelyInAppBrowser } from "@/lib/auth/inAppBrowser";
 import { buildSignupEmailConfirmRedirectUrl } from "@/lib/site/signupEmailRedirect";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
@@ -49,7 +48,6 @@ function Spinner() {
 
 export function SignupCard() {
   const tSignup = useTranslations("authSignup");
-  const tLogin = useTranslations("authLogin");
   const tCommon = useTranslations("authCommon");
   const locale = useLocale();
   const router = useRouter();
@@ -61,26 +59,12 @@ export function SignupCard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showLoginCta, setShowLoginCta] = useState(false);
-  const [showInAppBrowserHint, setShowInAppBrowserHint] = useState(false);
-  const [linkCopied, setLinkCopied] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const ref = new URLSearchParams(window.location.search).get("ref");
     rememberReferralCodeFromQuery(ref);
-    setShowInAppBrowserHint(isLikelyInAppBrowser());
   }, []);
-
-  async function copySignupLink() {
-    try {
-      const url = window.location.href;
-      await navigator.clipboard.writeText(url);
-      setLinkCopied(true);
-      window.setTimeout(() => setLinkCopied(false), 2500);
-    } catch {
-      /* clipboard can fail in locked-down webviews */
-    }
-  }
 
   const canSubmit = useMemo(() => {
     const trimmed = email.trim();
@@ -170,23 +154,6 @@ export function SignupCard() {
         </h1>
         <p className="mt-2 text-sm text-gn-text-secondary">{tSignup("subtitle")}</p>
       </div>
-
-      {showInAppBrowserHint ? (
-        <div
-          role="alert"
-          className="mb-4 rounded-xl border border-amber-400/45 bg-amber-950/35 px-3.5 py-3 text-sm text-amber-50/95"
-        >
-          <p className="break-words font-medium">{tLogin("inAppBrowserHint")}</p>
-          <p className="mt-2 break-words text-amber-50/80">{tLogin("inAppBrowserHintExtra")}</p>
-          <button
-            type="button"
-            onClick={() => void copySignupLink()}
-            className="mt-3 w-full rounded-xl border border-amber-300/40 bg-amber-400/15 px-3 py-2.5 text-sm font-semibold text-amber-50 transition-colors hover:bg-amber-400/25"
-          >
-            {linkCopied ? tLogin("inAppBrowserLinkCopied") : tLogin("inAppBrowserCopyLink")}
-          </button>
-        </div>
-      ) : null}
 
       <form
         className="space-y-4"

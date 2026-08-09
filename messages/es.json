@@ -1157,7 +1157,11 @@
     "signUpLink": "Registrarse",
     "inAppBrowserHintExtra": "Forms often do not work inside Instagram. Open Safari or Chrome, paste the link, then create your account.",
     "inAppBrowserCopyLink": "Copy signup link",
-    "inAppBrowserLinkCopied": "Link copied — paste it in Safari or Chrome"
+    "inAppBrowserLinkCopied": "Link copied — paste it in Safari or Chrome",
+    "inAppContinueTitle": "Continue to PitchRusch",
+    "inAppContinueBody": "Tap continue to open PitchRusch so you can create your account.",
+    "inAppContinueCta": "Continue",
+    "inAppContinueStay": "Stay on this page"
   },
   "authSignup": {
     "title": "Crea tu cuenta",
