@@ -34,7 +34,6 @@ import { rpcPlayerClubBadge, type PlayerClubBadge } from "@/lib/supabase/clubs";
 import { VerifiedAcademyBadge } from "@/components/clubs/VerifiedAcademyBadge";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
 import { GN_SUCCESS_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
-import { InstallAppButton } from "@/components/pwa/InstallAppButton";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
 import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
@@ -491,9 +490,6 @@ export function PlayerPublicProfile({
             >
               <span className="min-w-0 truncate">{tProfile("editProfile")}</span>
             </Link>
-            <div className="mt-2">
-              <InstallAppButton />
-            </div>
             <div className="mt-2">
               <ChallengeFriendButton fullWidth />
             </div>

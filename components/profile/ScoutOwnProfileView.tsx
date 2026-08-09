@@ -18,7 +18,6 @@ import {
   SCOUT_MOBILE_SECTION_TITLE_CLASS,
 } from "@/components/scout/scoutMobileTypography";
 import { ScoutMobileLayoutCheck } from "@/components/scout/ScoutMobileLayoutCheck";
-import { InstallAppButton } from "@/components/pwa/InstallAppButton";
 
 const FREE_SCOUT_FEATURE_KEYS = ["f1", "f2", "f3", "f4", "f5"] as const;
 
@@ -125,9 +124,6 @@ export function ScoutOwnProfileView({
         >
           {tProfile("editProfile")}
         </Link>
-        <div className="mt-2 w-full sm:w-auto">
-          <InstallAppButton />
-        </div>
       </header>
 
       <section

@@ -69,36 +69,6 @@ const nextConfig: NextConfig = {
     // Logo uses quality={92}; Next 16 defaults to [75] only — without this, /_next/image returns 400 in production.
     qualities: [75, 92],
   },
-  async headers() {
-    return [
-      {
-        source: "/sw.js",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
-          { key: "Service-Worker-Allowed", value: "/" },
-        ],
-      },
-      {
-        source: "/manifest.json",
-        headers: [
-          {
-            key: "Content-Type",
-            value: "application/manifest+json; charset=utf-8",
-          },
-          { key: "Cache-Control", value: "public, max-age=86400" },
-        ],
-      },
-      {
-        source: "/site.webmanifest",
-        headers: [
-          {
-            key: "Content-Type",
-            value: "application/manifest+json; charset=utf-8",
-          },
-        ],
-      },
-    ];
-  },
 };
 
 export default withNextIntl(nextConfig);

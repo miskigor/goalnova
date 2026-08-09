@@ -49,8 +49,6 @@ import {
 } from "@/lib/constants/storageBuckets";
 import { canUploadVideo, getPlayerVideoUploadLimit } from "@/lib/premium/playerPremium";
 import { fetchMyPlayerPremiumProfile, fetchMyVideoCount } from "@/lib/supabase/playerPremium";
-import { dispatchPwaShowPostFirstVideo } from "@/lib/pwa/events";
-import { markPostFirstVideoPending } from "@/lib/pwa/storage";
 
 type Role = "player" | "scout";
 type PlayerGateStatus = "checking" | "allowed" | "denied" | "unknown";
@@ -1147,10 +1145,6 @@ export function UploadForm() {
           publishedWithoutLibraryMusic ? t("mergeCompletedWithoutMusic") : null,
         );
         setUploadPhase("success");
-        if (currentVideoCount === 0) {
-          markPostFirstVideoPending();
-          dispatchPwaShowPostFirstVideo();
-        }
         finishChallengeSuccessUx({
           challengeId: resolvedChallengeId || null,
           newVideoId,

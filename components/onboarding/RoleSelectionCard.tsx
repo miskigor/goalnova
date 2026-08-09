@@ -21,8 +21,6 @@ import {
 } from "@/lib/supabase/referrals";
 import { InviteFriendsSection } from "@/components/referrals/InviteFriendsSection";
 import { PITCHRUSCH_PREMIUM_UPDATED_EVENT } from "@/lib/supabase/premium";
-import { dispatchPwaShowPostRegistration } from "@/lib/pwa/events";
-import { markPostRegistrationPending } from "@/lib/pwa/storage";
 
 type Role = "player" | "scout";
 
@@ -279,8 +277,6 @@ export function RoleSelectionCard() {
         markPostAuthProfileLandingComplete(userId);
       }
       writeCachedRoleOnboardingComplete(userId);
-      markPostRegistrationPending();
-      dispatchPwaShowPostRegistration();
       navigateAfterAuth(role === "scout" ? "/scout-apply" : "/profile", locale);
 
       if (role === "player") {
