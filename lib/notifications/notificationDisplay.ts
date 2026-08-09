@@ -46,6 +46,8 @@ export function localizedNotificationMessage(
         return t("onboardingScoutExplorePrompt");
       case "scout_admin_review_pending":
         return t("scoutAdminReviewPending");
+      case "club_partnership_request_pending":
+        return t("clubPartnershipRequestPending");
       default:
         break;
     }
@@ -114,6 +116,7 @@ const TYPE_LABEL_KEYS: Record<string, string> = {
   message: "typeLabelMessage",
   ai_analysis: "typeLabelAiAnalysis",
   scout_verification: "typeLabelScoutVerification",
+  club_partnership: "typeLabelClubPartnership",
   welcome: "typeLabelWelcome",
   onboarding: "typeLabelOnboarding",
   profile: "typeLabelProfile",

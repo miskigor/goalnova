@@ -1531,7 +1531,9 @@
     "allNotificationsDeleted": "Sve obavijesti uklonjene",
     "deleteFailed": "Radnja nije uspjela.",
     "supportReply": "PitchRusch Support replied to your ticket",
-    "welcomeInboxPreview": "Dobrodošao/la na PitchRusch! Otvori Poruke i pročitaj dobrodošlicu."
+    "welcomeInboxPreview": "Dobrodošao/la na PitchRusch! Otvori Poruke i pročitaj dobrodošlicu.",
+    "clubPartnershipRequestPending": "Klub je poslao zahtjev za partnerstvo — pregledaj u Admin → Klubovi.",
+    "typeLabelClubPartnership": "Klub partnerstvo"
   },
   "support": {
     "title": "Support / Contact Support",

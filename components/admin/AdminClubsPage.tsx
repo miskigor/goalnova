@@ -10,6 +10,7 @@ import {
   rpcAdminClubRequestsList,
   rpcAdminClubsList,
 } from "@/lib/supabase/clubs";
+import { markAllAdminClubPartnershipNotificationsRead } from "@/lib/supabase/adminSystem";
 import { notifyClubApproved } from "@/lib/clubs/notifyClubApproved.client";
 import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
@@ -49,6 +50,7 @@ export function AdminClubsPage() {
 
   useEffect(() => {
     void load();
+    void markAllAdminClubPartnershipNotificationsRead();
   }, [load]);
 
   async function approveRequest(id: string, clubName: string) {

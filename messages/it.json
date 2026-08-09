@@ -1531,7 +1531,9 @@
     "allNotificationsDeleted": "Tutte le notifiche rimosse",
     "deleteFailed": "Impossibile completare l’azione.",
     "supportReply": "PitchRusch Support replied to your ticket",
-    "welcomeInboxPreview": "Benvenuto/a su PitchRusch! Apri Messaggi per leggere il messaggio di benvenuto."
+    "welcomeInboxPreview": "Benvenuto/a su PitchRusch! Apri Messaggi per leggere il messaggio di benvenuto.",
+    "clubPartnershipRequestPending": "A club submitted a partnership request — review it in Admin → Clubs.",
+    "typeLabelClubPartnership": "Club partnership"
   },
   "support": {
     "title": "Support / Contact Support",

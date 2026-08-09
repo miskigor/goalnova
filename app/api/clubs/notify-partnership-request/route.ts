@@ -11,12 +11,52 @@ const JSON_HEADERS = {
   "Cache-Control": "no-store",
 } as const;
 
+const CLUB_PARTNERSHIP_NOTIFY_MESSAGE = "__gn:club_partnership_request_pending__";
+
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+async function insertStaffInAppNotifications(
+  service: NonNullable<ReturnType<typeof createServiceRoleClient>>,
+): Promise<number> {
+  const { data: staff, error } = await service
+    .from("users")
+    .select("id, admin_role, is_admin, is_deleted")
+    .or("admin_role.in.(super_admin,support_admin),and(is_admin.eq.true,admin_role.is.null)");
+
+  if (error) {
+    console.error("[clubs/notify-partnership-request] staff load failed", error);
+    return 0;
+  }
+
+  const targets = (staff ?? []).filter((row) => {
+    if (row.is_deleted) return false;
+    if (row.admin_role === "super_admin" || row.admin_role === "support_admin") return true;
+    return row.is_admin === true && (row.admin_role == null || row.admin_role === "");
+  });
+
+  if (targets.length === 0) return 0;
+
+  const rows = targets.map((u) => ({
+    user_id: u.id as string,
+    type: "club_partnership",
+    message: CLUB_PARTNERSHIP_NOTIFY_MESSAGE,
+    // Schema types require related_user_id; self-id is fine for staff alerts.
+    related_user_id: u.id as string,
+    is_read: false,
+  }));
+
+  const { error: insertError } = await service.from("notifications").insert(rows);
+  if (insertError) {
+    console.error("[clubs/notify-partnership-request] in-app notify failed", insertError);
+    return 0;
+  }
+  return rows.length;
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -64,6 +104,8 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ ok: false, reason: "request_not_found" }, { status: 404, headers: JSON_HEADERS });
   }
 
+  const inAppCount = await insertStaffInAppNotifications(service);
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://pitchrusch.com";
   const adminUrl = `${siteUrl}/admin/clubs`;
   const clubName = String(req.club_name ?? "Club");
@@ -103,25 +145,29 @@ export async function POST(request: Request): Promise<NextResponse> {
   `.trim();
 
   const recipients = clubPartnershipStaffNotifyEmails();
-  let sentAny = false;
+  let emailSent = false;
+  let emailSkipped = false;
 
   for (const to of recipients) {
     const sent = await sendResendEmail({ to, subject, html, text });
-    if (sent.ok) sentAny = true;
-    else if (sent.reason === "not_configured") {
+    if (sent.ok) {
+      emailSent = true;
+    } else if (sent.reason === "not_configured") {
+      emailSkipped = true;
       console.warn("[clubs/notify-partnership-request] RESEND_API_KEY not set — email skipped");
-      return NextResponse.json(
-        { ok: true, skipped: true, reason: "email_not_configured" },
-        { status: 200, headers: JSON_HEADERS },
-      );
+      break;
     } else {
       console.error("[clubs/notify-partnership-request] email failed for", to, sent.message);
     }
   }
 
-  if (!sentAny) {
-    return NextResponse.json({ ok: false, reason: "email_send_failed" }, { status: 502, headers: JSON_HEADERS });
-  }
-
-  return NextResponse.json({ ok: true, emailSent: true }, { status: 200, headers: JSON_HEADERS });
+  return NextResponse.json(
+    {
+      ok: true,
+      inAppNotified: inAppCount,
+      emailSent,
+      emailSkipped,
+    },
+    { status: 200, headers: JSON_HEADERS },
+  );
 }

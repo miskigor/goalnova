@@ -742,6 +742,7 @@ export async function fetchAdminUnreadSupportCount(): Promise<{
       [
         "message.eq.New support ticket message from user",
         "and(type.eq.scout_verification,message.eq.__gn:scout_admin_review_pending__)",
+        "and(type.eq.club_partnership,message.eq.__gn:club_partnership_request_pending__)",
       ].join(","),
     );
   if (error) {
@@ -754,6 +755,7 @@ export async function fetchAdminUnreadSupportCount(): Promise<{
 export async function fetchAdminUnreadInboxBreakdown(): Promise<{
   supportCount: number;
   verificationCount: number;
+  clubPartnershipCount: number;
   totalCount: number;
   error: string | null;
 }> {
@@ -763,12 +765,13 @@ export async function fetchAdminUnreadInboxBreakdown(): Promise<{
     return {
       supportCount: 0,
       verificationCount: 0,
+      clubPartnershipCount: 0,
       totalCount: 0,
       error: "Not authenticated",
     };
   }
 
-  const [supportRes, verificationRes] = await Promise.all([
+  const [supportRes, verificationRes, clubRes] = await Promise.all([
     supabase
       .from("notifications")
       .select("id", { count: "exact", head: true })
@@ -782,14 +785,22 @@ export async function fetchAdminUnreadInboxBreakdown(): Promise<{
       .eq("is_read", false)
       .eq("type", "scout_verification")
       .eq("message", "__gn:scout_admin_review_pending__"),
+    supabase
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", adminUserId)
+      .eq("is_read", false)
+      .eq("type", "club_partnership")
+      .eq("message", "__gn:club_partnership_request_pending__"),
   ]);
 
-  const err = supportRes.error ?? verificationRes.error;
+  const err = supportRes.error ?? verificationRes.error ?? clubRes.error;
   if (err) {
     logFullSupabaseError("[admin] fetchAdminUnreadInboxBreakdown", err);
     return {
       supportCount: 0,
       verificationCount: 0,
+      clubPartnershipCount: 0,
       totalCount: 0,
       error: err.message,
     };
@@ -797,10 +808,12 @@ export async function fetchAdminUnreadInboxBreakdown(): Promise<{
 
   const supportCount = supportRes.count ?? 0;
   const verificationCount = verificationRes.count ?? 0;
+  const clubPartnershipCount = clubRes.count ?? 0;
   return {
     supportCount,
     verificationCount,
-    totalCount: supportCount + verificationCount,
+    clubPartnershipCount,
+    totalCount: supportCount + verificationCount + clubPartnershipCount,
     error: null,
   };
 }
@@ -825,6 +838,31 @@ export async function markAllAdminScoutVerificationNotificationsRead(): Promise<
 
   if (error) {
     logFullSupabaseError("[admin] markAllAdminScoutVerificationNotificationsRead", error);
+    return { ok: false, error: error.message };
+  }
+  return { ok: true, error: null };
+}
+
+export async function markAllAdminClubPartnershipNotificationsRead(): Promise<{
+  ok: boolean;
+  error: string | null;
+}> {
+  const { data: authData } = await supabase.auth.getUser();
+  const adminUserId = authData.user?.id ?? null;
+  if (!adminUserId) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const { error } = await supabase
+    .from("notifications")
+    .update({ is_read: true })
+    .eq("user_id", adminUserId)
+    .eq("is_read", false)
+    .eq("type", "club_partnership")
+    .eq("message", "__gn:club_partnership_request_pending__");
+
+  if (error) {
+    logFullSupabaseError("[admin] markAllAdminClubPartnershipNotificationsRead", error);
     return { ok: false, error: error.message };
   }
   return { ok: true, error: null };
@@ -984,7 +1022,10 @@ export type StaffUserRow = {
   admin_role: string | null;
 };
 
-export type AdminInboxItemKind = "support_message" | "scout_verification";
+export type AdminInboxItemKind =
+  | "support_message"
+  | "scout_verification"
+  | "club_partnership";
 
 export type AdminInboxItem = {
   id: string;
@@ -1025,6 +1066,7 @@ export async function listAdminUnreadInboxItems(): Promise<{
       [
         "message.eq.New support ticket message from user",
         "and(type.eq.scout_verification,message.eq.__gn:scout_admin_review_pending__)",
+        "and(type.eq.club_partnership,message.eq.__gn:club_partnership_request_pending__)",
       ].join(","),
     )
     .order("created_at", { ascending: false })
@@ -1060,6 +1102,16 @@ export async function listAdminUnreadInboxItems(): Promise<{
         id: row.id,
         kind: "scout_verification",
         label: "Scout verifikacija",
+        createdAt,
+        relatedUserId,
+      });
+      continue;
+    }
+    if (type === "club_partnership" && message === "__gn:club_partnership_request_pending__") {
+      items.push({
+        id: row.id,
+        kind: "club_partnership",
+        label: "Klub partnerstvo",
         createdAt,
         relatedUserId,
       });

@@ -36,6 +36,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const { isSuperAdmin } = useAdminAccess();
   const [supportUnread, setSupportUnread] = useState(0);
   const [verificationUnread, setVerificationUnread] = useState(0);
+  const [clubUnread, setClubUnread] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,6 +45,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
       if (cancelled || res.error) return;
       setSupportUnread(res.supportCount);
       setVerificationUnread(res.verificationCount);
+      setClubUnread(res.clubPartnershipCount);
     };
     void refresh();
     const ch = supabase
@@ -95,6 +97,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
                   {item.href === "/admin/scout-verifications" && verificationUnread > 0 ? (
                     <span className="rounded-full bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-amber-200">
                       {verificationUnread}
+                    </span>
+                  ) : null}
+                  {item.href === "/admin/clubs" && clubUnread > 0 ? (
+                    <span className="rounded-full bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-amber-200">
+                      {clubUnread}
                     </span>
                   ) : null}
                 </span>
