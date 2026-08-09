@@ -1,0 +1,241 @@
+/**
+ * Immersive landing entry — full-bleed atmosphere, orange brand accent.
+ */
+
+[data-landing-immersive] {
+  --landing-orange: #f97316;
+  --landing-orange-hot: #fb923c;
+  color: #fafafa;
+  background: #050505;
+}
+
+[data-landing-immersive-media] {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+[data-landing-immersive-media] img {
+  transform: scale(1.06);
+  animation: landing-immersive-drift 22s ease-in-out infinite alternate;
+}
+
+[data-landing-immersive-scrim] {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgb(0 0 0 / 0.55) 0%,
+      rgb(0 0 0 / 0.28) 38%,
+      rgb(0 0 0 / 0.72) 72%,
+      rgb(0 0 0 / 0.92) 100%
+    ),
+    radial-gradient(
+      ellipse 90% 55% at 50% 100%,
+      rgb(249 115 22 / 0.28) 0%,
+      transparent 62%
+    );
+}
+
+[data-landing-immersive-content] {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 28rem;
+  margin-inline: auto;
+  min-height: 100dvh;
+  min-height: 100svh;
+  padding:
+    max(1.5rem, env(safe-area-inset-top, 0px))
+    1.25rem
+    max(1.5rem, env(safe-area-inset-bottom, 0px));
+}
+
+[data-landing-immersive-brand] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding-top: 0.75rem;
+  animation: landing-immersive-rise 0.7s var(--gn-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+[data-landing-immersive-wordmark] {
+  margin: 0;
+  font-family: var(--font-bebas), var(--font-display), Impact, sans-serif;
+  font-size: clamp(2.4rem, 11vw, 3.4rem);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 24px rgb(0 0 0 / 0.55);
+}
+
+[data-landing-immersive-copy] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: center;
+  animation: landing-immersive-rise 0.75s 0.08s var(--gn-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+[data-landing-immersive-headline] {
+  margin: 0;
+  font-family: var(--font-bebas), var(--font-display), Impact, sans-serif;
+  font-size: clamp(2rem, 9vw, 3rem);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 28px rgb(0 0 0 / 0.65);
+}
+
+[data-landing-immersive-subhead] {
+  margin: 0 auto;
+  max-width: 22rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: rgb(255 255 255 / 0.82);
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.55);
+}
+
+[data-landing-immersive-actions] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  padding-bottom: 0.25rem;
+  animation: landing-immersive-rise 0.8s 0.16s var(--gn-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+[data-landing-immersive-cta-primary],
+[data-landing-immersive-cta-secondary] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.25rem;
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+[data-landing-immersive-cta-primary] {
+  color: #0a0a0a;
+  background: linear-gradient(180deg, var(--landing-orange-hot) 0%, var(--landing-orange) 100%);
+  box-shadow:
+    0 10px 36px -10px rgb(249 115 22 / 0.65),
+    inset 0 1px 0 rgb(255 255 255 / 0.25);
+}
+
+[data-landing-immersive-cta-primary]:hover {
+  background: linear-gradient(180deg, #fdba74 0%, var(--landing-orange-hot) 100%);
+}
+
+[data-landing-immersive-cta-secondary] {
+  color: #fff;
+  background: rgb(28 28 30 / 0.72);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  backdrop-filter: blur(10px);
+}
+
+[data-landing-immersive-cta-secondary]:hover {
+  background: rgb(40 40 44 / 0.82);
+  border-color: rgb(255 255 255 / 0.22);
+}
+
+[data-landing-immersive-cta-primary]:active,
+[data-landing-immersive-cta-secondary]:active {
+  transform: scale(0.98);
+}
+
+[data-landing-immersive-lang] {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.35rem;
+}
+
+[data-landing-immersive-lang] > div {
+  position: relative;
+}
+
+[data-landing-immersive-lang] > div > button {
+  color: #fdba74 !important;
+  border-color: rgb(249 115 22 / 0.35) !important;
+  background: rgb(0 0 0 / 0.28) !important;
+}
+
+/* Open above the CTAs (nav variant pins the menu to the top of the viewport). */
+[data-landing-immersive-lang] ul[role="listbox"] {
+  position: absolute !important;
+  inset: auto auto 100% 50% !important;
+  top: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: 100% !important;
+  margin: 0 0 0.5rem !important;
+  width: min(16rem, calc(100vw - 2.5rem)) !important;
+  max-width: none !important;
+  transform: translateX(-50%);
+}
+
+@keyframes landing-immersive-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landing-immersive-drift {
+  from {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.12) translate3d(0, -1.5%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-landing-immersive-media] img,
+  [data-landing-immersive-brand],
+  [data-landing-immersive-copy],
+  [data-landing-immersive-actions] {
+    animation: none !important;
+  }
+
+  [data-landing-immersive-media] img {
+    transform: scale(1.04);
+  }
+}
+
+@media (min-width: 768px) {
+  [data-landing-immersive-content] {
+    max-width: 32rem;
+    padding-inline: 1.5rem;
+  }
+
+  [data-landing-immersive-subhead] {
+    font-size: 1.05rem;
+  }
+}

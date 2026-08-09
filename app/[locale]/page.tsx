@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LandingAuthedHomeRedirect } from "@/components/landing/LandingAuthedHomeRedirect";
-import { LandingNav } from "@/components/landing/LandingNav";
-import { LandingHero } from "@/components/landing/LandingHero";
+import { LandingImmersiveEntry } from "@/components/landing/LandingImmersiveEntry";
 import { LandingSteps } from "@/components/landing/LandingSteps";
 import { LandingFoundingPlayer } from "@/components/landing/LandingFoundingPlayer";
 import { LandingFooter } from "@/components/landing/LandingFooter";
@@ -49,6 +48,7 @@ export default async function LandingPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("landing");
+  const tLang = await getTranslations("language");
   const meta = await getTranslations("metadata");
   const legal = await getTranslations("legal");
   const year = new Date().getFullYear();
@@ -70,7 +70,11 @@ export default async function LandingPage({ params }: Props) {
     ],
   });
 
-  const steps: [{ title: string; description: string }, { title: string; description: string }, { title: string; description: string }] = [
+  const steps: [
+    { title: string; description: string },
+    { title: string; description: string },
+    { title: string; description: string },
+  ] = [
     { title: t("step1Title"), description: t("step1Desc") },
     { title: t("step2Title"), description: t("step2Desc") },
     { title: t("step3Title"), description: t("step3Desc") },
@@ -85,27 +89,17 @@ export default async function LandingPage({ params }: Props) {
 
       <LandingAuthedHomeRedirect />
 
-      <LandingNav
-        homeHref={h("/")}
-        loginHref={h("/login")}
+      <LandingImmersiveEntry
         signupHref={h("/signup")}
-        loginLabel={t("navLogin")}
-        joinLabel={t("navJoin")}
+        loginHref={h("/login")}
+        headline={t("headline")}
+        subhead={t("subhead")}
+        ctaNewHere={t("ctaNewHere")}
+        ctaHaveAccount={t("ctaHaveAccount")}
+        changeLanguageLabel={tLang("changeLanguage")}
       />
 
       <main>
-        <LandingHero
-          signupHref={h("/signup")}
-          challengesHref={h("/challenges")}
-          brandIntro={t("seoBrandLine")}
-          headline={t("headline")}
-          subhead={t("subhead")}
-          ctaPrimary={t("ctaPrimary")}
-          ctaSecondary={t("ctaSecondary")}
-          previewBadge={t("previewBadge")}
-          previewCaption={t("previewCaption")}
-        />
-
         <LandingSteps steps={steps} />
 
         <LandingFoundingPlayer

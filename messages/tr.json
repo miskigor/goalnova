@@ -701,7 +701,9 @@
     "foundingBody": "PitchRusch'taki ilk futbol yetenekleri dalgasına katıl. Highlightlarını yükle, challenge'lara gir ve herkesten önce oyuncu profilini oluşturmaya başla.",
     "foundingBullet1": "Erken oyuncu rozeti",
     "foundingBullet2": "Öne çıkma şansı",
-    "foundingBullet3": "Arkadaşlarını davet et ve ödülleri aç"
+    "foundingBullet3": "Arkadaşlarını davet et ve ödülleri aç",
+    "ctaNewHere": "Burada yeniyim",
+    "ctaHaveAccount": "Zaten bir hesabım var"
   },
   "nav": {
     "primary": "Primary navigation",

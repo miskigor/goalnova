@@ -701,7 +701,9 @@
     "foundingBody": "Join the first wave of football talents on PitchRusch. Upload your highlights, enter challenges, and start building your player profile before everyone else.",
     "foundingBullet1": "Early player badge",
     "foundingBullet2": "Chance to be featured",
-    "foundingBullet3": "Invite friends and unlock rewards"
+    "foundingBullet3": "Invite friends and unlock rewards",
+    "ctaNewHere": "I'm new here",
+    "ctaHaveAccount": "I already have an account"
   },
   "nav": {
     "primary": "Primary navigation",

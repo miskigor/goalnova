@@ -701,7 +701,9 @@
     "foundingBody": "Únete a la primera ola de talentos del fútbol en PitchRusch. Sube tus highlights, participa en retos y empieza a construir tu perfil de jugador antes que nadie.",
     "foundingBullet1": "Insignia de jugador early",
     "foundingBullet2": "Oportunidad de aparecer destacado",
-    "foundingBullet3": "Invita amigos y desbloquea recompensas"
+    "foundingBullet3": "Invita amigos y desbloquea recompensas",
+    "ctaNewHere": "Soy nuevo aquí",
+    "ctaHaveAccount": "Ya tengo una cuenta"
   },
   "nav": {
     "primary": "Navegación principal",

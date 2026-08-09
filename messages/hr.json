@@ -701,7 +701,9 @@
     "foundingBody": "Pridruži se prvom valu nogometnih talenata na PitchRuschu. Učitaj svoje highlightse, sudjeluj u izazovima i počni graditi svoj igrački profil prije svih.",
     "foundingBullet1": "Early player badge",
     "foundingBullet2": "Mogućnost isticanja profila",
-    "foundingBullet3": "Pozovi prijatelje i otključaj nagrade"
+    "foundingBullet3": "Pozovi prijatelje i otključaj nagrade",
+    "ctaNewHere": "Novi sam ovdje",
+    "ctaHaveAccount": "Već imam račun"
   },
   "nav": {
     "primary": "Glavna navigacija",
