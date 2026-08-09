@@ -74,7 +74,9 @@ export function AdminClubsPage() {
     if (result.clubCode && result.slug) {
       setLastApproved({ clubCode: result.clubCode, slug: result.slug, clubName });
     }
-    if (result.clubId) void notifyClubApproved(result.clubId);
+    if (result.clubId) {
+      await notifyClubApproved(result.clubId);
+    }
     await load();
   }
 

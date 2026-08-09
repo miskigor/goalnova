@@ -109,9 +109,11 @@ export async function POST(request: Request): Promise<NextResponse> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://pitchrusch.com";
   const adminUrl = `${siteUrl}/admin/clubs`;
   const clubName = String(req.club_name ?? "Club");
-  const subject = `New club partnership request — ${clubName}`;
+  const contactName = String(req.contact_person ?? "there").trim() || "there";
+  const clubEmail = String(req.email ?? "").trim().toLowerCase();
 
-  const text = [
+  const staffSubject = `New club partnership request — ${clubName}`;
+  const staffText = [
     "A new club partnership request was submitted on PitchRusch.",
     "",
     `Club: ${clubName}`,
@@ -129,7 +131,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     .filter(Boolean)
     .join("\n");
 
-  const html = `
+  const staffHtml = `
     <p>A new <strong>club partnership request</strong> was submitted on PitchRusch.</p>
     <ul>
       <li><strong>Club:</strong> ${escapeHtml(clubName)}</li>
@@ -144,20 +146,64 @@ export async function POST(request: Request): Promise<NextResponse> {
     <p><a href="${escapeHtml(adminUrl)}">Open Admin → Clubs</a> to approve and create the club.</p>
   `.trim();
 
+  const clubSubject = `We received your PitchRusch partnership request — ${clubName}`;
+  const clubText = [
+    `Hi ${contactName},`,
+    "",
+    `Thanks for applying — we received the partnership request for ${clubName}.`,
+    "",
+    "Our team will review your details and proof. You will get another email when the club is approved, including your player invite code.",
+    "",
+    `Site: ${siteUrl}`,
+    "",
+    "— PitchRusch team",
+  ].join("\n");
+
+  const clubHtml = `
+    <p>Hi ${escapeHtml(contactName)},</p>
+    <p>Thanks for applying — we received the partnership request for <strong>${escapeHtml(clubName)}</strong>.</p>
+    <p>Our team will review your details and proof. You will get another email when the club is approved, including your player invite code.</p>
+    <p><a href="${escapeHtml(siteUrl)}">pitchrusch.com</a></p>
+    <p>— PitchRusch team</p>
+  `.trim();
+
   const recipients = clubPartnershipStaffNotifyEmails();
-  let emailSent = false;
+  let staffEmailSent = false;
+  let clubEmailSent = false;
   let emailSkipped = false;
 
   for (const to of recipients) {
-    const sent = await sendResendEmail({ to, subject, html, text });
+    const sent = await sendResendEmail({
+      to,
+      subject: staffSubject,
+      html: staffHtml,
+      text: staffText,
+    });
     if (sent.ok) {
-      emailSent = true;
+      staffEmailSent = true;
     } else if (sent.reason === "not_configured") {
       emailSkipped = true;
       console.warn("[clubs/notify-partnership-request] RESEND_API_KEY not set — email skipped");
       break;
     } else {
-      console.error("[clubs/notify-partnership-request] email failed for", to, sent.message);
+      console.error("[clubs/notify-partnership-request] staff email failed for", to, sent.message);
+    }
+  }
+
+  if (!emailSkipped && clubEmail.length > 0) {
+    const sentClub = await sendResendEmail({
+      to: clubEmail,
+      subject: clubSubject,
+      html: clubHtml,
+      text: clubText,
+    });
+    if (sentClub.ok) {
+      clubEmailSent = true;
+    } else if (sentClub.reason === "not_configured") {
+      emailSkipped = true;
+      console.warn("[clubs/notify-partnership-request] RESEND_API_KEY not set — club email skipped");
+    } else {
+      console.error("[clubs/notify-partnership-request] club email failed", sentClub.message);
     }
   }
 
@@ -165,7 +211,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     {
       ok: true,
       inAppNotified: inAppCount,
-      emailSent,
+      emailSent: staffEmailSent || clubEmailSent,
+      staffEmailSent,
+      clubEmailSent,
       emailSkipped,
     },
     { status: 200, headers: JSON_HEADERS },
