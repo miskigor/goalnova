@@ -85,14 +85,26 @@ export function InviteFriendsSection({ className = "" }: { className?: string })
 
   if (loading) {
     return (
-      <div className={`rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4 ${className}`}>
+      <section
+        id="invite-friends"
+        className={`scroll-mt-[calc(5rem+env(safe-area-inset-top,0px)+0.5rem)] rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4 ${className}`}
+      >
         <p className="text-sm text-gn-text-secondary">{tCommon("loadingEllipsis")}</p>
-      </div>
+      </section>
     );
   }
 
   if (!dash?.referralCode) {
-    return null;
+    return (
+      <section
+        id="invite-friends"
+        className={`scroll-mt-[calc(5rem+env(safe-area-inset-top,0px)+0.5rem)] space-y-3 rounded-xl border border-gn-border-subtle bg-gn-surface/40 p-4 sm:p-5 ${className}`}
+      >
+        <h2 className="text-lg font-semibold text-gn-text">{t("inviteFriendsTitle")}</h2>
+        <p className="text-sm text-gn-text-secondary">{t("inviteFriendsSubtitle")}</p>
+        <p className="text-sm text-gn-text-secondary">{tCommon("loadingEllipsis")}</p>
+      </section>
+    );
   }
 
   return (

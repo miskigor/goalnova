@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BenefitsReferralPage } from "@/components/benefits/BenefitsReferralPage";
 import { SettingsMainPage } from "@/components/settings/SettingsMainPage";
+import { SettingsInviteFriendsSection } from "@/components/settings/SettingsInviteFriendsSection";
+import { SettingsHashScroll } from "@/components/settings/SettingsHashScroll";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -17,7 +19,9 @@ export default async function SettingsPage({ params }: Props) {
 
   return (
     <div className="min-w-0 max-w-full space-y-8 max-lg:space-y-5">
+      <SettingsHashScroll />
       <SettingsMainPage />
+      <SettingsInviteFriendsSection />
       <BenefitsReferralPage variant="settings-extras" />
     </div>
   );
