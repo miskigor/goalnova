@@ -2,7 +2,7 @@ import { PitchruschLoadingScreen } from "@/components/loading/PitchruschLoadingS
 
 export default function PublicSectionLoading() {
   return (
-    <div className="min-h-dvh w-full bg-black">
+    <div className="min-h-dvh w-full bg-gn-bg">
       <PitchruschLoadingScreen fullScreen={false} label="Loading…" />
     </div>
   );
