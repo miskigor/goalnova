@@ -77,7 +77,7 @@ export default async function LandingPage({ params }: Props) {
   ];
 
   return (
-    <div className="min-h-[100dvh] bg-gn-bg text-gn-text">
+    <div className="min-h-[100dvh] bg-black text-gn-text">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}

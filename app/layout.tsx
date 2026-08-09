@@ -43,7 +43,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#ffffff",
+  themeColor: "#000000",
 };
 
 type Props = {
@@ -58,12 +58,12 @@ export default function RootLayout({ children }: Props) {
       dir="ltr"
       translate="no"
       suppressHydrationWarning
-      style={{ margin: 0, backgroundColor: "#fff", colorScheme: "light" }}
+      style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${bebasNeue.variable} ${notoArabic.variable} notranslate h-full antialiased`}
     >
       <head>
-        <meta name="color-scheme" content="light" />
+        <meta name="color-scheme" content="dark" />
         <meta name="google" content="notranslate" />
         <style
           id="pitchrusch-critical-first-paint"
@@ -71,7 +71,7 @@ export default function RootLayout({ children }: Props) {
         />
       </head>
       <body
-        style={{ margin: 0, backgroundColor: "#fff", colorScheme: "light" }}
+        style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}
         className="notranslate flex min-h-dvh min-w-0 max-w-full flex-col overflow-x-hidden bg-gn-bg text-gn-text"
       >
         {children}

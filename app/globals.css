@@ -5,14 +5,14 @@
   --gn-app-bottom-nav-offset: calc(
     4.5rem + max(0.375rem, env(safe-area-inset-bottom, 0px))
   );
-  --gn-bg: #ffffff;
-  --gn-surface: #ffffff;
-  --gn-surface-elevated: #f4f4f5;
-  --gn-border: #e4e4e7;
-  --gn-border-subtle: #f0f0f2;
-  --gn-text: #0a0a0a;
-  --gn-text-secondary: #52525b;
-  --gn-text-tertiary: #71717a;
+  --gn-bg: #000000;
+  --gn-surface: #0a0b0c;
+  --gn-surface-elevated: #121314;
+  --gn-border: #262626;
+  --gn-border-subtle: #1c1c1e;
+  --gn-text: #fafafa;
+  --gn-text-secondary: #a3a3a3;
+  --gn-text-tertiary: #737373;
   --gn-accent: #f97316;
   --gn-accent-hover: #fb923c;
   --gn-accent-pressed: #ea580c;
@@ -44,8 +44,8 @@
 html {
   margin: 0;
   padding: 0;
-  background-color: #fff;
-  color-scheme: light;
+  background-color: #000;
+  color-scheme: dark;
   scroll-behavior: smooth;
   width: 100%;
   max-width: 100%;
@@ -64,7 +64,7 @@ main,
 [data-mlv2-column],
 [data-mlv2-scroll] {
   margin: 0;
-  background-color: #fff;
+  background-color: #000;
 }
 
 @media (prefers-reduced-motion: reduce) {

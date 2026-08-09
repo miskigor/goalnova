@@ -6,7 +6,7 @@ import { PitchruschLoadingScreen } from "@/components/loading/PitchruschLoadingS
 
 export default function AppSectionLoading() {
   return (
-    <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-gn-bg">
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-black">
       <PitchruschLoadingScreen fullScreen={false} label="Loading…" />
     </div>
   );

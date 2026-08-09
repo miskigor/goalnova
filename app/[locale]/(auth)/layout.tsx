@@ -25,7 +25,7 @@ export default function AuthLayout({
       </Suspense>
       <ViewportScrollLock />
       <div
-        className="relative box-border flex min-h-[100svh] w-full min-w-0 max-w-full flex-col items-center justify-center overflow-x-clip overflow-y-auto overscroll-y-none bg-gn-bg pb-[max(1rem,env(safe-area-inset-bottom,0px))] pt-[max(1rem,env(safe-area-inset-top,0px))]"
+        className="relative box-border flex min-h-[100svh] w-full min-w-0 max-w-full flex-col items-center justify-center overflow-x-clip overflow-y-auto overscroll-y-none bg-black pb-[max(1rem,env(safe-area-inset-bottom,0px))] pt-[max(1rem,env(safe-area-inset-top,0px))]"
       >
         <div className="relative mx-auto box-border w-full min-w-0 max-w-sm px-4">
           {children}

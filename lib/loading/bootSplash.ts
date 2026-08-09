@@ -11,8 +11,8 @@ export const BOOT_SPLASH_CSS = `
   gap: 1rem;
   margin: 0;
   padding: 0;
-  background-color: #fff;
-  color: #0a0a0a;
+  background-color: #000;
+  color: #fafafa;
   pointer-events: none;
 }
 #pitchrusch-boot-splash img {

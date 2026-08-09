@@ -19,8 +19,8 @@ export function PitchruschLoadingScreen({
         margin: 0,
         width: "100%",
         minWidth: 0,
-        backgroundColor: "#fff",
-        color: "#0a0a0a",
+        backgroundColor: "#000",
+        color: "#fafafa",
         minHeight: fullScreen ? "100dvh" : "50vh",
         display: "flex",
         alignItems: "center",
@@ -28,7 +28,7 @@ export function PitchruschLoadingScreen({
         boxSizing: "border-box",
       }}
       className={[
-        "w-full min-w-0 bg-gn-bg px-4 text-gn-text",
+        "w-full min-w-0 bg-black px-4 text-gn-text",
         fullScreen
           ? "flex min-h-dvh items-center justify-center"
           : "flex min-h-[50vh] items-center justify-center",
