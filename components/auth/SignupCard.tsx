@@ -62,6 +62,7 @@ export function SignupCard() {
   const [error, setError] = useState<string | null>(null);
   const [showLoginCta, setShowLoginCta] = useState(false);
   const [showInAppBrowserHint, setShowInAppBrowserHint] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -69,6 +70,17 @@ export function SignupCard() {
     rememberReferralCodeFromQuery(ref);
     setShowInAppBrowserHint(isLikelyInAppBrowser());
   }, []);
+
+  async function copySignupLink() {
+    try {
+      const url = window.location.href;
+      await navigator.clipboard.writeText(url);
+      setLinkCopied(true);
+      window.setTimeout(() => setLinkCopied(false), 2500);
+    } catch {
+      /* clipboard can fail in locked-down webviews */
+    }
+  }
 
   const canSubmit = useMemo(() => {
     const trimmed = email.trim();
@@ -161,10 +173,18 @@ export function SignupCard() {
 
       {showInAppBrowserHint ? (
         <div
-          role="status"
-          className="mb-4 rounded-xl border border-amber-400/35 bg-amber-950/25 px-3.5 py-3 text-sm text-amber-50/95"
+          role="alert"
+          className="mb-4 rounded-xl border border-amber-400/45 bg-amber-950/35 px-3.5 py-3 text-sm text-amber-50/95"
         >
-          <p className="break-words">{tLogin("inAppBrowserHint")}</p>
+          <p className="break-words font-medium">{tLogin("inAppBrowserHint")}</p>
+          <p className="mt-2 break-words text-amber-50/80">{tLogin("inAppBrowserHintExtra")}</p>
+          <button
+            type="button"
+            onClick={() => void copySignupLink()}
+            className="mt-3 w-full rounded-xl border border-amber-300/40 bg-amber-400/15 px-3 py-2.5 text-sm font-semibold text-amber-50 transition-colors hover:bg-amber-400/25"
+          >
+            {linkCopied ? tLogin("inAppBrowserLinkCopied") : tLogin("inAppBrowserCopyLink")}
+          </button>
         </div>
       ) : null}
 

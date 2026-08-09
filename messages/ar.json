@@ -1154,7 +1154,10 @@
     "continueToHome": "Continue to home",
     "signOutToSwitchAccount": "Sign out and use another account",
     "noAccount": "ليس لديك حساب؟",
-    "signUpLink": "إنشاء حساب"
+    "signUpLink": "إنشاء حساب",
+    "inAppBrowserHintExtra": "Forms often do not work inside Instagram. Open Safari or Chrome, paste the link, then create your account.",
+    "inAppBrowserCopyLink": "Copy signup link",
+    "inAppBrowserLinkCopied": "Link copied — paste it in Safari or Chrome"
   },
   "authSignup": {
     "title": "أنشئ حسابك",

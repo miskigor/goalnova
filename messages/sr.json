@@ -1154,7 +1154,10 @@
     "continueToHome": "Continue to home",
     "signOutToSwitchAccount": "Sign out and use another account",
     "noAccount": "Nemate nalog?",
-    "signUpLink": "Registracija"
+    "signUpLink": "Registracija",
+    "inAppBrowserHintExtra": "Unutar Instagrama forma često ne radi. Otvori Safari ili Chrome, nalepi link, pa napravi nalog.",
+    "inAppBrowserCopyLink": "Kopiraj link za registraciju",
+    "inAppBrowserLinkCopied": "Link kopiran — nalepi ga u Safari ili Chrome"
   },
   "authSignup": {
     "title": "Napravite nalog",

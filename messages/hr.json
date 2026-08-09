@@ -1154,7 +1154,10 @@
     "continueToHome": "Nastavi na početnu",
     "signOutToSwitchAccount": "Odjavi se i prijavi se drugim računom",
     "noAccount": "Nemate račun?",
-    "signUpLink": "Registracija"
+    "signUpLink": "Registracija",
+    "inAppBrowserHintExtra": "Unutar Instagrama forma često ne radi. Otvori Safari ili Chrome, zalijepi link, pa stvori račun.",
+    "inAppBrowserCopyLink": "Kopiraj link za registraciju",
+    "inAppBrowserLinkCopied": "Link kopiran — zalijepi ga u Safari ili Chrome"
   },
   "authSignup": {
     "title": "Stvorite račun",

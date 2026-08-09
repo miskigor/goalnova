@@ -1154,7 +1154,10 @@
     "continueToHome": "Continue to home",
     "signOutToSwitchAccount": "Sign out and use another account",
     "noAccount": "Noch kein Konto?",
-    "signUpLink": "Registrieren"
+    "signUpLink": "Registrieren",
+    "inAppBrowserHintExtra": "Formulare funktionieren in Instagram oft nicht. Öffne Safari oder Chrome, füge den Link ein und erstelle dein Konto.",
+    "inAppBrowserCopyLink": "Registrierungslink kopieren",
+    "inAppBrowserLinkCopied": "Link kopiert — in Safari oder Chrome einfügen"
   },
   "authSignup": {
     "title": "Konto erstellen",
