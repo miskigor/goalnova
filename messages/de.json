@@ -1168,7 +1168,7 @@
     "subtitle": "Werden Sie Teil von Scouts, Vereinen und Spielern auf PitchRusch.",
     "fullName": "Vollständiger Name",
     "fullNameRequired": "Bitte geben Sie Ihren vollständigen Namen ein.",
-    "namePlaceholder": "Max Mustermann",
+    "namePlaceholder": "James Miller",
     "email": "E-Mail",
     "password": "Passwort",
     "passwordPlaceholder": "Mindestens 6 Zeichen",
@@ -1196,7 +1196,10 @@
     "confirmEmailResendRateLimited": "Zu viele Anfragen. Warte eine Minute und versuche es erneut.",
     "emailConfirmLinkWorking": "Confirming your email…",
     "emailConfirmLinkSuccess": "Email confirmed. Redirecting you now.",
-    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email."
+    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email.",
+    "clubContactName": "Name der Kontaktperson",
+    "clubContactNamePlaceholder": "James Miller",
+    "clubContactNameHint": "Dein Name als Club-Kontakt — der Clubname kommt im nächsten Schritt."
   },
   "authResetPassword": {
     "title": "Set a new password",

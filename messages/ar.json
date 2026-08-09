@@ -1168,7 +1168,7 @@
     "subtitle": "انضم إلى الكشافة والأندية واللاعبين على PitchRusch.",
     "fullName": "الاسم الكامل",
     "fullNameRequired": "يُرجى إدخال اسمك الكامل.",
-    "namePlaceholder": "محمد أحمد",
+    "namePlaceholder": "James Miller",
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
     "passwordPlaceholder": "6 أحرف على الأقل",
@@ -1196,7 +1196,10 @@
     "confirmEmailResendRateLimited": "طلبات كثيرة جداً. انتظر دقيقة وحاول مرة أخرى.",
     "emailConfirmLinkWorking": "Confirming your email…",
     "emailConfirmLinkSuccess": "Email confirmed. Redirecting you now.",
-    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email."
+    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email.",
+    "clubContactName": "Contact person name",
+    "clubContactNamePlaceholder": "James Miller",
+    "clubContactNameHint": "Your name as the club contact — club name comes in the next step."
   },
   "authResetPassword": {
     "title": "Set a new password",

@@ -262,15 +262,22 @@ export function SignupCard() {
       >
         <div>
           <label htmlFor="signup-name" className="text-sm font-medium text-gn-text">
-            {tSignup("fullName")}
+            {role === "club" ? tSignup("clubContactName") : tSignup("fullName")}
           </label>
+          {role === "club" ? (
+            <p className="mt-1 text-xs text-gn-text-secondary">{tSignup("clubContactNameHint")}</p>
+          ) : null}
           <input
             suppressHydrationWarning
             id="signup-name"
             name="name"
             type="text"
             autoComplete="name"
-            placeholder={tSignup("namePlaceholder")}
+            placeholder={
+              role === "club"
+                ? tSignup("clubContactNamePlaceholder")
+                : tSignup("namePlaceholder")
+            }
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             className="mt-1.5 w-full rounded-xl border border-gn-border bg-gn-surface px-3.5 py-3 text-sm text-gn-text placeholder:text-gn-text-tertiary outline-none transition-[border-color,box-shadow] focus:border-gn-accent/60 focus:ring-2 focus:ring-gn-accent/25"

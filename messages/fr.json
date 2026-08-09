@@ -1168,7 +1168,7 @@
     "subtitle": "Rejoignez recruteurs, clubs et joueurs sur PitchRusch.",
     "fullName": "Nom complet",
     "fullNameRequired": "Veuillez saisir votre nom complet.",
-    "namePlaceholder": "Alex Dupont",
+    "namePlaceholder": "James Miller",
     "email": "E-mail",
     "password": "Mot de passe",
     "passwordPlaceholder": "Au moins 6 caractères",
@@ -1196,7 +1196,10 @@
     "confirmEmailResendRateLimited": "Trop de demandes. Attendez une minute et réessayez.",
     "emailConfirmLinkWorking": "Confirming your email…",
     "emailConfirmLinkSuccess": "Email confirmed. Redirecting you now.",
-    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email."
+    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email.",
+    "clubContactName": "Contact person name",
+    "clubContactNamePlaceholder": "James Miller",
+    "clubContactNameHint": "Your name as the club contact — club name comes in the next step."
   },
   "authResetPassword": {
     "title": "Set a new password",

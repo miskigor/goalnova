@@ -1168,7 +1168,7 @@
     "subtitle": "Junte-se a olheiros, clubes e jogadores no PitchRusch.",
     "fullName": "Nome completo",
     "fullNameRequired": "Introduza o seu nome completo.",
-    "namePlaceholder": "João Silva",
+    "namePlaceholder": "James Miller",
     "email": "E-mail",
     "password": "Palavra-passe",
     "passwordPlaceholder": "Pelo menos 6 caracteres",
@@ -1196,7 +1196,10 @@
     "confirmEmailResendRateLimited": "Demasiados pedidos. Aguarde um minuto e tente novamente.",
     "emailConfirmLinkWorking": "Confirming your email…",
     "emailConfirmLinkSuccess": "Email confirmed. Redirecting you now.",
-    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email."
+    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email.",
+    "clubContactName": "Contact person name",
+    "clubContactNamePlaceholder": "James Miller",
+    "clubContactNameHint": "Your name as the club contact — club name comes in the next step."
   },
   "authResetPassword": {
     "title": "Set a new password",

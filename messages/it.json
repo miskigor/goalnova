@@ -1168,7 +1168,7 @@
     "subtitle": "Unisciti a osservatori, club e calciatori su PitchRusch.",
     "fullName": "Nome completo",
     "fullNameRequired": "Inserisci il tuo nome completo.",
-    "namePlaceholder": "Alex Rossi",
+    "namePlaceholder": "James Miller",
     "email": "Email",
     "password": "Password",
     "passwordPlaceholder": "Almeno 6 caratteri",
@@ -1196,7 +1196,10 @@
     "confirmEmailResendRateLimited": "Troppe richieste. Attendi un minuto e riprova.",
     "emailConfirmLinkWorking": "Confirming your email…",
     "emailConfirmLinkSuccess": "Email confirmed. Redirecting you now.",
-    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email."
+    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email.",
+    "clubContactName": "Contact person name",
+    "clubContactNamePlaceholder": "James Miller",
+    "clubContactNameHint": "Your name as the club contact — club name comes in the next step."
   },
   "authResetPassword": {
     "title": "Set a new password",

@@ -1168,7 +1168,7 @@
     "subtitle": "PitchRusch'te scoutlar, kulüpler ve oyunculara katıl.",
     "fullName": "Ad soyad",
     "fullNameRequired": "Lütfen adını ve soyadını gir.",
-    "namePlaceholder": "Ahmet Yılmaz",
+    "namePlaceholder": "James Miller",
     "email": "E-posta",
     "password": "Şifre",
     "passwordPlaceholder": "En az 6 karakter",
@@ -1196,7 +1196,10 @@
     "confirmEmailResendRateLimited": "Çok fazla istek. Bir dakika bekle ve tekrar dene.",
     "emailConfirmLinkWorking": "Confirming your email…",
     "emailConfirmLinkSuccess": "Email confirmed. Redirecting you now.",
-    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email."
+    "emailConfirmLinkFailed": "We could not confirm your email from this link. Try signing in, or resend the confirmation email.",
+    "clubContactName": "Contact person name",
+    "clubContactNamePlaceholder": "James Miller",
+    "clubContactNameHint": "Your name as the club contact — club name comes in the next step."
   },
   "authResetPassword": {
     "title": "Set a new password",

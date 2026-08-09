@@ -1168,7 +1168,7 @@
     "subtitle": "Pridružite se skautima, klubovima i igračima na PitchRusch.",
     "fullName": "Puno ime",
     "fullNameRequired": "Unesite svoje puno ime.",
-    "namePlaceholder": "Marko Marković",
+    "namePlaceholder": "James Miller",
     "email": "E-pošta",
     "password": "Lozinka",
     "passwordPlaceholder": "Najmanje 6 znakova",
@@ -1196,7 +1196,10 @@
     "confirmEmailResendRateLimited": "Previše zahtjeva. Pričekaj minutu i pokušaj ponovno.",
     "emailConfirmLinkWorking": "Potvrđujemo email…",
     "emailConfirmLinkSuccess": "Email je potvrđen. Preusmjeravamo te…",
-    "emailConfirmLinkFailed": "Nismo mogli potvrditi email s ovog linka. Pokušaj se prijaviti ili ponovno pošalji email za potvrdu."
+    "emailConfirmLinkFailed": "Nismo mogli potvrditi email s ovog linka. Pokušaj se prijaviti ili ponovno pošalji email za potvrdu.",
+    "clubContactName": "Ime kontakt osobe",
+    "clubContactNamePlaceholder": "James Miller",
+    "clubContactNameHint": "Tvoje ime kao kontakt kluba — ime kluba unosiš u sljedećem koraku."
   },
   "authResetPassword": {
     "title": "Set a new password",
