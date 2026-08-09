@@ -1784,7 +1784,9 @@
     "roleSaveUnconfirmed": "Uloga nije potvrđena. Pokušajte ponovo.",
     "profileSetupUnconfirmed": "Profil nije potvrđen. Pokušajte ponovo.",
     "unknownError": "Nešto je pošlo po zlu.",
-    "requestFailedGeneric": "Zahtjev nije uspio. Pokušajte ponovo."
+    "requestFailedGeneric": "Zahtjev nije uspio. Pokušajte ponovo.",
+    "club": "Klub",
+    "clubHint": "Prijavi akademiju i dobij vidljivost za svoje igrače."
   },
   "profileEditor": {
     "title": "Vaš profil",

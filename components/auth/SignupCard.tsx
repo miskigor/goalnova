@@ -195,6 +195,13 @@ export function SignupCard() {
             <span className="block text-base font-semibold text-gn-text">{tRole("scout")}</span>
             <span className="mt-1 block text-sm text-gn-text-secondary">{tRole("scoutHint")}</span>
           </button>
+          <Link
+            href="/clubs/become-partner"
+            className="block w-full rounded-xl border border-gn-border bg-gn-surface px-4 py-4 text-left transition-colors hover:border-gn-accent/50 hover:bg-gn-surface-elevated"
+          >
+            <span className="block text-base font-semibold text-gn-text">{tRole("club")}</span>
+            <span className="mt-1 block text-sm text-gn-text-secondary">{tRole("clubHint")}</span>
+          </Link>
         </div>
 
         <p className="mt-8 text-center text-sm text-gn-text-secondary">

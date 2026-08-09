@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { useRouter, Link } from "@/i18n/navigation";
 import { markPostAuthProfileLandingComplete } from "@/lib/auth/postAuthLanding";
 import {
   clearPendingSignupRole,
@@ -423,6 +423,14 @@ export function RoleSelectionCard() {
             />
           </div>
         </button>
+
+        <Link
+          href="/clubs/become-partner"
+          className="block w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-4 text-left transition-colors hover:border-gn-border"
+        >
+          <p className="text-sm font-semibold text-gn-text">{t("club")}</p>
+          <p className="mt-1 text-sm text-gn-text-secondary">{t("clubHint")}</p>
+        </Link>
       </div>
 
       {error ? (

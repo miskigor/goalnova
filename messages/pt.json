@@ -1784,7 +1784,9 @@
     "roleSaveUnconfirmed": "Your role could not be saved. Please try again.",
     "profileSetupUnconfirmed": "Your profile could not be set up. Please try again.",
     "unknownError": "Something went wrong.",
-    "requestFailedGeneric": "Request failed. Please try again."
+    "requestFailedGeneric": "Request failed. Please try again.",
+    "club": "Clube",
+    "clubHint": "Torna a tua academia parceira e dá visibilidade aos jogadores."
   },
   "profileEditor": {
     "title": "O teu perfil",
