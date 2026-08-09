@@ -50,8 +50,16 @@ export function AdminClubsPage() {
 
   useEffect(() => {
     void load();
-    void markAllAdminClubPartnershipNotificationsRead();
   }, [load]);
+
+  useEffect(() => {
+    // Clear badge only after pending requests are gone (not on every visit).
+    if (loading) return;
+    const pending = requests.filter((r) => String(r.status ?? "") === "pending");
+    if (pending.length === 0) {
+      void markAllAdminClubPartnershipNotificationsRead();
+    }
+  }, [loading, requests]);
 
   async function approveRequest(id: string, clubName: string) {
     setBusy(id);

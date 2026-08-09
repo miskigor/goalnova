@@ -1,6 +1,5 @@
--- Paste in Supabase SQL Editor.
--- In-app staff notification when a club partnership request is submitted.
--- (Email still needs RESEND_API_KEY in Netlify if you want inbox mail too.)
+-- Paste in Supabase SQL Editor (required for reliable admin alerts).
+-- Creates an in-app notification for staff whenever a partnership request is submitted.
 
 create or replace function public.goalnova_notify_staff_club_partnership_pending()
 returns trigger

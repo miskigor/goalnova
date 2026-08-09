@@ -53,9 +53,11 @@ export function BecomePartnerView() {
       estimatedPlayers: form.estimatedPlayers ? Number(form.estimatedPlayers) : undefined,
       message: form.message.trim() || undefined,
     });
+    if (result.ok && result.requestId) {
+      await notifyPartnershipRequest(result.requestId);
+    }
     setSubmitting(false);
     if (result.ok) {
-      if (result.requestId) void notifyPartnershipRequest(result.requestId);
       setPartnershipStatus(t("partnershipSubmitted"));
       return;
     }
@@ -76,6 +78,7 @@ export function BecomePartnerView() {
         </Link>
         <h1 className="text-2xl font-bold text-gn-text">{t("becomePartnerTitle")}</h1>
         <p className="text-sm text-gn-text-secondary">{t("becomePartnerSubtitle")}</p>
+        <p className="text-sm text-gn-text-secondary">{t("becomePartnerNoAccountHint")}</p>
       </header>
 
       <form

@@ -1788,7 +1788,7 @@
     "unknownError": "Something went wrong.",
     "requestFailedGeneric": "Request failed. Please try again.",
     "club": "Verein",
-    "clubHint": "Werde Partnerakademie und gib deinen Spielern Sichtbarkeit."
+    "clubHint": "Sende eine Partnerschaftsanfrage für deine Akademie (ohne Passwort). Admins prüfen danach."
   },
   "profileEditor": {
     "title": "Dein Profil",
@@ -2577,6 +2577,7 @@
     "adminDeleteClub": "Delete club",
     "adminDeleteClubConfirm": "Permanently delete {club}? All memberships will be removed and player club benefits revoked.",
     "adminDeleteError": "Could not delete this club.",
-    "adminDeleteErrorMigration": "Club delete function is missing in Supabase. Run PASTE_club_admin_delete.sql in the SQL Editor."
+    "adminDeleteErrorMigration": "Club delete function is missing in Supabase. Run PASTE_club_admin_delete.sql in the SQL Editor.",
+    "becomePartnerNoAccountHint": "Dies ist ein Partnerschaftsantrag — kein Passwort und kein neues Konto. Nach Freigabe melden wir uns per Club-E-Mail."
   }
 }

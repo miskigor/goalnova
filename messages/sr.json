@@ -1788,7 +1788,7 @@
     "unknownError": "Something went wrong.",
     "requestFailedGeneric": "Request failed. Please try again.",
     "club": "Klub",
-    "clubHint": "Prijavi akademiju i dobij vidljivost za svoje igrače."
+    "clubHint": "Pošalji zahtev za partnerstvo akademije (bez lozinke). Admin ga zatim pregleda."
   },
   "profileEditor": {
     "title": "Your Profile",
@@ -2577,6 +2577,7 @@
     "adminDeleteClub": "Delete club",
     "adminDeleteClubConfirm": "Permanently delete {club}? All memberships will be removed and player club benefits revoked.",
     "adminDeleteError": "Could not delete this club.",
-    "adminDeleteErrorMigration": "Club delete function is missing in Supabase. Run PASTE_club_admin_delete.sql in the SQL Editor."
+    "adminDeleteErrorMigration": "Club delete function is missing in Supabase. Run PASTE_club_admin_delete.sql in the SQL Editor.",
+    "becomePartnerNoAccountHint": "Ovo je forma za zahtev partnerstva — bez lozinke i bez novog naloga. Nakon odobrenja javljamo se na email kluba."
   }
 }
