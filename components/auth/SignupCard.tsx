@@ -13,10 +13,12 @@ import {
   SIGNUP_ERROR_I18N_KEY,
 } from "@/lib/supabase/signupAuthErrors";
 import { setFreshLogin } from "@/lib/auth/freshLogin";
+import { rememberPendingSignupRole } from "@/lib/auth/pendingSignupRole";
 import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { rememberReferralCodeFromQuery, peekPendingReferralCode } from "@/lib/supabase/referrals";
 import { devError, isDev } from "@/lib/devLog";
+import type { AppRole } from "@/lib/onboarding/roleOnboarding";
 import { buildSignupEmailConfirmRedirectUrl } from "@/lib/site/signupEmailRedirect";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
@@ -48,9 +50,13 @@ function Spinner() {
 
 export function SignupCard() {
   const tSignup = useTranslations("authSignup");
+  const tRole = useTranslations("onboardingRole");
   const tCommon = useTranslations("authCommon");
   const locale = useLocale();
   const router = useRouter();
+
+  const [step, setStep] = useState<"role" | "details">("role");
+  const [role, setRole] = useState<AppRole | null>(null);
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -69,16 +75,30 @@ export function SignupCard() {
   const canSubmit = useMemo(() => {
     const trimmed = email.trim();
     return (
+      role != null &&
       fullName.trim().length > 0 &&
       trimmed.includes("@") &&
       password.length >= 6 &&
       !loading
     );
-  }, [fullName, email, password, loading]);
+  }, [role, fullName, email, password, loading]);
+
+  function onPickRole(next: AppRole) {
+    setRole(next);
+    rememberPendingSignupRole(next);
+    setStep("details");
+    setError(null);
+  }
 
   async function onSubmit() {
     setError(null);
     setShowLoginCta(false);
+
+    if (!role) {
+      setStep("role");
+      setError(tRole("roleMissing"));
+      return;
+    }
 
     const trimmedEmail = email.trim();
     if (!fullName.trim()) {
@@ -102,6 +122,7 @@ export function SignupCard() {
           : null;
       rememberReferralCodeFromQuery(refFromUrl);
       const pendingCode = peekPendingReferralCode() ?? refFromUrl?.trim().toUpperCase() ?? null;
+      rememberPendingSignupRole(role);
 
       const signupResult = await signUpWithEmailPassword({
         email: trimmedEmail,
@@ -119,8 +140,9 @@ export function SignupCard() {
 
       setFreshLogin();
       const pending = peekPendingReferralCode();
-      const roleHref = pending ? `/role?ref=${encodeURIComponent(pending)}` : "/role";
-      navigateAfterAuth(roleHref, locale);
+      const qs = new URLSearchParams({ role });
+      if (pending) qs.set("ref", pending);
+      navigateAfterAuth(`/role?${qs.toString()}`, locale);
     } catch (err) {
       devError("Signup error:", err);
       const authKind = getSignupAuthErrorKind(err);
@@ -145,6 +167,49 @@ export function SignupCard() {
     }
   }
 
+  if (step === "role") {
+    return (
+      <div className="mx-auto w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:p-8">
+        <div className="mb-6 text-center sm:mb-8">
+          <Logo href="/" variant="entry" className="justify-center" showWordmark={false} />
+          <h1 className="mt-4 text-xl font-semibold tracking-tight text-gn-text sm:mt-6">
+            {tRole("title")}
+          </h1>
+          <p className="mt-2 text-sm text-gn-text-secondary">{tRole("subtitle")}</p>
+        </div>
+
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={() => onPickRole("player")}
+            className="w-full rounded-xl border border-gn-border bg-gn-surface px-4 py-4 text-left transition-colors hover:border-gn-accent/50 hover:bg-gn-surface-elevated"
+          >
+            <span className="block text-base font-semibold text-gn-text">{tRole("player")}</span>
+            <span className="mt-1 block text-sm text-gn-text-secondary">{tRole("playerHint")}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onPickRole("scout")}
+            className="w-full rounded-xl border border-gn-border bg-gn-surface px-4 py-4 text-left transition-colors hover:border-gn-accent/50 hover:bg-gn-surface-elevated"
+          >
+            <span className="block text-base font-semibold text-gn-text">{tRole("scout")}</span>
+            <span className="mt-1 block text-sm text-gn-text-secondary">{tRole("scoutHint")}</span>
+          </button>
+        </div>
+
+        <p className="mt-8 text-center text-sm text-gn-text-secondary">
+          {tSignup("haveAccount")}{" "}
+          <Link
+            href="/login"
+            className="font-medium text-gn-accent hover:text-gn-accent-hover"
+          >
+            {tSignup("loginLink")}
+          </Link>
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/80 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset] backdrop-blur-sm sm:p-8">
       <div className="mb-6 text-center sm:mb-8">
@@ -153,6 +218,13 @@ export function SignupCard() {
           {tSignup("title")}
         </h1>
         <p className="mt-2 text-sm text-gn-text-secondary">{tSignup("subtitle")}</p>
+        <button
+          type="button"
+          onClick={() => setStep("role")}
+          className="mt-3 text-sm font-medium text-gn-accent hover:text-gn-accent-hover"
+        >
+          {role === "scout" ? tRole("scout") : tRole("player")} · {tRole("title")}
+        </button>
       </div>
 
       <form
@@ -161,7 +233,7 @@ export function SignupCard() {
         onSubmit={(e) => {
           e.preventDefault();
           if (!canSubmit) return;
-          onSubmit();
+          void onSubmit();
         }}
       >
         <div>
@@ -256,4 +328,3 @@ export function SignupCard() {
     </div>
   );
 }
-

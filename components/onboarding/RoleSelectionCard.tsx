@@ -1,9 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { markPostAuthProfileLandingComplete } from "@/lib/auth/postAuthLanding";
+import {
+  clearPendingSignupRole,
+  peekPendingSignupRole,
+} from "@/lib/auth/pendingSignupRole";
 import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
 import { readAuthUserWithTimeout } from "@/lib/auth/readAuthUserWithTimeout";
 import { writeCachedRoleOnboardingComplete } from "@/lib/auth/roleOnboardingCache";
@@ -83,6 +87,7 @@ export function RoleSelectionCard() {
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const autoAppliedRef = useRef(false);
 
   const canSubmit = useMemo(() => !loading && !checking, [loading, checking]);
 
@@ -150,7 +155,7 @@ export function RoleSelectionCard() {
     };
   }, [locale]);
 
-  async function chooseRole(role: Role) {
+  const chooseRole = useCallback(async (role: Role) => {
     setError(null);
     setLoading(true);
     try {
@@ -298,7 +303,24 @@ export function RoleSelectionCard() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [locale, supabaseErrorMessage, t, tCommon]);
+
+  useEffect(() => {
+    if (checking || loading || autoAppliedRef.current) return;
+    if (typeof window === "undefined") return;
+
+    const fromQuery = new URLSearchParams(window.location.search).get("role");
+    const pending =
+      fromQuery === "player" || fromQuery === "scout"
+        ? fromQuery
+        : peekPendingSignupRole();
+    if (!pending) return;
+
+    autoAppliedRef.current = true;
+    clearPendingSignupRole();
+    setSelected(pending);
+    void chooseRole(pending);
+  }, [checking, loading, chooseRole]);
 
   async function onStartOver() {
     setError(null);
