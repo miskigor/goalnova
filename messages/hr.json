@@ -1788,7 +1788,7 @@
     "unknownError": "Nešto je pošlo po zlu.",
     "requestFailedGeneric": "Zahtjev nije uspio. Pokušajte ponovo.",
     "club": "Klub",
-    "clubHint": "Pošalji zahtjev za partnerstvo akademije (bez lozinke). Admin ga zatim pregleda."
+    "clubHint": "Stvori račun, zatim pošalji podatke kluba i dokaz za verifikaciju."
   },
   "profileEditor": {
     "title": "Vaš profil",
@@ -2503,7 +2503,7 @@
     "fieldEstimatedPlayers": "Broj igrača",
     "fieldMessage": "Poruka",
     "submitPartnershipRequest": "Pošalji zahtjev",
-    "partnershipSubmitted": "Hvala! Pregledat ćemo tvoj zahtjev za partnerstvo.",
+    "partnershipSubmitted": "Hvala! Pregledat ćemo zahtjev i dokaz.",
     "partnershipSubmitError": "Zahtjev nije poslan. Pokušaj ponovno.",
     "partnershipSubmitErrorMigration": "Klubovi još nisu postavljeni u bazi. Admin mora pokrenuti Supabase migraciju za klubove (SQL datoteka u repou).",
     "partnershipSubmitErrorDetail": "Zahtjev nije poslan: {error}",
@@ -2578,6 +2578,18 @@
     "adminDeleteClubConfirm": "Trajno obrisati {club}? Sva članstva će biti uklonjena i igrači će izgubiti klupske benefite.",
     "adminDeleteError": "Klub se nije mogao obrisati.",
     "adminDeleteErrorMigration": "Funkcija za brisanje kluba nedostaje u Supabaseu. Pokreni PASTE_club_admin_delete.sql u SQL Editoru.",
-    "becomePartnerNoAccountHint": "Ovo je forma za zahtjev partnerstva — bez lozinke i bez novog računa. Nakon odobrenja javljamo se na email kluba."
+    "becomePartnerNoAccountHint": "Trebaš PitchRusch račun (email + lozinka). Zatim pošalji podatke kluba i dokaz na pregled adminu.",
+    "becomePartnerProofHint": "Prvo stvori PitchRusch račun, zatim uploadaj dokaz da predstavljaš klub (registracija, memorandum ili službeni dokument).",
+    "fieldClubProof": "Dokaz da ste klub",
+    "fieldClubProofHint": "PDF, JPG ili PNG — registracija kluba, službeno pismo ili slično. Max 10MB.",
+    "partnershipProofRequired": "Uploadaj dokaz da predstavljaš klub.",
+    "partnershipProofInvalidType": "Dokaz mora biti PDF, JPG ili PNG.",
+    "partnershipProofTooLarge": "Dokaz mora biti 10MB ili manje.",
+    "partnershipProofUploadError": "Upload dokaza nije uspio. Pokušaj ponovo.",
+    "partnershipAuthRequired": "Prijavi se da pošalješ zahtjev za partnerstvo.",
+    "submittingPartnershipRequest": "Slanje…",
+    "adminViewProof": "Pogledaj dokaz",
+    "adminProofMissing": "Nema dokaza — ne odobravaj.",
+    "adminProofOpenError": "Ne mogu otvoriti dokaz."
   }
 }

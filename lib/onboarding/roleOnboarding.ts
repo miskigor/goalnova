@@ -13,7 +13,7 @@ type UsersOnboardingRow = {
 /** Legacy app role or staff flags — never sent through Player/Scout /role onboarding. */
 export function isRoleOnboardingExempt(row: UsersOnboardingRow | null | undefined): boolean {
   if (!row) return false;
-  if (row.role === "admin") return true;
+  if (row.role === "admin" || row.role === "club") return true;
   return isStaffUser(row);
 }
 

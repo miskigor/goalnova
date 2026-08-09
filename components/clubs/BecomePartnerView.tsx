@@ -1,16 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { notifyPartnershipRequest } from "@/lib/clubs/notifyPartnershipRequest.client";
+import { rememberPendingSignupRole } from "@/lib/auth/pendingSignupRole";
 import { rpcClubSubmitPartnershipRequest } from "@/lib/supabase/clubs";
+import { supabase } from "@/lib/supabase/client";
+import { validateClubProofFile } from "@/lib/storage/clubProof";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function BecomePartnerView() {
   const t = useTranslations("clubs");
+  const router = useRouter();
+  const [authChecking, setAuthChecking] = useState(true);
   const [form, setForm] = useState({
     clubName: "",
     country: "",
@@ -21,8 +26,65 @@ export function BecomePartnerView() {
     estimatedPlayers: "",
     message: "",
   });
+  const [proofFile, setProofFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [partnershipStatus, setPartnershipStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) return;
+      if (!data.session?.user) {
+        rememberPendingSignupRole("club");
+        router.replace("/signup?intent=club");
+        return;
+      }
+      const email = data.session.user.email?.trim() ?? "";
+      const fullName =
+        typeof data.session.user.user_metadata?.full_name === "string"
+          ? data.session.user.user_metadata.full_name.trim()
+          : "";
+      setForm((prev) => ({
+        ...prev,
+        email: prev.email || email,
+        contactPerson: prev.contactPerson || fullName,
+      }));
+      setAuthChecking(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
+
+  async function uploadProof(file: File): Promise<
+    { ok: true; path: string; fileName: string } | { ok: false; error: string }
+  > {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) {
+      return { ok: false, error: t("partnershipAuthRequired") };
+    }
+
+    const body = new FormData();
+    body.append("file", file);
+
+    const res = await fetch("/api/clubs/upload-partnership-proof", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body,
+    });
+    const json = (await res.json().catch(() => ({}))) as {
+      ok?: boolean;
+      path?: string;
+      fileName?: string;
+      reason?: string;
+    };
+    if (!res.ok || !json.ok || !json.path) {
+      return { ok: false, error: t("partnershipProofUploadError") };
+    }
+    return { ok: true, path: json.path, fileName: json.fileName ?? file.name };
+  }
 
   async function submitPartnership(e: React.FormEvent) {
     e.preventDefault();
@@ -37,12 +99,32 @@ export function BecomePartnerView() {
       setPartnershipStatus(t("partnershipValidationEmail"));
       return;
     }
+
+    const proofCheck = validateClubProofFile(proofFile);
+    if (!proofCheck.ok) {
+      setPartnershipStatus(
+        proofCheck.error === "size"
+          ? t("partnershipProofTooLarge")
+          : proofCheck.error === "type"
+            ? t("partnershipProofInvalidType")
+            : t("partnershipProofRequired"),
+      );
+      return;
+    }
+
     if (missing.length > 0) {
       setPartnershipStatus(t("partnershipValidationMissing", { fields: missing.join(", ") }));
       return;
     }
 
     setSubmitting(true);
+    const uploaded = await uploadProof(proofCheck.file);
+    if (!uploaded.ok) {
+      setSubmitting(false);
+      setPartnershipStatus(uploaded.error);
+      return;
+    }
+
     const result = await rpcClubSubmitPartnershipRequest({
       clubName: form.clubName.trim(),
       country: form.country.trim(),
@@ -52,21 +134,43 @@ export function BecomePartnerView() {
       website: form.website.trim() || undefined,
       estimatedPlayers: form.estimatedPlayers ? Number(form.estimatedPlayers) : undefined,
       message: form.message.trim() || undefined,
+      proofStoragePath: uploaded.path,
+      proofFileName: uploaded.fileName,
     });
+
     if (result.ok && result.requestId) {
       await notifyPartnershipRequest(result.requestId);
     }
     setSubmitting(false);
+
     if (result.ok) {
       setPartnershipStatus(t("partnershipSubmitted"));
+      setProofFile(null);
       return;
     }
+
+    if (result.error === "not_authenticated") {
+      rememberPendingSignupRole("club");
+      router.replace("/signup?intent=club");
+      return;
+    }
+
     setPartnershipStatus(
       result.error?.includes("Could not find the function")
         ? t("partnershipSubmitErrorMigration")
-        : result.error
-          ? t("partnershipSubmitErrorDetail", { error: result.error })
-          : t("partnershipSubmitError"),
+        : result.error === "proof_required"
+          ? t("partnershipProofRequired")
+          : result.error
+            ? t("partnershipSubmitErrorDetail", { error: result.error })
+            : t("partnershipSubmitError"),
+    );
+  }
+
+  if (authChecking) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center text-sm text-gn-text-secondary">
+        {t("loading")}
+      </div>
     );
   }
 
@@ -78,7 +182,7 @@ export function BecomePartnerView() {
         </Link>
         <h1 className="text-2xl font-bold text-gn-text">{t("becomePartnerTitle")}</h1>
         <p className="text-sm text-gn-text-secondary">{t("becomePartnerSubtitle")}</p>
-        <p className="text-sm text-gn-text-secondary">{t("becomePartnerNoAccountHint")}</p>
+        <p className="text-sm text-gn-text-secondary">{t("becomePartnerProofHint")}</p>
       </header>
 
       <form
@@ -126,8 +230,26 @@ export function BecomePartnerView() {
             className="w-full rounded-xl border border-gn-border-subtle bg-black/40 px-4 py-3 text-sm text-gn-text outline-none focus:border-gn-accent/50"
           />
         </label>
+
+        <label className="block space-y-1">
+          <span className="text-xs font-medium uppercase tracking-wider text-gn-text-tertiary">
+            {t("fieldClubProof")}
+            <span className="text-gn-accent"> *</span>
+          </span>
+          <p className="text-xs text-gn-text-secondary">{t("fieldClubProofHint")}</p>
+          <input
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+            onChange={(e) => setProofFile(e.target.files?.[0] ?? null)}
+            className="block w-full text-sm text-gn-text file:me-3 file:rounded-lg file:border-0 file:bg-gn-accent file:px-3 file:py-2 file:text-sm file:font-semibold file:text-black"
+          />
+          {proofFile ? (
+            <p className="text-xs text-gn-text-secondary">{proofFile.name}</p>
+          ) : null}
+        </label>
+
         <button type="submit" disabled={submitting} className={`${GN_PRIMARY_BUTTON_CLASS} w-full justify-center`}>
-          {t("submitPartnershipRequest")}
+          {submitting ? t("submittingPartnershipRequest") : t("submitPartnershipRequest")}
         </button>
         {partnershipStatus ? (
           <p role="status" className="rounded-xl border border-gn-accent/30 bg-gn-accent/10 px-4 py-3 text-sm text-gn-text">

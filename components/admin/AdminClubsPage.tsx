@@ -12,6 +12,7 @@ import {
 } from "@/lib/supabase/clubs";
 import { markAllAdminClubPartnershipNotificationsRead } from "@/lib/supabase/adminSystem";
 import { notifyClubApproved } from "@/lib/clubs/notifyClubApproved.client";
+import { supabase } from "@/lib/supabase/client";
 import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
 function detailLine(label: string, value: unknown): { label: string; value: string } | null {
@@ -102,6 +103,25 @@ export function AdminClubsPage() {
     await load();
   }
 
+  async function openProof(path: string) {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (!token) {
+      setLoadError(t("adminProofOpenError"));
+      return;
+    }
+    const res = await fetch(
+      `/api/clubs/upload-partnership-proof?path=${encodeURIComponent(path)}`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+    const json = (await res.json().catch(() => ({}))) as { ok?: boolean; url?: string };
+    if (!res.ok || !json.ok || !json.url) {
+      setLoadError(t("adminProofOpenError"));
+      return;
+    }
+    window.open(json.url, "_blank", "noopener,noreferrer");
+  }
+
   if (loading) {
     return <p className="p-6 text-sm text-zinc-400">{t("loading")}</p>;
   }
@@ -166,14 +186,28 @@ export function AdminClubsPage() {
                       </div>
                     ))}
                   </dl>
-                  <button
-                    type="button"
-                    disabled={busy === String(req.id)}
-                    onClick={() => void approveRequest(String(req.id), String(req.club_name))}
-                    className={`${GN_PRIMARY_BUTTON_CLASS} mt-4 text-xs`}
-                  >
-                    {t("adminApproveClub")}
-                  </button>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {req.proof_storage_path ? (
+                      <button
+                        type="button"
+                        onClick={() => void openProof(String(req.proof_storage_path))}
+                        className={`${GN_SECONDARY_BUTTON_CLASS} text-xs`}
+                      >
+                        {t("adminViewProof")}
+                        {req.proof_file_name ? ` · ${String(req.proof_file_name)}` : ""}
+                      </button>
+                    ) : (
+                      <p className="text-xs text-amber-200/90">{t("adminProofMissing")}</p>
+                    )}
+                    <button
+                      type="button"
+                      disabled={busy === String(req.id) || !req.proof_storage_path}
+                      onClick={() => void approveRequest(String(req.id), String(req.club_name))}
+                      className={`${GN_PRIMARY_BUTTON_CLASS} text-xs`}
+                    >
+                      {t("adminApproveClub")}
+                    </button>
+                  </div>
                 </li>
               );
             })}

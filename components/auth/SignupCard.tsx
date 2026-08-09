@@ -13,12 +13,14 @@ import {
   SIGNUP_ERROR_I18N_KEY,
 } from "@/lib/supabase/signupAuthErrors";
 import { setFreshLogin } from "@/lib/auth/freshLogin";
-import { rememberPendingSignupRole } from "@/lib/auth/pendingSignupRole";
+import {
+  rememberPendingSignupRole,
+  type PendingSignupRole,
+} from "@/lib/auth/pendingSignupRole";
 import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
 import { rememberReferralCodeFromQuery, peekPendingReferralCode } from "@/lib/supabase/referrals";
 import { devError, isDev } from "@/lib/devLog";
-import type { AppRole } from "@/lib/onboarding/roleOnboarding";
 import { buildSignupEmailConfirmRedirectUrl } from "@/lib/site/signupEmailRedirect";
 import { GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
@@ -56,7 +58,7 @@ export function SignupCard() {
   const router = useRouter();
 
   const [step, setStep] = useState<"role" | "details">("role");
-  const [role, setRole] = useState<AppRole | null>(null);
+  const [role, setRole] = useState<PendingSignupRole | null>(null);
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -70,6 +72,12 @@ export function SignupCard() {
     if (typeof window === "undefined") return;
     const ref = new URLSearchParams(window.location.search).get("ref");
     rememberReferralCodeFromQuery(ref);
+    const intent = new URLSearchParams(window.location.search).get("intent");
+    if (intent === "club") {
+      setRole("club");
+      rememberPendingSignupRole("club");
+      setStep("details");
+    }
   }, []);
 
   const canSubmit = useMemo(() => {
@@ -83,7 +91,7 @@ export function SignupCard() {
     );
   }, [role, fullName, email, password, loading]);
 
-  function onPickRole(next: AppRole) {
+  function onPickRole(next: PendingSignupRole) {
     setRole(next);
     rememberPendingSignupRole(next);
     setStep("details");
@@ -139,6 +147,11 @@ export function SignupCard() {
       }
 
       setFreshLogin();
+      if (role === "club") {
+        navigateAfterAuth("/clubs/become-partner", locale);
+        return;
+      }
+
       const pending = peekPendingReferralCode();
       const qs = new URLSearchParams({ role });
       if (pending) qs.set("ref", pending);
@@ -166,6 +179,9 @@ export function SignupCard() {
       setLoading(false);
     }
   }
+
+  const roleLabel =
+    role === "club" ? tRole("club") : role === "scout" ? tRole("scout") : tRole("player");
 
   if (step === "role") {
     return (
@@ -195,13 +211,14 @@ export function SignupCard() {
             <span className="block text-base font-semibold text-gn-text">{tRole("scout")}</span>
             <span className="mt-1 block text-sm text-gn-text-secondary">{tRole("scoutHint")}</span>
           </button>
-          <Link
-            href="/clubs/become-partner"
-            className="block w-full rounded-xl border border-gn-border bg-gn-surface px-4 py-4 text-left transition-colors hover:border-gn-accent/50 hover:bg-gn-surface-elevated"
+          <button
+            type="button"
+            onClick={() => onPickRole("club")}
+            className="w-full rounded-xl border border-gn-border bg-gn-surface px-4 py-4 text-left transition-colors hover:border-gn-accent/50 hover:bg-gn-surface-elevated"
           >
             <span className="block text-base font-semibold text-gn-text">{tRole("club")}</span>
             <span className="mt-1 block text-sm text-gn-text-secondary">{tRole("clubHint")}</span>
-          </Link>
+          </button>
         </div>
 
         <p className="mt-8 text-center text-sm text-gn-text-secondary">
@@ -230,7 +247,7 @@ export function SignupCard() {
           onClick={() => setStep("role")}
           className="mt-3 text-sm font-medium text-gn-accent hover:text-gn-accent-hover"
         >
-          {role === "scout" ? tRole("scout") : tRole("player")} · {tRole("title")}
+          {roleLabel} · {tRole("title")}
         </button>
       </div>
 

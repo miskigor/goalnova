@@ -292,6 +292,8 @@ export async function rpcClubSubmitPartnershipRequest(input: {
   website?: string;
   estimatedPlayers?: number;
   message?: string;
+  proofStoragePath: string;
+  proofFileName: string;
 }): Promise<{ ok: boolean; error?: string; requestId?: string }> {
   const { data, error } = await supabase.rpc("goalnova_club_submit_partnership_request", {
     p_club_name: input.clubName,
@@ -302,7 +304,9 @@ export async function rpcClubSubmitPartnershipRequest(input: {
     p_website: input.website ?? null,
     p_estimated_players: input.estimatedPlayers ?? null,
     p_message: input.message ?? null,
-  });
+    p_proof_storage_path: input.proofStoragePath,
+    p_proof_file_name: input.proofFileName,
+  } as never);
   if (error) {
     logFullSupabaseError("[clubs] goalnova_club_submit_partnership_request", error);
     return { ok: false, error: error.message };

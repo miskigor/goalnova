@@ -1,8 +1,10 @@
 import type { AppRole } from "@/lib/onboarding/roleOnboarding";
 
+export type PendingSignupRole = AppRole | "club";
+
 const KEY = "pitchrusch_pending_signup_role";
 
-export function rememberPendingSignupRole(role: AppRole): void {
+export function rememberPendingSignupRole(role: PendingSignupRole): void {
   if (typeof window === "undefined") return;
   try {
     window.sessionStorage.setItem(KEY, role);
@@ -11,11 +13,11 @@ export function rememberPendingSignupRole(role: AppRole): void {
   }
 }
 
-export function peekPendingSignupRole(): AppRole | null {
+export function peekPendingSignupRole(): PendingSignupRole | null {
   if (typeof window === "undefined") return null;
   try {
     const v = window.sessionStorage.getItem(KEY);
-    return v === "player" || v === "scout" ? v : null;
+    return v === "player" || v === "scout" || v === "club" ? v : null;
   } catch {
     return null;
   }

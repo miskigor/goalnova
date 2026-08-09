@@ -1788,7 +1788,7 @@
     "unknownError": "Something went wrong.",
     "requestFailedGeneric": "Request failed. Please try again.",
     "club": "Club",
-    "clubHint": "Send a partnership request for your academy (no password). Admins review it next."
+    "clubHint": "Create an account, then submit club details and proof for verification."
   },
   "profileEditor": {
     "title": "Il tuo profilo",
@@ -2503,7 +2503,7 @@
     "fieldEstimatedPlayers": "Number of players",
     "fieldMessage": "Message",
     "submitPartnershipRequest": "Submit request",
-    "partnershipSubmitted": "Thanks! We will review your partnership request.",
+    "partnershipSubmitted": "Thanks! We will review your partnership request and proof.",
     "partnershipSubmitError": "Could not submit request. Try again.",
     "partnershipSubmitErrorMigration": "The clubs database is not set up yet on the server. Ask the admin to run the Supabase clubs migration (SQL file in the repo).",
     "partnershipSubmitErrorDetail": "Could not submit request: {error}",
@@ -2578,6 +2578,18 @@
     "adminDeleteClubConfirm": "Permanently delete {club}? All memberships will be removed and player club benefits revoked.",
     "adminDeleteError": "Could not delete this club.",
     "adminDeleteErrorMigration": "Club delete function is missing in Supabase. Run PASTE_club_admin_delete.sql in the SQL Editor.",
-    "becomePartnerNoAccountHint": "This is a partnership request form — no password or new account. After approval we contact the club email."
+    "becomePartnerNoAccountHint": "You need a PitchRusch account (email + password). Then submit club details and proof for admin review.",
+    "becomePartnerProofHint": "Create your PitchRusch account first, then upload proof that you represent the club (registration, letterhead, or official document).",
+    "fieldClubProof": "Proof you are the club",
+    "fieldClubProofHint": "PDF, JPG or PNG — club registration, official letter, or similar. Max 10MB.",
+    "partnershipProofRequired": "Upload proof that you represent the club.",
+    "partnershipProofInvalidType": "Proof must be a PDF, JPG or PNG file.",
+    "partnershipProofTooLarge": "Proof file must be 10MB or smaller.",
+    "partnershipProofUploadError": "Could not upload proof. Try again.",
+    "partnershipAuthRequired": "Sign in to submit a club partnership request.",
+    "submittingPartnershipRequest": "Submitting…",
+    "adminViewProof": "View proof",
+    "adminProofMissing": "No proof uploaded — do not approve.",
+    "adminProofOpenError": "Could not open proof file."
   }
 }

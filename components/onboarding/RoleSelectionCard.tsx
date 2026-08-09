@@ -310,10 +310,13 @@ export function RoleSelectionCard() {
     if (typeof window === "undefined") return;
 
     const fromQuery = new URLSearchParams(window.location.search).get("role");
+    const stored = peekPendingSignupRole();
     const pending =
       fromQuery === "player" || fromQuery === "scout"
         ? fromQuery
-        : peekPendingSignupRole();
+        : stored === "player" || stored === "scout"
+          ? stored
+          : null;
     if (!pending) return;
 
     autoAppliedRef.current = true;
@@ -425,7 +428,7 @@ export function RoleSelectionCard() {
         </button>
 
         <Link
-          href="/clubs/become-partner"
+          href="/signup?intent=club"
           className="block w-full rounded-2xl border border-gn-border-subtle bg-gn-surface/40 px-4 py-4 text-left transition-colors hover:border-gn-border"
         >
           <p className="text-sm font-semibold text-gn-text">{t("club")}</p>
