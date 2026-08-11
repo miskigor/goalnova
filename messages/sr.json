@@ -2153,7 +2153,7 @@
     "deletingMessage": "Removing…",
     "messageDeleted": "Message removed from your view",
     "deleteMessageFailed": "Could not remove that message.",
-    "welcomeInboxMessage": "Dobrodošao/la na PitchRusch!\n\nDrago nam je što si deo naše fudbalske zajednice. PitchRusch je mesto gde igrači mogu da pokažu svoj talenat, objavljuju videe, učestvuju u izazovima i grade svoj fudbalski profil.\n\nAko želiš, možemo te predstaviti i na našem Instagram profilu @pitchrusch.\n\nZa Instagram objavu pošalji nam svoju sliku i napiši kako se zoveš u aplikaciji. Podatke za objavu uzimamo iz tvog PitchRusch profila:\n- ime i prezime\n- mesto\n- klub\n- visina\n- težina\n\nAko želiš Instagram objavu, javi nam se i pošalji sliku.\n\nDobrodošao/la u PitchRusch tim!"
+    "welcomeInboxMessage": "Dobrodošao/la na PitchRusch!\n\nDrago nam je što si deo naše fudbalske zajednice. PitchRusch je mesto gde igrači mogu da pokažu svoj talenat, objavljuju videe, učestvuju u izazovima i grade svoj fudbalski profil.\n\nKad objaviš video i popuniš profil, pošalji nam na Instagram @pitchrusch svoju sliku za objavu. Napiši i kako se zoveš u aplikaciji. Za objavu koristimo podatke iz tvog PitchRusch profila:\n- ime i prezime\n- mesto\n- klub\n- visina\n- težina\n\nDobrodošao/la u PitchRusch tim!"
   },
   "success": {
     "upload": "Upload successful",
@@ -2593,6 +2593,12 @@
     "submittingPartnershipRequest": "Slanje…",
     "adminViewProof": "Pogledaj dokaz",
     "adminProofMissing": "Nema dokaza — ne odobravaj.",
-    "adminProofOpenError": "Ne mogu otvoriti dokaz."
+    "adminProofOpenError": "Ne mogu otvoriti dokaz.",
+    "adminRejectClub": "Одбиј",
+    "adminRejectClubConfirm": "Одбити захтев за партнерство од {club}? Могу поново послати захтев касније.",
+    "adminRejectError": "Није могуће одбити овај захтев.",
+    "adminRejectErrorMigration": "Функција за одбијање клуба недостаје у Supabase-у. Покрени PASTE_club_partnership_approve_membership_and_reject.sql у SQL Editor-у.",
+    "partnershipProofBucketMissing": "Складиште за доказе још није подешено. У Supabase-у направи private Storage bucket: club-verification-documents.",
+    "partnershipProofUploadConfigError": "На серверу недостају подаци за storage. Админ треба да постави SUPABASE_SERVICE_ROLE_KEY."
   }
 }

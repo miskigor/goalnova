@@ -1,3 +1,4 @@
+import { isBootstrapAdminEmail } from "@/lib/admin/bootstrapAdminEmails";
 import {
   isAppRole,
   isRoleOnboardingExempt,
@@ -9,7 +10,8 @@ export type BenefitsAudience =
   | "scout"
   | "admin"
   | "needs_role"
-  | "player_setup_incomplete";
+  | "player_setup_incomplete"
+  | "none";
 
 export type BenefitsAudienceSnapshot = {
   audience: BenefitsAudience;
@@ -50,8 +52,14 @@ export async function resolveBenefitsAudience(): Promise<BenefitsAudienceSnapsho
 
   const base = { userId: uid, role, hasPlayerProfile, referralCode };
 
-  if (isRoleOnboardingExempt(userRow)) {
+  // Staff card in Settings is only for the bootstrap owner account.
+  if (isBootstrapAdminEmail(auth.user?.email)) {
     return { ...base, audience: "admin" };
+  }
+
+  // Club / other exempt roles must not see the admin entry in Settings.
+  if (isRoleOnboardingExempt(userRow)) {
+    return { ...base, audience: "none" };
   }
 
   if (!isAppRole(role)) {

@@ -10,6 +10,7 @@ import {
 } from "@/lib/auth/consumeAuthRedirectFromUrl";
 import { readGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
 import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
+import { consumePostAuthDestination } from "@/lib/auth/postAuthDestination";
 import { isLikelyInAppBrowser } from "@/lib/auth/inAppBrowser";
 import { setFreshLogin } from "@/lib/auth/freshLogin";
 import { signInWithEmailPassword } from "@/lib/supabase/auth";
@@ -243,7 +244,7 @@ export function LoginCard({ labels }: Props) {
       if (session?.access_token || sessionUser?.id) {
         setFreshLogin();
         setRedirecting(true);
-        navigateAfterAuth("/home", locale);
+        navigateAfterAuth(consumePostAuthDestination("/home"), locale);
         return;
       }
     })();
@@ -285,7 +286,7 @@ export function LoginCard({ labels }: Props) {
       setFreshLogin();
       setRedirecting(true);
       void syncPendingReferralCodeToUserMetadata();
-      navigateAfterAuth("/home", locale);
+      navigateAfterAuth(consumePostAuthDestination("/home"), locale);
       return;
     } catch (err) {
       signInFlowRef.current = false;

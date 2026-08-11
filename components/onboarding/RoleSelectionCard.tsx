@@ -264,8 +264,9 @@ export function RoleSelectionCard() {
         return;
       }
 
+      // Await welcome DM before navigate — fire-and-forget was aborted mid-flight.
       void ensureOnboardingNotificationsForRole(supabase, userId, role);
-      void sendWelcomeInboxMessageOnRegistration(supabase, userId);
+      await sendWelcomeInboxMessageOnRegistration(supabase, userId);
 
       void (async () => {
         try {

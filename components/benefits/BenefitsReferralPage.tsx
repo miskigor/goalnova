@@ -163,6 +163,10 @@ function BenefitsReferralExtrasPage() {
     );
   }
 
+  if (snapshot.audience === "none") {
+    return null;
+  }
+
   if (snapshot.audience === "needs_role") {
     return (
       <BenefitsInfoCard

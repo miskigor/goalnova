@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import {
   rpcAdminClubApproveRequest,
   rpcAdminClubDelete,
+  rpcAdminClubRejectRequest,
   rpcAdminClubSetStatus,
   rpcAdminClubRequestsList,
   rpcAdminClubsList,
@@ -76,6 +77,24 @@ export function AdminClubsPage() {
     }
     if (result.clubId) {
       await notifyClubApproved(result.clubId);
+    }
+    await load();
+  }
+
+  async function rejectRequest(id: string, clubName: string) {
+    if (!window.confirm(t("adminRejectClubConfirm", { club: clubName }))) return;
+
+    setBusy(id);
+    setLoadError(null);
+    const result = await rpcAdminClubRejectRequest(id);
+    setBusy(null);
+    if (!result.ok) {
+      setLoadError(
+        result.error?.includes("Could not find the function")
+          ? t("adminRejectErrorMigration")
+          : result.error ?? t("adminRejectError"),
+      );
+      return;
     }
     await load();
   }
@@ -208,6 +227,14 @@ export function AdminClubsPage() {
                       className={`${GN_PRIMARY_BUTTON_CLASS} text-xs`}
                     >
                       {t("adminApproveClub")}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy === String(req.id)}
+                      onClick={() => void rejectRequest(String(req.id), String(req.club_name))}
+                      className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-200 hover:bg-red-500/20 disabled:opacity-50"
+                    >
+                      {t("adminRejectClub")}
                     </button>
                   </div>
                 </li>

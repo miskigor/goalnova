@@ -8,6 +8,8 @@ import { consumeAuthRedirectFromUrl } from "@/lib/auth/consumeAuthRedirectFromUr
 import { isEmailConfirmed } from "@/lib/auth/emailConfirmed";
 import { setFreshLogin } from "@/lib/auth/freshLogin";
 import { navigateAfterAuth } from "@/lib/auth/postLoginNavigation";
+import { consumePostAuthDestination } from "@/lib/auth/postAuthDestination";
+import { peekPendingSignupRole } from "@/lib/auth/pendingSignupRole";
 import { readAuthUserWithTimeout } from "@/lib/auth/readAuthUserWithTimeout";
 import {
   resolvePostOnboardingHomePath,
@@ -47,6 +49,10 @@ export function AuthConfirmCallbackCard() {
         settledRef.current = true;
         setStatus("confirmed");
         setFreshLogin();
+        if (peekPendingSignupRole() === "club") {
+          navigateAfterAuth(consumePostAuthDestination("/clubs/become-partner"), locale);
+          return;
+        }
         const needsRole = await needsRoleOnboardingPage(authUser.id);
         if (needsRole) {
           navigateAfterAuth(roleOnboardingHrefSync(), locale);

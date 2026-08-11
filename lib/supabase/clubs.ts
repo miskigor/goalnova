@@ -380,6 +380,23 @@ export async function rpcAdminClubApproveRequest(
   };
 }
 
+export async function rpcAdminClubRejectRequest(
+  requestId: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const { data, error } = await supabase.rpc("goalnova_admin_club_reject_request", {
+    p_request_id: requestId,
+  });
+  if (error) {
+    logFullSupabaseError("[clubs] goalnova_admin_club_reject_request", error);
+    return { ok: false, error: error.message };
+  }
+  const payload = (data ?? {}) as Record<string, unknown>;
+  return {
+    ok: Boolean(payload.ok),
+    error: payload.error ? String(payload.error) : undefined,
+  };
+}
+
 export async function rpcAdminClubDelete(
   clubId: string,
 ): Promise<{ ok: boolean; error?: string }> {

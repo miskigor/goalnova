@@ -2153,7 +2153,7 @@
     "deletingMessage": "Removing…",
     "messageDeleted": "Message removed from your view",
     "deleteMessageFailed": "Could not remove that message.",
-    "welcomeInboxMessage": "Welcome to PitchRusch!\n\nWe're glad you're part of our football community. PitchRusch is where players can show their talent, post videos, join challenges, and build their football profile.\n\nIf you'd like, we can feature you on our Instagram profile @pitchrusch.\n\nTo be featured on Instagram, send us your photo and tell us your in-app username. For the post we use details from your PitchRusch profile:\n- full name\n- location\n- club\n- height\n- weight\n\nIf you'd like an Instagram feature, message us and send your photo.\n\nWelcome to the PitchRusch team!"
+    "welcomeInboxMessage": "Welcome to PitchRusch!\n\nWe're glad you're part of our football community. PitchRusch is where players can show their talent, post videos, join challenges, and build their football profile.\n\nOnce you upload a video and complete your profile, send your photo to our Instagram @pitchrusch for a post. Tell us your in-app username too. For the post we use details from your PitchRusch profile:\n- full name\n- location\n- club\n- height\n- weight\n\nWelcome to the PitchRusch team!"
   },
   "success": {
     "upload": "Upload successful",
@@ -2593,6 +2593,12 @@
     "submittingPartnershipRequest": "Submitting…",
     "adminViewProof": "View proof",
     "adminProofMissing": "No proof uploaded — do not approve.",
-    "adminProofOpenError": "Could not open proof file."
+    "adminProofOpenError": "Could not open proof file.",
+    "adminRejectClub": "Reject",
+    "adminRejectClubConfirm": "Reject partnership request from {club}? They can submit again later.",
+    "adminRejectError": "Could not reject this request.",
+    "adminRejectErrorMigration": "Club reject function is missing in Supabase. Run PASTE_club_partnership_approve_membership_and_reject.sql in the SQL Editor.",
+    "partnershipProofBucketMissing": "Proof storage is not set up yet. Create a private Storage bucket named club-verification-documents in Supabase.",
+    "partnershipProofUploadConfigError": "Server is missing storage credentials. Ask an admin to set SUPABASE_SERVICE_ROLE_KEY."
   }
 }

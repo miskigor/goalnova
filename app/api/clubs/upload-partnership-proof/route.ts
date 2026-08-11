@@ -86,7 +86,12 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   if (uploadError) {
     console.error("[clubs/upload-partnership-proof] upload failed", uploadError);
-    return json({ ok: false, reason: "upload_failed", message: uploadError.message }, 502);
+    const msg = (uploadError.message ?? "").toLowerCase();
+    const reason =
+      msg.includes("bucket") || msg.includes("not found")
+        ? "bucket_missing"
+        : "upload_failed";
+    return json({ ok: false, reason, message: uploadError.message }, 502);
   }
 
   return json({

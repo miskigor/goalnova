@@ -2153,7 +2153,7 @@
     "deletingMessage": "Wird entfernt…",
     "messageDeleted": "Nachricht in deiner Ansicht entfernt",
     "deleteMessageFailed": "Nachricht konnte nicht entfernt werden.",
-    "welcomeInboxMessage": "Willkommen bei PitchRusch!\n\nSchön, dass du Teil unserer Fußball-Community bist. PitchRusch ist der Ort, an dem Spieler ihr Talent zeigen, Videos posten, an Challenges teilnehmen und ihr Fußballprofil aufbauen können.\n\nWenn du möchtest, können wir dich auf unserem Instagram-Profil @pitchrusch vorstellen.\n\nFür einen Instagram-Beitrag sende uns dein Foto und schreib uns deinen Benutzernamen in der App. Für den Beitrag nutzen wir Daten aus deinem PitchRusch-Profil:\n- Vor- und Nachname\n- Ort\n- Verein\n- Größe\n- Gewicht\n\nWenn du einen Instagram-Beitrag möchtest, schreib uns und sende dein Foto.\n\nWillkommen im PitchRusch-Team!"
+    "welcomeInboxMessage": "Willkommen bei PitchRusch!\n\nSchön, dass du Teil unserer Fußball-Community bist. PitchRusch ist der Ort, an dem Spieler ihr Talent zeigen, Videos posten, an Challenges teilnehmen und ihr Fußballprofil aufbauen können.\n\nWenn du ein Video hochgeladen und dein Profil ausgefüllt hast, sende dein Foto an unser Instagram @pitchrusch für einen Beitrag. Schreib uns auch deinen Benutzernamen in der App. Für den Beitrag nutzen wir Daten aus deinem PitchRusch-Profil:\n- Vor- und Nachname\n- Ort\n- Verein\n- Größe\n- Gewicht\n\nWillkommen im PitchRusch-Team!"
   },
   "success": {
     "upload": "Upload erfolgreich",
@@ -2593,6 +2593,12 @@
     "submittingPartnershipRequest": "Submitting…",
     "adminViewProof": "View proof",
     "adminProofMissing": "No proof uploaded — do not approve.",
-    "adminProofOpenError": "Could not open proof file."
+    "adminProofOpenError": "Could not open proof file.",
+    "adminRejectClub": "Ablehnen",
+    "adminRejectClubConfirm": "Partnerschaftsanfrage von {club} ablehnen? Sie können später erneut einreichen.",
+    "adminRejectError": "Anfrage konnte nicht abgelehnt werden.",
+    "adminRejectErrorMigration": "Club-Ablehnfunktion fehlt in Supabase. PASTE_club_partnership_approve_membership_and_reject.sql im SQL-Editor ausführen.",
+    "partnershipProofBucketMissing": "Speicher für Nachweise fehlt noch. Erstelle in Supabase den privaten Storage-Bucket club-verification-documents.",
+    "partnershipProofUploadConfigError": "Server-Speicherzugangsdaten fehlen. Admin muss SUPABASE_SERVICE_ROLE_KEY setzen."
   }
 }

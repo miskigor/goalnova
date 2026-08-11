@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { notifyPartnershipRequest } from "@/lib/clubs/notifyPartnershipRequest.client";
-import { rememberPendingSignupRole } from "@/lib/auth/pendingSignupRole";
+import {
+  clearPendingSignupRole,
+  rememberPendingSignupRole,
+} from "@/lib/auth/pendingSignupRole";
 import { rpcClubSubmitPartnershipRequest } from "@/lib/supabase/clubs";
 import { supabase } from "@/lib/supabase/client";
 import { validateClubProofFile } from "@/lib/storage/clubProof";
@@ -40,6 +43,7 @@ export function BecomePartnerView() {
         router.replace("/signup?intent=club");
         return;
       }
+      clearPendingSignupRole();
       const email = data.session.user.email?.trim() ?? "";
       const fullName =
         typeof data.session.user.user_metadata?.full_name === "string"
@@ -81,6 +85,15 @@ export function BecomePartnerView() {
       reason?: string;
     };
     if (!res.ok || !json.ok || !json.path) {
+      if (json.reason === "bucket_missing") {
+        return { ok: false, error: t("partnershipProofBucketMissing") };
+      }
+      if (json.reason === "service_role_unconfigured") {
+        return { ok: false, error: t("partnershipProofUploadConfigError") };
+      }
+      if (json.reason === "not_authenticated") {
+        return { ok: false, error: t("partnershipAuthRequired") };
+      }
       return { ok: false, error: t("partnershipProofUploadError") };
     }
     return { ok: true, path: json.path, fileName: json.fileName ?? file.name };

@@ -75,44 +75,24 @@ export async function fetchStaffAccess(): Promise<StaffAccess> {
     };
   }
 
-  if (isBootstrapAdminEmail(sessionEmail)) {
-    return {
-      isStaff: true,
-      role: "super_admin",
-      isSuperAdmin: true,
-      isSupportAdmin: false,
-      isModerator: false,
-      error: null,
-    };
-  }
-
-  const { data, error } = await supabase
-    .from("users")
-    .select("is_admin, admin_role")
-    .eq("id", uid)
-    .maybeSingle();
-
-  if (error) {
-    logFullSupabaseError("[admin] select users staff fields", error, { uid });
+  // Staff UI (/admin link, AdminGate) is reserved for the bootstrap owner email only.
+  if (!isBootstrapAdminEmail(sessionEmail)) {
     return {
       isStaff: false,
       role: null,
       isSuperAdmin: false,
       isSupportAdmin: false,
       isModerator: false,
-      error: error.message,
+      error: null,
     };
   }
 
-  const role = effectiveStaffRole(data);
-  const isStaff = role !== null;
-
   return {
-    isStaff,
-    role,
-    isSuperAdmin: role === "super_admin",
-    isSupportAdmin: role === "support_admin",
-    isModerator: role === "moderator",
+    isStaff: true,
+    role: "super_admin",
+    isSuperAdmin: true,
+    isSupportAdmin: false,
+    isModerator: false,
     error: null,
   };
 }

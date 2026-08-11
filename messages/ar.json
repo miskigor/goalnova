@@ -2153,7 +2153,7 @@
     "deletingMessage": "جارٍ الإزالة…",
     "messageDeleted": "تمت إزالة الرسالة من عرضك",
     "deleteMessageFailed": "تعذّر إزالة الرسالة.",
-    "welcomeInboxMessage": "مرحبًا بك في PitchRusch!\n\nيسعدنا أنك جزء من مجتمعنا لكرة القدم. PitchRusch هو المكان الذي يمكن للاعبين فيه إظهار موهبتهم ونشر الفيديوهات والمشاركة في التحديات وبناء ملفهم الشخصي.\n\nإذا رغبت، يمكننا تقديمك على حسابنا على إنستغرام @pitchrusch.\n\nللنشر على إنستغرام، أرسل لنا صورتك واكتب اسم المستخدم في التطبيق. نستخدم بيانات ملفك في PitchRusch:\n- الاسم الكامل\n- المدينة\n- النادي\n- الطول\n- الوزن\n\nإذا أردت منشورًا على إنستغرام، راسلنا وأرسل صورتك.\n\nمرحبًا بك في فريق PitchRusch!"
+    "welcomeInboxMessage": "مرحبًا بك في PitchRusch!\n\nيسعدنا أنك جزء من مجتمعنا لكرة القدم. PitchRusch هو المكان الذي يمكن للاعبين فيه إظهار موهبتهم ونشر الفيديوهات والمشاركة في التحديات وبناء ملفهم الشخصي.\n\nبعد رفع فيديو وإكمال ملفك الشخصي، أرسل صورتك إلى إنستغرام @pitchrusch للنشر. واكتب أيضًا اسم المستخدم في التطبيق. نستخدم بيانات ملفك في PitchRusch:\n- الاسم الكامل\n- المدينة\n- النادي\n- الطول\n- الوزن\n\nمرحبًا بك في فريق PitchRusch!"
   },
   "success": {
     "upload": "Upload successful",
@@ -2593,6 +2593,12 @@
     "submittingPartnershipRequest": "Submitting…",
     "adminViewProof": "View proof",
     "adminProofMissing": "No proof uploaded — do not approve.",
-    "adminProofOpenError": "Could not open proof file."
+    "adminProofOpenError": "Could not open proof file.",
+    "adminRejectClub": "رفض",
+    "adminRejectClubConfirm": "رفض طلب الشراكة من {club}؟ يمكنهم الإرسال مرة أخرى لاحقًا.",
+    "adminRejectError": "تعذّر رفض هذا الطلب.",
+    "adminRejectErrorMigration": "دالة رفض النادي غير موجودة في Supabase. شغّل PASTE_club_partnership_approve_membership_and_reject.sql في محرر SQL.",
+    "partnershipProofBucketMissing": "تخزين إثبات النادي غير مُعد بعد. أنشئ bucket خاصًا باسم club-verification-documents في Supabase Storage.",
+    "partnershipProofUploadConfigError": "بيانات التخزين ناقصة على الخادم. يجب على المشرف ضبط SUPABASE_SERVICE_ROLE_KEY."
   }
 }

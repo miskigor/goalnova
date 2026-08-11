@@ -2153,7 +2153,7 @@
     "deletingMessage": "Removing…",
     "messageDeleted": "Message removed from your view",
     "deleteMessageFailed": "Could not remove that message.",
-    "welcomeInboxMessage": "Welkom bij PitchRusch!\n\nFijn dat je deel uitmaakt van onze voetbalcommunity. PitchRusch is de plek waar spelers hun talent kunnen tonen, video's plaatsen, meedoen aan challenges en hun voetbalprofiel opbouwen.\n\nAls je wilt, kunnen we je voorstellen op ons Instagram-profiel @pitchrusch.\n\nVoor een Instagram-post stuur je ons je foto en je gebruikersnaam in de app. Voor de post gebruiken we gegevens uit je PitchRusch-profiel:\n- volledige naam\n- locatie\n- club\n- lengte\n- gewicht\n\nWil je een Instagram-post? Stuur ons een bericht met je foto.\n\nWelkom bij het PitchRusch-team!"
+    "welcomeInboxMessage": "Welkom bij PitchRusch!\n\nFijn dat je deel uitmaakt van onze voetbalcommunity. PitchRusch is de plek waar spelers hun talent kunnen tonen, video's plaatsen, meedoen aan challenges en hun voetbalprofiel opbouwen.\n\nAls je een video hebt geplaatst en je profiel hebt ingevuld, stuur je foto naar onze Instagram @pitchrusch voor een post. Schrijf ook je gebruikersnaam in de app. Voor de post gebruiken we gegevens uit je PitchRusch-profiel:\n- volledige naam\n- locatie\n- club\n- lengte\n- gewicht\n\nWelkom bij het PitchRusch-team!"
   },
   "success": {
     "upload": "Upload successful",
@@ -2593,6 +2593,12 @@
     "submittingPartnershipRequest": "Submitting…",
     "adminViewProof": "View proof",
     "adminProofMissing": "No proof uploaded — do not approve.",
-    "adminProofOpenError": "Could not open proof file."
+    "adminProofOpenError": "Could not open proof file.",
+    "adminRejectClub": "Afwijzen",
+    "adminRejectClubConfirm": "Partnerschapsverzoek van {club} afwijzen? Ze kunnen later opnieuw indienen.",
+    "adminRejectError": "Kon dit verzoek niet afwijzen.",
+    "adminRejectErrorMigration": "Club-afwijzfunctie ontbreekt in Supabase. Voer PASTE_club_partnership_approve_membership_and_reject.sql uit in de SQL Editor.",
+    "partnershipProofBucketMissing": "Opslag voor bewijsstukken is nog niet ingesteld. Maak de privé Storage-bucket club-verification-documents in Supabase.",
+    "partnershipProofUploadConfigError": "Opslaggegevens ontbreken op de server. Een admin moet SUPABASE_SERVICE_ROLE_KEY instellen."
   }
 }

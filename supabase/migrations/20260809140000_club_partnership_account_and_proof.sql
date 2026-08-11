@@ -196,6 +196,24 @@ begin
     values (v_req.applicant_user_id, v_req.email, 'club')
     on conflict (id) do update
     set role = 'club', email = coalesce(excluded.email, public.users.email);
+
+    insert into public.club_memberships (
+      club_id, user_id, status, is_admin, reviewed_at, reviewed_by
+    ) values (
+      v_club_id,
+      v_req.applicant_user_id,
+      'approved'::public.club_membership_status,
+      true,
+      now(),
+      auth.uid()
+    )
+    on conflict (club_id, user_id) do update
+    set
+      status = 'approved'::public.club_membership_status,
+      is_admin = true,
+      reviewed_at = now(),
+      reviewed_by = auth.uid(),
+      updated_at = now();
   end if;
 
   perform public.goalnova_admin_audit_log(

@@ -37,6 +37,7 @@ function rpcWelcomeOk(data: unknown): boolean {
 
 /**
  * Sends the welcome DM once when the user finishes registration (role onboarding).
+ * Callers should await this before navigating away so the request is not aborted.
  * Not called on routine app entry — see RoleSelectionCard.
  */
 export async function sendWelcomeInboxMessageOnRegistration(
@@ -63,6 +64,8 @@ export async function sendWelcomeInboxMessageOnRegistration(
 
     if (rpcWelcomeOk(data)) {
       markLocalWelcomeInboxSent(id);
+    } else {
+      devLog("[welcome inbox] RPC returned non-ok", { userId: id, data });
     }
 
     devLog("[welcome inbox] registration send result", { userId: id, data });

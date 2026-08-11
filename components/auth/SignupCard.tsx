@@ -14,6 +14,7 @@ import {
 } from "@/lib/supabase/signupAuthErrors";
 import { setFreshLogin } from "@/lib/auth/freshLogin";
 import {
+  clearPendingSignupRole,
   rememberPendingSignupRole,
   type PendingSignupRole,
 } from "@/lib/auth/pendingSignupRole";
@@ -148,6 +149,7 @@ export function SignupCard() {
 
       setFreshLogin();
       if (role === "club") {
+        clearPendingSignupRole();
         navigateAfterAuth("/clubs/become-partner", locale);
         return;
       }
