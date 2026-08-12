@@ -1,6 +1,3 @@
--- Paste in Supabase SQL Editor (required for welcome DMs to new players).
--- Expands welcome sender lookup + promotes bootstrap owner to staff.
-
 create or replace function public.goalnova_resolve_welcome_inbox_sender()
 returns uuid
 language sql
@@ -38,5 +35,4 @@ set
 where lower(trim(coalesce(email, ''))) = 'royalexpert1@gmail.com'
   and coalesce(is_deleted, false) = false;
 
--- Quick check (should return one uuid):
--- select public.goalnova_resolve_welcome_inbox_sender();
+select public.goalnova_resolve_welcome_inbox_sender() as welcome_sender_id;
