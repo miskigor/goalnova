@@ -35,10 +35,36 @@ function rpcWelcomeOk(data: unknown): boolean {
   return o.ok === true || o.ok === "true";
 }
 
+async function sendViaApi(client: Client): Promise<boolean> {
+  const { data: sessionData } = await client.auth.getSession();
+  const accessToken = sessionData.session?.access_token?.trim();
+  if (!accessToken) return false;
+
+  try {
+    const res = await fetch("/api/welcome-inbox/send", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+    const body = (await res.json().catch(() => null)) as {
+      ok?: boolean;
+      reason?: string;
+    } | null;
+    if (res.ok && body?.ok) return true;
+    devLog("[welcome inbox] API send non-ok", { status: res.status, body });
+    return false;
+  } catch (e) {
+    logFullSupabaseError("[welcome inbox] API send threw", e);
+    return false;
+  }
+}
+
 /**
- * Sends the welcome DM once when the user finishes registration (role onboarding).
- * Callers should await this before navigating away so the request is not aborted.
- * Not called on routine app entry — see RoleSelectionCard.
+ * Sends the welcome DM once when the user finishes registration (role onboarding)
+ * or on later app entry if it was missed. Prefer server API (service role), then RPC.
  */
 export async function sendWelcomeInboxMessageOnRegistration(
   client: Client,
@@ -53,6 +79,12 @@ export async function sendWelcomeInboxMessageOnRegistration(
   }
 
   try {
+    if (await sendViaApi(client)) {
+      markLocalWelcomeInboxSent(id);
+      devLog("[welcome inbox] sent via API", { userId: id });
+      return;
+    }
+
     const { data, error } = await client.rpc("goalnova_send_welcome_inbox_message", {
       p_user_id: id,
     });
