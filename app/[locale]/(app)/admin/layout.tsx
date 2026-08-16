@@ -16,13 +16,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /**
- * `/admin/*` requires staff: `users.admin_role` or legacy `users.is_admin`.
+ * `/admin/*` is only for the platform owner (`royalexpert1@gmail.com`).
+ * Club users and other accounts are sent home.
  */
 export default async function AdminSectionLayout({ children, params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <AdminGate>
+    <AdminGate redirectNonAdminsTo="/home">
       <AdminShell>{children}</AdminShell>
     </AdminGate>
   );

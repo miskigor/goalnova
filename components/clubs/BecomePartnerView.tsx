@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { notifyPartnershipRequest } from "@/lib/clubs/notifyPartnershipRequest.client";
@@ -10,7 +10,7 @@ import {
 } from "@/lib/auth/pendingSignupRole";
 import { rpcClubSubmitPartnershipRequest } from "@/lib/supabase/clubs";
 import { supabase } from "@/lib/supabase/client";
-import { validateClubProofFile } from "@/lib/storage/clubProof";
+import { prepareClubProofFile } from "@/lib/storage/clubProof";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,6 +32,7 @@ export function BecomePartnerView() {
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [partnershipStatus, setPartnershipStatus] = useState<string | null>(null);
+  const statusRef = useRef<HTMLParagraphElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,6 +61,11 @@ export function BecomePartnerView() {
       cancelled = true;
     };
   }, [router]);
+
+  useEffect(() => {
+    if (!partnershipStatus) return;
+    statusRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [partnershipStatus]);
 
   async function uploadProof(file: File): Promise<
     { ok: true; path: string; fileName: string } | { ok: false; error: string }
@@ -113,7 +119,7 @@ export function BecomePartnerView() {
       return;
     }
 
-    const proofCheck = validateClubProofFile(proofFile);
+    const proofCheck = await prepareClubProofFile(proofFile);
     if (!proofCheck.ok) {
       setPartnershipStatus(
         proofCheck.error === "size"
@@ -131,52 +137,57 @@ export function BecomePartnerView() {
     }
 
     setSubmitting(true);
-    const uploaded = await uploadProof(proofCheck.file);
-    if (!uploaded.ok) {
+    try {
+      const uploaded = await uploadProof(proofCheck.file);
+      const result = await rpcClubSubmitPartnershipRequest({
+        clubName: form.clubName.trim(),
+        country: form.country.trim(),
+        contactPerson: form.contactPerson.trim(),
+        email: form.email.trim(),
+        instagram: form.instagram.trim() || undefined,
+        website: form.website.trim() || undefined,
+        estimatedPlayers: form.estimatedPlayers ? Number(form.estimatedPlayers) : undefined,
+        message: form.message.trim() || undefined,
+        proofStoragePath: uploaded.ok ? uploaded.path : undefined,
+        proofFileName: uploaded.ok ? uploaded.fileName : undefined,
+      });
+
+      if (result.ok && result.requestId) {
+        await notifyPartnershipRequest(result.requestId);
+      }
+
+      if (result.ok) {
+        setPartnershipStatus(
+          uploaded.ok
+            ? t("partnershipSubmitted")
+            : `${t("partnershipSubmitted")} ${uploaded.error}`,
+        );
+        setProofFile(null);
+        return;
+      }
+
+      if (result.error === "not_authenticated") {
+        rememberPendingSignupRole("club");
+        router.replace("/signup?intent=club");
+        return;
+      }
+
+      setPartnershipStatus(
+        result.error?.includes("Could not find the function")
+          ? t("partnershipSubmitErrorMigration")
+          : result.error === "proof_required"
+            ? uploaded.ok
+              ? t("partnershipProofRequired")
+              : uploaded.error
+            : result.error
+              ? t("partnershipSubmitErrorDetail", { error: result.error })
+              : t("partnershipSubmitError"),
+      );
+    } catch {
+      setPartnershipStatus(t("partnershipSubmitError"));
+    } finally {
       setSubmitting(false);
-      setPartnershipStatus(uploaded.error);
-      return;
     }
-
-    const result = await rpcClubSubmitPartnershipRequest({
-      clubName: form.clubName.trim(),
-      country: form.country.trim(),
-      contactPerson: form.contactPerson.trim(),
-      email: form.email.trim(),
-      instagram: form.instagram.trim() || undefined,
-      website: form.website.trim() || undefined,
-      estimatedPlayers: form.estimatedPlayers ? Number(form.estimatedPlayers) : undefined,
-      message: form.message.trim() || undefined,
-      proofStoragePath: uploaded.path,
-      proofFileName: uploaded.fileName,
-    });
-
-    if (result.ok && result.requestId) {
-      await notifyPartnershipRequest(result.requestId);
-    }
-    setSubmitting(false);
-
-    if (result.ok) {
-      setPartnershipStatus(t("partnershipSubmitted"));
-      setProofFile(null);
-      return;
-    }
-
-    if (result.error === "not_authenticated") {
-      rememberPendingSignupRole("club");
-      router.replace("/signup?intent=club");
-      return;
-    }
-
-    setPartnershipStatus(
-      result.error?.includes("Could not find the function")
-        ? t("partnershipSubmitErrorMigration")
-        : result.error === "proof_required"
-          ? t("partnershipProofRequired")
-          : result.error
-            ? t("partnershipSubmitErrorDetail", { error: result.error })
-            : t("partnershipSubmitError"),
-    );
   }
 
   if (authChecking) {
@@ -252,23 +263,36 @@ export function BecomePartnerView() {
           <p className="text-xs text-gn-text-secondary">{t("fieldClubProofHint")}</p>
           <input
             type="file"
-            accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+            accept="image/*,.pdf,.jpg,.jpeg,.png,.webp,.heic,.heif,application/pdf,image/jpeg,image/png,image/webp"
             onChange={(e) => setProofFile(e.target.files?.[0] ?? null)}
             className="block w-full text-sm text-gn-text file:me-3 file:rounded-lg file:border-0 file:bg-gn-accent file:px-3 file:py-2 file:text-sm file:font-semibold file:text-black"
           />
           {proofFile ? (
             <p className="text-xs text-gn-text-secondary">{proofFile.name}</p>
-          ) : null}
+          ) : (
+            <p className="text-xs text-amber-200/90">{t("partnershipProofRequired")}</p>
+          )}
         </label>
 
-        <button type="submit" disabled={submitting} className={`${GN_PRIMARY_BUTTON_CLASS} w-full justify-center`}>
-          {submitting ? t("submittingPartnershipRequest") : t("submitPartnershipRequest")}
-        </button>
         {partnershipStatus ? (
-          <p role="status" className="rounded-xl border border-gn-accent/30 bg-gn-accent/10 px-4 py-3 text-sm text-gn-text">
+          <p
+            ref={statusRef}
+            role="status"
+            className="rounded-xl border border-gn-accent/30 bg-gn-accent/10 px-4 py-3 text-sm text-gn-text"
+          >
             {partnershipStatus}
           </p>
         ) : null}
+
+        <div className="sticky bottom-[max(0.75rem,calc(var(--gn-app-bottom-nav-offset,4.5rem)+0.35rem))] z-20 -mx-1 pt-1 lg:static lg:bottom-auto lg:z-auto lg:mx-0">
+          <button
+            type="submit"
+            disabled={submitting}
+            className={`${GN_PRIMARY_BUTTON_CLASS} w-full justify-center shadow-[0_8px_28px_-6px_rgba(249,115,22,0.55)]`}
+          >
+            {submitting ? t("submittingPartnershipRequest") : t("submitPartnershipRequest")}
+          </button>
+        </div>
       </form>
     </div>
   );

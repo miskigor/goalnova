@@ -74,17 +74,23 @@ begin
   )
   returning id into v_id;
 
-  -- Mark applicant as club contact (skips player/scout role gate)
-  insert into public.users (id, email, role)
-  values (
-    v_uid,
-    nullif(trim(p_email), ''),
-    'club'
-  )
-  on conflict (id) do update
-  set
-    role = 'club',
-    email = coalesce(nullif(trim(p_email), ''), public.users.email);
+  -- Mark applicant as club contact (skips player/scout role gate).
+  -- Must not roll back the partnership row if role/check constraints reject `club`.
+  begin
+    insert into public.users (id, email, role)
+    values (
+      v_uid,
+      nullif(trim(p_email), ''),
+      'club'
+    )
+    on conflict (id) do update
+    set
+      role = 'club',
+      email = coalesce(nullif(trim(p_email), ''), public.users.email);
+  exception
+    when others then
+      raise warning 'goalnova_club_submit_partnership_request role update failed: %', sqlerrm;
+  end;
 
   return jsonb_build_object('ok', true, 'request_id', v_id);
 end;

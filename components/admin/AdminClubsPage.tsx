@@ -12,6 +12,7 @@ import {
   rpcAdminClubsList,
 } from "@/lib/supabase/clubs";
 import { markAllAdminClubPartnershipNotificationsRead } from "@/lib/supabase/adminSystem";
+import { notifyAdminClubPendingChanged } from "@/components/layout/AdminSupportUnreadContext";
 import { notifyClubApproved } from "@/lib/clubs/notifyClubApproved.client";
 import { supabase } from "@/lib/supabase/client";
 import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
@@ -61,6 +62,7 @@ export function AdminClubsPage() {
     if (pending.length === 0) {
       void markAllAdminClubPartnershipNotificationsRead();
     }
+    notifyAdminClubPendingChanged();
   }, [loading, requests]);
 
   async function approveRequest(id: string, clubName: string) {
@@ -173,8 +175,13 @@ export function AdminClubsPage() {
       ) : null}
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-          {t("adminPendingRequests")}
+        <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-400">
+          <span>{t("adminPendingRequests")}</span>
+          {requests.length > 0 ? (
+            <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-200">
+              {requests.length}
+            </span>
+          ) : null}
         </h2>
         {requests.length === 0 ? (
           <p className="text-sm text-zinc-500">{t("noPendingRequests")}</p>
@@ -194,9 +201,14 @@ export function AdminClubsPage() {
               return (
                 <li
                   key={String(req.id)}
-                  className="rounded-xl border border-white/10 bg-white/[0.04] p-4"
+                  className="rounded-xl border border-amber-500/35 bg-amber-500/10 p-4"
                 >
-                  <p className="text-lg font-semibold text-zinc-100">{String(req.club_name)}</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-lg font-semibold text-zinc-100">{String(req.club_name)}</p>
+                    <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200">
+                      {t("adminAwaitingReview")}
+                    </span>
+                  </div>
                   <dl className="mt-3 grid gap-2 sm:grid-cols-2">
                     {details.map((row) => (
                       <div key={row.label} className="min-w-0">

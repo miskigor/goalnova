@@ -3,7 +3,7 @@ import {
   markPostAuthProfileLandingComplete,
 } from "@/lib/auth/postAuthLanding";
 import { readAuthUserWithTimeout } from "@/lib/auth/readAuthUserWithTimeout";
-import { isRoleOnboardingExempt } from "@/lib/onboarding/roleOnboarding";
+import { isBootstrapAdminEmail } from "@/lib/admin/bootstrapAdminEmails";
 import { supabase } from "@/lib/supabase/client";
 import {
   peekPendingReferralCode,
@@ -33,13 +33,18 @@ export async function resolvePostOnboardingHomePath(
   }
   if (!resolvedUserId) return "/home";
 
-  const { data: userRow } = await supabase
-    .from("users")
-    .select("role, is_admin, admin_role")
-    .eq("id", resolvedUserId)
-    .maybeSingle();
+  const [{ data: authData }, { data: userRow }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase
+      .from("users")
+      .select("role, is_admin, admin_role")
+      .eq("id", resolvedUserId)
+      .maybeSingle(),
+  ]);
 
-  if (isRoleOnboardingExempt(userRow)) return "/admin";
+  // Platform admin UI is only for the owner account — never for club contacts.
+  if (isBootstrapAdminEmail(authData.user?.email)) return "/admin";
+  if (userRow?.role === "club") return "/clubs";
   if (userRow?.role === "scout") return "/scout-dashboard";
   if (userRow?.role === "player") {
     if (!hasCompletedPostAuthProfileLanding(resolvedUserId)) {

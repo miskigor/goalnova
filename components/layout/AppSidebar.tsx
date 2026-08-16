@@ -22,7 +22,7 @@ import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { UnreadNotificationBadge } from "@/components/notifications/UnreadNotificationBadge";
 import { supabase } from "@/lib/supabase/client";
-import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadContext";
+import { useAdminSupportUnread, useAdminClubPendingCount } from "@/components/layout/AdminSupportUnreadContext";
 import {
   SIDEBAR_PLAYER_UPLOAD_ACTIVE_CLASS,
   SIDEBAR_PLAYER_UPLOAD_CLASS,
@@ -59,6 +59,7 @@ export function AppSidebar() {
   const isScout = scoutGate.loaded && scoutGate.row?.role === "scout";
   const { loaded: adminLoaded, isAdmin } = useAdminAccess();
   const adminSupportUnread = useAdminSupportUnread();
+  const clubPending = useAdminClubPendingCount();
   const [userSupportUnread, setUserSupportUnread] = useState(0);
   const showPlayerUpload = uploadEligibility === "player" && !isScout;
   const uploadActive = navItemActive(pathname, "/upload");
@@ -181,10 +182,12 @@ export function AppSidebar() {
             item.href === "/challenges" && quizPending
               ? challengesNavHref(true)
               : item.href;
-          const challengesTitle =
-            item.href === "/challenges" && quizPending
-              ? `${tNav(item.labelKey)} — ${tQuiz("navPendingHint")}`
-              : tNav(item.labelKey);
+          const itemTitle =
+            item.href === "/clubs" && isAdmin && clubPending > 0
+              ? `${tNav(item.labelKey)}, ${clubPending}`
+              : item.href === "/challenges" && quizPending
+                ? `${tNav(item.labelKey)} — ${tQuiz("navPendingHint")}`
+                : tNav(item.labelKey);
           return (
             <Link
               key={item.href}
@@ -193,8 +196,8 @@ export function AppSidebar() {
               aria-current={
                 navItemActive(pathname, item.href) ? "page" : undefined
               }
-              aria-label={challengesTitle}
-              title={challengesTitle}
+              aria-label={itemTitle}
+              title={itemTitle}
             >
               <span className="relative inline-flex shrink-0">
                 <NavIcon
@@ -203,6 +206,9 @@ export function AppSidebar() {
                 />
                 {item.href === "/challenges" && quizPending ? (
                   <DailyQuizPendingDot variant="bottomNav" />
+                ) : null}
+                {item.href === "/clubs" && isAdmin && clubPending > 0 ? (
+                  <UnreadNotificationBadge count={clubPending} variant="navSidebar" />
                 ) : null}
               </span>
               <span className="min-w-0 truncate">{tNav(item.labelKey)}</span>

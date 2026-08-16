@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
-import { supabase } from "@/lib/supabase/client";
-import { fetchAdminUnreadInboxBreakdown } from "@/lib/supabase/adminSystem";
+import { useAdminInboxUnreadBreakdown } from "@/components/layout/AdminSupportUnreadContext";
 
 const NAV: { href: string; labelKey: string; superOnly?: boolean }[] = [
   { href: "/admin", labelKey: "navOverview" },
@@ -34,33 +33,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const t = useTranslations("adminDashboard");
   const pathname = usePathname() ?? "";
   const { isSuperAdmin } = useAdminAccess();
-  const [supportUnread, setSupportUnread] = useState(0);
-  const [verificationUnread, setVerificationUnread] = useState(0);
-  const [clubUnread, setClubUnread] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    const refresh = async () => {
-      const res = await fetchAdminUnreadInboxBreakdown();
-      if (cancelled || res.error) return;
-      setSupportUnread(res.supportCount);
-      setVerificationUnread(res.verificationCount);
-      setClubUnread(res.clubPartnershipCount);
-    };
-    void refresh();
-    const ch = supabase
-      .channel("admin-unread-nav")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "notifications" },
-        () => void refresh(),
-      )
-      .subscribe();
-    return () => {
-      cancelled = true;
-      void supabase.removeChannel(ch);
-    };
-  }, []);
+  const { support: supportUnread, verification: verificationUnread, clubPending: clubUnread } =
+    useAdminInboxUnreadBreakdown();
 
   return (
     <div className="min-h-dvh min-w-0 w-full overflow-x-clip bg-[#0a0a0c] text-zinc-100">

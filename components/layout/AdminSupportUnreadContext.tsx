@@ -9,29 +9,58 @@ import {
 } from "react";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { supabase } from "@/lib/supabase/client";
-import { fetchAdminUnreadSupportCount } from "@/lib/supabase/adminSystem";
+import { fetchAdminUnreadInboxBreakdown } from "@/lib/supabase/adminSystem";
+import { fetchAdminPendingClubRequestCount } from "@/lib/supabase/clubs";
 
-const AdminSupportUnreadContext = createContext(0);
+export const ADMIN_CLUB_PENDING_CHANGED_EVENT = "gn-admin-club-pending-changed";
+
+export type AdminInboxUnreadBreakdown = {
+  total: number;
+  support: number;
+  verification: number;
+  clubPending: number;
+};
+
+const EMPTY_BREAKDOWN: AdminInboxUnreadBreakdown = {
+  total: 0,
+  support: 0,
+  verification: 0,
+  clubPending: 0,
+};
+
+const AdminInboxUnreadContext = createContext<AdminInboxUnreadBreakdown>(EMPTY_BREAKDOWN);
 
 const ADMIN_SUPPORT_UNREAD_CHANNEL = "admin-support-unread-app-shell";
 
 /**
- * Single realtime subscription for admin support inbox unread count (notifications).
+ * Single realtime subscription for admin inbox unread counts (support, scout, clubs).
  * Use {@link useAdminSupportUnread} in sidebar, mobile header, menus, and home.
  */
 export function AdminSupportUnreadProvider({ children }: { children: ReactNode }) {
   const { loaded, isAdmin } = useAdminAccess();
-  const [count, setCount] = useState(0);
+  const [breakdown, setBreakdown] = useState<AdminInboxUnreadBreakdown>(EMPTY_BREAKDOWN);
 
   useEffect(() => {
     if (!loaded || !isAdmin) {
-      setCount(0);
+      setBreakdown(EMPTY_BREAKDOWN);
       return;
     }
     let cancelled = false;
     const refresh = async () => {
-      const { count: next } = await fetchAdminUnreadSupportCount();
-      if (!cancelled) setCount(next);
+      const [inbox, pendingClubs] = await Promise.all([
+        fetchAdminUnreadInboxBreakdown(),
+        fetchAdminPendingClubRequestCount(),
+      ]);
+      if (cancelled) return;
+      const clubPending = pendingClubs > 0 ? pendingClubs : inbox.clubPartnershipCount;
+      const support = inbox.error ? 0 : inbox.supportCount;
+      const verification = inbox.error ? 0 : inbox.verificationCount;
+      setBreakdown({
+        support,
+        verification,
+        clubPending,
+        total: support + verification + clubPending,
+      });
     };
     void refresh();
     const ch = supabase
@@ -47,19 +76,35 @@ export function AdminSupportUnreadProvider({ children }: { children: ReactNode }
         () => void refresh(),
       )
       .subscribe();
+    const onClubPendingChanged = () => void refresh();
+    window.addEventListener(ADMIN_CLUB_PENDING_CHANGED_EVENT, onClubPendingChanged);
     return () => {
       cancelled = true;
+      window.removeEventListener(ADMIN_CLUB_PENDING_CHANGED_EVENT, onClubPendingChanged);
       void supabase.removeChannel(ch);
     };
   }, [loaded, isAdmin]);
 
   return (
-    <AdminSupportUnreadContext.Provider value={count}>
+    <AdminInboxUnreadContext.Provider value={breakdown}>
       {children}
-    </AdminSupportUnreadContext.Provider>
+    </AdminInboxUnreadContext.Provider>
   );
 }
 
 export function useAdminSupportUnread(): number {
-  return useContext(AdminSupportUnreadContext);
+  return useContext(AdminInboxUnreadContext).total;
+}
+
+export function useAdminClubPendingCount(): number {
+  return useContext(AdminInboxUnreadContext).clubPending;
+}
+
+export function useAdminInboxUnreadBreakdown(): AdminInboxUnreadBreakdown {
+  return useContext(AdminInboxUnreadContext);
+}
+
+export function notifyAdminClubPendingChanged(): void {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(ADMIN_CLUB_PENDING_CHANGED_EVENT));
 }

@@ -15,7 +15,7 @@ type AdminGateProps = {
 };
 
 /**
- * Wrap `/admin/*` pages: only renders children for staff (`users.admin_role` or legacy `is_admin`).
+ * Wrap `/admin/*` pages: only the bootstrap owner email can see the admin UI.
  */
 export function AdminGate({ children, redirectNonAdminsTo }: AdminGateProps) {
   const t = useTranslations("adminScoutVerification");

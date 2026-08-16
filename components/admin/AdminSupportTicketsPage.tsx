@@ -158,10 +158,20 @@ export function AdminSupportTicketsPage() {
                   {item.createdAt ? new Date(item.createdAt).toLocaleString() : "now"}
                 </span>
                 <Link
-                  href={item.kind === "scout_verification" ? "/admin/scout-verifications" : "/admin/support"}
+                  href={
+                    item.kind === "scout_verification"
+                      ? "/admin/scout-verifications"
+                      : item.kind === "club_partnership"
+                        ? "/admin/clubs"
+                        : "/admin/support"
+                  }
                   className="text-orange-300 hover:underline"
                 >
-                  {item.kind === "scout_verification" ? "Otvori verifikacije" : "Otvori support"}
+                  {item.kind === "scout_verification"
+                    ? "Otvori verifikacije"
+                    : item.kind === "club_partnership"
+                      ? "Otvori klubove"
+                      : "Otvori support"}
                 </Link>
               </li>
             ))}

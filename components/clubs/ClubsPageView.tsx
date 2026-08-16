@@ -10,9 +10,13 @@ import {
   type ClubListRow,
 } from "@/lib/supabase/clubs";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { useAdminAccess } from "@/hooks/useAdminAccess";
+import { useAdminClubPendingCount } from "@/components/layout/AdminSupportUnreadContext";
 
 export function ClubsPageView() {
   const t = useTranslations("clubs");
+  const { loaded: adminLoaded, isAdmin } = useAdminAccess();
+  const clubPending = useAdminClubPendingCount();
   const [search, setSearch] = useState("");
   const [clubs, setClubs] = useState<ClubListRow[]>([]);
   const [topClubs, setTopClubs] = useState<ClubListRow[]>([]);
@@ -46,6 +50,17 @@ export function ClubsPageView() {
         <Link href="/clubs/become-partner" className={`${GN_PRIMARY_BUTTON_CLASS} inline-flex`}>
           {t("becomePartnerCta")}
         </Link>
+        {adminLoaded && isAdmin && clubPending > 0 ? (
+          <Link
+            href="/admin/clubs"
+            className="flex w-full max-w-xl items-center justify-between gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-left text-sm font-medium text-amber-100 transition hover:bg-amber-500/16"
+          >
+            <span>{t("adminPendingInAdminBanner", { count: clubPending })}</span>
+            <span className="shrink-0 rounded-full bg-amber-500/25 px-2.5 py-1 text-[11px] font-semibold text-amber-50">
+              {t("adminPendingInAdminCta")}
+            </span>
+          </Link>
+        ) : null}
       </header>
 
       {topClubs.length > 0 ? (

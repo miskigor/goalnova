@@ -292,10 +292,10 @@ export async function rpcClubSubmitPartnershipRequest(input: {
   website?: string;
   estimatedPlayers?: number;
   message?: string;
-  proofStoragePath: string;
-  proofFileName: string;
+  proofStoragePath?: string;
+  proofFileName?: string;
 }): Promise<{ ok: boolean; error?: string; requestId?: string }> {
-  const { data, error } = await supabase.rpc("goalnova_club_submit_partnership_request", {
+  const baseArgs = {
     p_club_name: input.clubName,
     p_country: input.country,
     p_contact_person: input.contactPerson,
@@ -304,9 +304,43 @@ export async function rpcClubSubmitPartnershipRequest(input: {
     p_website: input.website ?? null,
     p_estimated_players: input.estimatedPlayers ?? null,
     p_message: input.message ?? null,
-    p_proof_storage_path: input.proofStoragePath,
-    p_proof_file_name: input.proofFileName,
-  } as never);
+  };
+
+  const withProof =
+    input.proofStoragePath && input.proofFileName
+      ? {
+          ...baseArgs,
+          p_proof_storage_path: input.proofStoragePath,
+          p_proof_file_name: input.proofFileName,
+        }
+      : baseArgs;
+
+  let { data, error } = await supabase.rpc(
+    "goalnova_club_submit_partnership_request",
+    withProof as never,
+  );
+
+  const missingFn =
+    Boolean(error) &&
+    (((error as { code?: string } | null)?.code === "PGRST202") ||
+      (error?.message ?? "").toLowerCase().includes("could not find the function"));
+
+  if (missingFn) {
+    const fallback = await supabase.rpc("goalnova_club_submit_partnership_request", baseArgs);
+    data = fallback.data;
+    error = fallback.error;
+  }
+
+  if (!error) {
+    const firstPayload = (data ?? {}) as Record<string, unknown>;
+    if (firstPayload.ok === false && String(firstPayload.error ?? "") === "proof_required") {
+      const fallback = await supabase.rpc("goalnova_club_submit_partnership_request", baseArgs);
+      if (!fallback.error) {
+        data = fallback.data;
+      }
+    }
+  }
+
   if (error) {
     logFullSupabaseError("[clubs] goalnova_club_submit_partnership_request", error);
     return { ok: false, error: error.message };
@@ -358,6 +392,12 @@ export async function rpcAdminClubRequestsList(): Promise<{
     return { rows: [], error: error.message };
   }
   return { rows: normalizeRpcJsonRows(data), error: null };
+}
+
+export async function fetchAdminPendingClubRequestCount(): Promise<number> {
+  const { rows, error } = await rpcAdminClubRequestsList();
+  if (error) return 0;
+  return rows.filter((row) => String(row.status ?? "pending") === "pending").length;
 }
 
 export async function rpcAdminClubApproveRequest(

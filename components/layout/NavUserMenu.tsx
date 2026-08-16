@@ -21,7 +21,7 @@ import {
   type AvatarUrlUpdatedDetail,
 } from "@/lib/avatar/avatarClientEvents";
 import { supabase } from "@/lib/supabase/client";
-import { useAdminSupportUnread } from "@/components/layout/AdminSupportUnreadContext";
+import { useAdminSupportUnread, useAdminClubPendingCount } from "@/components/layout/AdminSupportUnreadContext";
 import { useScoutVerification } from "@/hooks/useScoutVerification";
 import { countMyUnreadSupportReplies } from "@/lib/supabase/supportTickets";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
@@ -120,6 +120,7 @@ export function NavUserMenu({
   const uploadEligibility = useVideoUploadEligibility();
   const { loaded: adminLoaded, isAdmin } = useAdminAccess();
   const adminSupportUnread = useAdminSupportUnread();
+  const clubPending = useAdminClubPendingCount();
   const scoutGate = useScoutVerification();
   const isScoutAccount = scoutGate.loaded && scoutGate.row?.role === "scout";
   const [userSupportUnread, setUserSupportUnread] = useState(0);
@@ -328,7 +329,12 @@ export function NavUserMenu({
               onNavigate?.();
             }}
           >
-            <NavIcon name="clubs" className="size-4 shrink-0 opacity-90" />
+            <span className="relative inline-flex shrink-0">
+              <NavIcon name="clubs" className="size-4 shrink-0 opacity-90" />
+              {isAdmin ? (
+                <UnreadNotificationBadge count={clubPending} variant="navSidebar" />
+              ) : null}
+            </span>
             {tNav("clubs")}
           </Link>
           <div className="my-1 h-px bg-gn-border-subtle" role="separator" />
@@ -345,7 +351,12 @@ export function NavUserMenu({
               onNavigate?.();
             }}
           >
-            <NavIcon name="clubs" className="size-4 shrink-0 opacity-90" />
+            <span className="relative inline-flex shrink-0">
+              <NavIcon name="clubs" className="size-4 shrink-0 opacity-90" />
+              {isAdmin ? (
+                <UnreadNotificationBadge count={clubPending} variant="navSidebar" />
+              ) : null}
+            </span>
             {tNav("clubs")}
           </Link>
           <Link
