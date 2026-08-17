@@ -2,9 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { hrefWithLocale } from "@/i18n/routing";
 import {
   rpcClubAcceptPartnershipAgreement,
   rpcClubDashboard,
@@ -19,7 +18,6 @@ import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components
 
 export function ClubDashboardView() {
   const t = useTranslations("clubs");
-  const locale = useLocale();
   const searchParams = useSearchParams();
   const clubId = searchParams.get("club");
   const [club, setClub] = useState<Record<string, unknown> | null>(null);
@@ -28,7 +26,6 @@ export function ClubDashboardView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
 
   const load = useCallback(async () => {
     if (!clubId) {
@@ -87,21 +84,6 @@ export function ClubDashboardView() {
   const needsAgreement = !club.partnership_agreement_accepted_at;
   const mostActive = [...players].sort((a, b) => b.xp - a.xp).slice(0, 5);
   const leastActive = [...players].sort((a, b) => a.xp - b.xp).slice(0, 5);
-  const clubCode = String(club.club_code ?? "").trim();
-  const inviteUrl = clubCode
-    ? `https://pitchrusch.com${hrefWithLocale(`/invite/${clubCode}`, locale)}`
-    : "";
-
-  async function copyInviteCode() {
-    if (!clubCode) return;
-    try {
-      await navigator.clipboard.writeText(clubCode);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* ignore */
-    }
-  }
 
   return (
     <div className="mx-auto min-w-0 max-w-5xl space-y-8 px-4 py-6 sm:px-6">
@@ -118,26 +100,6 @@ export function ClubDashboardView() {
           })}
         </p>
       </header>
-
-      {clubCode ? (
-        <section className="rounded-2xl border border-gn-accent/35 bg-gn-accent/10 p-4 sm:p-5">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-gn-text-tertiary">
-            {t("inviteLink")}
-          </h2>
-          <p className="mt-2 font-mono text-2xl font-bold tracking-wider text-gn-text">{clubCode}</p>
-          {inviteUrl ? (
-            <p className="mt-2 break-all font-mono text-xs text-gn-accent sm:text-sm">{inviteUrl}</p>
-          ) : null}
-          <p className="mt-2 text-xs text-gn-text-secondary">{t("inviteHint", { code: clubCode })}</p>
-          <button
-            type="button"
-            onClick={() => void copyInviteCode()}
-            className={`${GN_PRIMARY_BUTTON_CLASS} mt-3 text-xs`}
-          >
-            {copied ? t("inviteCodeCopied") : t("copyInviteCode")}
-          </button>
-        </section>
-      ) : null}
 
       <ClubProfileEditor
         club={mapManagedClubProfile(club)}

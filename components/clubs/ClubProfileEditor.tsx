@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ClubLogoEditor } from "@/components/clubs/ClubLogoEditor";
+import { ClubInviteCodeCard } from "@/components/clubs/ClubInviteCodeCard";
 import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import {
   rpcClubUpdateProfile,
@@ -117,6 +118,8 @@ export function ClubProfileEditor({ club, onClubChange, showDashboardLink = true
         <h2 className="text-sm font-semibold text-gn-text">{t("manageClubTitle")}</h2>
         <p className="mt-1 text-xs leading-relaxed text-gn-text-secondary">{t("manageClubHint")}</p>
       </div>
+
+      <ClubInviteCodeCard clubCode={club.club_code} />
 
       <ClubLogoEditor
         kind="cover"
