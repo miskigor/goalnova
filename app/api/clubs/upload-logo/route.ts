@@ -11,6 +11,7 @@ import {
   requireServiceRole,
   userManagesClub,
 } from "@/lib/clubs/clubManagerAccess.server";
+import { ensureClubLogosBucket } from "@/lib/storage/ensureClubLogosBucket.server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -70,6 +71,12 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   if (!(await userManagesClub(service, clubId, user))) {
     return json({ ok: false, reason: "forbidden" }, 403);
+  }
+
+  const bucketReady = await ensureClubLogosBucket(service);
+  if (!bucketReady.ok) {
+    console.error("[clubs/upload-logo] ensureClubLogosBucket", bucketReady.error);
+    return json({ ok: false, reason: "bucket_not_found" }, 503);
   }
 
   const path =
