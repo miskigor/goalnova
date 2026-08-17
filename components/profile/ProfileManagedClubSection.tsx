@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { usePathname } from "@/i18n/navigation";
 import { ClubProfileEditor } from "@/components/clubs/ClubProfileEditor";
+import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { rpcClubManagedList, type ManagedClubProfile } from "@/lib/supabase/clubs";
 
 type Props = {
@@ -12,11 +14,18 @@ type Props = {
 
 export function ProfileManagedClubSection({ alwaysShow = false }: Props) {
   const t = useTranslations("clubs");
+  const pathname = usePathname();
+  const { loaded: adminLoaded, isStaff } = useAdminAccess();
   const [clubs, setClubs] = useState<ManagedClubProfile[]>([]);
   const [missingRpc, setMissingRpc] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
+  // Personal Profile tab is never a club admin screen — even if this component is mounted.
+  const onPersonalProfile = pathname === "/profile";
+  const blocked = onPersonalProfile || (adminLoaded && isStaff);
+
   useEffect(() => {
+    if (blocked || !adminLoaded) return;
     let mounted = true;
     void (async () => {
       const result = await rpcClubManagedList();
@@ -28,8 +37,10 @@ export function ProfileManagedClubSection({ alwaysShow = false }: Props) {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [adminLoaded, blocked]);
 
+  if (onPersonalProfile) return null;
+  if (!adminLoaded || isStaff) return null;
   if (!loaded) return null;
 
   if (missingRpc) {

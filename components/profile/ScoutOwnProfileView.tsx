@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
-import { ProfileManagedClubSection } from "@/components/profile/ProfileManagedClubSection";
 import {
   isApprovedScoutUser,
   parseScoutVerificationStatus,
@@ -126,8 +125,6 @@ export function ScoutOwnProfileView({
           {tProfile("editProfile")}
         </Link>
       </header>
-
-      <ProfileManagedClubSection />
 
       <section
         aria-label={tProfile("scoutDetailsAria")}

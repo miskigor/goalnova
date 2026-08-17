@@ -145,8 +145,7 @@ export function OwnProfileView() {
       if (result.data.role !== "player") {
         return;
       }
-      const usernameFromProfile = result.data.profile.username?.trim() || null;
-      const nextSlug = usernameFromProfile || result.data.user.id?.trim() || null;
+      const nextSlug = result.data.user.id?.trim() || null;
       if (!nextSlug) {
         profileVideosDebug("route", { branch: "player", error: "missing_slug" });
         setError(tCommon("genericError"));

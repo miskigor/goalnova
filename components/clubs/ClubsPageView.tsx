@@ -27,16 +27,17 @@ export function ClubsPageView() {
 
   const load = useCallback(async () => {
     setLoading(true);
+    const skipManagedList = adminLoaded && isAdmin;
     const [list, rankings, managed] = await Promise.all([
       rpcClubsListPublic(search, 24, 0),
       rpcClubRankingsPublic(10),
-      rpcClubManagedList(),
+      skipManagedList ? Promise.resolve({ clubs: [] as ManagedClubProfile[] }) : rpcClubManagedList(),
     ]);
     setClubs(list.rows);
     setTopClubs(rankings.rows);
-    setManagedClubs(managed.clubs);
+    setManagedClubs(skipManagedList ? [] : managed.clubs);
     setLoading(false);
-  }, [search]);
+  }, [adminLoaded, isAdmin, search]);
 
   useEffect(() => {
     void load();
@@ -52,15 +53,31 @@ export function ClubsPageView() {
         <p className="max-w-2xl text-sm leading-relaxed text-gn-text-secondary sm:text-base">
           {t("subtitle")}
         </p>
-        <Link href="/clubs/become-partner" className={`${GN_PRIMARY_BUTTON_CLASS} inline-flex`}>
-          {t("becomePartnerCta")}
-        </Link>
-        {managedClubs.length > 0 ? (
+        {adminLoaded && isAdmin ? null : (
+          <Link href="/clubs/become-partner" className={`${GN_PRIMARY_BUTTON_CLASS} inline-flex`}>
+            {t("becomePartnerCta")}
+          </Link>
+        )}
+        {adminLoaded && isAdmin ? (
+          <Link
+            href="/admin/clubs"
+            className="flex w-full max-w-xl items-center justify-between gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-left text-sm font-medium text-amber-100 transition hover:bg-amber-500/16"
+          >
+            <span>
+              {clubPending > 0
+                ? t("adminPendingInAdminBanner", { count: clubPending })
+                : t("adminTitle")}
+            </span>
+            <span className="shrink-0 rounded-full bg-amber-500/25 px-2.5 py-1 text-[11px] font-semibold text-amber-50">
+              {t("adminPendingInAdminCta")}
+            </span>
+          </Link>
+        ) : managedClubs.length > 0 ? (
           <div className="space-y-2">
             {managedClubs.map((club) => (
               <Link
                 key={club.id}
-                href="/profile"
+                href={`/clubs/dashboard?club=${encodeURIComponent(club.id)}`}
                 className="flex w-full max-w-xl items-center justify-between gap-3 rounded-xl border border-gn-accent/40 bg-gn-accent/10 px-4 py-3 text-left text-sm font-medium text-gn-text transition hover:bg-gn-accent/16"
               >
                 <span>{t("manageClubTitle")}: {club.name}</span>
@@ -68,17 +85,6 @@ export function ClubsPageView() {
               </Link>
             ))}
           </div>
-        ) : null}
-        {adminLoaded && isAdmin && clubPending > 0 ? (
-          <Link
-            href="/admin/clubs"
-            className="flex w-full max-w-xl items-center justify-between gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-left text-sm font-medium text-amber-100 transition hover:bg-amber-500/16"
-          >
-            <span>{t("adminPendingInAdminBanner", { count: clubPending })}</span>
-            <span className="shrink-0 rounded-full bg-amber-500/25 px-2.5 py-1 text-[11px] font-semibold text-amber-50">
-              {t("adminPendingInAdminCta")}
-            </span>
-          </Link>
         ) : null}
       </header>
 

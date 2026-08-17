@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
-import { ProfileManagedClubSection } from "@/components/profile/ProfileManagedClubSection";
 import { GN_SUCCESS_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 
 type Props = {
@@ -43,8 +42,6 @@ export function ClubOwnProfileView({ email, avatarUrl }: Props) {
           <span className="min-w-0 truncate">{tProfile("editProfile")}</span>
         </Link>
       </header>
-
-      <ProfileManagedClubSection alwaysShow />
     </div>
   );
 }
