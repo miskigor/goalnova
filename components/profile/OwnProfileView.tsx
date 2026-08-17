@@ -8,13 +8,14 @@ import { loadAndEnsureProfile } from "@/lib/supabase/profile";
 import { tryConsumePendingReferralWithRetry } from "@/lib/supabase/referrals";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import { DeleteAccountSection } from "@/components/profile/DeleteAccountSection";
+import { ClubOwnProfileView } from "@/components/profile/ClubOwnProfileView";
 import {
   APP_PROFILE_CONTENT_CLASS,
   APP_PROFILE_LOADING_INNER_CLASS,
 } from "@/lib/layout/appShellClasses";
 import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
 import { ScoutOwnProfileView } from "@/components/profile/ScoutOwnProfileView";
-import type { Database } from "@/lib/supabase/client";
+import { supabase, type Database } from "@/lib/supabase/client";
 import { profileVideosDebug } from "@/lib/profile/profileVideosDebug";
 import { scheduleProfilePageScrollReset } from "@/lib/profile/profilePageScrollReset";
 
@@ -72,6 +73,10 @@ export function OwnProfileView() {
     user: UserRow;
     profile: ScoutProfileRow;
   } | null>(null);
+  const [clubAccount, setClubAccount] = useState<{
+    email: string | null;
+    avatarUrl: string | null;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -87,19 +92,43 @@ export function OwnProfileView() {
 
   useEffect(() => {
     if (pathname !== "/profile") return;
-    if (!playerSlug && !scoutBundle) return;
+    if (!playerSlug && !scoutBundle && !clubAccount) return;
     return scheduleProfilePageScrollReset(pathname);
-  }, [pathname, playerSlug, scoutBundle]);
+  }, [pathname, playerSlug, scoutBundle, clubAccount]);
 
   useEffect(() => {
     let mounted = true;
     void (async () => {
       const result = await loadAndEnsureProfile();
       if (!mounted) return;
+      if (result.success && result.data.role === "club") {
+        setClubAccount({
+          email: result.data.user.email?.trim() || null,
+          avatarUrl: result.data.user.avatar_url?.trim() || null,
+        });
+        return;
+      }
       if (!result.success) {
         profileVideosDebug("loadAndEnsureProfile failed", {
           message: result.error.message,
         });
+        const { data: sessionData } = await supabase.auth.getSession();
+        const authId = sessionData.session?.user.id;
+        if (authId) {
+          const { data: userRow } = await supabase
+            .from("users")
+            .select("role, email")
+            .eq("id", authId)
+            .maybeSingle();
+          if (!mounted) return;
+          if (userRow?.role === "club") {
+            setClubAccount({
+              email: userRow.email?.trim() || sessionData.session?.user.email || null,
+              avatarUrl: null,
+            });
+            return;
+          }
+        }
         setError(result.error.message);
         return;
       }
@@ -145,6 +174,16 @@ export function OwnProfileView() {
       {tProfileEditor("saved")}
     </div>
   ) : null;
+
+  if (clubAccount) {
+    return (
+      <ProfilePageShell>
+        {savedBanner}
+        <ClubOwnProfileView email={clubAccount.email} avatarUrl={clubAccount.avatarUrl} />
+        <DeleteAccountSection />
+      </ProfilePageShell>
+    );
+  }
 
   if (error) {
     return (

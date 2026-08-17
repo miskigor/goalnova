@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
   fetchAdminUnreadSupportCount,
@@ -31,13 +31,19 @@ const TICKET_STATUS_KEYS = [
 
 const PRIORITY_KEYS = ["low", "normal", "high", "urgent"] as const;
 
-function formatDateTime(iso: string): string {
-  return new Date(iso).toLocaleString();
+function formatDateTime(iso: string, locale: string): string {
+  try {
+    return new Date(iso).toLocaleString(locale);
+  } catch {
+    return new Date(iso).toLocaleString();
+  }
 }
 
 export function AdminSupportTicketsPage() {
   const t = useTranslations("adminDashboard");
+  const ts = useTranslations("adminSupport");
   const tc = useTranslations("common");
+  const locale = useLocale();
   const [rows, setRows] = useState<SupportTicketRow[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [messages, setMessages] = useState<SupportTicketMessageRow[]>([]);
@@ -140,22 +146,26 @@ export function AdminSupportTicketsPage() {
           }}
           className="rounded border border-white/20 px-3 py-1.5 text-xs font-medium text-zinc-200 hover:bg-white/10 disabled:opacity-50"
         >
-          {markingAllRead ? "Marking..." : "Mark all support read"}
+          {markingAllRead ? ts("markingAllRead") : ts("markAllRead")}
         </button>
       </div>
       {inboxItems.length > 0 ? (
         <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-3">
           <p className="text-xs font-semibold uppercase tracking-wide text-amber-200">
-            Admin inbox
+            {ts("inboxTitle")}
           </p>
           <ul className="mt-2 space-y-1.5 text-sm text-zinc-100">
             {inboxItems.slice(0, 8).map((item) => (
               <li key={item.id} className="flex flex-wrap items-center gap-2">
                 <span className="rounded-md border border-white/20 bg-black/30 px-2 py-0.5 text-[11px] font-medium">
-                  {item.label}
+                  {item.kind === "scout_verification"
+                    ? ts("inboxKindScout")
+                    : item.kind === "club_partnership"
+                      ? ts("inboxKindClub")
+                      : ts("inboxKindSupport")}
                 </span>
                 <span className="text-zinc-300">
-                  {item.createdAt ? new Date(item.createdAt).toLocaleString() : "now"}
+                  {item.createdAt ? formatDateTime(item.createdAt, locale) : ts("justNow")}
                 </span>
                 <Link
                   href={
@@ -168,10 +178,10 @@ export function AdminSupportTicketsPage() {
                   className="text-orange-300 hover:underline"
                 >
                   {item.kind === "scout_verification"
-                    ? "Otvori verifikacije"
+                    ? ts("inboxOpenVerifications")
                     : item.kind === "club_partnership"
-                      ? "Otvori klubove"
-                      : "Otvori support"}
+                      ? ts("inboxOpenClubs")
+                      : ts("inboxOpenSupport")}
                 </Link>
               </li>
             ))}
@@ -215,7 +225,7 @@ export function AdminSupportTicketsPage() {
                     {row.priority}
                   </span>
                 </div>
-                <p className="mt-2 text-[11px] text-zinc-500">{formatDateTime(row.created_at)}</p>
+                <p className="mt-2 text-[11px] text-zinc-500">{formatDateTime(row.created_at, locale)}</p>
               </button>
             ))}
           </div>
@@ -224,13 +234,13 @@ export function AdminSupportTicketsPage() {
             <table className="w-full min-w-[48rem] text-left text-sm">
               <thead className="bg-white/5 text-xs uppercase tracking-wide text-zinc-400">
                 <tr>
-                  <th className="whitespace-nowrap px-3 py-2">User</th>
-                  <th className="whitespace-nowrap px-3 py-2">Subject</th>
-                  <th className="whitespace-nowrap px-3 py-2">Category</th>
-                  <th className="whitespace-nowrap px-3 py-2">Status</th>
-                  <th className="whitespace-nowrap px-3 py-2">Priority</th>
-                  <th className="whitespace-nowrap px-3 py-2">Created at</th>
-                  <th className="whitespace-nowrap px-3 py-2">Open</th>
+                  <th className="whitespace-nowrap px-3 py-2">{ts("columns.user")}</th>
+                  <th className="whitespace-nowrap px-3 py-2">{ts("columns.subject")}</th>
+                  <th className="whitespace-nowrap px-3 py-2">{ts("columns.category")}</th>
+                  <th className="whitespace-nowrap px-3 py-2">{ts("columns.status")}</th>
+                  <th className="whitespace-nowrap px-3 py-2">{ts("columns.priority")}</th>
+                  <th className="whitespace-nowrap px-3 py-2">{ts("columns.createdAt")}</th>
+                  <th className="whitespace-nowrap px-3 py-2">{ts("columns.open")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -246,7 +256,7 @@ export function AdminSupportTicketsPage() {
                     <td className="whitespace-nowrap px-3 py-2">{row.status}</td>
                     <td className="whitespace-nowrap px-3 py-2">{row.priority}</td>
                     <td className="whitespace-nowrap px-3 py-2 text-xs text-zinc-400">
-                      {formatDateTime(row.created_at)}
+                      {formatDateTime(row.created_at, locale)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-2">
                       <button
@@ -258,7 +268,7 @@ export function AdminSupportTicketsPage() {
                             : "border-white/20"
                         }`}
                       >
-                        Open
+                        {ts("openButton")}
                       </button>
                     </td>
                   </tr>
@@ -320,7 +330,7 @@ export function AdminSupportTicketsPage() {
                   >
                     {PRIORITY_KEYS.map((p) => (
                       <option key={p} value={p}>
-                        {p}
+                        {ts(`priorities.${p}`)}
                       </option>
                     ))}
                   </select>
@@ -338,7 +348,7 @@ export function AdminSupportTicketsPage() {
                     }}
                     className="rounded border border-white/15 bg-black/60 px-2 py-1 text-xs text-white"
                   >
-                    <option value="">Unassigned</option>
+                    <option value="">{ts("unassigned")}</option>
                     {staff.map((s) => (
                       <option key={s.id} value={s.id}>
                         {(s.email ?? s.id).slice(0, 40)}
@@ -365,7 +375,7 @@ export function AdminSupportTicketsPage() {
                               m.sender_admin_id ? "text-orange-200/70" : "text-zinc-500"
                             }`}
                           >
-                            {formatDateTime(m.created_at)}
+                            {formatDateTime(m.created_at, locale)}
                           </p>
                         </div>
                         <button
@@ -384,7 +394,7 @@ export function AdminSupportTicketsPage() {
                           }}
                           className="shrink-0 rounded border border-white/20 px-2 py-0.5 text-[10px] font-medium text-zinc-200 hover:bg-white/10 disabled:opacity-50"
                         >
-                          {deletingMessageId === m.id ? "Deleting..." : "Delete"}
+                          {deletingMessageId === m.id ? ts("deletingMessage") : ts("deleteMessage")}
                         </button>
                       </div>
                     </div>
@@ -394,7 +404,7 @@ export function AdminSupportTicketsPage() {
                 <textarea
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
-                  placeholder="Reply to ticket"
+                  placeholder={ts("replyPlaceholder")}
                   rows={3}
                   className="w-full rounded border border-white/15 bg-black/60 px-3 py-2 text-sm text-white"
                 />
@@ -415,11 +425,11 @@ export function AdminSupportTicketsPage() {
                   }}
                   className="rounded bg-orange-500 px-3 py-1.5 text-sm font-semibold text-black hover:bg-orange-400"
                 >
-                  Reply
+                  {ts("replyButton")}
                 </button>
               </div>
             ) : (
-              <p className="text-sm text-zinc-500">Select a ticket.</p>
+              <p className="text-sm text-zinc-500">{ts("selectTicket")}</p>
             )}
           </div>
         </div>

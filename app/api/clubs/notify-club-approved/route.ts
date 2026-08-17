@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
 import { sendResendEmail } from "@/lib/email/resend.server";
+import { clubApprovedEmail, defaultContactName } from "@/lib/i18n/clubEmailCopy";
+import { languagePreferenceForEmail } from "@/lib/i18n/languagePreferenceForEmail";
+import { localeFromRequest } from "@/lib/i18n/resolveRequestLocale";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
 import { isWeeklyChallengeAdminServer } from "@/lib/weeklyChallenges/weeklyChallengeAdminAuth.server";
 
@@ -20,14 +23,6 @@ type ClubApprovedRow = {
   contact_email: string | null;
   contact_person: string | null;
 };
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
 
 export async function POST(request: Request): Promise<NextResponse> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
@@ -50,9 +45,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  let body: { clubId?: string };
+  let body: { clubId?: string; locale?: string };
   try {
-    body = (await request.json()) as { clubId?: string };
+    body = (await request.json()) as { clubId?: string; locale?: string };
   } catch {
     return NextResponse.json({ ok: false, reason: "invalid_json" }, { status: 400, headers: JSON_HEADERS });
   }
@@ -110,46 +105,30 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
+  const requestLocale = localeFromRequest(request, body.locale);
+  const locale =
+    (await languagePreferenceForEmail(service, notifyEmail)) ?? requestLocale;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://pitchrusch.com";
   const clubName = club.name?.trim() || "Club";
   const inviteCode = club.club_code?.trim() || "";
-  const contactName = club.contact_person?.trim() || "there";
+  const contactName = club.contact_person?.trim() || (await defaultContactName(locale));
   const clubUrl = `${siteUrl}/clubs/${club.slug}`;
   const dashboardUrl = `${siteUrl}/clubs/dashboard?club=${clubId}`;
 
-  const subject = `Your club is on PitchRusch — invite code ${inviteCode}`;
-  const text = [
-    `Hi ${contactName},`,
-    "",
-    `Great news — ${clubName} is now set up on PitchRusch.`,
-    "",
-    `Invite code for your players: ${inviteCode}`,
-    "",
-    "Share this code with players so they can join your club from their profile.",
-    "",
-    `Club profile: ${clubUrl}`,
-    `Club dashboard: ${dashboardUrl}`,
-    "",
-    "When you reach 20 approved players you can activate verified partner status.",
-    "",
-    "— PitchRusch team",
-  ].join("\n");
+  const copy = await clubApprovedEmail(locale, {
+    contactName,
+    clubName,
+    inviteCode,
+    clubUrl,
+    dashboardUrl,
+  });
 
-  const html = `
-    <p>Hi ${escapeHtml(contactName)},</p>
-    <p>Great news — <strong>${escapeHtml(clubName)}</strong> is now set up on PitchRusch.</p>
-    <p><strong>Invite code for your players:</strong><br>
-    <span style="font-family:monospace;font-size:18px;">${escapeHtml(inviteCode)}</span></p>
-    <p>Share this code with players so they can join your club from their profile.</p>
-    <ul>
-      <li><a href="${escapeHtml(clubUrl)}">View club profile</a></li>
-      <li><a href="${escapeHtml(dashboardUrl)}">Open club dashboard</a></li>
-    </ul>
-    <p>When you reach 20 approved players you can activate verified partner status.</p>
-    <p>— PitchRusch team</p>
-  `.trim();
-
-  const sent = await sendResendEmail({ to: notifyEmail, subject, html, text });
+  const sent = await sendResendEmail({
+    to: notifyEmail,
+    subject: copy.subject,
+    html: copy.html,
+    text: copy.text,
+  });
   if (!sent.ok && sent.reason === "not_configured") {
     console.warn("[clubs/notify-club-approved] RESEND_API_KEY not set — email skipped");
     return NextResponse.json(

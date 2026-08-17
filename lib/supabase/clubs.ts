@@ -1,5 +1,12 @@
 import { supabase } from "@/lib/supabase/client";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
+import {
+  mapManagedClubProfile,
+  type ManagedClubProfile,
+} from "@/lib/clubs/managedClubProfile";
+
+export type { ManagedClubProfile };
+export { mapManagedClubProfile };
 
 export type ClubPartnershipStatus = "pending" | "active" | "suspended";
 
@@ -70,6 +77,17 @@ export type PlayerClubBadge = {
   club_verified?: boolean;
   verified_academy?: boolean;
 };
+
+function isMissingClubRpc(error: { code?: string; message?: string } | null): boolean {
+  if (!error) return false;
+  const code = String(error.code ?? "").toUpperCase();
+  const message = (error.message ?? "").toLowerCase();
+  return (
+    code === "PGRST202" ||
+    code === "42883" ||
+    message.includes("could not find the function")
+  );
+}
 
 export type ClubDashboardPlayer = {
   membership_id: string;
@@ -236,6 +254,161 @@ export async function rpcClubAcceptPartnershipAgreement(
     return { ok: false, error: error.message };
   }
   return { ok: Boolean((data as Record<string, unknown>)?.ok) };
+}
+
+async function authBearerToken(): Promise<string | null> {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.access_token ?? null;
+}
+
+async function fetchManagedClubsViaApi(): Promise<ManagedClubProfile[] | null> {
+  const token = await authBearerToken();
+  if (!token) return null;
+  try {
+    const res = await fetch("/api/clubs/managed", {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+    const payload = (await res.json().catch(() => ({}))) as {
+      ok?: boolean;
+      clubs?: unknown;
+    };
+    if (!res.ok || !payload.ok || !Array.isArray(payload.clubs)) return null;
+    return payload.clubs
+      .filter((row): row is Record<string, unknown> => row !== null && typeof row === "object")
+      .map(mapManagedClubProfile)
+      .filter((club) => Boolean(club.id));
+  } catch {
+    return null;
+  }
+}
+
+function mergeManagedClubs(
+  a: ManagedClubProfile[],
+  b: ManagedClubProfile[],
+): ManagedClubProfile[] {
+  const byId = new Map<string, ManagedClubProfile>();
+  for (const club of [...a, ...b]) {
+    byId.set(club.id, { ...byId.get(club.id), ...club });
+  }
+  return [...byId.values()];
+}
+
+export async function rpcClubManagedList(): Promise<{
+  clubs: ManagedClubProfile[];
+  missingRpc: boolean;
+  error: string | null;
+}> {
+  const { data, error } = await supabase.rpc("goalnova_club_managed_list");
+  let rpcClubs: ManagedClubProfile[] = [];
+  let missingRpc = false;
+  if (error) {
+    missingRpc = isMissingClubRpc(error);
+    if (!missingRpc) {
+      logFullSupabaseError("[clubs] goalnova_club_managed_list", error);
+    }
+  } else {
+    const payload = (data ?? {}) as Record<string, unknown>;
+    const rows = Array.isArray(payload.clubs) ? payload.clubs : [];
+    rpcClubs = rows
+      .filter((row): row is Record<string, unknown> => row !== null && typeof row === "object")
+      .map(mapManagedClubProfile)
+      .filter((club) => Boolean(club.id));
+  }
+
+  const apiClubs = await fetchManagedClubsViaApi();
+  if (apiClubs) {
+    return { clubs: mergeManagedClubs(rpcClubs, apiClubs), missingRpc: false, error: null };
+  }
+
+  if (rpcClubs.length > 0) {
+    return { clubs: rpcClubs, missingRpc: false, error: null };
+  }
+
+  if (missingRpc) {
+    return { clubs: [], missingRpc: true, error: null };
+  }
+  return { clubs: [], missingRpc: false, error: error?.message ?? null };
+}
+
+export async function rpcClubUpdateProfile(input: {
+  clubId: string;
+  name: string;
+  city?: string | null;
+  country?: string | null;
+  website?: string | null;
+  instagram?: string | null;
+  description?: string | null;
+  contactPerson?: string | null;
+}): Promise<{ ok: boolean; club?: ManagedClubProfile; error?: string; missingRpc?: boolean }> {
+  const { data, error } = await supabase.rpc("goalnova_club_update_profile", {
+    p_club_id: input.clubId,
+    p_name: input.name,
+    p_city: input.city ?? null,
+    p_country: input.country ?? null,
+    p_website: input.website ?? null,
+    p_instagram: input.instagram ?? null,
+    p_description: input.description ?? null,
+    p_contact_person: input.contactPerson ?? null,
+  });
+  if (!error) {
+    const payload = (data ?? {}) as Record<string, unknown>;
+    if (payload.ok) {
+      const clubRaw =
+        payload.club && typeof payload.club === "object"
+          ? (payload.club as Record<string, unknown>)
+          : null;
+      return {
+        ok: true,
+        club: clubRaw ? mapManagedClubProfile(clubRaw) : undefined,
+      };
+    }
+  }
+
+  const token = await authBearerToken();
+  if (token) {
+    try {
+      const res = await fetch("/api/clubs/update-profile", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clubId: input.clubId,
+          name: input.name,
+          city: input.city ?? null,
+          country: input.country ?? null,
+          website: input.website ?? null,
+          instagram: input.instagram ?? null,
+          description: input.description ?? null,
+          contactPerson: input.contactPerson ?? null,
+        }),
+      });
+      const payload = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        reason?: string;
+        club?: Record<string, unknown>;
+      };
+      if (res.ok && payload.ok && payload.club) {
+        return { ok: true, club: mapManagedClubProfile(payload.club) };
+      }
+      if (payload.reason === "name_required") {
+        return { ok: false, error: "name_required" };
+      }
+      if (payload.reason === "forbidden") {
+        return { ok: false, error: "forbidden" };
+      }
+    } catch {
+      /* fall through */
+    }
+  }
+
+  if (isMissingClubRpc(error)) {
+    return { ok: false, missingRpc: true, error: "missing_rpc" };
+  }
+  logFullSupabaseError("[clubs] goalnova_club_update_profile", error);
+  return { ok: false, error: error.message };
 }
 
 export async function rpcClubUpdateLogo(

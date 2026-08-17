@@ -23,7 +23,7 @@ export default function AuthLayout({
         <ClubInviteBootstrap />
       </Suspense>
       {/* No ViewportScrollLock — iOS / Instagram webviews break inputs when html/body overflow is hidden. */}
-      <div className="relative box-border flex min-h-[100svh] w-full min-w-0 max-w-full flex-col items-center justify-start bg-black px-0 py-[max(1rem,env(safe-area-inset-top,0px))] pb-[max(1.5rem,env(safe-area-inset-bottom,0px))] sm:justify-center">
+      <div className="relative box-border flex min-h-[100svh] w-full min-w-0 max-w-[100vw] flex-col items-center justify-center overflow-x-clip overscroll-x-none bg-black px-0 py-[max(1rem,env(safe-area-inset-top,0px))] pb-[max(1.5rem,env(safe-area-inset-bottom,0px))] [scrollbar-gutter:stable]">
         <div className="relative mx-auto box-border w-full min-w-0 max-w-sm px-4">
           {children}
         </div>

@@ -7,7 +7,9 @@ import { ClubCard } from "@/components/clubs/ClubCard";
 import {
   rpcClubRankingsPublic,
   rpcClubsListPublic,
+  rpcClubManagedList,
   type ClubListRow,
+  type ManagedClubProfile,
 } from "@/lib/supabase/clubs";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
@@ -20,16 +22,19 @@ export function ClubsPageView() {
   const [search, setSearch] = useState("");
   const [clubs, setClubs] = useState<ClubListRow[]>([]);
   const [topClubs, setTopClubs] = useState<ClubListRow[]>([]);
+  const [managedClubs, setManagedClubs] = useState<ManagedClubProfile[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [list, rankings] = await Promise.all([
+    const [list, rankings, managed] = await Promise.all([
       rpcClubsListPublic(search, 24, 0),
       rpcClubRankingsPublic(10),
+      rpcClubManagedList(),
     ]);
     setClubs(list.rows);
     setTopClubs(rankings.rows);
+    setManagedClubs(managed.clubs);
     setLoading(false);
   }, [search]);
 
@@ -50,6 +55,20 @@ export function ClubsPageView() {
         <Link href="/clubs/become-partner" className={`${GN_PRIMARY_BUTTON_CLASS} inline-flex`}>
           {t("becomePartnerCta")}
         </Link>
+        {managedClubs.length > 0 ? (
+          <div className="space-y-2">
+            {managedClubs.map((club) => (
+              <Link
+                key={club.id}
+                href="/profile"
+                className="flex w-full max-w-xl items-center justify-between gap-3 rounded-xl border border-gn-accent/40 bg-gn-accent/10 px-4 py-3 text-left text-sm font-medium text-gn-text transition hover:bg-gn-accent/16"
+              >
+                <span>{t("manageClubTitle")}: {club.name}</span>
+                <span className="shrink-0 text-xs text-gn-accent">{t("manageClubHintShort")}</span>
+              </Link>
+            ))}
+          </div>
+        ) : null}
         {adminLoaded && isAdmin && clubPending > 0 ? (
           <Link
             href="/admin/clubs"

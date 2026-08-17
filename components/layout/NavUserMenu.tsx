@@ -490,7 +490,7 @@ export function NavUserMenu({
           className={linkClass}
           aria-label={
             adminSupportUnread > 0
-              ? `${tNav("adminPanel")}, ${adminSupportUnread} unread`
+              ? `${tNav("adminPanel")}, ${tNav("adminUnreadShort", { count: adminSupportUnread })}`
               : tNav("adminPanel")
           }
           onClick={() => {

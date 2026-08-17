@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ChallengeFriendButton } from "@/components/friendChallenge/ChallengeFriendButton";
 import { ProfilePartnerClubSection } from "@/components/profile/ProfilePartnerClubSection";
+import { ProfileManagedClubSection } from "@/components/profile/ProfileManagedClubSection";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import {
   deleteOwnVideoById,
@@ -495,6 +496,9 @@ export function PlayerPublicProfile({
             </div>
             <div className="mt-2">
               <ProfilePartnerClubSection clubBadge={clubBadge} onMembershipChange={refreshClubBadge} />
+            </div>
+            <div className="mt-2">
+              <ProfileManagedClubSection />
             </div>
           </div>
         ) : null}

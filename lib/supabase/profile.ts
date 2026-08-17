@@ -85,6 +85,10 @@ export type ProfileLoad =
       role: "scout";
       user: UserRow;
       profile: ScoutProfileRow;
+    }
+  | {
+      role: "club";
+      user: UserRow;
     };
 
 export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
@@ -131,6 +135,9 @@ export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
   }
 
   const role = userRow.role;
+  if (role === "club") {
+    return { success: true, data: { role: "club", user: userRow as UserRow } };
+  }
   if (!isAppRole(role)) {
     return {
       success: false,

@@ -1091,7 +1091,7 @@ export async function listAdminUnreadInboxItems(): Promise<{
       items.push({
         id: row.id,
         kind: "support_message",
-        label: "Support poruka",
+        label: "inboxKindSupport",
         createdAt,
         relatedUserId,
       });
@@ -1101,7 +1101,7 @@ export async function listAdminUnreadInboxItems(): Promise<{
       items.push({
         id: row.id,
         kind: "scout_verification",
-        label: "Scout verifikacija",
+        label: "inboxKindScout",
         createdAt,
         relatedUserId,
       });
@@ -1111,7 +1111,7 @@ export async function listAdminUnreadInboxItems(): Promise<{
       items.push({
         id: row.id,
         kind: "club_partnership",
-        label: "Klub partnerstvo",
+        label: "inboxKindClub",
         createdAt,
         relatedUserId,
       });

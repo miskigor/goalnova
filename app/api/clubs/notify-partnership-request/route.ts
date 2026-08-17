@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { sendResendEmail } from "@/lib/email/resend.server";
 import { clubPartnershipStaffNotifyEmails } from "@/lib/clubs/staffNotifyEmails.server";
+import { clubReceivedEmail, defaultContactName, staffPartnershipEmail } from "@/lib/i18n/clubEmailCopy";
+import { languagePreferenceForEmail } from "@/lib/i18n/languagePreferenceForEmail";
+import { localeFromRequest } from "@/lib/i18n/resolveRequestLocale";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
 
 export const runtime = "nodejs";
@@ -12,14 +15,6 @@ const JSON_HEADERS = {
 } as const;
 
 const CLUB_PARTNERSHIP_NOTIFY_MESSAGE = "__gn:club_partnership_request_pending__";
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
 
 async function insertStaffInAppNotifications(
   service: NonNullable<ReturnType<typeof createServiceRoleClient>>,
@@ -60,9 +55,9 @@ async function insertStaffInAppNotifications(
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
-  let body: { requestId?: string };
+  let body: { requestId?: string; locale?: string };
   try {
-    body = (await request.json()) as { requestId?: string };
+    body = (await request.json()) as { requestId?: string; locale?: string };
   } catch {
     return NextResponse.json({ ok: false, reason: "invalid_json" }, { status: 400, headers: JSON_HEADERS });
   }
@@ -106,66 +101,23 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const inAppCount = await insertStaffInAppNotifications(service);
 
+  const submitterLocale = localeFromRequest(request, body.locale);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://pitchrusch.com";
   const adminUrl = `${siteUrl}/admin/clubs`;
   const clubName = String(req.club_name ?? "Club");
-  const contactName = String(req.contact_person ?? "there").trim() || "there";
   const clubEmail = String(req.email ?? "").trim().toLowerCase();
 
-  const staffSubject = `New club partnership request — ${clubName}`;
-  const staffText = [
-    "A new club partnership request was submitted on PitchRusch.",
-    "",
-    `Club: ${clubName}`,
-    `Country: ${req.country ?? "—"}`,
-    `Contact: ${req.contact_person ?? "—"}`,
-    `Email: ${req.email ?? "—"}`,
-    `Instagram: ${req.instagram ?? "—"}`,
-    `Website: ${req.website ?? "—"}`,
-    `Estimated players: ${req.estimated_players ?? "—"}`,
-    "",
-    req.message ? `Message:\n${req.message}` : "",
-    "",
-    `Review and approve: ${adminUrl}`,
-  ]
-    .filter(Boolean)
-    .join("\n");
-
-  const staffHtml = `
-    <p>A new <strong>club partnership request</strong> was submitted on PitchRusch.</p>
-    <ul>
-      <li><strong>Club:</strong> ${escapeHtml(clubName)}</li>
-      <li><strong>Country:</strong> ${escapeHtml(String(req.country ?? "—"))}</li>
-      <li><strong>Contact:</strong> ${escapeHtml(String(req.contact_person ?? "—"))}</li>
-      <li><strong>Email:</strong> ${escapeHtml(String(req.email ?? "—"))}</li>
-      <li><strong>Instagram:</strong> ${escapeHtml(String(req.instagram ?? "—"))}</li>
-      <li><strong>Website:</strong> ${escapeHtml(String(req.website ?? "—"))}</li>
-      <li><strong>Estimated players:</strong> ${escapeHtml(String(req.estimated_players ?? "—"))}</li>
-    </ul>
-    ${req.message ? `<p><strong>Message:</strong><br>${escapeHtml(String(req.message))}</p>` : ""}
-    <p><a href="${escapeHtml(adminUrl)}">Open Admin → Clubs</a> to approve and create the club.</p>
-  `.trim();
-
-  const clubSubject = `We received your PitchRusch partnership request — ${clubName}`;
-  const clubText = [
-    `Hi ${contactName},`,
-    "",
-    `Thanks for applying — we received the partnership request for ${clubName}.`,
-    "",
-    "Our team will review your details and proof. You will get another email when the club is approved, including your player invite code.",
-    "",
-    `Site: ${siteUrl}`,
-    "",
-    "— PitchRusch team",
-  ].join("\n");
-
-  const clubHtml = `
-    <p>Hi ${escapeHtml(contactName)},</p>
-    <p>Thanks for applying — we received the partnership request for <strong>${escapeHtml(clubName)}</strong>.</p>
-    <p>Our team will review your details and proof. You will get another email when the club is approved, including your player invite code.</p>
-    <p><a href="${escapeHtml(siteUrl)}">pitchrusch.com</a></p>
-    <p>— PitchRusch team</p>
-  `.trim();
+  const staffInput = {
+    clubName,
+    country: String(req.country ?? ""),
+    contact: String(req.contact_person ?? ""),
+    email: String(req.email ?? ""),
+    instagram: String(req.instagram ?? ""),
+    website: String(req.website ?? ""),
+    estimatedPlayers: req.estimated_players == null ? "" : String(req.estimated_players),
+    message: req.message ? String(req.message) : null,
+    adminUrl,
+  };
 
   const recipients = clubPartnershipStaffNotifyEmails();
   let staffEmailSent = false;
@@ -173,11 +125,14 @@ export async function POST(request: Request): Promise<NextResponse> {
   let emailSkipped = false;
 
   for (const to of recipients) {
+    const staffLocale =
+      (await languagePreferenceForEmail(service, to)) ?? submitterLocale;
+    const staffCopy = await staffPartnershipEmail(staffLocale, staffInput);
     const sent = await sendResendEmail({
       to,
-      subject: staffSubject,
-      html: staffHtml,
-      text: staffText,
+      subject: staffCopy.subject,
+      html: staffCopy.html,
+      text: staffCopy.text,
     });
     if (sent.ok) {
       staffEmailSent = true;
@@ -191,11 +146,20 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   if (!emailSkipped && clubEmail.length > 0) {
+    const clubLocale =
+      (await languagePreferenceForEmail(service, clubEmail)) ?? submitterLocale;
+    const fallbackName = await defaultContactName(clubLocale);
+    const contactName = String(req.contact_person ?? "").trim() || fallbackName;
+    const clubCopy = await clubReceivedEmail(clubLocale, {
+      contactName,
+      clubName,
+      siteUrl,
+    });
     const sentClub = await sendResendEmail({
       to: clubEmail,
-      subject: clubSubject,
-      html: clubHtml,
-      text: clubText,
+      subject: clubCopy.subject,
+      html: clubCopy.html,
+      text: clubCopy.text,
     });
     if (sentClub.ok) {
       clubEmailSent = true;

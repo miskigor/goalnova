@@ -29,6 +29,7 @@ import {
 } from "@/lib/supabase/profile";
 import { DeleteAccountSection } from "@/components/profile/DeleteAccountSection";
 import { ProfileAvatarEditor } from "@/components/profile/ProfileAvatarEditor";
+import { ProfileManagedClubSection } from "@/components/profile/ProfileManagedClubSection";
 import { PlayerFollowSection } from "@/components/profile/PlayerFollowSection";
 import { ProfilePremiumBanner } from "@/components/premium/ProfilePremiumBanner";
 import { VerifiedScoutBadge } from "@/components/scout/VerifiedScoutBadge";
@@ -181,6 +182,7 @@ export function ProfileEditor() {
   const tSv = useTranslations("scoutVerification");
   const tCommon = useTranslations("authCommon");
   const tErr = useTranslations("errors");
+  const tClubs = useTranslations("clubs");
   const router = useRouter();
   const pathname = usePathname();
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -230,6 +232,7 @@ export function ProfileEditor() {
   }, [t]);
 
   const [role, setRole] = useState<"player" | "scout">("player");
+  const [clubAccountMode, setClubAccountMode] = useState(false);
   const [selfUserId, setSelfUserId] = useState<string | null>(null);
   const [scoutVerificationStatus, setScoutVerificationStatus] =
     useState<ScoutVerificationStatus | null>(null);
@@ -278,6 +281,13 @@ export function ProfileEditor() {
             new Error(result.error.message),
           );
           setError(t("loadFailed"));
+          return;
+        }
+
+        if (result.data.role === "club") {
+          setClubAccountMode(true);
+          setSelfUserId(result.data.user.id);
+          setError(null);
           return;
         }
 
@@ -483,6 +493,28 @@ export function ProfileEditor() {
             {tCommon("loading")}
           </div>
         </div>
+      </ProfileEditorShell>
+    );
+  }
+
+  if (clubAccountMode) {
+    return (
+      <ProfileEditorShell>
+        <div className="min-w-0 max-w-full">
+          <h1
+            ref={titleRef}
+            id="settings-profile-title"
+            className="min-w-0 max-w-full shrink scroll-mt-[var(--gn-page-content-scroll-padding-top,1rem)] break-words text-lg font-semibold tracking-tight text-gn-text sm:text-2xl"
+          >
+            {t("title")}
+          </h1>
+          <p className="mt-1 max-w-full text-xs text-gn-text-secondary sm:text-sm">
+            {tClubs("clubAccountSubtitle")}
+          </p>
+        </div>
+        <ProfileManagedClubSection alwaysShow />
+        <DeleteAccountSection />
+        <SettingsProfileScrollEndSpacer />
       </ProfileEditorShell>
     );
   }
@@ -1044,6 +1076,8 @@ export function ProfileEditor() {
         {saving ? <Spinner /> : null}
         {saving ? t("saving") : t("save")}
       </button>
+
+      <ProfileManagedClubSection />
 
       <DeleteAccountSection />
       <SettingsProfileScrollEndSpacer />

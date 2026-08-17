@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
+import { currentUiLocale } from "@/lib/i18n/currentUiLocale";
 
 /** Fire-and-forget email to the club contact when a player requests membership. */
 export async function notifyClubPlayerJoin(options: {
@@ -19,6 +20,7 @@ export async function notifyClubPlayerJoin(options: {
       body: JSON.stringify({
         clubId: options.clubId,
         membershipId: options.membershipId,
+        locale: currentUiLocale(),
       }),
     });
   } catch {

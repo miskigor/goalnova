@@ -32,6 +32,12 @@ export function buildClubLogoObjectPath(clubId: string, file: File): string {
   return `${safeId}/logo-${Date.now()}.${ext}`;
 }
 
+export function buildClubCoverObjectPath(clubId: string, file: File): string {
+  const safeId = clubId.trim();
+  const ext = extFromFile(file);
+  return `${safeId}/cover-${Date.now()}.${ext}`;
+}
+
 export function validateClubLogoFile(file: File): string | null {
   if (!ALLOWED.has(normalizedImageMime(file))) {
     return "type";

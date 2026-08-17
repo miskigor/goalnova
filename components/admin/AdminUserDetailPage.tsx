@@ -197,6 +197,10 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
   const [noticeTemplateId, setNoticeTemplateId] = useState<string>("");
   const [noticeMessage, setNoticeMessage] = useState("");
   const [sendingNotice, setSendingNotice] = useState(false);
+  const [resetBusy, setResetBusy] = useState(false);
+  const [resetLink, setResetLink] = useState<string | null>(null);
+  const [resetStatus, setResetStatus] = useState<string | null>(null);
+  const [resetLinkCopied, setResetLinkCopied] = useState(false);
 
   const flashPasteBlocked = useCallback(() => {
     setPasteHint(t("pasteBlockedSql"));
@@ -213,6 +217,7 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
   const canEditProfiles = isSuperAdmin || isSupportAdmin;
   const canModerate = isSuperAdmin || isModerator;
   const canSendNotice = isSuperAdmin || isSupportAdmin || isModerator;
+  const canResetPassword = isSuperAdmin || isSupportAdmin;
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -497,6 +502,65 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
     setNoticeMessage("");
   }
 
+  async function sendPasswordReset() {
+    if (!canResetPassword) return;
+    const email = str(user?.email);
+    if (!email) {
+      setResetStatus(t("passwordResetNoEmail"));
+      return;
+    }
+    if (!window.confirm(t("passwordResetConfirm", { email }))) return;
+
+    setResetBusy(true);
+    setResetStatus(null);
+    setResetLinkCopied(false);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        setResetStatus(t("passwordResetFailed"));
+        return;
+      }
+      const res = await fetch("/api/admin/users/send-password-reset", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId, locale }),
+      });
+      const json = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        email?: string;
+        resetLink?: string;
+        emailSent?: boolean;
+      };
+      if (!res.ok || !json.ok || !json.resetLink) {
+        setResetStatus(t("passwordResetFailed"));
+        return;
+      }
+      setResetLink(json.resetLink);
+      setResetStatus(
+        json.emailSent
+          ? t("passwordResetSent", { email: json.email ?? email })
+          : t("passwordResetLinkHint"),
+      );
+    } finally {
+      setResetBusy(false);
+    }
+  }
+
+  async function copyResetLink() {
+    if (!resetLink) return;
+    try {
+      await navigator.clipboard.writeText(resetLink);
+      setResetLinkCopied(true);
+      window.setTimeout(() => setResetLinkCopied(false), 2000);
+    } catch {
+      /* ignore */
+    }
+  }
+
   if (!roleLoaded || loading) {
     return (
       <div className="flex justify-center py-20 text-zinc-500">
@@ -555,6 +619,38 @@ export function AdminUserDetailPage({ userId }: { userId: string }) {
           </button>
         </div>
       </div>
+
+      {canResetPassword ? (
+        <section className="space-y-3 rounded-xl border border-amber-500/25 bg-amber-500/5 p-4">
+          <h2 className="text-sm font-semibold text-zinc-200">{t("passwordResetTitle")}</h2>
+          <p className="text-sm text-zinc-400">{t("passwordResetHint")}</p>
+          <p className="text-xs text-zinc-500">{t("passwordResetLinkHint")}</p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={resetBusy}
+              onClick={() => void sendPasswordReset()}
+              className="rounded-lg bg-orange-500/90 px-4 py-2 text-sm font-semibold text-black hover:bg-orange-400 disabled:opacity-60"
+            >
+              {resetBusy ? t("passwordResetSending") : t("passwordResetSend")}
+            </button>
+            {resetLink ? (
+              <button
+                type="button"
+                onClick={() => void copyResetLink()}
+                className="rounded-lg border border-white/15 px-4 py-2 text-sm text-zinc-200 hover:bg-white/5"
+              >
+                {resetLinkCopied ? t("passwordResetLinkCopied") : t("passwordResetCopyLink")}
+              </button>
+            ) : null}
+          </div>
+          {resetStatus ? (
+            <p role="status" className="text-sm text-emerald-200">
+              {resetStatus}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
 
       {isSuperAdmin ? (
         <section className="space-y-3 rounded-xl border border-white/10 bg-black/30 p-4">

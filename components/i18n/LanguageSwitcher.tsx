@@ -28,6 +28,13 @@ const landingTrigger =
 function navigateToLocale(pathname: string, next: AppLocale, current: string) {
   if (next === current) return;
   persistLocalePreference(next);
+  void import("@/lib/supabase/client").then(({ supabase }) =>
+    supabase.auth.getUser().then(({ data }) => {
+      const userId = data.user?.id;
+      if (!userId) return;
+      void supabase.from("users").update({ language_preference: next }).eq("id", userId);
+    }),
+  );
   const path = pathname && pathname.length > 0 ? pathname : "/";
   const href = hrefWithLocale(path, next);
   window.location.assign(`${window.location.origin}${href}`);

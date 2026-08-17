@@ -1809,6 +1809,23 @@ export type Database = {
         Args: { p_club_id: string; p_logo_url: string | null };
         Returns: Json;
       };
+      goalnova_club_managed_list: {
+        Args: Record<string, never>;
+        Returns: Json;
+      };
+      goalnova_club_update_profile: {
+        Args: {
+          p_club_id: string;
+          p_name: string;
+          p_city?: string | null;
+          p_country?: string | null;
+          p_website?: string | null;
+          p_instagram?: string | null;
+          p_description?: string | null;
+          p_contact_person?: string | null;
+        };
+        Returns: Json;
+      };
       goalnova_club_user_can_manage: {
         Args: { p_club_id: string; p_user_id?: string };
         Returns: boolean;

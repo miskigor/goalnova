@@ -255,7 +255,7 @@ export function AppSidebar() {
             aria-current={navItemActive(pathname, "/admin") ? "page" : undefined}
             aria-label={
               adminSupportUnread > 0
-                ? `${tNav("adminPanel")}, ${adminSupportUnread} unread`
+                ? `${tNav("adminPanel")}, ${tNav("adminUnreadShort", { count: adminSupportUnread })}`
                 : tNav("adminPanel")
             }
           >

@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
 import { sendResendEmail } from "@/lib/email/resend.server";
+import { playerJoinEmail } from "@/lib/i18n/clubEmailCopy";
+import { languagePreferenceForEmail } from "@/lib/i18n/languagePreferenceForEmail";
+import { localeFromRequest } from "@/lib/i18n/resolveRequestLocale";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
 
 export const runtime = "nodejs";
@@ -30,15 +33,8 @@ type ClubNotifyRow = {
 type Body = {
   clubId?: string;
   membershipId?: string;
+  locale?: string;
 };
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
 
 export async function POST(request: Request): Promise<NextResponse> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
@@ -140,6 +136,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
+  const requestLocale = localeFromRequest(request, body.locale);
+  const locale =
+    (await languagePreferenceForEmail(service, notifyEmail)) ?? requestLocale;
   const playerName =
     profileRes.data?.full_name?.trim() ||
     profileRes.data?.username?.trim() ||
@@ -152,32 +151,22 @@ export async function POST(request: Request): Promise<NextResponse> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://pitchrusch.com";
   const dashboardUrl = `${siteUrl}/clubs/dashboard?club=${clubId}`;
 
-  const subject = `New player request — ${playerName} · ${clubName}`;
-  const text = [
-    `A player requested to join ${clubName} on PitchRusch.`,
-    "",
-    `Player: ${playerName}`,
-    `Username: @${username}`,
-    `Country: ${country}`,
-    `Email: ${playerEmail}`,
-    `Status: ${membership.status}`,
-    "",
-    `Review pending requests: ${dashboardUrl}`,
-  ].join("\n");
+  const copy = await playerJoinEmail(locale, {
+    clubName,
+    playerName,
+    username,
+    country,
+    playerEmail,
+    status: String(membership.status),
+    dashboardUrl,
+  });
 
-  const html = `
-    <p>A player requested to join <strong>${escapeHtml(clubName)}</strong> on PitchRusch.</p>
-    <ul>
-      <li><strong>Player:</strong> ${escapeHtml(playerName)}</li>
-      <li><strong>Username:</strong> @${escapeHtml(username)}</li>
-      <li><strong>Country:</strong> ${escapeHtml(country)}</li>
-      <li><strong>Email:</strong> ${escapeHtml(playerEmail)}</li>
-      <li><strong>Status:</strong> ${escapeHtml(String(membership.status))}</li>
-    </ul>
-    <p><a href="${escapeHtml(dashboardUrl)}">Open club dashboard</a> to approve or reject.</p>
-  `.trim();
-
-  const sent = await sendResendEmail({ to: notifyEmail, subject, html, text });
+  const sent = await sendResendEmail({
+    to: notifyEmail,
+    subject: copy.subject,
+    html: copy.html,
+    text: copy.text,
+  });
   if (!sent.ok && sent.reason === "not_configured") {
     console.warn("[clubs/notify-player-join] RESEND_API_KEY not set — email skipped");
     return NextResponse.json(

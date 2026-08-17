@@ -54,7 +54,7 @@ export function MobileTopBar() {
               }
               aria-label={
                 adminSupportUnread > 0
-                  ? `${tNav("adminPanel")}, ${adminSupportUnread} unread`
+                  ? `${tNav("adminPanel")}, ${tNav("adminUnreadShort", { count: adminSupportUnread })}`
                   : tNav("adminPanel")
               }
               title={tNav("admin")}

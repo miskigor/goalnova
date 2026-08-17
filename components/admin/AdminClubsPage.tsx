@@ -23,6 +23,16 @@ function detailLine(label: string, value: unknown): { label: string; value: stri
   return { label, value: text };
 }
 
+function partnershipStatusLabel(
+  status: string,
+  t: ReturnType<typeof useTranslations<"clubs">>,
+): string {
+  if (status === "active") return t("partnershipStatusActive");
+  if (status === "suspended") return t("partnershipStatusSuspended");
+  if (status === "pending") return t("partnershipStatusPending");
+  return status;
+}
+
 export function AdminClubsPage() {
   const t = useTranslations("clubs");
   const [clubs, setClubs] = useState<Record<string, unknown>[]>([]);
@@ -272,8 +282,9 @@ export function AdminClubsPage() {
                 <div className="min-w-0 space-y-1">
                   <p className="font-medium text-zinc-100">{String(club.name)}</p>
                   <p className="text-xs text-zinc-400">
-                    {String(club.partnership_status)} · {String(club.approved_player_count ?? 0)}{" "}
-                    {t("playersShort").toLowerCase()} · {t("inviteLink")}:{" "}
+                    {partnershipStatusLabel(String(club.partnership_status), t)} ·{" "}
+                    {String(club.approved_player_count ?? 0)} {t("playersShort").toLowerCase()} ·{" "}
+                    {t("inviteLink")}:{" "}
                     <span className="font-mono text-orange-300">{String(club.club_code)}</span>
                   </p>
                   {club.contact_email ? (

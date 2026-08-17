@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/lib/supabase/database.types";
 import {
   CLUB_LOGO_BUCKET,
+  buildClubCoverObjectPath,
   buildClubLogoObjectPath,
   storageObjectPathFromClubLogoUrl,
   validateClubLogoFile,
 } from "@/lib/storage/clubLogo";
-import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
+import {
+  authClubUserFromRequest,
+  requireServiceRole,
+  userManagesClub,
+} from "@/lib/clubs/clubManagerAccess.server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -23,51 +26,17 @@ function json(body: Record<string, unknown>, status: number): NextResponse {
   });
 }
 
-async function authClientFromRequest(request: Request) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
-  if (!url || !anon) return null;
-
-  const authHeader = request.headers.get("authorization") ?? "";
-  const token = authHeader.startsWith("Bearer ")
-    ? authHeader.slice("Bearer ".length).trim()
-    : "";
-  if (!token) return null;
-
-  const client = createClient<Database>(url, anon, {
-    auth: { persistSession: false, autoRefreshToken: false },
-    global: { headers: { Authorization: `Bearer ${token}` } },
-  });
-
-  const { data, error } = await client.auth.getUser();
-  if (error || !data.user?.id) return null;
-
-  return { client, userId: data.user.id };
-}
-
-async function userCanManageClub(
-  client: ReturnType<typeof createClient<Database>>,
-  clubId: string,
-  userId: string,
-): Promise<boolean> {
-  const { data, error } = await client.rpc("goalnova_club_user_can_manage", {
-    p_club_id: clubId,
-    p_user_id: userId,
-  });
-  if (error) {
-    console.error("[clubs/upload-logo] goalnova_club_user_can_manage", error);
-    return false;
-  }
-  return Boolean(data);
+function parseKind(value: unknown): "logo" | "cover" {
+  return String(value ?? "").trim().toLowerCase() === "cover" ? "cover" : "logo";
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
-  const auth = await authClientFromRequest(request);
-  if (!auth) {
+  const user = await authClubUserFromRequest(request);
+  if (!user) {
     return json({ ok: false, reason: "not_authenticated" }, 401);
   }
 
-  const service = createServiceRoleClient();
+  const service = requireServiceRole();
   if (!service) {
     return json({ ok: false, reason: "service_role_unconfigured" }, 503);
   }
@@ -81,7 +50,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const clubId = String(form.get("clubId") ?? "").trim();
   const file = form.get("file");
-  const previousLogoUrl = String(form.get("previousLogoUrl") ?? "").trim() || null;
+  const kind = parseKind(form.get("kind"));
+  const previousUrl = String(form.get("previousUrl") ?? form.get("previousLogoUrl") ?? "").trim() || null;
 
   if (!clubId) {
     return json({ ok: false, reason: "club_id_required" }, 400);
@@ -98,11 +68,12 @@ export async function POST(request: Request): Promise<NextResponse> {
     return json({ ok: false, reason: "file_too_large" }, 400);
   }
 
-  if (!(await userCanManageClub(auth.client, clubId, auth.userId))) {
+  if (!(await userManagesClub(service, clubId, user))) {
     return json({ ok: false, reason: "forbidden" }, 403);
   }
 
-  const path = buildClubLogoObjectPath(clubId, file);
+  const path =
+    kind === "cover" ? buildClubCoverObjectPath(clubId, file) : buildClubLogoObjectPath(clubId, file);
   const bytes = new Uint8Array(await file.arrayBuffer());
 
   const { data: uploaded, error: uploadError } = await service.storage
@@ -124,42 +95,46 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const { data: pub } = service.storage.from(CLUB_LOGO_BUCKET).getPublicUrl(uploaded.path);
   const publicUrl = pub.publicUrl;
+  const column = kind === "cover" ? "cover_url" : "logo_url";
 
-  const { data: updateData, error: updateError } = await auth.client.rpc("goalnova_club_update_logo", {
-    p_club_id: clubId,
-    p_logo_url: publicUrl,
-  });
+  const { error: updateError } = await service
+    .from("clubs" as never)
+    .update({ [column]: publicUrl, updated_at: new Date().toISOString() } as never)
+    .eq("id", clubId);
 
-  if (updateError || !(updateData as { ok?: boolean })?.ok) {
-    console.error("[clubs/upload-logo] goalnova_club_update_logo", updateError, updateData);
+  if (updateError) {
+    console.error("[clubs/upload-logo] clubs update", updateError);
     await service.storage.from(CLUB_LOGO_BUCKET).remove([uploaded.path]);
     return json({ ok: false, reason: "save_failed" }, 502);
   }
 
-  if (previousLogoUrl) {
-    const oldPath = storageObjectPathFromClubLogoUrl(previousLogoUrl);
+  if (previousUrl) {
+    const oldPath = storageObjectPathFromClubLogoUrl(previousUrl);
     if (oldPath && oldPath !== uploaded.path) {
       await service.storage.from(CLUB_LOGO_BUCKET).remove([oldPath]);
     }
   }
 
-  return json({ ok: true, logoUrl: publicUrl }, 200);
+  return json(
+    kind === "cover" ? { ok: true, coverUrl: publicUrl } : { ok: true, logoUrl: publicUrl },
+    200,
+  );
 }
 
 export async function DELETE(request: Request): Promise<NextResponse> {
-  const auth = await authClientFromRequest(request);
-  if (!auth) {
+  const user = await authClubUserFromRequest(request);
+  if (!user) {
     return json({ ok: false, reason: "not_authenticated" }, 401);
   }
 
-  const service = createServiceRoleClient();
+  const service = requireServiceRole();
   if (!service) {
     return json({ ok: false, reason: "service_role_unconfigured" }, 503);
   }
 
-  let body: { clubId?: string; logoUrl?: string | null };
+  let body: { clubId?: string; logoUrl?: string | null; coverUrl?: string | null; kind?: string };
   try {
-    body = (await request.json()) as { clubId?: string; logoUrl?: string | null };
+    body = (await request.json()) as typeof body;
   } catch {
     return json({ ok: false, reason: "invalid_json" }, 400);
   }
@@ -169,27 +144,30 @@ export async function DELETE(request: Request): Promise<NextResponse> {
     return json({ ok: false, reason: "club_id_required" }, 400);
   }
 
-  if (!(await userCanManageClub(auth.client, clubId, auth.userId))) {
+  if (!(await userManagesClub(service, clubId, user))) {
     return json({ ok: false, reason: "forbidden" }, 403);
   }
 
-  const { data: updateData, error: updateError } = await auth.client.rpc("goalnova_club_update_logo", {
-    p_club_id: clubId,
-    p_logo_url: null,
-  });
+  const kind = parseKind(body.kind ?? (body.coverUrl ? "cover" : "logo"));
+  const column = kind === "cover" ? "cover_url" : "logo_url";
+  const previousUrl = (kind === "cover" ? body.coverUrl : body.logoUrl)?.trim() || null;
 
-  if (updateError || !(updateData as { ok?: boolean })?.ok) {
-    console.error("[clubs/upload-logo] remove goalnova_club_update_logo", updateError, updateData);
+  const { error: updateError } = await service
+    .from("clubs" as never)
+    .update({ [column]: null, updated_at: new Date().toISOString() } as never)
+    .eq("id", clubId);
+
+  if (updateError) {
+    console.error("[clubs/upload-logo] remove clubs update", updateError);
     return json({ ok: false, reason: "save_failed" }, 502);
   }
 
-  const logoUrl = body.logoUrl?.trim();
-  if (logoUrl) {
-    const oldPath = storageObjectPathFromClubLogoUrl(logoUrl);
+  if (previousUrl) {
+    const oldPath = storageObjectPathFromClubLogoUrl(previousUrl);
     if (oldPath) {
       await service.storage.from(CLUB_LOGO_BUCKET).remove([oldPath]);
     }
   }
 
-  return json({ ok: true, logoUrl: null }, 200);
+  return json(kind === "cover" ? { ok: true, coverUrl: null } : { ok: true, logoUrl: null }, 200);
 }
