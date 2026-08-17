@@ -1,3 +1,10 @@
+import {
+  parseClubOrganizationKind,
+  type ClubOrganizationKind,
+} from "@/lib/clubs/organizationKind";
+
+export type { ClubOrganizationKind };
+
 export type ManagedClubProfile = {
   id: string;
   name: string;
@@ -12,6 +19,7 @@ export type ManagedClubProfile = {
   contact_person: string | null;
   contact_email: string | null;
   club_code: string | null;
+  organization_kind: ClubOrganizationKind;
 };
 
 function nullableText(value: unknown): string | null {
@@ -35,5 +43,6 @@ export function mapManagedClubProfile(raw: Record<string, unknown>): ManagedClub
     contact_person: nullableText(raw.contact_person),
     contact_email: nullableText(raw.contact_email),
     club_code: nullableText(raw.club_code),
+    organization_kind: parseClubOrganizationKind(raw.organization_kind),
   };
 }

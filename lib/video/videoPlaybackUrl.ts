@@ -11,7 +11,7 @@ export function videoPlaybackCandidates(video: VideoPlaybackFields): string[] {
   const processed = (video.processed_video_url ?? "").trim();
   const source = (video.source_video_url ?? "").trim();
   const primary = (video.video_url ?? "").trim();
-  const list = [processed, source, primary].filter(Boolean);
+  const list = [processed, primary, source].filter(Boolean);
   return Array.from(new Set(list));
 }
 

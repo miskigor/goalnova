@@ -107,8 +107,12 @@ export async function listManagedClubs(
   const emails = collectEmails(user.email, await profileEmailForUser(service, user.userId));
   const byId = new Map<string, Record<string, unknown>>();
 
-  const selectCols =
+  const withKind =
+    "id, name, slug, logo_url, cover_url, city, country, website, instagram, description, contact_person, contact_email, club_code, organization_kind";
+  const withoutKind =
     "id, name, slug, logo_url, cover_url, city, country, website, instagram, description, contact_person, contact_email, club_code";
+  const probe = await asTable(service, "clubs").select("id, organization_kind").limit(1);
+  const selectCols = probe.error ? withoutKind : withKind;
 
   const { data: asCoach, error: coachError } = await asTable(service, "clubs")
     .select(selectCols)

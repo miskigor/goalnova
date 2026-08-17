@@ -67,11 +67,11 @@ export function HomeCleanVideoCardV3({
     ) : null;
 
   const slideOffset = feedIndex - scrollActiveIndex;
-  // Mount only the active clip; neighbors stay as posters so bandwidth is not shared.
-  const shouldMountVideo = slideOffset === 0;
+  // Keep the current clip and the next/previous one mounted so swipe is not a cold start.
+  const shouldMountVideo = Math.abs(slideOffset) <= 1;
   const posterUrl = exploreTileVideoPosterAttribute(video, userAvatarUrl);
   const preload: "none" | "metadata" | "auto" =
-    slideOffset === 0 ? "metadata" : "none";
+    slideOffset === 0 ? "auto" : Math.abs(slideOffset) === 1 ? "metadata" : "none";
   const fetchPriority = slideOffset === 0 ? "high" : "low";
 
   const avatar = (
@@ -94,7 +94,7 @@ export function HomeCleanVideoCardV3({
             poster={posterUrl}
             preload={preload}
             fetchPriority={fetchPriority}
-            loadWatchdogMs={7000}
+            loadWatchdogMs={2800}
             mediaFit="cover"
             visibilityObserveRef={slideRef}
             debugMeta={{

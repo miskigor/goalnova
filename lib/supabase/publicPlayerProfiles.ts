@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
 import type { PremiumLikeProfile } from "@/lib/premium/playerPremium";
+import { parseInstagramHandle } from "@/lib/instagram/playerInstagram";
 import { logFullSupabaseError, supabaseErrorToUserMessage } from "@/lib/supabase/logError";
 
 export type PlayerProfileRow = Database["public"]["Tables"]["player_profiles"]["Row"];
@@ -30,6 +31,7 @@ export type PublicPlayerProfileRpcRow = {
   created_at: string | null;
   featured_player_until: string | null;
   founding_player: boolean | null;
+  instagram?: string | null;
 };
 
 export type ScoutPlayerProfileRpcRow = PublicPlayerProfileRpcRow & {
@@ -61,6 +63,7 @@ export function rpcRowToPlayerProfileRow(row: PublicPlayerProfileRpcRow): Player
     created_at: row.created_at,
     featured_player_until: row.featured_player_until,
     founding_player: row.founding_player,
+    instagram: row.instagram ?? null,
   };
 }
 
@@ -85,6 +88,21 @@ function firstRpcRow<T>(data: T[] | null | undefined): T | null {
 
 type Client = SupabaseClient<Database>;
 
+async function attachPublicInstagram(
+  client: Client,
+  row: PlayerProfileRow | null,
+): Promise<PlayerProfileRow | null> {
+  if (!row?.id) return row;
+  const fromRow = parseInstagramHandle(row.instagram);
+  if (fromRow) return { ...row, instagram: fromRow };
+  const { data, error } = await client.rpc("goalnova_public_player_instagram", {
+    p_user_id: row.id,
+  });
+  if (error) return row;
+  const handle = parseInstagramHandle(typeof data === "string" ? data : null);
+  return { ...row, instagram: handle };
+}
+
 export async function rpcFetchPublicPlayerProfileById(
   client: Client,
   userId: string,
@@ -102,7 +120,7 @@ export async function rpcFetchPublicPlayerProfileById(
   }
 
   const raw = firstRpcRow(data as PublicPlayerProfileRpcRow[] | null);
-  return { row: raw ? rpcRowToPlayerProfileRow(raw) : null, errorMessage: null };
+  return { row: await attachPublicInstagram(client, raw ? rpcRowToPlayerProfileRow(raw) : null), errorMessage: null };
 }
 
 export async function rpcFetchPublicPlayerProfileByUsername(
@@ -122,7 +140,7 @@ export async function rpcFetchPublicPlayerProfileByUsername(
   }
 
   const raw = firstRpcRow(data as PublicPlayerProfileRpcRow[] | null);
-  return { row: raw ? rpcRowToPlayerProfileRow(raw) : null, errorMessage: null };
+  return { row: await attachPublicInstagram(client, raw ? rpcRowToPlayerProfileRow(raw) : null), errorMessage: null };
 }
 
 export async function rpcFetchPublicPlayerProfilesByIds(
@@ -201,7 +219,7 @@ export async function rpcResolvePublicPlayerProfileBySlug(
       row.username?.trim().toLowerCase() === slug.toLowerCase() ||
       row.id === slug,
   );
-  return { row: exact ?? rows[0] ?? null, errorMessage: null };
+  return { row: exact ?? null, errorMessage: null };
 }
 
 export async function rpcFetchPublicPlayerProfilesSearch(

@@ -31,7 +31,7 @@ export function ClubCard({ club }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         {isVerified ? (
           <div className="absolute start-3 top-3">
-            <VerifiedAcademyBadge compact />
+            <VerifiedAcademyBadge compact kind={club.organization_kind} />
           </div>
         ) : null}
         {club.global_rank != null && club.global_rank > 0 ? (

@@ -84,7 +84,7 @@ export function FeedVideoSurface({
   debugMeta,
   visibilityObserveRef,
   poster,
-  loadWatchdogMs = 10_000,
+  loadWatchdogMs = 2_800,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<PlaybackVideoHandle | null>(null);
@@ -533,10 +533,12 @@ export function FeedVideoSurface({
           muted={outputMuted}
           volume={1}
           onCanPlay={() => {
+            setMediaReady(true);
             applyVideoElementAudio();
             if (isActiveRef.current) executePlay();
           }}
           onCanPlayThrough={() => {
+            setMediaReady(true);
             applyVideoElementAudio();
             if (isActiveRef.current) executePlay();
           }}

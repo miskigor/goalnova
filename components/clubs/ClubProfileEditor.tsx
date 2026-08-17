@@ -5,11 +5,16 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ClubLogoEditor } from "@/components/clubs/ClubLogoEditor";
 import { ClubInviteCodeCard } from "@/components/clubs/ClubInviteCodeCard";
+import { ClubOrganizationKindField } from "@/components/clubs/ClubOrganizationKindField";
 import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import {
   rpcClubUpdateProfile,
   type ManagedClubProfile,
 } from "@/lib/supabase/clubs";
+import {
+  parseClubOrganizationKind,
+  type ClubOrganizationKind,
+} from "@/lib/clubs/organizationKind";
 
 type Props = {
   club: ManagedClubProfile;
@@ -31,6 +36,9 @@ export function ClubProfileEditor({ club, onClubChange, showDashboardLink = true
   const [instagram, setInstagram] = useState(club.instagram ?? "");
   const [contactPerson, setContactPerson] = useState(club.contact_person ?? "");
   const [description, setDescription] = useState(club.description ?? "");
+  const [organizationKind, setOrganizationKind] = useState<ClubOrganizationKind>(
+    parseClubOrganizationKind(club.organization_kind),
+  );
   const [logoUrl, setLogoUrl] = useState(club.logo_url);
   const [coverUrl, setCoverUrl] = useState(club.cover_url);
   const [saving, setSaving] = useState(false);
@@ -46,6 +54,7 @@ export function ClubProfileEditor({ club, onClubChange, showDashboardLink = true
     setInstagram(club.instagram ?? "");
     setContactPerson(club.contact_person ?? "");
     setDescription(club.description ?? "");
+    setOrganizationKind(parseClubOrganizationKind(club.organization_kind));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- identity-only sync
   }, [club.id]);
 
@@ -66,6 +75,7 @@ export function ClubProfileEditor({ club, onClubChange, showDashboardLink = true
     setInstagram(next.instagram ?? "");
     setContactPerson(next.contact_person ?? "");
     setDescription(next.description ?? "");
+    setOrganizationKind(parseClubOrganizationKind(next.organization_kind));
     setLogoUrl(next.logo_url);
     setCoverUrl(next.cover_url);
   }
@@ -90,6 +100,7 @@ export function ClubProfileEditor({ club, onClubChange, showDashboardLink = true
       instagram,
       description,
       contactPerson,
+      organizationKind,
     });
     setSaving(false);
 
@@ -138,6 +149,7 @@ export function ClubProfileEditor({ club, onClubChange, showDashboardLink = true
             instagram: instagram.trim() || null,
             description: description.trim() || null,
             contact_person: contactPerson.trim() || null,
+            organization_kind: organizationKind,
             logo_url: logoUrl,
             cover_url: url,
           });
@@ -160,6 +172,7 @@ export function ClubProfileEditor({ club, onClubChange, showDashboardLink = true
             instagram: instagram.trim() || null,
             description: description.trim() || null,
             contact_person: contactPerson.trim() || null,
+            organization_kind: organizationKind,
             logo_url: url,
             cover_url: coverUrl,
           });
@@ -180,6 +193,11 @@ export function ClubProfileEditor({ club, onClubChange, showDashboardLink = true
             required
           />
         </div>
+        <ClubOrganizationKindField
+          idPrefix={`club-kind-${club.id}`}
+          value={organizationKind}
+          onChange={setOrganizationKind}
+        />
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label className={labelClass} htmlFor={`club-city-${club.id}`}>

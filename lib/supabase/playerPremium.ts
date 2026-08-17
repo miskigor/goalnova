@@ -6,6 +6,7 @@ type MyPremiumProfile = {
   id: string;
   subscription_plan: string | null;
   subscription_status: string | null;
+  subscription_current_period_end: string | null;
   profile_completeness: number | null;
   ai_overall_score: number | null;
 };
@@ -34,7 +35,7 @@ export async function fetchMyPlayerPremiumProfile(): Promise<{
 
   const { data, error } = await supabase
     .from("player_profiles")
-    .select("id,subscription_plan,subscription_status,profile_completeness,ai_overall_score")
+    .select("id,subscription_plan,subscription_status,subscription_current_period_end,profile_completeness,ai_overall_score")
     .eq("id", uid)
     .maybeSingle();
   if (error) {
@@ -56,6 +57,7 @@ export async function fetchMyPlayerPremiumProfile(): Promise<{
           id: String(fallback.data.id),
           subscription_plan: fallback.data.subscription_plan ?? null,
           subscription_status: fallback.data.subscription_status ?? null,
+          subscription_current_period_end: null,
           profile_completeness: null,
           ai_overall_score: null,
         },

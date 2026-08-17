@@ -24,7 +24,8 @@ export type PremiumLikeVideo = {
 
 /** Source of truth for free-tier upload cap (must match billing.freePlayer.f2 copy). */
 export const FREE_PLAYER_MAX_VIDEOS_TOTAL = 3;
-export const PLAYER_PREMIUM_MAX_VIDEOS_TOTAL = 20;
+/** Premium and club members: no video cap. */
+export const PLAYER_PREMIUM_MAX_VIDEOS_TOTAL = Number.POSITIVE_INFINITY;
 
 import { hasPermanentPremiumAccess } from "@/lib/admin/bootstrapAdminEmails";
 
@@ -57,8 +58,8 @@ export function canUploadVideo(
   profile: PremiumLikeProfile | null | undefined,
   currentVideoCount: number,
 ): boolean {
-  const limit = getPlayerVideoUploadLimit(profile);
-  return currentVideoCount < limit;
+  if (isPlayerPremium(profile)) return true;
+  return currentVideoCount < FREE_PLAYER_MAX_VIDEOS_TOTAL;
 }
 
 export function getPlayerVideoUploadLimit(profile: PremiumLikeProfile | null | undefined): number {

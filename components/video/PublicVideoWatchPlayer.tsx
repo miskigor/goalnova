@@ -52,6 +52,8 @@ export function PublicVideoWatchPlayer({
           preload="auto"
           fetchPriority="high"
           poster={posterUrl?.trim() || undefined}
+          loadWatchdogMs={2800}
+          autoPlay
         />
         <div
           className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/25 via-transparent to-black/60"

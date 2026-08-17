@@ -1,5 +1,6 @@
 import type { ClipboardEvent } from "react";
 import type { Json } from "@/lib/supabase/database.types";
+import { parseInstagramHandle } from "@/lib/instagram/playerInstagram";
 
 /**
  * Client-safe sanitization for profile and related free-text fields.
@@ -166,6 +167,14 @@ export function sanitizeEmailForStorage(input: string): string {
   return clampLength(s, PROFILE_FIELD_LIMITS.email);
 }
 
+export function sanitizeInstagramInput(input: string): string {
+  let s = removeNullBytes(String(input ?? "").trim());
+  s = stripSqlishFragments(s);
+  s = stripSqlKeywords(s);
+  s = s.replace(/\s/g, "");
+  return clampLength(s, 120);
+}
+
 export function sanitizeWebUrl(input: string): string {
   let s = removeNullBytes(String(input ?? "").trim());
   s = stripSqlishFragments(s);
@@ -216,6 +225,7 @@ export type PlayerProfileSanitizedPatch = {
   city?: string | null;
   country?: string | null;
   club?: string | null;
+  instagram?: string | null;
 };
 
 export function sanitizePlayerProfileStrings(
@@ -247,6 +257,9 @@ export function sanitizePlayerProfileStrings(
   }
   if (patch.club !== undefined) {
     out.club = emptyToNull(sanitizeShortProfileField(patch.club ?? ""));
+  }
+  if (patch.instagram !== undefined) {
+    out.instagram = parseInstagramHandle(sanitizeInstagramInput(patch.instagram ?? ""));
   }
   return out;
 }
@@ -292,6 +305,7 @@ const ADMIN_PLAYER_STRING_KEYS: (keyof PlayerProfileSanitizedPatch)[] = [
   "city",
   "country",
   "club",
+  "instagram",
 ];
 
 export function sanitizeAdminPlayerProfilePatch(

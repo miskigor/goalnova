@@ -97,7 +97,7 @@ export function ClubProfileView({ slug }: Props) {
             <div className="min-w-0 pb-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-xl font-bold text-gn-text sm:text-2xl">{club.name}</h1>
-                {isVerified ? <VerifiedAcademyBadge /> : null}
+                {isVerified ? <VerifiedAcademyBadge kind={club.organization_kind} /> : null}
               </div>
               <p className="text-sm text-gn-text-secondary">
                 {[club.city, club.country].filter(Boolean).join(", ")}
@@ -189,7 +189,9 @@ export function ClubProfileView({ slug }: Props) {
                     <p className="truncate text-sm font-medium text-gn-text">{player.display_name}</p>
                     <p className="text-xs text-gn-text-secondary">{player.xp} XP</p>
                   </div>
-                  {player.club_verified ? <VerifiedAcademyBadge compact /> : null}
+                  {player.club_verified ? (
+                    <VerifiedAcademyBadge compact kind={club.organization_kind} />
+                  ) : null}
                 </Link>
               ))}
             </div>

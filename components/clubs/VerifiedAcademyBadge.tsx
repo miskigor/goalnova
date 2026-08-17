@@ -1,13 +1,21 @@
 import { useTranslations } from "next-intl";
+import {
+  parseClubOrganizationKind,
+  type ClubOrganizationKind,
+} from "@/lib/clubs/organizationKind";
 
 type Props = {
+  kind?: ClubOrganizationKind | string | null;
   compact?: boolean;
   className?: string;
 };
 
-/** Verified Academy badge for partner club players and club pages. */
-export function VerifiedAcademyBadge({ compact = false, className = "" }: Props) {
+/** Verified partner badge: club or academy, based on the organization's chosen type. */
+export function VerifiedAcademyBadge({ kind = "club", compact = false, className = "" }: Props) {
   const t = useTranslations("clubs");
+  const resolved = parseClubOrganizationKind(kind);
+  const label =
+    resolved === "academy" ? t("verifiedAcademyBadge") : t("verifiedClubBadge");
 
   return (
     <span
@@ -16,7 +24,7 @@ export function VerifiedAcademyBadge({ compact = false, className = "" }: Props)
       <span aria-hidden className="shrink-0 leading-none">
         🏟
       </span>
-      <span className="truncate uppercase">{t("verifiedAcademyBadge")}</span>
+      <span className="truncate uppercase">{label}</span>
     </span>
   );
 }

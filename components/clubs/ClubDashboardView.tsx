@@ -15,6 +15,7 @@ import {
 } from "@/lib/supabase/clubs";
 import { ClubProfileEditor } from "@/components/clubs/ClubProfileEditor";
 import { GN_PRIMARY_BUTTON_CLASS, GN_SECONDARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { syncClubMembersPremium } from "@/lib/clubs/syncClubMemberPremium.client";
 
 export function ClubDashboardView() {
   const t = useTranslations("clubs");
@@ -51,9 +52,15 @@ export function ClubDashboardView() {
     void load();
   }, [load]);
 
+  useEffect(() => {
+    if (!clubId) return;
+    void syncClubMembersPremium(clubId);
+  }, [clubId]);
+
   async function review(membershipId: string, approve: boolean) {
     setBusyId(membershipId);
     await rpcClubReviewMembership(membershipId, approve);
+    if (clubId) await syncClubMembersPremium(clubId);
     setBusyId(null);
     await load();
   }
@@ -99,6 +106,7 @@ export function ClubDashboardView() {
             videos: Number(club.total_videos ?? 0),
           })}
         </p>
+        <p className="text-sm text-gn-accent">{t("dashboardClubPremiumHint")}</p>
       </header>
 
       <ClubProfileEditor

@@ -5,6 +5,7 @@ import { sendResendEmail } from "@/lib/email/resend.server";
 import { playerJoinEmail } from "@/lib/i18n/clubEmailCopy";
 import { languagePreferenceForEmail } from "@/lib/i18n/languagePreferenceForEmail";
 import { localeFromRequest } from "@/lib/i18n/resolveRequestLocale";
+import { syncClubMemberPremiumForUser } from "@/lib/clubs/syncClubMemberPremium.server";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRoleClient";
 
 export const runtime = "nodejs";
@@ -111,6 +112,10 @@ export async function POST(request: Request): Promise<NextResponse> {
   const membership = (membershipResult.data ?? null) as MembershipRow | null;
   if (!membership || membership.club_id !== clubId) {
     return NextResponse.json({ ok: false, reason: "membership_not_found" }, { status: 404, headers: JSON_HEADERS });
+  }
+
+  if (membership.status === "approved") {
+    await syncClubMemberPremiumForUser(service, membership.user_id);
   }
 
   const [clubRes, profileRes, userRes] = await Promise.all([

@@ -7,6 +7,7 @@ import {
   rpcResolvePublicPlayerProfileBySlug,
   type PlayerProfileRow,
 } from "@/lib/supabase/publicPlayerProfiles";
+import { rpcClubRefreshMyVideoStats } from "@/lib/supabase/clubs";
 
 export type { PlayerProfileRow };
 export type VideoRow = Database["public"]["Tables"]["videos"]["Row"];
@@ -132,5 +133,6 @@ export async function deleteOwnVideoById(
         "Could not delete video. It may still have linked likes or comments.",
     };
   }
+  void rpcClubRefreshMyVideoStats();
   return { ok: true };
 }

@@ -219,6 +219,7 @@ function mergeSanitizedPlayerStrings(
     "city",
     "country",
     "club",
+    "instagram",
   ];
   for (const k of keys) {
     if (k in patch && patch[k] !== undefined) {

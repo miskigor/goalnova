@@ -166,6 +166,7 @@ export async function clubApprovedEmail(
   const body1 = await clubEmailT(locale, "approvedBody1", { clubName: input.clubName });
   const invite = await clubEmailT(locale, "approvedInvite", { inviteCode: input.inviteCode });
   const share = await clubEmailT(locale, "approvedShare");
+  const premium = await clubEmailT(locale, "approvedPremium");
   const profile = await clubEmailT(locale, "approvedProfile");
   const dashboard = await clubEmailT(locale, "approvedDashboard");
   const partner = await clubEmailT(locale, "approvedPartner");
@@ -178,6 +179,7 @@ export async function clubApprovedEmail(
     invite,
     "",
     share,
+    premium,
     "",
     `${profile}: ${input.clubUrl}`,
     `${dashboard}: ${input.dashboardUrl}`,
@@ -191,6 +193,7 @@ export async function clubApprovedEmail(
     <p>${escapeHtml(body1)}</p>
     <p><strong>${escapeHtml(invite)}</strong></p>
     <p>${escapeHtml(share)}</p>
+    <p>${escapeHtml(premium)}</p>
     <ul>
       <li><a href="${escapeHtml(input.clubUrl)}">${escapeHtml(profile)}</a></li>
       <li><a href="${escapeHtml(input.dashboardUrl)}">${escapeHtml(dashboard)}</a></li>

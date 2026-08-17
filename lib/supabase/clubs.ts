@@ -4,6 +4,10 @@ import {
   mapManagedClubProfile,
   type ManagedClubProfile,
 } from "@/lib/clubs/managedClubProfile";
+import {
+  parseClubOrganizationKind,
+  type ClubOrganizationKind,
+} from "@/lib/clubs/organizationKind";
 
 export type { ManagedClubProfile };
 export { mapManagedClubProfile };
@@ -26,6 +30,7 @@ export type ClubListRow = {
   total_videos: number;
   club_score: number;
   global_rank: number | null;
+  organization_kind: ClubOrganizationKind;
 };
 
 export type ClubTopPlayer = {
@@ -67,6 +72,7 @@ export type ClubPublicDetail = {
   global_rank: number | null;
   showcase_public: boolean;
   minimum_players_required: number;
+  organization_kind: ClubOrganizationKind;
 };
 
 export type PlayerClubBadge = {
@@ -76,6 +82,7 @@ export type PlayerClubBadge = {
   club_slug?: string;
   club_verified?: boolean;
   verified_academy?: boolean;
+  organization_kind?: ClubOrganizationKind;
 };
 
 function isMissingClubRpc(error: { code?: string; message?: string } | null): boolean {
@@ -129,6 +136,7 @@ function mapClubRow(r: Record<string, unknown>): ClubListRow {
     total_videos: Number(r.total_videos ?? 0),
     club_score: Number(r.club_score ?? 0),
     global_rank: r.global_rank != null ? Number(r.global_rank) : null,
+    organization_kind: parseClubOrganizationKind(r.organization_kind),
   };
 }
 
@@ -176,7 +184,20 @@ export async function rpcClubGetPublic(slug: string): Promise<{
   if (!payload.found) {
     return { found: false, club: null, topPlayers: [], recentVideos: [], error: null };
   }
-  const club = payload.club as ClubPublicDetail;
+  const club = {
+    ...(payload.club as ClubPublicDetail),
+    organization_kind: parseClubOrganizationKind(
+      (payload.club as ClubPublicDetail | null)?.organization_kind,
+    ),
+  };
+  if (club?.id) {
+    const { data: liveVideos } = await supabase.rpc("goalnova_club_live_video_count", {
+      p_club_id: club.id,
+    });
+    if (typeof liveVideos === "number" && Number.isFinite(liveVideos)) {
+      club.total_videos = liveVideos;
+    }
+  }
   return {
     found: true,
     club,
@@ -195,7 +216,14 @@ export async function rpcPlayerClubBadge(userId: string): Promise<{
     logFullSupabaseError("[clubs] goalnova_player_club_badge", error);
     return { badge: { has_club: false }, error: error.message };
   }
-  return { badge: (data ?? { has_club: false }) as PlayerClubBadge, error: null };
+  const raw = (data ?? { has_club: false }) as PlayerClubBadge;
+  return {
+    badge: {
+      ...raw,
+      organization_kind: parseClubOrganizationKind(raw.organization_kind),
+    },
+    error: null,
+  };
 }
 
 export async function rpcClubJoin(options: {
@@ -220,6 +248,8 @@ export async function rpcClubJoin(options: {
   if (!payload.ok) {
     return { ok: false, error: String(payload.error ?? "join_failed") };
   }
+  const { syncOwnClubMemberPremium } = await import("@/lib/clubs/syncClubMemberPremium.client");
+  await syncOwnClubMemberPremium();
   return {
     ok: true,
     clubId: String(payload.club_id),
@@ -340,6 +370,7 @@ export async function rpcClubUpdateProfile(input: {
   instagram?: string | null;
   description?: string | null;
   contactPerson?: string | null;
+  organizationKind?: ClubOrganizationKind;
 }): Promise<{ ok: boolean; club?: ManagedClubProfile; error?: string; missingRpc?: boolean }> {
   const { data, error } = await supabase.rpc("goalnova_club_update_profile", {
     p_club_id: input.clubId,
@@ -350,7 +381,8 @@ export async function rpcClubUpdateProfile(input: {
     p_instagram: input.instagram ?? null,
     p_description: input.description ?? null,
     p_contact_person: input.contactPerson ?? null,
-  });
+    p_organization_kind: input.organizationKind ?? "club",
+  } as never);
   if (!error) {
     const payload = (data ?? {}) as Record<string, unknown>;
     if (payload.ok) {
@@ -383,6 +415,7 @@ export async function rpcClubUpdateProfile(input: {
           instagram: input.instagram ?? null,
           description: input.description ?? null,
           contactPerson: input.contactPerson ?? null,
+          organizationKind: input.organizationKind ?? "club",
         }),
       });
       const payload = (await res.json().catch(() => ({}))) as {
@@ -459,6 +492,13 @@ export async function rpcClubDashboard(clubId: string): Promise<{
   };
 }
 
+export async function rpcClubRefreshMyVideoStats(): Promise<void> {
+  const { error } = await supabase.rpc("goalnova_club_refresh_stats_for_me");
+  if (error) {
+    logFullSupabaseError("[clubs] goalnova_club_refresh_stats_for_me", error);
+  }
+}
+
 export async function rpcClubSubmitPartnershipRequest(input: {
   clubName: string;
   country: string;
@@ -470,6 +510,7 @@ export async function rpcClubSubmitPartnershipRequest(input: {
   message?: string;
   proofStoragePath?: string;
   proofFileName?: string;
+  organizationKind?: ClubOrganizationKind;
 }): Promise<{ ok: boolean; error?: string; requestId?: string }> {
   const baseArgs = {
     p_club_name: input.clubName,
@@ -480,6 +521,7 @@ export async function rpcClubSubmitPartnershipRequest(input: {
     p_website: input.website ?? null,
     p_estimated_players: input.estimatedPlayers ?? null,
     p_message: input.message ?? null,
+    p_organization_kind: parseClubOrganizationKind(input.organizationKind),
   };
 
   const withProof =
@@ -502,7 +544,11 @@ export async function rpcClubSubmitPartnershipRequest(input: {
       (error?.message ?? "").toLowerCase().includes("could not find the function"));
 
   if (missingFn) {
-    const fallback = await supabase.rpc("goalnova_club_submit_partnership_request", baseArgs);
+    const { p_organization_kind: _kind, ...withoutKind } = baseArgs;
+    const fallback = await supabase.rpc(
+      "goalnova_club_submit_partnership_request",
+      withoutKind as never,
+    );
     data = fallback.data;
     error = fallback.error;
   }

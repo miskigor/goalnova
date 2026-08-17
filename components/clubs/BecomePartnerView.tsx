@@ -12,6 +12,8 @@ import { rpcClubSubmitPartnershipRequest } from "@/lib/supabase/clubs";
 import { supabase } from "@/lib/supabase/client";
 import { prepareClubProofFile } from "@/lib/storage/clubProof";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { ClubOrganizationKindField } from "@/components/clubs/ClubOrganizationKindField";
+import type { ClubOrganizationKind } from "@/lib/clubs/organizationKind";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -28,6 +30,7 @@ export function BecomePartnerView() {
     website: "",
     estimatedPlayers: "",
     message: "",
+    organizationKind: "club" as ClubOrganizationKind,
   });
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -150,6 +153,7 @@ export function BecomePartnerView() {
         message: form.message.trim() || undefined,
         proofStoragePath: uploaded.ok ? uploaded.path : undefined,
         proofFileName: uploaded.ok ? uploaded.fileName : undefined,
+        organizationKind: form.organizationKind,
       });
 
       if (result.ok && result.requestId) {
@@ -216,6 +220,11 @@ export function BecomePartnerView() {
       >
         <h2 className="text-base font-semibold text-gn-text">{t("requestPartnershipTitle")}</h2>
         <p className="text-sm text-gn-text-secondary">{t("partnershipRequiredHint")}</p>
+        <ClubOrganizationKindField
+          idPrefix="partnership-kind"
+          value={form.organizationKind}
+          onChange={(organizationKind) => setForm((prev) => ({ ...prev, organizationKind }))}
+        />
         {(
           [
             ["clubName", form.clubName, t("fieldClubName"), true],

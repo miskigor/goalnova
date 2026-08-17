@@ -315,6 +315,7 @@ export type Database = {
           city?: string | null;
           country?: string | null;
           club?: string | null;
+          instagram?: string | null;
           avatar_url?: string | null;
           subscription_plan?: string | null;
           subscription_status?: string | null;
@@ -347,6 +348,7 @@ export type Database = {
           city?: string | null;
           country?: string | null;
           club?: string | null;
+          instagram?: string | null;
           avatar_url?: string | null;
           subscription_plan?: string | null;
           subscription_status?: string | null;
@@ -379,6 +381,7 @@ export type Database = {
           city?: string | null;
           country?: string | null;
           club?: string | null;
+          instagram?: string | null;
           avatar_url?: string | null;
           subscription_plan?: string | null;
           subscription_status?: string | null;
@@ -1261,6 +1264,22 @@ export type Database = {
         Args: { p_user_id: string };
         Returns: Json;
       };
+      goalnova_club_live_video_count: {
+        Args: { p_club_id: string };
+        Returns: number;
+      };
+      goalnova_club_refresh_stats_for_me: {
+        Args: Record<string, never>;
+        Returns: null;
+      };
+      goalnova_club_refresh_stats_for_user: {
+        Args: { p_user_id: string };
+        Returns: null;
+      };
+      goalnova_public_player_instagram: {
+        Args: { p_user_id: string };
+        Returns: string | null;
+      };
       goalnova_public_player_profile_row: {
         Args: { p_user_id: string };
         Returns: {
@@ -1759,6 +1778,7 @@ export type Database = {
           total_videos: number;
           club_score: number;
           global_rank: number | null;
+          organization_kind?: string | null;
         }[];
       };
       goalnova_club_rankings_public: {
@@ -1779,6 +1799,7 @@ export type Database = {
           total_videos: number;
           club_score: number;
           global_rank: number | null;
+          organization_kind?: string | null;
         }[];
       };
       goalnova_club_get_public: {
@@ -1823,6 +1844,7 @@ export type Database = {
           p_instagram?: string | null;
           p_description?: string | null;
           p_contact_person?: string | null;
+          p_organization_kind?: string | null;
         };
         Returns: Json;
       };
@@ -1840,6 +1862,7 @@ export type Database = {
           p_website?: string | null;
           p_estimated_players?: number | null;
           p_message?: string | null;
+          p_organization_kind?: string | null;
         };
         Returns: Json;
       };

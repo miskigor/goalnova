@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ChallengeFriendButton } from "@/components/friendChallenge/ChallengeFriendButton";
 import { ProfilePartnerClubSection } from "@/components/profile/ProfilePartnerClubSection";
-import { ProfileManagedClubSection } from "@/components/profile/ProfileManagedClubSection";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import {
   deleteOwnVideoById,
@@ -32,7 +31,10 @@ import {
   type PlayerProfileGamification,
 } from "@/lib/supabase/playerProfileGamification";
 import { rpcPlayerClubBadge, type PlayerClubBadge } from "@/lib/supabase/clubs";
+import { syncOwnClubMemberPremium } from "@/lib/clubs/syncClubMemberPremium.client";
 import { VerifiedAcademyBadge } from "@/components/clubs/VerifiedAcademyBadge";
+import { InstagramProfileLink } from "@/components/profile/InstagramProfileLink";
+import { parseInstagramHandle } from "@/lib/instagram/playerInstagram";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
 import { GN_SUCCESS_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
@@ -124,7 +126,7 @@ export function PlayerPublicProfile({
   const td = useTranslations("discover");
   const tAdmin = useTranslations("adminDashboard");
   const { userId } = usePremium();
-  const { loaded: adminLoaded, isSuperAdmin, isModerator } = useAdminAccess();
+  const { loaded: adminLoaded, isStaff, isSuperAdmin, isModerator } = useAdminAccess();
   const scoutGate = useScoutVerification();
   const uploadEligibility = useVideoUploadEligibility();
   const { dismissed: uploadFirstDismissed, dismiss: dismissUploadFirst } =
@@ -190,6 +192,27 @@ export function PlayerPublicProfile({
       cancelled = true;
     };
   }, [profile?.id]);
+
+  useEffect(() => {
+    const uid = profile?.id?.trim();
+    if (!uid || userId !== uid || !clubBadge?.has_club) return;
+    let cancelled = false;
+    void syncOwnClubMemberPremium().then((result) => {
+      if (cancelled || !result.granted) return;
+      setProfile((prev) =>
+        prev
+          ? {
+              ...prev,
+              subscription_plan: "player_premium",
+              subscription_status: "active",
+            }
+          : prev,
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [clubBadge?.has_club, profile?.id, userId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -368,6 +391,7 @@ export function PlayerPublicProfile({
     !scoutGate.row ||
     userMayMessagePlayers(scoutGate.row);
   const isOwnProfile = Boolean(userId && profile.id === userId);
+  const hideClubUiOnOwnProfile = isOwnProfile && (!adminLoaded || isStaff);
   const canAdminDownloadVideo =
     adminLoaded && (isSuperAdmin || isModerator);
   const canAdminDeleteVideo =
@@ -383,6 +407,7 @@ export function PlayerPublicProfile({
       ? tFields("weightKgOption", { n: profile.weight })
       : null;
   const playerBio = profile.bio?.trim() || null;
+  const instagramHandle = parseInstagramHandle(profile.instagram);
   const hasPlayerDetails =
     Boolean(
       formatPlayerAge(profile.age) ||
@@ -393,6 +418,7 @@ export function PlayerPublicProfile({
         playerWeight ||
         profile.club?.trim() ||
         profile.preferred_foot?.trim() ||
+        instagramHandle ||
         playerBio,
     );
 
@@ -462,16 +488,20 @@ export function PlayerPublicProfile({
             {profile.founding_player === true ||
             isPlayerPremium(profile) ||
             gamification?.freestyle_badge ||
-            clubBadge?.has_club ||
-            clubBadge?.verified_academy ? (
+            (!hideClubUiOnOwnProfile && clubBadge?.has_club) ||
+            (!hideClubUiOnOwnProfile && clubBadge?.verified_academy) ||
+            instagramHandle ? (
               <div className="mt-1 flex min-w-0 max-w-full flex-wrap items-center gap-1 max-lg:mt-0.5">
                 {profile.founding_player === true ? <FoundingPlayerBadge /> : null}
-                {clubBadge?.has_club && clubBadge.club_name ? (
+                {!hideClubUiOnOwnProfile && clubBadge?.has_club && clubBadge.club_name ? (
                   <span className="inline-flex max-w-full items-center rounded-full border border-gn-border-subtle bg-gn-surface/50 px-2 py-0.5 text-[10px] font-semibold text-gn-text-secondary">
                     🏟 {clubBadge.club_name}
                   </span>
                 ) : null}
-                {clubBadge?.verified_academy ? <VerifiedAcademyBadge compact /> : null}
+                {!hideClubUiOnOwnProfile && clubBadge?.verified_academy ? (
+                  <VerifiedAcademyBadge compact kind={clubBadge.organization_kind} />
+                ) : null}
+                {instagramHandle ? <InstagramProfileLink handle={instagramHandle} className="text-[10px] font-semibold" /> : null}
                 {isPlayerPremium(profile) ? <PlayerPremiumBadge /> : null}
                 {gamification?.freestyle_badge ? (
                   <ChallengeKingBadge label={tChallenges("badgeName")} />
@@ -494,12 +524,11 @@ export function PlayerPublicProfile({
             <div className="mt-2">
               <ChallengeFriendButton fullWidth />
             </div>
-            <div className="mt-2">
-              <ProfilePartnerClubSection clubBadge={clubBadge} onMembershipChange={refreshClubBadge} />
-            </div>
-            <div className="mt-2">
-              <ProfileManagedClubSection />
-            </div>
+            {hideClubUiOnOwnProfile ? null : (
+              <div className="mt-2">
+                <ProfilePartnerClubSection clubBadge={clubBadge} onMembershipChange={refreshClubBadge} />
+              </div>
+            )}
           </div>
         ) : null}
         {userId && profile.id !== userId ? (
@@ -551,6 +580,16 @@ export function PlayerPublicProfile({
             <DetailRow label={tFields("weight")} value={playerWeight} />
             <DetailRow label={tFields("club")} value={profile.club} />
             <DetailRow label={tFields("preferredFoot")} value={profile.preferred_foot} />
+            {instagramHandle ? (
+              <div className="min-w-0 max-lg:space-y-0.5">
+                <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary max-lg:text-[10px] sm:text-xs">
+                  {tFields("instagram")}
+                </p>
+                <p className="mt-1 break-words text-sm max-lg:mt-0.5 max-lg:text-xs">
+                  <InstagramProfileLink handle={instagramHandle} />
+                </p>
+              </div>
+            ) : null}
           </div>
           {playerBio ? (
             <div className="min-w-0">

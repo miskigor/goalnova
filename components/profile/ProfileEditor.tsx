@@ -18,6 +18,7 @@ import {
   sanitizeFullName,
   sanitizeOrganizationField,
   sanitizeShortProfileField,
+  sanitizeInstagramInput,
   sanitizeUsername,
 } from "@/lib/profileFieldSanitize";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
@@ -50,6 +51,8 @@ import {
 } from "@/lib/profile/playerFormOptions";
 import { fetchMyPlayerPremiumProfile, setFeaturedVideo } from "@/lib/supabase/playerPremium";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
+import { parseInstagramHandle } from "@/lib/instagram/playerInstagram";
+import { InstagramProfileLink } from "@/components/profile/InstagramProfileLink";
 import { resetAppShellHorizontalScroll } from "@/lib/feed/feedScrollContract";
 import { resetMobileBrowserZoom } from "@/lib/layout/resetMobileBrowserZoom";
 import {
@@ -250,6 +253,7 @@ export function ProfileEditor() {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [club, setClub] = useState("");
+  const [instagram, setInstagram] = useState("");
   const [isAvailableForTrials, setIsAvailableForTrials] = useState(false);
   const [isLookingForClub, setIsLookingForClub] = useState(false);
   const [profileHighlight, setProfileHighlight] = useState("");
@@ -309,6 +313,7 @@ export function ProfileEditor() {
           setPositionSelect(pos.preset);
           setPositionOther(pos.otherText);
           setClub(result.data.profile.club ?? "");
+          setInstagram(result.data.profile.instagram ?? "");
           setFullName(result.data.profile.full_name ?? "");
           setUsername(result.data.profile.username ?? "");
           setAge(clampAgeSelect(result.data.profile.age));
@@ -324,6 +329,10 @@ export function ProfileEditor() {
           setProfileHighlight(result.data.profile.profile_highlight ?? "");
           setAchievements((result.data.profile.achievements ?? []).join(", "));
           setCareerHistory(careerHistoryFromDb(result.data.profile.career_history));
+          const { syncOwnClubMemberPremium } = await import(
+            "@/lib/clubs/syncClubMemberPremium.client"
+          );
+          await syncOwnClubMemberPremium();
           const [{ profile: pp }, { data: myVideoRows }] = await Promise.all([
             fetchMyPlayerPremiumProfile(),
             supabase
@@ -400,6 +409,13 @@ export function ProfileEditor() {
           setSaving(false);
           return;
         }
+        const igRaw = sanitizeInstagramInput(instagram);
+        const igHandle = parseInstagramHandle(igRaw);
+        if (igRaw && !igHandle) {
+          setError(t("invalidInstagram"));
+          setSaving(false);
+          return;
+        }
         const positionToSave =
           positionSelect === POSITION_OTHER_VALUE
             ? sanitizeShortProfileField(positionOther) || null
@@ -421,6 +437,7 @@ export function ProfileEditor() {
           city: sanitizeShortProfileField(city) || null,
           country: sanitizeShortProfileField(country) || null,
           club: sanitizeShortProfileField(club) || null,
+          instagram: igHandle,
           is_available_for_trials: isAvailableForTrials,
           is_looking_for_club: isLookingForClub,
           profile_highlight: sanitizeShortProfileField(profileHighlight) || null,
@@ -438,6 +455,7 @@ export function ProfileEditor() {
           setError(t("saveFailed"));
           return;
         }
+        setInstagram(igHandle ?? "");
         if (playerPremiumActive && selectedFeaturedVideoId) {
           const feat = await setFeaturedVideo(selectedFeaturedVideoId);
           if (!feat.ok) {
@@ -981,6 +999,36 @@ export function ProfileEditor() {
                 placeholder={t("clubPlaceholder")}
               />
             </div>
+            <div className={fieldBlockClass}>
+              <label className={labelClass}>{t("instagram")}</label>
+              <input
+                suppressHydrationWarning
+                className={inputClass}
+                value={instagram}
+                onChange={(e) => setInstagram(sanitizeInstagramInput(e.target.value))}
+                onPaste={(e) =>
+                  handleProfileFieldPaste(
+                    e,
+                    instagram,
+                    sanitizeInstagramInput,
+                    sanitizeInstagramInput,
+                    setInstagram,
+                    flashPasteBlocked,
+                  )
+                }
+                placeholder={t("instagramPlaceholder")}
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+              />
+              <p className="mt-1.5 text-xs text-gn-text-tertiary">{t("instagramHint")}</p>
+              {parseInstagramHandle(instagram) ? (
+                <p className="mt-1.5 text-xs text-gn-text-secondary">
+                  <InstagramProfileLink handle={parseInstagramHandle(instagram) ?? ""} />
+                </p>
+              ) : null}
+            </div>
             <label className="flex items-center gap-2 text-xs text-gn-text-secondary sm:text-sm">
               <input type="checkbox" checked={isAvailableForTrials} onChange={(e) => setIsAvailableForTrials(e.target.checked)} />
               {t("availableForTrials")}
@@ -1076,8 +1124,6 @@ export function ProfileEditor() {
         {saving ? <Spinner /> : null}
         {saving ? t("saving") : t("save")}
       </button>
-
-      <ProfileManagedClubSection />
 
       <DeleteAccountSection />
       <SettingsProfileScrollEndSpacer />

@@ -65,17 +65,37 @@ export async function POST(request: Request): Promise<NextResponse> {
     instagram: trimOrNull(body.instagram, 80),
     description: trimOrNull(body.description, 2000),
     contact_person: trimOrNull(body.contactPerson, 120),
+    organization_kind: String(body.organizationKind ?? "").trim().toLowerCase() === "academy"
+      ? "academy"
+      : "club",
     updated_at: new Date().toISOString(),
   };
 
-  const { data, error } = await service
+  const selectCols =
+    "id, name, slug, logo_url, cover_url, city, country, website, instagram, description, contact_person, contact_email, club_code, organization_kind";
+
+  let { data, error } = await service
     .from("clubs" as never)
     .update(patch as never)
     .eq("id", clubId)
-    .select(
-      "id, name, slug, logo_url, cover_url, city, country, website, instagram, description, contact_person, contact_email, club_code",
-    )
+    .select(selectCols)
     .maybeSingle();
+
+  if (error && String(error.message ?? "").includes("organization_kind")) {
+    const { organization_kind: _kind, ...withoutKind } = patch as typeof patch & {
+      organization_kind?: string;
+    };
+    const fallback = await service
+      .from("clubs" as never)
+      .update(withoutKind as never)
+      .eq("id", clubId)
+      .select(
+        "id, name, slug, logo_url, cover_url, city, country, website, instagram, description, contact_person, contact_email, club_code",
+      )
+      .maybeSingle();
+    data = fallback.data;
+    error = fallback.error;
+  }
 
   if (error || !data) {
     console.error("[clubs/update-profile]", error);

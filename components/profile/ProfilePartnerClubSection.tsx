@@ -72,8 +72,11 @@ export function ProfilePartnerClubSection({ clubBadge, onMembershipChange }: Pro
           <p className="text-sm text-gn-text">
             {t("profileClubMember", { club: clubBadge.club_name })}
           </p>
+          <p className="text-xs leading-relaxed text-gn-text-secondary">{t("profileClubMemberPremium")}</p>
           <div className="flex flex-wrap items-center gap-2">
-            {clubBadge.verified_academy ? <VerifiedAcademyBadge compact /> : null}
+            {clubBadge.verified_academy ? (
+              <VerifiedAcademyBadge compact kind={clubBadge.organization_kind} />
+            ) : null}
             {clubBadge.club_slug ? (
               <Link href={`/clubs/${clubBadge.club_slug}`} className="text-sm font-medium text-gn-accent hover:underline">
                 {t("profileClubViewClub")}

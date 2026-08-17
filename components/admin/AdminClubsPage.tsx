@@ -33,6 +33,15 @@ function partnershipStatusLabel(
   return status;
 }
 
+function organizationKindLabel(
+  kind: unknown,
+  t: ReturnType<typeof useTranslations<"clubs">>,
+): string {
+  return String(kind ?? "").trim().toLowerCase() === "academy"
+    ? t("organizationKindAcademy")
+    : t("organizationKindClub");
+}
+
 export function AdminClubsPage() {
   const t = useTranslations("clubs");
   const [clubs, setClubs] = useState<Record<string, unknown>[]>([]);
@@ -199,6 +208,7 @@ export function AdminClubsPage() {
           <ul className="space-y-3">
             {requests.map((req) => {
               const details = [
+                detailLine(t("fieldOrganizationKind"), organizationKindLabel(req.organization_kind, t)),
                 detailLine(t("fieldCountry"), req.country),
                 detailLine(t("fieldContactPerson"), req.contact_person),
                 detailLine(t("fieldContactEmail"), req.email),
@@ -283,6 +293,7 @@ export function AdminClubsPage() {
                   <p className="font-medium text-zinc-100">{String(club.name)}</p>
                   <p className="text-xs text-zinc-400">
                     {partnershipStatusLabel(String(club.partnership_status), t)} ·{" "}
+                    {organizationKindLabel(club.organization_kind, t)} ·{" "}
                     {String(club.approved_player_count ?? 0)} {t("playersShort").toLowerCase()} ·{" "}
                     {t("inviteLink")}:{" "}
                     <span className="font-mono text-orange-300">{String(club.club_code)}</span>

@@ -49,6 +49,8 @@ import {
 } from "@/lib/constants/storageBuckets";
 import { canUploadVideo, getPlayerVideoUploadLimit } from "@/lib/premium/playerPremium";
 import { fetchMyPlayerPremiumProfile, fetchMyVideoCount } from "@/lib/supabase/playerPremium";
+import { rpcClubRefreshMyVideoStats } from "@/lib/supabase/clubs";
+import { syncOwnClubMemberPremium } from "@/lib/clubs/syncClubMemberPremium.client";
 
 type Role = "player" | "scout";
 type PlayerGateStatus = "checking" | "allowed" | "denied" | "unknown";
@@ -660,6 +662,7 @@ export function UploadForm() {
       }
 
       const authUserId = user.id;
+      await syncOwnClubMemberPremium();
       const [{ profile }, { count: currentVideoCount }] = await Promise.all([
         fetchMyPlayerPremiumProfile(),
         fetchMyVideoCount(),
@@ -1102,6 +1105,8 @@ export function UploadForm() {
           setFailureDetail(tCommon("genericError"));
           return;
         }
+
+        void rpcClubRefreshMyVideoStats();
 
         const newVideoId = insertedRow?.id ?? null;
         let aiAnalysisOk = true;
