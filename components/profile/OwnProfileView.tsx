@@ -142,6 +142,9 @@ export function OwnProfileView() {
         setScoutBundle({ user: result.data.user, profile: result.data.profile });
         return;
       }
+      if (result.data.role !== "player") {
+        return;
+      }
       const usernameFromProfile = result.data.profile.username?.trim() || null;
       const nextSlug = usernameFromProfile || result.data.user.id?.trim() || null;
       if (!nextSlug) {

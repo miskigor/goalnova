@@ -1855,6 +1855,10 @@ export type Database = {
         Args: { p_request_id: string };
         Returns: Json;
       };
+      goalnova_admin_club_reject_request: {
+        Args: { p_request_id: string };
+        Returns: Json;
+      };
       goalnova_admin_club_set_status: {
         Args: { p_club_id: string; p_status: string };
         Returns: Json;

@@ -404,11 +404,14 @@ export async function rpcClubUpdateProfile(input: {
     }
   }
 
-  if (isMissingClubRpc(error)) {
+  if (error && isMissingClubRpc(error)) {
     return { ok: false, missingRpc: true, error: "missing_rpc" };
   }
-  logFullSupabaseError("[clubs] goalnova_club_update_profile", error);
-  return { ok: false, error: error.message };
+  if (error) {
+    logFullSupabaseError("[clubs] goalnova_club_update_profile", error);
+    return { ok: false, error: error.message };
+  }
+  return { ok: false, error: "save_failed" };
 }
 
 export async function rpcClubUpdateLogo(
