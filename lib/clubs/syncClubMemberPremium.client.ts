@@ -26,6 +26,7 @@ export async function syncOwnClubMemberPremium(): Promise<{
         "Content-Type": "application/json",
       },
       body: "{}",
+      signal: AbortSignal.timeout(8000),
     });
     const payload = (await res.json().catch(() => ({}))) as {
       ok?: boolean;
@@ -56,6 +57,7 @@ export async function syncClubMembersPremium(clubId: string): Promise<{ ok: bool
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ clubId: clubId.trim() }),
+      signal: AbortSignal.timeout(8000),
     });
     const payload = (await res.json().catch(() => ({}))) as { ok?: boolean };
     return { ok: Boolean(payload.ok) };

@@ -44,6 +44,21 @@ function getMissingColumnFromSchemaCacheError(err: unknown, table: string): stri
   return m?.[1]?.trim() || null;
 }
 
+function getMissingColumnFromPostgresError(err: unknown, table: string): string | null {
+  const e = err as { code?: string | null; message?: string | null };
+  if (e?.code !== "42703") return null;
+  const message = String(e.message ?? "");
+  if (!message.toLowerCase().includes(table.toLowerCase())) return null;
+  const m = message.match(/column "([^"]+)"/i);
+  return m?.[1]?.trim() || null;
+}
+
+export function isPlayerUsernameTakenError(err: SupabaseErrorInfo): boolean {
+  if (err.code !== "23505") return false;
+  const blob = `${err.message} ${err.details ?? ""}`.toLowerCase();
+  return blob.includes("username");
+}
+
 function toSupabaseErrorInfo(err: unknown): SupabaseErrorInfo {
   const e = err as
     | {
@@ -163,20 +178,13 @@ export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
       return { success: false, data: null, error: toSupabaseErrorInfo(selectError) };
     }
 
-    if (!profile?.id) {
-      return {
-        success: false,
-        data: null,
-        error: {
-          message: "Choose Player on the role screen to create your profile.",
-          code: null,
-          details: null,
-          hint: null,
-        },
-      };
+    if (profile?.id) {
+      return { success: true, data: { role: "player", user: userRow as UserRow, profile } };
     }
 
-    return { success: true, data: { role: "player", user: userRow as UserRow, profile } };
+    const created = await ensureOwnProfileRow("player_profiles", userId);
+    if (!created.success) return created;
+    return { success: true, data: { role: "player", user: userRow as UserRow, profile: created.data } };
   }
 
   const { data: profile, error: selectError } = await supabase
@@ -190,20 +198,48 @@ export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
     return { success: false, data: null, error: toSupabaseErrorInfo(selectError) };
   }
 
-  if (!profile?.id) {
+  if (profile?.id) {
+    return { success: true, data: { role: "scout", user: userRow as UserRow, profile } };
+  }
+
+  const created = await ensureOwnProfileRow("scout_profiles", userId);
+  if (!created.success) return created;
+  return { success: true, data: { role: "scout", user: userRow as UserRow, profile: created.data } };
+}
+
+async function ensureOwnProfileRow<T extends "player_profiles" | "scout_profiles">(
+  table: T,
+  userId: string,
+): Promise<Result<Database["public"]["Tables"][T]["Row"]>> {
+  const { error: upsertError } = await supabase.from(table).upsert({ id: userId }, { onConflict: "id" });
+  if (upsertError) {
+    logSupabaseError(`Supabase: ${table} ensure upsert error`, upsertError);
+    return { success: false, data: null, error: toSupabaseErrorInfo(upsertError) };
+  }
+
+  const { data, error: selectError } = await supabase
+    .from(table)
+    .select("*")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (selectError) {
+    logSupabaseError(`Supabase: ${table} select after ensure`, selectError);
+    return { success: false, data: null, error: toSupabaseErrorInfo(selectError) };
+  }
+  if (!data?.id) {
     return {
       success: false,
       data: null,
       error: {
-        message: "Choose Scout on the role screen to create your profile.",
+        message: "Could not create your profile. Try again.",
         code: null,
         details: null,
         hint: null,
       },
     };
   }
-
-  return { success: true, data: { role: "scout", user: userRow as UserRow, profile } };
+  return { success: true, data };
 }
 
 function mergeSanitizedPlayerStrings(
@@ -274,7 +310,9 @@ export async function savePlayerProfile(
 
   const removedColumns = new Set<string>();
   while (updateError) {
-    const missingColumn = getMissingColumnFromSchemaCacheError(updateError, "player_profiles");
+    const missingColumn =
+      getMissingColumnFromSchemaCacheError(updateError, "player_profiles") ??
+      getMissingColumnFromPostgresError(updateError, "player_profiles");
     if (!missingColumn) break;
     if (removedColumns.has(missingColumn)) break;
     removedColumns.add(missingColumn);

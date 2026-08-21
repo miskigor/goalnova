@@ -23,6 +23,7 @@ import {
 } from "@/lib/profileFieldSanitize";
 import { logFullSupabaseError } from "@/lib/supabase/logError";
 import {
+  isPlayerUsernameTakenError,
   loadAndEnsureProfile,
   savePlayerProfile,
   saveScoutProfile,
@@ -329,27 +330,35 @@ export function ProfileEditor() {
           setProfileHighlight(result.data.profile.profile_highlight ?? "");
           setAchievements((result.data.profile.achievements ?? []).join(", "));
           setCareerHistory(careerHistoryFromDb(result.data.profile.career_history));
-          const { syncOwnClubMemberPremium } = await import(
-            "@/lib/clubs/syncClubMemberPremium.client"
-          );
-          await syncOwnClubMemberPremium();
-          const [{ profile: pp }, { data: myVideoRows }] = await Promise.all([
-            fetchMyPlayerPremiumProfile(),
-            supabase
-              .from("videos")
-              .select("id,created_at,is_featured")
-              .eq("user_id", result.data.user.id)
-              .order("created_at", { ascending: false }),
-          ]);
-          setPlayerPremiumActive(isPlayerPremium(pp, result.data.user.email));
-          setMyVideos(
-            (myVideoRows ?? []).map((v) => ({
-              id: String(v.id),
-              created_at: v.created_at ?? null,
-            })),
-          );
-          const featured = (myVideoRows ?? []).find((v) => v.is_featured === true);
-          setSelectedFeaturedVideoId(featured?.id ?? "");
+          setLoading(false);
+          void (async () => {
+            const { syncOwnClubMemberPremium } = await import(
+              "@/lib/clubs/syncClubMemberPremium.client"
+            );
+            await syncOwnClubMemberPremium();
+            if (!mounted) return;
+            const [{ profile: pp }, { data: myVideoRows }] = await Promise.all([
+              fetchMyPlayerPremiumProfile(),
+              supabase
+                .from("videos")
+                .select("id,created_at,is_featured")
+                .eq("user_id", result.data.user.id)
+                .order("created_at", { ascending: false }),
+            ]);
+            if (!mounted) return;
+            setPlayerPremiumActive(isPlayerPremium(pp, result.data.user.email));
+            setMyVideos(
+              (myVideoRows ?? []).map((v) => ({
+                id: String(v.id),
+                created_at: v.created_at ?? null,
+              })),
+            );
+            const featured = (myVideoRows ?? []).find((v) => v.is_featured === true);
+            setSelectedFeaturedVideoId(featured?.id ?? "");
+          })().catch((e) => {
+            logFullSupabaseError("[ProfileEditor] extras", e);
+          });
+          return;
         } else {
           setOrganization(result.data.profile.organization ?? "");
           setScoutRole(result.data.profile.role ?? "");
@@ -452,7 +461,11 @@ export function ProfileEditor() {
             "[ProfileEditor] savePlayerProfile",
             new Error(res.error.message),
           );
-          setError(t("saveFailed"));
+          setError(
+            isPlayerUsernameTakenError(res.error)
+              ? t("usernameTaken")
+              : t("saveFailed"),
+          );
           return;
         }
         setInstagram(igHandle ?? "");
