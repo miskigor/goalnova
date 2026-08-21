@@ -184,7 +184,10 @@ export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
 
     const created = await ensureOwnProfileRow("player_profiles", userId);
     if (!created.success) return created;
-    return { success: true, data: { role: "player", user: userRow as UserRow, profile: created.data } };
+    return {
+      success: true,
+      data: { role: "player", user: userRow as UserRow, profile: created.data as PlayerProfileRow },
+    };
   }
 
   const { data: profile, error: selectError } = await supabase
@@ -204,14 +207,19 @@ export async function loadAndEnsureProfile(): Promise<Result<ProfileLoad>> {
 
   const created = await ensureOwnProfileRow("scout_profiles", userId);
   if (!created.success) return created;
-  return { success: true, data: { role: "scout", user: userRow as UserRow, profile: created.data } };
+  return {
+    success: true,
+    data: { role: "scout", user: userRow as UserRow, profile: created.data as ScoutProfileRow },
+  };
 }
 
-async function ensureOwnProfileRow<T extends "player_profiles" | "scout_profiles">(
-  table: T,
+async function ensureOwnProfileRow(
+  table: "player_profiles" | "scout_profiles",
   userId: string,
-): Promise<Result<Database["public"]["Tables"][T]["Row"]>> {
-  const { error: upsertError } = await supabase.from(table).upsert({ id: userId }, { onConflict: "id" });
+): Promise<Result<PlayerProfileRow | ScoutProfileRow>> {
+  const { error: upsertError } = await supabase
+    .from(table)
+    .upsert({ id: userId } as never, { onConflict: "id" });
   if (upsertError) {
     logSupabaseError(`Supabase: ${table} ensure upsert error`, upsertError);
     return { success: false, data: null, error: toSupabaseErrorInfo(upsertError) };
@@ -227,7 +235,8 @@ async function ensureOwnProfileRow<T extends "player_profiles" | "scout_profiles
     logSupabaseError(`Supabase: ${table} select after ensure`, selectError);
     return { success: false, data: null, error: toSupabaseErrorInfo(selectError) };
   }
-  if (!data?.id) {
+  const row = data as PlayerProfileRow | ScoutProfileRow | null;
+  if (!row?.id) {
     return {
       success: false,
       data: null,
@@ -239,7 +248,7 @@ async function ensureOwnProfileRow<T extends "player_profiles" | "scout_profiles
       },
     };
   }
-  return { success: true, data };
+  return { success: true, data: row };
 }
 
 function mergeSanitizedPlayerStrings(
