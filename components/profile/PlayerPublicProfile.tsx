@@ -35,6 +35,7 @@ import { syncOwnClubMemberPremium } from "@/lib/clubs/syncClubMemberPremium.clie
 import { VerifiedAcademyBadge } from "@/components/clubs/VerifiedAcademyBadge";
 import { InstagramProfileLink } from "@/components/profile/InstagramProfileLink";
 import { parseInstagramHandle } from "@/lib/instagram/playerInstagram";
+import { careerHistoryFromDb } from "@/lib/profileFieldSanitize";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
 import { GN_SUCCESS_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
@@ -408,6 +409,11 @@ export function PlayerPublicProfile({
       : null;
   const playerBio = profile.bio?.trim() || null;
   const instagramHandle = parseInstagramHandle(profile.instagram);
+  const playerHighlight = profile.profile_highlight?.trim() || null;
+  const playerCareer = careerHistoryFromDb(profile.career_history).trim() || null;
+  const playerAchievements = (profile.achievements ?? [])
+    .map((item) => item.trim())
+    .filter(Boolean);
   const hasPlayerDetails =
     Boolean(
       formatPlayerAge(profile.age) ||
@@ -419,7 +425,12 @@ export function PlayerPublicProfile({
         profile.club?.trim() ||
         profile.preferred_foot?.trim() ||
         instagramHandle ||
-        playerBio,
+        playerBio ||
+        playerHighlight ||
+        playerCareer ||
+        playerAchievements.length > 0 ||
+        profile.is_available_for_trials ||
+        profile.is_looking_for_club,
     );
 
   const showUploadFirstBanner =
@@ -599,6 +610,50 @@ export function PlayerPublicProfile({
               <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gn-text max-lg:text-xs">
                 {playerBio}
               </p>
+            </div>
+          ) : null}
+          {playerHighlight ? (
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary sm:text-xs">
+                {tFields("profileHighlight")}
+              </p>
+              <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gn-text max-lg:text-xs">
+                {playerHighlight}
+              </p>
+            </div>
+          ) : null}
+          {playerAchievements.length > 0 ? (
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary sm:text-xs">
+                {tFields("achievements")}
+              </p>
+              <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gn-text max-lg:text-xs">
+                {playerAchievements.join(", ")}
+              </p>
+            </div>
+          ) : null}
+          {playerCareer ? (
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-gn-text-tertiary sm:text-xs">
+                {tFields("careerHistory")}
+              </p>
+              <p className="mt-1 whitespace-pre-wrap break-words text-sm text-gn-text max-lg:text-xs">
+                {playerCareer}
+              </p>
+            </div>
+          ) : null}
+          {profile.is_available_for_trials || profile.is_looking_for_club ? (
+            <div className="flex min-w-0 flex-wrap gap-2">
+              {profile.is_available_for_trials ? (
+                <span className="rounded-full border border-gn-border-subtle bg-gn-surface/50 px-2 py-0.5 text-[10px] font-semibold text-gn-text-secondary">
+                  {tFields("availableForTrials")}
+                </span>
+              ) : null}
+              {profile.is_looking_for_club ? (
+                <span className="rounded-full border border-gn-border-subtle bg-gn-surface/50 px-2 py-0.5 text-[10px] font-semibold text-gn-text-secondary">
+                  {tFields("lookingForClub")}
+                </span>
+              ) : null}
             </div>
           ) : null}
         </section>

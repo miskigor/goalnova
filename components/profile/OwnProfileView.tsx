@@ -16,6 +16,7 @@ import {
 import { PlayerPublicProfile } from "@/components/profile/PlayerPublicProfile";
 import { ScoutOwnProfileView } from "@/components/profile/ScoutOwnProfileView";
 import { supabase, type Database } from "@/lib/supabase/client";
+import type { PlayerProfileRow } from "@/lib/supabase/playerPublicProfile";
 import { profileVideosDebug } from "@/lib/profile/profileVideosDebug";
 import { scheduleProfilePageScrollReset } from "@/lib/profile/profilePageScrollReset";
 
@@ -68,6 +69,7 @@ export function OwnProfileView() {
   const searchParams = useSearchParams();
   const showSavedBanner = searchParams.get("saved") === "1";
   const [playerSlug, setPlayerSlug] = useState<string | null>(null);
+  const [ownPlayerProfile, setOwnPlayerProfile] = useState<PlayerProfileRow | null>(null);
   const [ownAvatarUrl, setOwnAvatarUrl] = useState<string | null>(null);
   const [scoutBundle, setScoutBundle] = useState<{
     user: UserRow;
@@ -157,6 +159,7 @@ export function OwnProfileView() {
         playerSlug: nextSlug,
         willRender: "PlayerPublicProfile",
       });
+      setOwnPlayerProfile(result.data.profile);
       setPlayerSlug(nextSlug);
       void tryConsumePendingReferralWithRetry();
     })().catch((err) => {
@@ -231,6 +234,7 @@ export function OwnProfileView() {
         embedded
         playerSlug={playerSlug}
         prefetchedAvatarUrl={ownAvatarUrl}
+        initialProfile={ownPlayerProfile ?? undefined}
       />
       <DeleteAccountSection />
     </ProfilePageShell>

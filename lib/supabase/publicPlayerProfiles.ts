@@ -81,9 +81,13 @@ export function scoutRpcRowToPremiumLikeProfile(
   };
 }
 
-function firstRpcRow<T>(data: T[] | null | undefined): T | null {
-  if (!Array.isArray(data) || data.length === 0) return null;
-  return data[0] ?? null;
+function firstRpcRow<T extends { id?: string }>(
+  data: T[] | T | null | undefined,
+): T | null {
+  if (data == null) return null;
+  if (Array.isArray(data)) return data[0] ?? null;
+  if (typeof data === "object" && data.id) return data;
+  return null;
 }
 
 type Client = SupabaseClient<Database>;

@@ -133,7 +133,7 @@ export async function saveRoleAndEnsureProfile({
   const profileTable = role === "player" ? "player_profiles" : "scout_profiles";
   const { error: upsertProfileError } = await supabase
     .from(profileTable)
-    .upsert({ id: userId }, { onConflict: "id" });
+    .upsert({ id: userId }, { onConflict: "id", defaultToNull: false } as never);
 
   if (upsertProfileError) {
     logSupabaseError(`Supabase: ${profileTable} upsert error`, upsertProfileError);

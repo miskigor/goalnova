@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import {
   isApprovedScoutUser,
   parseScoutVerificationStatus,
@@ -187,12 +187,12 @@ export function ProfileEditor() {
   const tCommon = useTranslations("authCommon");
   const tErr = useTranslations("errors");
   const tClubs = useTranslations("clubs");
-  const router = useRouter();
   const pathname = usePathname();
   const titleRef = useRef<HTMLHeadingElement>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
   const [pasteHint, setPasteHint] = useState<string | null>(null);
   const pasteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -379,7 +379,9 @@ export function ProfileEditor() {
     return () => {
       mounted = false;
     };
-  }, [t, tCommon]);
+    // Mount-only: `[t, tCommon]` re-fetch was resetting filled fields before/after save.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -404,6 +406,7 @@ export function ProfileEditor() {
 
   async function onSave() {
     setError(null);
+    setSaved(false);
     setSaving(true);
     try {
       if (role === "player") {
@@ -506,7 +509,7 @@ export function ProfileEditor() {
 
       dispatchAvatarUrlUpdated(avatarUrl?.trim() || null);
       resetMobileBrowserZoom();
-      router.replace("/profile?saved=1");
+      setSaved(true);
     } catch (e) {
       logFullSupabaseError("[ProfileEditor] save", e);
       setError(tErr("generic"));
@@ -1114,6 +1117,15 @@ export function ProfileEditor() {
           className="max-w-full break-words rounded-xl border border-amber-500/30 bg-amber-950/20 px-4 py-3 text-sm text-amber-100/90"
         >
           {pasteHint}
+        </div>
+      ) : null}
+
+      {saved ? (
+        <div
+          role="status"
+          className="max-w-full break-words rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-100/95"
+        >
+          {t("saved")}
         </div>
       ) : null}
 

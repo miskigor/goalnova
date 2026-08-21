@@ -217,12 +217,15 @@ async function ensureOwnProfileRow(
   table: "player_profiles" | "scout_profiles",
   userId: string,
 ): Promise<Result<PlayerProfileRow | ScoutProfileRow>> {
-  const { error: upsertError } = await supabase
+  const inserted = await supabase
     .from(table)
-    .upsert({ id: userId } as never, { onConflict: "id" });
-  if (upsertError) {
-    logSupabaseError(`Supabase: ${table} ensure upsert error`, upsertError);
-    return { success: false, data: null, error: toSupabaseErrorInfo(upsertError) };
+    .insert({ id: userId } as never, { defaultToNull: false } as never);
+  const duplicate =
+    inserted.error?.code === "23505" ||
+    String(inserted.error?.message ?? "").toLowerCase().includes("duplicate");
+  if (inserted.error && !duplicate) {
+    logSupabaseError(`Supabase: ${table} ensure insert error`, inserted.error);
+    return { success: false, data: null, error: toSupabaseErrorInfo(inserted.error) };
   }
 
   const { data, error: selectError } = await supabase
@@ -314,7 +317,7 @@ export async function savePlayerProfile(
     ...safePatch,
   };
   let updateError = (
-    await supabase.from("player_profiles").upsert({ id: userId, ...retryPatch }, { onConflict: "id" })
+    await supabase.from("player_profiles").update(retryPatch).eq("id", userId)
   ).error;
 
   const removedColumns = new Set<string>();
@@ -327,7 +330,7 @@ export async function savePlayerProfile(
     removedColumns.add(missingColumn);
     delete retryPatch[missingColumn as keyof typeof retryPatch];
     updateError = (
-      await supabase.from("player_profiles").upsert({ id: userId, ...retryPatch }, { onConflict: "id" })
+      await supabase.from("player_profiles").update(retryPatch).eq("id", userId)
     ).error;
   }
 
@@ -342,11 +345,20 @@ export async function savePlayerProfile(
     return { success: false, data: null, error: toSupabaseErrorInfo(updateError) };
   }
 
-  const { data: profile, error: selectError } = await supabase
-    .from("player_profiles")
-    .select("*")
-    .eq("id", userId)
-    .maybeSingle();
+  const loadSaved = async () =>
+    supabase.from("player_profiles").select("*").eq("id", userId).maybeSingle();
+
+  let { data: profile, error: selectError } = await loadSaved();
+  if (!selectError && !profile?.id) {
+    const inserted = await supabase
+      .from("player_profiles")
+      .insert({ id: userId, ...retryPatch } as never, { defaultToNull: false } as never);
+    if (inserted.error && inserted.error.code !== "23505") {
+      logSupabaseError("Supabase: player_profiles insert error", inserted.error);
+      return { success: false, data: null, error: toSupabaseErrorInfo(inserted.error) };
+    }
+    ({ data: profile, error: selectError } = await loadSaved());
+  }
 
   if (selectError) {
     logSupabaseError("Supabase: player_profiles select (after save) error", selectError);
@@ -380,15 +392,13 @@ export async function saveScoutProfile(
   const safePatch = mergeSanitizedScoutStrings(patch);
 
   let updateError = (
-    await supabase.from("scout_profiles").upsert({ id: userId, ...safePatch }, { onConflict: "id" })
+    await supabase.from("scout_profiles").update(safePatch).eq("id", userId)
   ).error;
 
   if (updateError && isScoutProfilesMissingBioColumnError(updateError)) {
     const withoutBio: Database["public"]["Tables"]["scout_profiles"]["Update"] = { ...safePatch };
     delete withoutBio.bio;
-    const retry = await supabase
-      .from("scout_profiles")
-      .upsert({ id: userId, ...withoutBio }, { onConflict: "id" });
+    const retry = await supabase.from("scout_profiles").update(withoutBio).eq("id", userId);
     updateError = retry.error;
     if (!updateError && isDev) {
       console.warn(
@@ -402,11 +412,20 @@ export async function saveScoutProfile(
     return { success: false, data: null, error: toSupabaseErrorInfo(updateError) };
   }
 
-  const { data: profile, error: selectError } = await supabase
-    .from("scout_profiles")
-    .select("*")
-    .eq("id", userId)
-    .maybeSingle();
+  const loadSavedScout = async () =>
+    supabase.from("scout_profiles").select("*").eq("id", userId).maybeSingle();
+
+  let { data: profile, error: selectError } = await loadSavedScout();
+  if (!selectError && !profile?.id) {
+    const inserted = await supabase
+      .from("scout_profiles")
+      .insert({ id: userId, ...safePatch } as never, { defaultToNull: false } as never);
+    if (inserted.error && inserted.error.code !== "23505") {
+      logSupabaseError("Supabase: scout_profiles insert error", inserted.error);
+      return { success: false, data: null, error: toSupabaseErrorInfo(inserted.error) };
+    }
+    ({ data: profile, error: selectError } = await loadSavedScout());
+  }
 
   if (selectError) {
     logSupabaseError("Supabase: scout_profiles select (after save) error", selectError);

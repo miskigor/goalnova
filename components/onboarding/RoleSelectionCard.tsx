@@ -232,7 +232,7 @@ export function RoleSelectionCard() {
           role === "player" && signupFullName
             ? { id: userId, full_name: signupFullName }
             : { id: userId },
-          { onConflict: "id" },
+          { onConflict: "id", defaultToNull: false } as never,
         );
 
       if (profileUpsertError) {
