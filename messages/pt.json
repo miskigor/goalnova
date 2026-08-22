@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — Descoberta de talento no futebol",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Plataforma premium para descobrir talento no futebol. Olheiros, clubes e jogadores num só lugar.",
-    "landingTitle": "PitchRusch | Descobre talento no futebol",
+    "landingTitle": "Talento no futebol | App PitchRusch",
     "loginTitle": "Entrar",
     "signupTitle": "Registar",
     "homeTitle": "Início",
@@ -32,7 +32,8 @@
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
     "accountRecoveryTitle": "Account recovery",
-    "landingDescription": "Carrega highlights de futebol, participa em desafios e cria um perfil que os olheiros podem descobrir."
+    "landingDescription": "A app de talento no futebol para jogadores, olheiros e clubes. Carrega highlights, mostra o teu talento e sê descoberto.",
+    "landingKeywords": "talento futebol, app talento futebol, olheiros, descoberta de talento, PitchRusch"
   },
   "common": {
     "save": "Guardar",
@@ -690,7 +691,7 @@
   "landing": {
     "seoBrandLine": "PitchRusch é uma plataforma de descoberta de talentos de futebol para jogadores, olheiros e clubes.",
     "headline": "Mostra o teu talento no futebol.",
-    "subhead": "Carrega os teus highlights, participa em desafios e chama a atenção dos olheiros.",
+    "subhead": "Carrega highlights, mostra o teu talento no futebol e sê notado pelos olheiros.",
     "ctaPrimary": "Junta-te ao PitchRusch",
     "ctaSecondary": "Explorar desafios",
     "navLogin": "Entrar",
@@ -714,7 +715,17 @@
     "foundingBullet2": "Hipótese de destaque no feed",
     "foundingBullet3": "Convida amigos e desbloqueia recompensas",
     "ctaNewHere": "Sou novo aqui",
-    "ctaHaveAccount": "Já tenho uma conta"
+    "ctaHaveAccount": "Já tenho uma conta",
+    "aboutTitle": "A app de talento no futebol",
+    "aboutBody": "O PitchRusch é para jogadores que querem ser vistos. Carrega clips, participa em desafios e coloca o teu talento no futebol à frente de olheiros e clubes.",
+    "faqHeading": "Perguntas",
+    "faq1Question": "O que é o PitchRusch?",
+    "faq1Answer": "O PitchRusch é uma app de talento no futebol. Os jogadores carregam highlights, os olheiros veem perfis e os clubes encontram jogadores num só sítio.",
+    "faq2Question": "Como mostro o meu talento no futebol online?",
+    "faq2Answer": "Cria um perfil grátis, carrega o teu melhor vídeo e participa em desafios. Os olheiros no PitchRusch veem o teu talento sem teres de os perseguir.",
+    "faq3Question": "Os olheiros conseguem encontrar-me no PitchRusch?",
+    "faq3Answer": "Sim. Perfis e vídeos públicos permitem procurar jogadores por posição, pé, altura e disponibilidade para testes.",
+    "heroImageAlt": "Talento no futebol em ação — um jogador remata a bola"
   },
   "nav": {
     "primary": "Navegação principal",

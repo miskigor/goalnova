@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — Scoperta talenti calcistici",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Piattaforma premium per la scoperta di talenti calcistici. Osservatori, club e calciatori in un unico posto.",
-    "landingTitle": "PitchRusch | Scopri talenti calcistici",
+    "landingTitle": "Talento calcistico | App PitchRusch",
     "loginTitle": "Accedi",
     "signupTitle": "Registrati",
     "homeTitle": "Home",
@@ -32,7 +32,8 @@
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
     "accountRecoveryTitle": "Account recovery",
-    "landingDescription": "Carica highlight di calcio, partecipa alle sfide e crea un profilo giocatore per gli scout."
+    "landingDescription": "L'app per il talento calcistico. Carica gli highlight, mostra il tuo talento e fatti scoprire da scout e club.",
+    "landingKeywords": "talento calcistico, app talento calcio, scout calcio, scoperta talenti, PitchRusch"
   },
   "common": {
     "save": "Salva",
@@ -690,7 +691,7 @@
   "landing": {
     "seoBrandLine": "PitchRusch è una piattaforma di scouting calcistico per giocatori, scout e club.",
     "headline": "Mostra il tuo talento calcistico.",
-    "subhead": "Carica i tuoi highlight, partecipa alle sfide e fatti notare dagli scout.",
+    "subhead": "Carica gli highlight, mostra il tuo talento calcistico e fatti notare dagli scout.",
     "ctaPrimary": "Unisciti a PitchRusch",
     "ctaSecondary": "Esplora le sfide",
     "navLogin": "Accedi",
@@ -714,7 +715,17 @@
     "foundingBullet2": "Possibilità di essere in evidenza",
     "foundingBullet3": "Invita amici e sblocca ricompense",
     "ctaNewHere": "Sono nuovo qui",
-    "ctaHaveAccount": "Ho già un account"
+    "ctaHaveAccount": "Ho già un account",
+    "aboutTitle": "L'app per il talento calcistico",
+    "aboutBody": "PitchRusch è per i calciatori che vogliono essere visti. Carica i clip, partecipa alle sfide e metti il tuo talento calcistico davanti a scout e club.",
+    "faqHeading": "Domande",
+    "faq1Question": "Cos'è PitchRusch?",
+    "faq1Answer": "PitchRusch è un'app per il talento calcistico. I giocatori caricano highlight, gli scout consultano i profili, i club trovano giocatori in un unico posto.",
+    "faq2Question": "Come mostro il mio talento calcistico online?",
+    "faq2Answer": "Crea un profilo gratis, carica il tuo video migliore e partecipa alle sfide. Gli scout su PitchRusch vedono il tuo talento senza che tu debba inseguirli.",
+    "faq3Question": "Gli scout possono trovarmi su PitchRusch?",
+    "faq3Answer": "Sì. Profili e video pubblici permettono di cercare giocatori per ruolo, piede, altezza e disponibilità per i provini.",
+    "heroImageAlt": "Talento calcistico in azione — un giocatore calcia il pallone"
   },
   "nav": {
     "primary": "Navigazione principale",

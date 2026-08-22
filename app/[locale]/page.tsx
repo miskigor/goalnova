@@ -5,12 +5,12 @@ import { LandingImmersiveEntry } from "@/components/landing/LandingImmersiveEntr
 import { LandingSteps } from "@/components/landing/LandingSteps";
 import { LandingFoundingPlayer } from "@/components/landing/LandingFoundingPlayer";
 import { LandingFooter } from "@/components/landing/LandingFooter";
+import { LandingSeoContent } from "@/components/landing/LandingSeoContent";
 import { hrefWithLocale } from "@/i18n/routing";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 import { buildBrandLinkPreviewMetadata } from "@/lib/seo/englishLinkPreview";
 import { buildLocaleAlternates, localizedCanonicalPath } from "@/lib/seo/alternates";
 import { buildLandingJsonLd } from "@/lib/seo/buildLandingJsonLd";
-import { SITE_SEO_KEYWORDS } from "@/lib/seo/brandMetadata";
 import { ogLocaleFromAppLocale } from "@/lib/seo/ogLocale";
 
 type Props = {
@@ -22,6 +22,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "metadata" });
   const title = t("landingTitle");
   const description = t("landingDescription");
+  const keywords = t("landingKeywords")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
   const origin = getServerSiteOrigin();
   const metadataBase = siteMetadataBase(origin);
   const canonicalPath = localizedCanonicalPath(locale, "/");
@@ -32,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     applicationName: "PitchRusch",
-    keywords: [...SITE_SEO_KEYWORDS],
+    keywords,
     alternates: {
       ...buildLocaleAlternates("/"),
       canonical: canonicalPath,
@@ -71,16 +75,18 @@ export default async function LandingPage({ params }: Props) {
     ? `${origin.replace(/\/$/, "")}${localizedCanonicalPath(locale, "/")}`
     : undefined;
 
+  const faqs = [
+    { question: t("faq1Question"), answer: t("faq1Answer") },
+    { question: t("faq2Question"), answer: t("faq2Answer") },
+    { question: t("faq3Question"), answer: t("faq3Answer") },
+  ];
+
   const siteJsonLd = buildLandingJsonLd({
     origin,
     pageUrl,
     siteDescription: meta("landingDescription"),
-    faq: [
-      { question: t("step1Title"), answer: t("step1Desc") },
-      { question: t("step2Title"), answer: t("step2Desc") },
-      { question: t("step3Title"), answer: t("step3Desc") },
-      { question: t("foundingTitle"), answer: t("foundingBody") },
-    ],
+    locale,
+    faq: faqs,
   });
 
   const steps: [
@@ -110,10 +116,19 @@ export default async function LandingPage({ params }: Props) {
         ctaNewHere={t("ctaNewHere")}
         ctaHaveAccount={t("ctaHaveAccount")}
         changeLanguageLabel={tLang("changeLanguage")}
+        heroImageAlt={t("heroImageAlt")}
       />
 
       <main>
         <LandingSteps steps={steps} />
+
+        <LandingSeoContent
+          aboutTitle={t("aboutTitle")}
+          aboutLead={t("seoBrandLine")}
+          aboutBody={t("aboutBody")}
+          faqHeading={t("faqHeading")}
+          faqs={faqs}
+        />
 
         <LandingFoundingPlayer
           signupHref={h("/signup")}

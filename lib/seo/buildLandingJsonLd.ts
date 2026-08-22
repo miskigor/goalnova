@@ -4,55 +4,63 @@ type LandingJsonLdInput = {
   origin: string | null;
   pageUrl: string | undefined;
   siteDescription: string;
+  locale: string;
   faq: Array<{ question: string; answer: string }>;
 };
 
-/** Organization + WebSite (+ SearchAction) + FAQPage for the marketing landing. */
+/** Organization + WebSite + SoftwareApplication + FAQPage for the marketing landing. */
 export function buildLandingJsonLd({
   origin,
   pageUrl,
   siteDescription,
+  locale,
   faq,
 }: LandingJsonLdInput): Record<string, unknown> {
   const siteOrigin = origin?.replace(/\/$/, "");
-  const searchTarget = siteOrigin ? `${siteOrigin}/search?q={search_term_string}` : undefined;
+  const organizationId = siteOrigin ? `${siteOrigin}/#organization` : undefined;
+  const websiteId = siteOrigin ? `${siteOrigin}/#website` : undefined;
 
   return {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "Organization",
-        "@id": siteOrigin ? `${siteOrigin}/#organization` : undefined,
+        "@id": organizationId,
         name: APP_DISPLAY_NAME,
         alternateName: ["pitchrusch", "Pitch Rusch"],
+        description: siteDescription,
         url: siteOrigin,
         logo: siteOrigin ? `${siteOrigin}/icon-512.png` : undefined,
         sameAs: [],
       },
       {
         "@type": "WebSite",
-        "@id": siteOrigin ? `${siteOrigin}/#website` : undefined,
+        "@id": websiteId,
         name: APP_DISPLAY_NAME,
         alternateName: "pitchrusch",
         description: siteDescription,
         url: pageUrl ?? siteOrigin,
-        publisher: siteOrigin ? { "@id": `${siteOrigin}/#organization` } : undefined,
-        inLanguage: ["en", "hr", "de", "es", "fr", "it", "pt", "nl", "tr", "ar", "bs", "sr"],
-        ...(searchTarget
-          ? {
-              potentialAction: {
-                "@type": "SearchAction",
-                target: {
-                  "@type": "EntryPoint",
-                  urlTemplate: searchTarget,
-                },
-                "query-input": "required name=search_term_string",
-              },
-            }
-          : {}),
+        inLanguage: locale,
+        publisher: organizationId ? { "@id": organizationId } : undefined,
+      },
+      {
+        "@type": "SoftwareApplication",
+        name: APP_DISPLAY_NAME,
+        applicationCategory: "SportsApplication",
+        operatingSystem: "Web",
+        description: siteDescription,
+        url: pageUrl ?? siteOrigin,
+        inLanguage: locale,
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "EUR",
+        },
+        publisher: organizationId ? { "@id": organizationId } : undefined,
       },
       {
         "@type": "FAQPage",
+        inLanguage: locale,
         mainEntity: faq.map((item) => ({
           "@type": "Question",
           name: item.question,

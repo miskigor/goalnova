@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — Football talent discovery",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Premium football talent discovery. Scouts, clubs, and players in one place.",
-    "landingTitle": "PitchRusch | Futbol yeteneği keşfi",
+    "landingTitle": "Futbol yeteneği | PitchRusch uygulaması",
     "loginTitle": "Log in",
     "signupTitle": "Sign up",
     "homeTitle": "Discover",
@@ -32,7 +32,8 @@
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
     "accountRecoveryTitle": "Account recovery",
-    "landingDescription": "Futbol highlightlarını yükle, meydan okumalara katıl ve scoutların keşfedebileceği bir profil oluştur."
+    "landingDescription": "Oyuncular, scoutlar ve kulüpler için futbol yeteneği uygulaması. Highlight yükle, yeteneğini göster, keşfedil.",
+    "landingKeywords": "futbol yeteneği, futbol yetenek uygulaması, scout, yetenek keşfi, PitchRusch"
   },
   "common": {
     "save": "Save",
@@ -690,7 +691,7 @@
   "landing": {
     "seoBrandLine": "PitchRusch, oyuncular, scoutlar ve kulüpler için bir futbol yetenek keşif platformudur.",
     "headline": "Futbol yeteneğini göster.",
-    "subhead": "Highlightlarını yükle, meydan okumalara katıl ve scoutların dikkatini çek.",
+    "subhead": "Highlight yükle, futbol yeteneğini göster, scoutlar seni fark etsin.",
     "ctaPrimary": "PitchRusch'a katıl",
     "ctaSecondary": "Meydan okumaları keşfet",
     "navLogin": "Giriş yap",
@@ -714,7 +715,17 @@
     "foundingBullet2": "Öne çıkma şansı",
     "foundingBullet3": "Arkadaşlarını davet et ve ödülleri aç",
     "ctaNewHere": "Burada yeniyim",
-    "ctaHaveAccount": "Zaten bir hesabım var"
+    "ctaHaveAccount": "Zaten bir hesabım var",
+    "aboutTitle": "Futbol yeteneği uygulaması",
+    "aboutBody": "PitchRusch, görülmek isteyen oyuncular için. Highlight yükle, meydan okumalara katıl ve futbol yeteneğini scoutların ve kulüplerin önüne koy.",
+    "faqHeading": "Sorular",
+    "faq1Question": "PitchRusch nedir?",
+    "faq1Answer": "PitchRusch bir futbol yeteneği uygulamasıdır. Oyuncular highlight yükler, scoutlar profilleri inceler, kulüpler oyuncuları tek yerde bulur.",
+    "faq2Question": "Futbol yeteneğimi internette nasıl gösteririm?",
+    "faq2Answer": "Ücretsiz profil oluştur, en iyi videonu yükle ve meydan okumalara katıl. PitchRusch'taki scoutlar yeteneğini sen peşlerinden koşmadan görür.",
+    "faq3Question": "Scoutlar beni PitchRusch'ta bulabilir mi?",
+    "faq3Answer": "Evet. Herkese açık profil ve videolar scoutların ve kulüplerin mevki, ayak, boy ve deneme uygunluğuna göre arama yapmasını sağlar.",
+    "heroImageAlt": "Futbol yeteneği aksiyonda — bir oyuncu topa vuruyor"
   },
   "nav": {
     "primary": "Primary navigation",

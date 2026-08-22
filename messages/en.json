@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch | Football Talent Discovery",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Premium football talent discovery. Scouts, clubs, and players in one place.",
-    "landingTitle": "PitchRusch | Football Talent Discovery",
+    "landingTitle": "Football talent | PitchRusch",
     "loginTitle": "Log in",
     "signupTitle": "Sign up",
     "homeTitle": "Discover",
@@ -32,7 +32,8 @@
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
     "accountRecoveryTitle": "Account recovery",
-    "landingDescription": "Football talent discovery platform for players, scouts and clubs. Upload highlights, join challenges and get discovered."
+    "landingDescription": "The football talent app for players, scouts and clubs. Upload highlights, show your talent, and get discovered.",
+    "landingKeywords": "football talent, football talent app, talent discovery, football scouts, PitchRusch"
   },
   "common": {
     "save": "Save",
@@ -690,7 +691,7 @@
   "landing": {
     "seoBrandLine": "PitchRusch is a football talent discovery platform for players, scouts and clubs.",
     "headline": "Show your football talent.",
-    "subhead": "Upload your highlights, join challenges and get noticed by scouts.",
+    "subhead": "Upload highlights, show your football talent, and get noticed by scouts.",
     "ctaPrimary": "Join PitchRusch",
     "ctaSecondary": "Explore challenges",
     "navLogin": "Log in",
@@ -714,7 +715,17 @@
     "foundingBullet2": "Chance to be featured",
     "foundingBullet3": "Invite friends and unlock rewards",
     "ctaNewHere": "I'm new here",
-    "ctaHaveAccount": "I already have an account"
+    "ctaHaveAccount": "I already have an account",
+    "aboutTitle": "The football talent app",
+    "aboutBody": "PitchRusch is built for players who want to be seen. Upload match clips, join skill challenges, and put your football talent in front of scouts and clubs — without sending cold emails.",
+    "faqHeading": "Questions",
+    "faq1Question": "What is PitchRusch?",
+    "faq1Answer": "PitchRusch is a football talent app. Players upload highlights, scouts browse profiles, and clubs find players in one place.",
+    "faq2Question": "How do I show my football talent online?",
+    "faq2Answer": "Create a free profile, upload your best video, and join challenges. Scouts on PitchRusch can review your talent without you chasing them.",
+    "faq3Question": "Can scouts find me on PitchRusch?",
+    "faq3Answer": "Yes. Public profiles and videos are made so scouts and clubs can search players by position, preferred foot, height, and trial availability.",
+    "heroImageAlt": "Football talent in action — a player striking the ball"
   },
   "nav": {
     "primary": "Primary navigation",

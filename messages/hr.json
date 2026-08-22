@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — Otkrivanje nogometnih talenata",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Premium platforma za otkrivanje nogometnih talenata. Skauti, klubovi i igrači na jednom mjestu.",
-    "landingTitle": "PitchRusch | Otkrij nogometni talent",
+    "landingTitle": "Nogometni talent | PitchRusch aplikacija",
     "loginTitle": "Prijava",
     "signupTitle": "Registracija",
     "homeTitle": "Početna",
@@ -32,7 +32,8 @@
     "resetPasswordTitle": "Nova šifra",
     "forgotPasswordTitle": "Zaboravljena lozinka",
     "accountRecoveryTitle": "Oporavak računa",
-    "landingDescription": "Prenesi nogometne highlightse, sudjeluj u izazovima i izgradi profil koji skauti mogu otkriti."
+    "landingDescription": "Aplikacija za nogometni talent. Prenesi highlightse, pokaži svoj talent i neka te skauti i klubovi otkriju na PitchRuschu.",
+    "landingKeywords": "nogometni talent, talent nogometni, aplikacija nogometni talent, otkrivanje nogometnih talenata, nogometni skauti, PitchRusch"
   },
   "common": {
     "save": "Spremi",
@@ -690,7 +691,7 @@
   "landing": {
     "seoBrandLine": "PitchRusch je platforma za otkrivanje nogometnih talenata za igrače, skaute i klubove.",
     "headline": "Pokaži svoj nogometni talent.",
-    "subhead": "Prenesi svoje highlightse, sudjeluj u izazovima i budi primijećen.",
+    "subhead": "Prenesi highlightse i pokaži nogometni talent skautima i klubovima.",
     "ctaPrimary": "Pridruži se PitchRuschu",
     "ctaSecondary": "Istraži izazove",
     "navLogin": "Prijava",
@@ -714,7 +715,17 @@
     "foundingBullet2": "Mogućnost isticanja profila",
     "foundingBullet3": "Pozovi prijatelje i otključaj nagrade",
     "ctaNewHere": "Novi sam ovdje",
-    "ctaHaveAccount": "Već imam račun"
+    "ctaHaveAccount": "Već imam račun",
+    "aboutTitle": "Aplikacija za nogometni talent",
+    "aboutBody": "PitchRusch je napravljen za igrače koji žele biti viđeni. Prenesi highlightse, sudjeluj u izazovima i stavi svoj nogometni talent pred skaute i klubove — iz Hrvatske i Europe.",
+    "faqHeading": "Česta pitanja",
+    "faq1Question": "Što je PitchRusch?",
+    "faq1Answer": "PitchRusch je aplikacija za nogometni talent. Igrači prenose highlightse, skauti pregledavaju profile, klubovi pronalaze igrače na jednom mjestu.",
+    "faq2Question": "Kako pokazati nogometni talent online?",
+    "faq2Answer": "Napravi besplatni profil, prenesi svoj najbolji video i sudjeluj u izazovima. Skauti na PitchRuschu vide tvoj talent bez da ih moraš juriti.",
+    "faq3Question": "Mogu li me skauti pronaći na PitchRuschu?",
+    "faq3Answer": "Da. Javni profil i video omogućuju skautima i klubovima da pretražuju igrače po poziciji, nogi, visini i dostupnosti za probe.",
+    "heroImageAlt": "Nogometni talent u akciji — igrač puca loptu"
   },
   "nav": {
     "primary": "Glavna navigacija",

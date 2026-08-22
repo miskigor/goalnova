@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — Football talent discovery",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Premium football talent discovery. Scouts, clubs, and players in one place.",
-    "landingTitle": "PitchRusch | Voetbaltalent ontdekken",
+    "landingTitle": "Voetbaltalent | PitchRusch-app",
     "loginTitle": "Log in",
     "signupTitle": "Sign up",
     "homeTitle": "Discover",
@@ -32,7 +32,8 @@
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
     "accountRecoveryTitle": "Account recovery",
-    "landingDescription": "Upload voetbal-highlights, doe mee aan challenges en bouw een spelersprofiel voor scouts."
+    "landingDescription": "De app voor voetbaltalent. Upload highlights, laat je talent zien en word ontdekt door scouts en clubs.",
+    "landingKeywords": "voetbaltalent, voetbaltalent app, scouts, talentontdekking, PitchRusch"
   },
   "common": {
     "save": "Save",
@@ -690,7 +691,7 @@
   "landing": {
     "seoBrandLine": "PitchRusch is een platform voor voetbaltalent voor spelers, scouts en clubs.",
     "headline": "Laat je voetbaltalent zien.",
-    "subhead": "Upload je highlights, doe mee aan challenges en val op bij scouts.",
+    "subhead": "Upload highlights, laat je voetbaltalent zien en val op bij scouts.",
     "ctaPrimary": "Word lid van PitchRusch",
     "ctaSecondary": "Challenges verkennen",
     "navLogin": "Inloggen",
@@ -714,7 +715,17 @@
     "foundingBullet2": "Kans om uitgelicht te worden",
     "foundingBullet3": "Nodig vrienden uit en ontgrendel beloningen",
     "ctaNewHere": "Ik ben hier nieuw",
-    "ctaHaveAccount": "Ik heb al een account"
+    "ctaHaveAccount": "Ik heb al een account",
+    "aboutTitle": "De app voor voetbaltalent",
+    "aboutBody": "PitchRusch is voor spelers die gezien willen worden. Upload clips, doe mee aan challenges en zet je voetbaltalent voor scouts en clubs.",
+    "faqHeading": "Vragen",
+    "faq1Question": "Wat is PitchRusch?",
+    "faq1Answer": "PitchRusch is een app voor voetbaltalent. Spelers uploaden highlights, scouts bekijken profielen, clubs vinden spelers op één plek.",
+    "faq2Question": "Hoe laat ik mijn voetbaltalent online zien?",
+    "faq2Answer": "Maak een gratis profiel, upload je beste video en doe mee aan challenges. Scouts op PitchRusch zien je talent zonder dat jij hen hoeft achterna te zitten.",
+    "faq3Question": "Kunnen scouts mij vinden op PitchRusch?",
+    "faq3Answer": "Ja. Openbare profielen en video's laten scouts en clubs zoeken op positie, been, lengte en beschikbaarheid voor stages.",
+    "heroImageAlt": "Voetbaltalent in actie — een speler schiet de bal"
   },
   "nav": {
     "primary": "Primary navigation",

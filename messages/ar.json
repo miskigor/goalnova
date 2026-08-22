@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — اكتشاف مواهب كرة القدم",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "منصة متميزة لاكتشاف مواهب كرة القدم. كشافة، أندية ولاعبون في مكان واحد.",
-    "landingTitle": "PitchRusch | اكتشاف مواهب كرة القدم",
+    "landingTitle": "موهبة كرة القدم | تطبيق PitchRusch",
     "loginTitle": "تسجيل الدخول",
     "signupTitle": "إنشاء حساب",
     "homeTitle": "الرئيسية",
@@ -32,7 +32,8 @@
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
     "accountRecoveryTitle": "Account recovery",
-    "landingDescription": "ارفع لحظات كرة القدم البارزة، شارك في التحديات وأنشئ ملف لاعب يمكن للكشافة اكتشافه."
+    "landingDescription": "تطبيق لاكتشاف مواهب كرة القدم للاعبين والكشافة والأندية. ارفع لقطاتك وأظهر موهبتك ليكتشفوك.",
+    "landingKeywords": "موهبة كرة القدم, تطبيق مواهب كرة القدم, كشافة, اكتشاف المواهب, PitchRusch"
   },
   "common": {
     "save": "حفظ",
@@ -690,7 +691,7 @@
   "landing": {
     "seoBrandLine": "PitchRusch منصة لاكتشاف مواهب كرة القدم للاعبين والكشافة والأندية.",
     "headline": "أظهر موهبتك في كرة القدم.",
-    "subhead": "ارفع أبرز لحظاتك، شارك في التحديات ولفت أنظار الكشافة.",
+    "subhead": "ارفع لقطاتك وأظهر موهبة كرة القدم للكشافة والأندية.",
     "ctaPrimary": "انضم إلى PitchRusch",
     "ctaSecondary": "استكشف التحديات",
     "navLogin": "تسجيل الدخول",
@@ -714,7 +715,17 @@
     "foundingBullet2": "فرصة للظهور في الواجهة",
     "foundingBullet3": "ادعُ الأصدقاء وافتح المكافآت",
     "ctaNewHere": "أنا جديد هنا",
-    "ctaHaveAccount": "لدي حساب بالفعل"
+    "ctaHaveAccount": "لدي حساب بالفعل",
+    "aboutTitle": "تطبيق مواهب كرة القدم",
+    "aboutBody": "PitchRusch للاعبين الذين يريدون أن يُرَوا. ارفع اللقطات، شارك في التحديات، وضع موهبة كرة القدم أمام الكشافة والأندية.",
+    "faqHeading": "أسئلة",
+    "faq1Question": "ما هو PitchRusch؟",
+    "faq1Answer": "PitchRusch تطبيق لمواهب كرة القدم. يرفع اللاعبون اللقطات، وتتصفح الكشافة الملفات، وتجد الأندية اللاعبين في مكان واحد.",
+    "faq2Question": "كيف أظهر موهبة كرة القدم عبر الإنترنت؟",
+    "faq2Answer": "أنشئ ملفاً مجانياً، ارفع أفضل فيديو، وشارك في التحديات. الكشافة على PitchRusch يرون موهبتك دون أن تطاردهم.",
+    "faq3Question": "هل يمكن للكشافة أن يجدوني على PitchRusch؟",
+    "faq3Answer": "نعم. الملفات والفيديوهات العامة تتيح للكشافة والأندية البحث حسب المركز والقدم والطول وتوفر التجارب.",
+    "heroImageAlt": "موهبة كرة القدم أثناء التنفيذ — لاعب يسدد الكرة"
   },
   "nav": {
     "primary": "التنقل الرئيسي",

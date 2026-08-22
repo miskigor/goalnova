@@ -12,6 +12,7 @@ type Props = {
   ctaNewHere: string;
   ctaHaveAccount: string;
   changeLanguageLabel: string;
+  heroImageAlt: string;
 };
 
 /**
@@ -26,6 +27,7 @@ export function LandingImmersiveEntry({
   ctaNewHere,
   ctaHaveAccount,
   changeLanguageLabel,
+  heroImageAlt,
 }: Props) {
   return (
     <section
@@ -36,7 +38,7 @@ export function LandingImmersiveEntry({
       <div data-landing-immersive-media aria-hidden>
         <Image
           src="/images/landing/football-kick-preview.jpg"
-          alt=""
+          alt={heroImageAlt}
           fill
           priority
           sizes="100vw"

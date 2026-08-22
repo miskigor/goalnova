@@ -3,7 +3,7 @@
     "rootTitle": "PitchRusch — Fußball-Talententdeckung",
     "rootTitleTemplate": "%s · PitchRusch",
     "rootDescription": "Premium-Plattform zur Fußball-Talententdeckung. Scouts, Vereine und Spieler an einem Ort.",
-    "landingTitle": "PitchRusch | Fußball-Talente entdecken",
+    "landingTitle": "Fußball-Talent | PitchRusch App",
     "loginTitle": "Anmelden",
     "signupTitle": "Registrieren",
     "homeTitle": "Start",
@@ -32,7 +32,8 @@
     "resetPasswordTitle": "Set new password",
     "forgotPasswordTitle": "Reset password",
     "accountRecoveryTitle": "Account recovery",
-    "landingDescription": "Lade Fußball-Highlights hoch, nimm an Challenges teil und erstelle ein Spielerprofil für Scouts."
+    "landingDescription": "Die App für Fußball-Talente. Lade Highlights hoch, zeig dein Talent und werde von Scouts und Vereinen entdeckt.",
+    "landingKeywords": "Fußball Talent, Fußball-Talent App, Talententdeckung, Fußball Scouts, PitchRusch"
   },
   "common": {
     "save": "Speichern",
@@ -690,7 +691,7 @@
   "landing": {
     "seoBrandLine": "PitchRusch ist eine Plattform zur Entdeckung von Fußballtalenten für Spieler, Scouts und Vereine.",
     "headline": "Zeig dein Fußball-Talent.",
-    "subhead": "Lade Highlights hoch, nimm an Challenges teil und werde von Scouts entdeckt.",
+    "subhead": "Lade Highlights hoch, zeig dein Fußball-Talent und werde von Scouts entdeckt.",
     "ctaPrimary": "PitchRusch beitreten",
     "ctaSecondary": "Challenges entdecken",
     "navLogin": "Anmelden",
@@ -714,7 +715,17 @@
     "foundingBullet2": "Chance, vorgestellt zu werden",
     "foundingBullet3": "Freunde einladen und Belohnungen freischalten",
     "ctaNewHere": "Ich bin neu hier",
-    "ctaHaveAccount": "Ich habe bereits ein Konto"
+    "ctaHaveAccount": "Ich habe bereits ein Konto",
+    "aboutTitle": "Die App für Fußball-Talente",
+    "aboutBody": "PitchRusch ist für Spieler, die gesehen werden wollen. Lade Highlights hoch, nimm an Challenges teil und zeig dein Fußball-Talent Scouts und Vereinen — ohne kalte E-Mails.",
+    "faqHeading": "Fragen",
+    "faq1Question": "Was ist PitchRusch?",
+    "faq1Answer": "PitchRusch ist eine App für Fußball-Talente. Spieler laden Highlights hoch, Scouts prüfen Profile, Vereine finden Spieler an einem Ort.",
+    "faq2Question": "Wie zeige ich mein Fußball-Talent online?",
+    "faq2Answer": "Erstelle ein kostenloses Profil, lade dein bestes Video hoch und nimm an Challenges teil. Scouts auf PitchRusch sehen dein Talent, ohne dass du ihnen hinterherlaufen musst.",
+    "faq3Question": "Können Scouts mich auf PitchRusch finden?",
+    "faq3Answer": "Ja. Öffentliche Profile und Videos sind dafür gemacht, dass Scouts und Vereine nach Position, Fuß, Größe und Probetraining suchen können.",
+    "heroImageAlt": "Fußball-Talent in Aktion — ein Spieler schießt den Ball"
   },
   "nav": {
     "primary": "Hauptnavigation",
