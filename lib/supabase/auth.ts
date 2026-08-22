@@ -628,15 +628,9 @@ async function signInViaSameOriginApi({
     });
   }
 
-  // Best-effort client sync — do not block login (setSession often hangs in in-app browsers).
-  void supabase.auth
-    .setSession({
-      access_token: fullSession.access_token,
-      refresh_token: fullSession.refresh_token,
-    })
-    .catch(() => {
-      // Full-page navigation after login reloads session from localStorage.
-    });
+  // Do not call setSession() before the full-page jump to /home. It often emits
+  // SIGNED_OUT while the in-memory client is empty, which used to wipe the
+  // tokens we just saved and bounce the user back to the login form.
 
   return finalizeEmailPasswordSignIn({
     session: fullSession,

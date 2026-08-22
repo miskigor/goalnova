@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { applyGateSessionSnapshot, type AuthSnapshotState } from "@/lib/auth/applyGateSessionSnapshot";
 import { clearFreshLogin, setFreshLogin } from "@/lib/auth/freshLogin";
@@ -14,10 +14,7 @@ import {
   urlHasPendingAuthRedirect,
 } from "@/lib/auth/consumeAuthRedirectFromUrl";
 import { rememberPendingConfirmEmail } from "@/lib/auth/pendingConfirmEmail";
-import {
-  recoverStaleSupabaseSession,
-  hasSupabaseAuthStorage,
-} from "@/lib/auth/staleSessionRecovery";
+import { hasSupabaseAuthStorage } from "@/lib/auth/staleSessionRecovery";
 import { PitchruschLoadingScreen } from "@/components/loading/PitchruschLoadingScreen";
 import { supabase } from "@/lib/supabase/client";
 import type { Session } from "@supabase/supabase-js";
@@ -99,24 +96,34 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const [checking, setChecking] = useState(true);
 
   const didRedirectRef = useRef(false);
+  const settledRef = useRef(false);
+  const pathnameRef = useRef(pathname);
+  pathnameRef.current = pathname;
 
   useLayoutEffect(() => {
-    const initial = readInitialAuthState();
     if (
       mode === "guest" &&
       isManualGuestAuthPath(pathname) &&
       !oauthReturnLikely()
     ) {
+      const initial = readInitialAuthState();
       setSession(initial.session);
       setIsAuthenticated(initial.isAuthenticated ?? false);
       setEmailConfirmed(initial.emailConfirmed);
       setChecking(false);
+      settledRef.current = true;
       return;
     }
+
+    // In-app navigations must not re-run the cold auth check (full-screen splash).
+    if (settledRef.current) return;
+
+    const initial = readInitialAuthState();
     setSession(initial.session);
     setIsAuthenticated(initial.isAuthenticated);
     setEmailConfirmed(initial.emailConfirmed);
     setChecking(initial.checking);
+    if (!initial.checking) settledRef.current = true;
   }, [mode, pathname]);
 
   useEffect(() => {
@@ -144,6 +151,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     const finishInit = () => {
       if (!mounted || initSettled) return;
       initSettled = true;
+      settledRef.current = true;
       setIsAuthenticated((prev) => (prev === null ? false : prev));
       setChecking(false);
     };
@@ -154,44 +162,66 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
           setFreshLogin();
         }
         if (event === "SIGNED_OUT" && !nextSession) {
+          if (hasSupabaseAuthStorage()) {
+            const persisted = readSyncGateSessionSnapshot();
+            if (persisted.session || persisted.user?.id) {
+              applySnapshot(applyGateSessionSnapshot(persisted));
+            }
+            return;
+          }
           if (!mounted) return;
           setSession(null);
           setIsAuthenticated(false);
           setEmailConfirmed(null);
-          void recoverStaleSupabaseSession();
           return;
         }
 
         if (!initSettled && event === "INITIAL_SESSION") {
           if (nextSession) {
             seedGateSessionSnapshot(nextSession);
+            applySnapshot(
+              applyGateSessionSnapshot({
+                session: nextSession,
+                user: nextSession?.user ?? null,
+              }),
+            );
+          } else {
+            const persisted = readSyncGateSessionSnapshot();
+            if (persisted.session || persisted.user?.id) {
+              applySnapshot(applyGateSessionSnapshot(persisted));
+            } else if (!hasSupabaseAuthStorage()) {
+              applySnapshot(
+                applyGateSessionSnapshot({ session: null, user: null }),
+              );
+            }
           }
-          applySnapshot(
-            applyGateSessionSnapshot({
-              session: nextSession,
-              user: nextSession?.user ?? null,
-            }),
-          );
           finishInit();
           return;
         }
 
         if (nextSession) {
           seedGateSessionSnapshot(nextSession);
+          applySnapshot(
+            applyGateSessionSnapshot({
+              session: nextSession,
+              user: nextSession.user ?? null,
+            }),
+          );
+          return;
         }
-        applySnapshot(
-          applyGateSessionSnapshot({
-            session: nextSession,
-            user: nextSession?.user ?? null,
-          }),
-        );
+
+        if (!hasSupabaseAuthStorage()) {
+          applySnapshot(
+            applyGateSessionSnapshot({ session: null, user: null }),
+          );
+        }
       },
     );
 
     async function init() {
       if (
         mode === "guest" &&
-        isManualGuestAuthPath(pathname) &&
+        isManualGuestAuthPath(pathnameRef.current) &&
         !oauthReturnLikely()
       ) {
         finishInit();
@@ -233,7 +263,7 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
       mounted = false;
       subscription.subscription.unsubscribe();
     };
-  }, [mode, pathname]);
+  }, [mode]);
 
   useEffect(() => {
     if (checking) return;
@@ -281,11 +311,12 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
     }
   }, [checking, isAuthenticated, emailConfirmed, mode, pathname, redirectTo, router, session]);
 
-  if (checking) {
+  const isLoggedIn = isAuthenticated ?? Boolean(session);
+
+  // Keep chrome mounted while a logged-in session re-checks (tab switches).
+  if (checking && !isLoggedIn) {
     return <PitchruschLoadingScreen />;
   }
-
-  const isLoggedIn = isAuthenticated ?? Boolean(session);
 
   const guestAuthSnapshotPending =
     mode === "guest" && !checking && isAuthenticated === null && session === null;

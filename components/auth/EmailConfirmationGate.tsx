@@ -102,6 +102,12 @@ export function EmailConfirmationGate({ children }: Props) {
         return;
       }
 
+      if (!user) {
+        didRedirectRef.current = false;
+        if (!cancelled) setAllowed(true);
+        return;
+      }
+
       if (!didRedirectRef.current) {
         didRedirectRef.current = true;
         rememberPendingConfirmEmail(user?.email ?? session?.user?.email);

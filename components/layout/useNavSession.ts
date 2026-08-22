@@ -3,10 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { hasPersistedSupabaseSession } from "@/lib/auth/hasPersistedSupabaseSession";
-import {
-  recoverIfInvalidRefreshToken,
-  recoverStaleSupabaseSession,
-} from "@/lib/auth/staleSessionRecovery";
+import { recoverIfInvalidRefreshToken } from "@/lib/auth/staleSessionRecovery";
 import { supabase } from "@/lib/supabase/client";
 
 /**
@@ -133,9 +130,9 @@ function startNavSessionSync() {
     }
   })();
 
-  supabase.auth.onAuthStateChange(async (event, session) => {
+  supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_OUT" && !session) {
-      await recoverStaleSupabaseSession();
+      if (hasPersistedSupabaseSession()) return;
       applyNavGuest(true);
       return;
     }

@@ -53,10 +53,8 @@ export function persistSupabaseSession(session: Session): boolean {
       expires_at: normalized.expires_at,
       expires_in: normalized.expires_in,
       token_type: normalized.token_type,
+      user: normalized.user ?? null,
     };
-    if (normalized.user) {
-      payload.user = normalized.user;
-    }
 
     window.localStorage.setItem(storageKey, JSON.stringify(payload));
     if (normalized.user) {

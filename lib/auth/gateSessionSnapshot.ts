@@ -130,13 +130,6 @@ function readPersistedSessionFromStorage(): Session | null {
     const parsed = JSON.parse(raw) as unknown;
     if (!isSessionTokenRecord(parsed)) return null;
 
-    if (typeof parsed.expires_at === "number" && parsed.expires_at > 0) {
-      const expiresAtMs = parsed.expires_at * 1000;
-      if (Date.now() >= expiresAtMs - 30_000) {
-        return null;
-      }
-    }
-
     const user = parsed.user ?? readPersistedUserFromStorage(storageKey);
     return user ? ({ ...parsed, user } as Session) : ({ ...parsed } as Session);
   } catch {
@@ -152,8 +145,23 @@ export async function readGateSessionSnapshot(
   gateLabel: string,
   options?: { session?: Session | null },
 ): Promise<GateSessionSnapshot> {
-  if (options?.session !== undefined) {
+  if (options?.session) {
     return writeCache(snapshotFromSession(options.session));
+  }
+
+  if (options?.session === null) {
+    const persistedSession = readPersistedSessionFromStorage();
+    if (persistedSession) {
+      const user =
+        persistedSession.user ??
+        readPersistedUserFromStorage(supabaseStorageKey() ?? "") ??
+        null;
+      return writeCache({
+        session: persistedSession,
+        user,
+      });
+    }
+    return writeCache(snapshotFromSession(null));
   }
 
   const now = Date.now();

@@ -1,9 +1,13 @@
 /**
  * Shown while the locale layout streams (messages) or a `[locale]` route segment loads.
- * Black background avoids a long white flash on cold visits (e.g. from search).
+ * Black background avoids a white flash; keep it light so navigations are not a logo splash.
  */
-import { PitchruschLoadingScreen } from "@/components/loading/PitchruschLoadingScreen";
+import { RouteSegmentFallback } from "@/components/loading/RouteSegmentFallback";
 
 export function LocaleRouteFallback() {
-  return <PitchruschLoadingScreen />;
+  return (
+    <div className="min-h-dvh w-full bg-black">
+      <RouteSegmentFallback />
+    </div>
+  );
 }

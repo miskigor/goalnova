@@ -1,4 +1,5 @@
 import { invalidateGateSessionSnapshot } from "@/lib/auth/gateSessionSnapshot";
+import { hasPersistedSupabaseSession } from "@/lib/auth/hasPersistedSupabaseSession";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 
 export type GateAuthEventContext = {
@@ -23,7 +24,15 @@ export function resolveGateAuthEventAction(
 ): GateAuthEventAction {
   const userId = session?.user?.id ?? null;
 
+  if (event === "INITIAL_SESSION" && !userId) {
+    // Auth client often emits a null INITIAL_SESSION before localStorage is read.
+    return "skip";
+  }
+
   if (event === "SIGNED_OUT" || !userId) {
+    if (hasPersistedSupabaseSession()) {
+      return "skip";
+    }
     invalidateGateSessionSnapshot();
     return "reevaluate-block";
   }

@@ -11,7 +11,6 @@ import {
   type ReactNode,
 } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { usePathname } from "@/i18n/navigation";
 import { IncomingMessageAlert } from "@/components/notifications/IncomingMessageAlert";
 import { IncomingMessageAlertBoundary } from "@/components/notifications/IncomingMessageAlertBoundary";
 import { devWarn } from "@/lib/devLog";
@@ -52,7 +51,6 @@ const UNHEALTHY_STATUSES = new Set([
 ]);
 
 export function NotificationsInboxProvider({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
   const [unreadCount, setUnreadCount] = useState(0);
   const [realtimeHealthy, setRealtimeHealthy] = useState(true);
   const userIdRef = useRef<string | null>(null);
@@ -136,7 +134,7 @@ export function NotificationsInboxProvider({ children }: { children: ReactNode }
   useEffect(() => {
     if (!userIdRef.current) return;
     void refreshUnreadCount();
-  }, [pathname, refreshUnreadCount]);
+  }, [refreshUnreadCount]);
 
   useEffect(() => {
     if (realtimeHealthy) return;

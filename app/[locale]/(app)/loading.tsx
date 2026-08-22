@@ -1,13 +1,9 @@
 /**
- * Page-segment loading for `(app)` routes. `(app)/layout` keeps {@link AppChromeLayout}
- * mounted; this only fills the main column while the page RSC boundary resolves.
+ * Page-segment loading for `(app)` routes. `(app)/layout` keeps chrome mounted;
+ * this only fills the main column while the page streams.
  */
-import { PitchruschLoadingScreen } from "@/components/loading/PitchruschLoadingScreen";
+import { RouteSegmentFallback } from "@/components/loading/RouteSegmentFallback";
 
 export default function AppSectionLoading() {
-  return (
-    <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-black">
-      <PitchruschLoadingScreen fullScreen={false} label="Loading…" />
-    </div>
-  );
+  return <RouteSegmentFallback />;
 }
