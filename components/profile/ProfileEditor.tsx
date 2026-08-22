@@ -54,6 +54,7 @@ import { fetchMyPlayerPremiumProfile, setFeaturedVideo } from "@/lib/supabase/pl
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
 import { parseInstagramHandle } from "@/lib/instagram/playerInstagram";
 import { InstagramProfileLink } from "@/components/profile/InstagramProfileLink";
+import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { resetAppShellHorizontalScroll } from "@/lib/feed/feedScrollContract";
 import { resetMobileBrowserZoom } from "@/lib/layout/resetMobileBrowserZoom";
 import {
@@ -183,6 +184,7 @@ const SCOUT_ROLE_OPTIONS = [
 
 export function ProfileEditor() {
   const t = useTranslations("profileEditor");
+  const tProfile = useTranslations("profile");
   const tSv = useTranslations("scoutVerification");
   const tCommon = useTranslations("authCommon");
   const tErr = useTranslations("errors");
@@ -1123,9 +1125,20 @@ export function ProfileEditor() {
       {saved ? (
         <div
           role="status"
-          className="max-w-full break-words rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-100/95"
+          className="max-w-full space-y-3 break-words rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-4 py-3 text-sm text-emerald-100/95"
         >
-          {t("saved")}
+          <p>{t("saved")}</p>
+          {role === "player" ? (
+            <div className="space-y-2 text-gn-text-secondary">
+              <p>{tProfile("uploadFirstText")}</p>
+              <Link
+                href="/upload"
+                className={`${GN_PRIMARY_BUTTON_CLASS} min-h-11 w-full max-w-full`}
+              >
+                {tProfile("uploadFirstCta")}
+              </Link>
+            </div>
+          ) : null}
         </div>
       ) : null}
 

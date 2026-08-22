@@ -283,7 +283,10 @@ export function RoleSelectionCard() {
         markPostAuthProfileLandingComplete(userId);
       }
       writeCachedRoleOnboardingComplete(userId);
-      navigateAfterAuth(role === "scout" ? "/scout-apply" : "/profile", locale);
+      navigateAfterAuth(
+        role === "scout" ? "/scout-apply" : "/settings/profile",
+        locale,
+      );
 
       if (role === "player") {
         void (async () => {

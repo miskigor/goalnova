@@ -37,7 +37,8 @@ import { InstagramProfileLink } from "@/components/profile/InstagramProfileLink"
 import { parseInstagramHandle } from "@/lib/instagram/playerInstagram";
 import { careerHistoryFromDb } from "@/lib/profileFieldSanitize";
 import { isPlayerPremium } from "@/lib/premium/playerPremium";
-import { GN_SUCCESS_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { GN_PRIMARY_BUTTON_CLASS, GN_SUCCESS_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
+import { ProfileUploadLink } from "@/components/profile/ProfileUploadLink";
 import { UploadFirstVideoBanner } from "@/components/onboarding/UploadFirstVideoBanner";
 import { useUploadFirstVideoDismiss } from "@/hooks/useUploadFirstVideoDismiss";
 import { useVideoUploadEligibility } from "@/hooks/useVideoUploadEligibility";
@@ -532,6 +533,11 @@ export function PlayerPublicProfile({
             >
               <span className="min-w-0 truncate">{tProfile("editProfile")}</span>
             </Link>
+            {videos.length === 0 && uploadEligibility === "player" ? (
+              <div className="mt-2">
+                <ProfileUploadLink />
+              </div>
+            ) : null}
             <div className="mt-2">
               <ChallengeFriendButton fullWidth />
             </div>
@@ -700,6 +706,14 @@ export function PlayerPublicProfile({
             <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-gn-text-secondary">
               {tProfile("noVideosDescription")}
             </p>
+            {isOwnProfile && uploadEligibility === "player" ? (
+              <Link
+                href="/upload"
+                className={`${GN_PRIMARY_BUTTON_CLASS} mt-5 min-h-11 w-full max-w-xs max-lg:min-h-9 max-lg:text-xs`}
+              >
+                {tProfile("noVideosCTA")}
+              </Link>
+            ) : null}
           </div>
         ) : (
           <ProfileVideoGrid

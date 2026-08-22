@@ -9,17 +9,32 @@ import {
   peekPendingReferralCode,
   resolvePendingReferralCode,
 } from "@/lib/supabase/referrals";
+import { peekPendingSignupRole } from "@/lib/auth/pendingSignupRole";
 
 /** Sync `/role` href — safe inside auth gates (never awaits hung `getUser`). */
 export function roleOnboardingHrefSync(): string {
+  const qs = new URLSearchParams();
+  const pendingRole = peekPendingSignupRole();
+  if (pendingRole === "player" || pendingRole === "scout") {
+    qs.set("role", pendingRole);
+  }
   const pendingRef = peekPendingReferralCode();
-  return pendingRef ? `/role?ref=${encodeURIComponent(pendingRef)}` : "/role";
+  if (pendingRef) qs.set("ref", pendingRef);
+  const query = qs.toString();
+  return query ? `/role?${query}` : "/role";
 }
 
 /** `/role` with pending referral query when available. */
 export async function roleOnboardingHref(): Promise<string> {
+  const qs = new URLSearchParams();
+  const pendingRole = peekPendingSignupRole();
+  if (pendingRole === "player" || pendingRole === "scout") {
+    qs.set("role", pendingRole);
+  }
   const pendingRef = await resolvePendingReferralCode();
-  return pendingRef ? `/role?ref=${encodeURIComponent(pendingRef)}` : "/role";
+  if (pendingRef) qs.set("ref", pendingRef);
+  const query = qs.toString();
+  return query ? `/role?${query}` : "/role";
 }
 
 /** Where to send users who already finished role onboarding. */
