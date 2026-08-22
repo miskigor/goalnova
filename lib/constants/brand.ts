@@ -11,11 +11,17 @@ export const BRAND_LOGO_SRC = "/logo.png";
 export const BRAND_LOGO_WIDTH = 1024;
 export const BRAND_LOGO_HEIGHT = 1024;
 
-/** Primary share image — stable filename (no query string) for Meta crawlers. */
-export const BRAND_OG_IMAGE_SRC = "/share-preview.jpg";
+/** Landscape share image — Twitter / Open Graph large cards (~1.91:1). */
+export const BRAND_OG_IMAGE_SRC = "/og-image.jpg";
+export const BRAND_OG_IMAGE_WIDTH = 1200;
+export const BRAND_OG_IMAGE_HEIGHT = 630;
 /** Square share card — WhatsApp / iMessage thumbnails prefer 1:1. */
 export const BRAND_OG_IMAGE_SQUARE_SRC = "/og-image-square.jpg";
-export const BRAND_OG_IMAGE_MIME = "image/jpeg";
-export const BRAND_OG_IMAGE_WIDTH = 1200;
-export const BRAND_OG_IMAGE_HEIGHT = 1200;
 export const BRAND_OG_IMAGE_SQUARE_SIZE = 1200;
+export const BRAND_OG_IMAGE_MIME = "image/jpeg";
+
+/** Official profiles for Organization.sameAs. LinkedIn omitted until a company page exists. */
+export const ORGANIZATION_SAME_AS = [
+  "https://www.instagram.com/pitchrusch/",
+  "https://www.tiktok.com/@pitchrusch",
+] as const;

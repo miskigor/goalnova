@@ -1,4 +1,4 @@
-import { APP_DISPLAY_NAME } from "@/lib/constants/brand";
+import { APP_DISPLAY_NAME, ORGANIZATION_SAME_AS } from "@/lib/constants/brand";
 
 type LandingJsonLdInput = {
   origin: string | null;
@@ -31,7 +31,7 @@ export function buildLandingJsonLd({
         description: siteDescription,
         url: siteOrigin,
         logo: siteOrigin ? `${siteOrigin}/icon-512.png` : undefined,
-        sameAs: [],
+        sameAs: [...ORGANIZATION_SAME_AS],
       },
       {
         "@type": "WebSite",

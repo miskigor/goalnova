@@ -1,6 +1,7 @@
 import { isAppLocale } from "@/lib/i18n/localePreference";
 import {
   SITE_SEO_OG_IMAGE_PATH,
+  SITE_SEO_OG_IMAGE_SQUARE_PATH,
   SITE_SEO_OG_SHARE_DESCRIPTION,
   SITE_SEO_OG_SHARE_TITLE,
 } from "@/lib/seo/brandMetadata";
@@ -49,18 +50,26 @@ export function isPublicLandingPath(pathname: string): boolean {
   );
 }
 
-export function siteOgImageAbsoluteUrl(origin: string): string {
+function absoluteAssetUrl(origin: string, assetPath: string): string {
   const base = (origin || DEFAULT_ORIGIN).replace(/\/$/, "");
-  const path = SITE_SEO_OG_IMAGE_PATH.startsWith("/")
-    ? SITE_SEO_OG_IMAGE_PATH
-    : `/${SITE_SEO_OG_IMAGE_PATH}`;
+  const path = assetPath.startsWith("/") ? assetPath : `/${assetPath}`;
   return `${base}${path}`;
+}
+
+/** Landscape OG / Twitter large-card image (~1.91:1). */
+export function siteOgImageAbsoluteUrl(origin: string): string {
+  return absoluteAssetUrl(origin, SITE_SEO_OG_IMAGE_PATH);
+}
+
+/** Square image for WhatsApp / iMessage preview bots. */
+export function siteOgSquareImageAbsoluteUrl(origin: string): string {
+  return absoluteAssetUrl(origin, SITE_SEO_OG_IMAGE_SQUARE_PATH);
 }
 
 export function buildMetaCrawlerHtml(pageUrl: string, origin: string): string {
   const title = escapeHtml(SITE_SEO_OG_SHARE_TITLE);
   const description = escapeHtml(SITE_SEO_OG_SHARE_DESCRIPTION);
-  const image = escapeHtml(siteOgImageAbsoluteUrl(origin));
+  const image = escapeHtml(siteOgSquareImageAbsoluteUrl(origin));
   const url = escapeHtml(pageUrl.replace(/\/$/, "") || DEFAULT_ORIGIN);
 
   return `<!DOCTYPE html>

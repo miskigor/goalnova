@@ -4,11 +4,12 @@ import { getServerSiteOrigin } from "@/lib/site/serverSiteOrigin";
 import {
   SITE_SEO_OG_IMAGE_HEIGHT,
   SITE_SEO_OG_IMAGE_MIME,
+  SITE_SEO_OG_IMAGE_SQUARE_SIZE,
   SITE_SEO_OG_IMAGE_WIDTH,
   SITE_SEO_OG_SHARE_DESCRIPTION,
   SITE_SEO_OG_SHARE_TITLE,
 } from "@/lib/seo/brandMetadata";
-import { siteOgImageAbsoluteUrl } from "@/lib/seo/metaCrawlerHtml";
+import { siteOgImageAbsoluteUrl, siteOgSquareImageAbsoluteUrl } from "@/lib/seo/metaCrawlerHtml";
 
 const DEFAULT_SITE_ORIGIN = "https://pitchrusch.com";
 
@@ -40,6 +41,7 @@ export function buildBrandLinkPreviewMetadata({
   const path = canonicalPath.startsWith("/") ? canonicalPath : `/${canonicalPath}`;
   const pageUrl = absoluteUrl(siteOrigin, path);
   const imageUrl = siteOgImageAbsoluteUrl(siteOrigin);
+  const squareImageUrl = siteOgSquareImageAbsoluteUrl(siteOrigin);
 
   return {
     openGraph: {
@@ -55,6 +57,14 @@ export function buildBrandLinkPreviewMetadata({
           secureUrl: imageUrl,
           width: SITE_SEO_OG_IMAGE_WIDTH,
           height: SITE_SEO_OG_IMAGE_HEIGHT,
+          alt: `${APP_DISPLAY_NAME} - Football talent discovery`,
+          type: SITE_SEO_OG_IMAGE_MIME,
+        },
+        {
+          url: squareImageUrl,
+          secureUrl: squareImageUrl,
+          width: SITE_SEO_OG_IMAGE_SQUARE_SIZE,
+          height: SITE_SEO_OG_IMAGE_SQUARE_SIZE,
           alt: `${APP_DISPLAY_NAME} - Football talent discovery`,
           type: SITE_SEO_OG_IMAGE_MIME,
         },
