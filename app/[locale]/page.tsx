@@ -10,7 +10,8 @@ import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrig
 import { buildBrandLinkPreviewMetadata } from "@/lib/seo/englishLinkPreview";
 import { buildLocaleAlternates, localizedCanonicalPath } from "@/lib/seo/alternates";
 import { buildLandingJsonLd } from "@/lib/seo/buildLandingJsonLd";
-import { SITE_SEO_DESCRIPTION, SITE_SEO_KEYWORDS, SITE_SEO_TITLE } from "@/lib/seo/brandMetadata";
+import { SITE_SEO_KEYWORDS } from "@/lib/seo/brandMetadata";
+import { ogLocaleFromAppLocale } from "@/lib/seo/ogLocale";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -18,6 +19,9 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "metadata" });
+  const title = t("landingTitle");
+  const description = t("landingDescription");
   const origin = getServerSiteOrigin();
   const metadataBase = siteMetadataBase(origin);
   const canonicalPath = localizedCanonicalPath(locale, "/");
@@ -25,8 +29,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     metadataBase,
-    title: SITE_SEO_TITLE,
-    description: SITE_SEO_DESCRIPTION,
+    title,
+    description,
     applicationName: "PitchRusch",
     keywords: [...SITE_SEO_KEYWORDS],
     alternates: {
@@ -38,8 +42,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       follow: true,
       googleBot: { index: true, follow: true },
     },
-    openGraph: linkPreview.openGraph,
-    twitter: linkPreview.twitter,
+    openGraph: {
+      ...linkPreview.openGraph,
+      title,
+      description,
+      locale: ogLocaleFromAppLocale(locale),
+    },
+    twitter: {
+      ...linkPreview.twitter,
+      title,
+      description,
+    },
   };
 }
 

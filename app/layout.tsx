@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Bebas_Neue, Geist, Noto_Sans_Arabic } from "next/font/google";
+import { documentHtmlLocale } from "@/lib/i18n/documentHtmlLocale";
 import { PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS } from "@/lib/loading/criticalFirstPaint";
+import { LOCALE_HTML_SYNC_SCRIPT } from "@/lib/loading/bootSplash";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
 import "./globals.css";
 
@@ -51,11 +53,13 @@ type Props = {
 };
 
 /** Root shell — black first paint via inlined CSS only (no scripts, no boot splash DOM). */
-export default function RootLayout({ children }: Props) {
+export default async function RootLayout({ children }: Props) {
+  const { lang, dir } = await documentHtmlLocale();
+
   return (
     <html
-      lang="en"
-      dir="ltr"
+      lang={lang}
+      dir={dir}
       translate="no"
       suppressHydrationWarning
       style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}
@@ -63,6 +67,7 @@ export default function RootLayout({ children }: Props) {
       className={`${geistSans.variable} ${bebasNeue.variable} ${notoArabic.variable} notranslate h-full antialiased`}
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: LOCALE_HTML_SYNC_SCRIPT }} />
         <meta name="color-scheme" content="dark" />
         <meta name="google" content="notranslate" />
         <style
