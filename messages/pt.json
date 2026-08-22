@@ -509,7 +509,7 @@
     "tabContacts": "Contacts",
     "tabSearch": "Search",
     "detailedSearchTitle": "Detailed search",
-    "detailedSearchBody": "Filter players by position, age, country, and club.",
+    "detailedSearchBody": "Filtra jogadores por posição, idade, país, clube, testes e procura de clube.",
     "detailedSearchCta": "Discover players",
     "savedPlayersNav": "Saved",
     "suggestedVideosTitle": "Recommended video clips",
@@ -1081,7 +1081,7 @@
     "namePlaceholder": "Nome ou utilizador",
     "openDetailedSearch": "Pesquisa detalhada",
     "detailedTitle": "Pesquisa detalhada",
-    "detailedSubtitle": "Refina por posição, país, cidade, clube, idade e pé preferido.",
+    "detailedSubtitle": "Refina por posição, país, cidade, clube, idade, pé, testes e procura de clube.",
     "fieldPosition": "Posição",
     "fieldCountry": "País",
     "fieldCity": "Cidade",
@@ -1141,7 +1141,11 @@
     "cardAge": "Idade",
     "cardPosition": "Posição",
     "cardLocation": "Localização",
-    "cardClub": "Clube"
+    "cardClub": "Clube",
+    "club": "Clube",
+    "clubPlaceholder": "Nome do clube",
+    "cardHeight": "Altura",
+    "cardFoot": "Pé"
   },
   "authLogin": {
     "title": "Bem-vindo de volta",

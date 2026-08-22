@@ -509,7 +509,7 @@
     "tabContacts": "Contacts",
     "tabSearch": "Search",
     "detailedSearchTitle": "Detailed search",
-    "detailedSearchBody": "Filter players by position, age, country, and club.",
+    "detailedSearchBody": "Oyuncuları mevki, yaş, ülke, kulüp, deneme ve kulüp arayışına göre filtrele.",
     "detailedSearchCta": "Discover players",
     "savedPlayersNav": "Saved",
     "suggestedVideosTitle": "Recommended video clips",
@@ -1081,7 +1081,7 @@
     "namePlaceholder": "Name or username",
     "openDetailedSearch": "Detailed search",
     "detailedTitle": "Detailed search",
-    "detailedSubtitle": "Narrow results by position, country, city, club, age, and preferred foot.",
+    "detailedSubtitle": "Mevki, ülke, şehir, kulüp, yaş, ayak, deneme ve kulüp arayan oyunculara göre daralt.",
     "fieldPosition": "Position",
     "fieldCountry": "Country",
     "fieldCity": "City",
@@ -1141,7 +1141,11 @@
     "cardAge": "Age",
     "cardPosition": "Position",
     "cardLocation": "Location",
-    "cardClub": "Club"
+    "cardClub": "Club",
+    "club": "Kulüp",
+    "clubPlaceholder": "Kulüp adı",
+    "cardHeight": "Boy",
+    "cardFoot": "Ayak"
   },
   "authLogin": {
     "title": "Tekrar hoş geldin",

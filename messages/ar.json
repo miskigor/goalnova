@@ -509,7 +509,7 @@
     "tabContacts": "Contacts",
     "tabSearch": "Search",
     "detailedSearchTitle": "Detailed search",
-    "detailedSearchBody": "Filter players by position, age, country, and club.",
+    "detailedSearchBody": "صفِّ اللاعبين حسب المركز والعمر والبلد والنادي والتجارب ومن يبحث عن نادٍ.",
     "detailedSearchCta": "Discover players",
     "savedPlayersNav": "Saved",
     "suggestedVideosTitle": "Recommended video clips",
@@ -1081,7 +1081,7 @@
     "namePlaceholder": "الاسم أو اسم المستخدم",
     "openDetailedSearch": "بحث تفصيلي",
     "detailedTitle": "بحث تفصيلي",
-    "detailedSubtitle": "ضيّق النتائج حسب المركز، البلد، المدينة، النادي، العمر، والقدم المفضلة.",
+    "detailedSubtitle": "ضيّق النتائج حسب المركز، البلد، المدينة، النادي، العمر، القدم، التجارب، واللاعبين الباحثين عن نادٍ.",
     "fieldPosition": "المركز",
     "fieldCountry": "البلد",
     "fieldCity": "المدينة",
@@ -1141,7 +1141,11 @@
     "cardAge": "العمر",
     "cardPosition": "المركز",
     "cardLocation": "الموقع",
-    "cardClub": "النادي"
+    "cardClub": "النادي",
+    "club": "النادي",
+    "clubPlaceholder": "اسم النادي",
+    "cardHeight": "الطول",
+    "cardFoot": "القدم"
   },
   "authLogin": {
     "title": "مرحبًا بعودتك",

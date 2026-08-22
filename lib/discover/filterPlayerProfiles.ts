@@ -8,6 +8,9 @@ export type DiscoverClientFilters = {
   ageMax: number | null;
   position: string;
   preferredFoot: string;
+  club: string;
+  availableForTrials: boolean;
+  lookingForClub: boolean;
 };
 
 function fieldIncludes(
@@ -39,12 +42,19 @@ export function filterPlayerProfiles(
     if (!fieldIncludes(row.city, f.city)) return false;
     if (!fieldIncludes(row.position, f.position)) return false;
     if (!fieldIncludes(row.preferred_foot, f.preferredFoot)) return false;
+    if (!fieldIncludes(row.club, f.club)) return false;
 
     if (f.ageMin !== null) {
       if (row.age == null || row.age < f.ageMin) return false;
     }
     if (f.ageMax !== null) {
       if (row.age == null || row.age > f.ageMax) return false;
+    }
+    if (f.availableForTrials && row.is_available_for_trials !== true) {
+      return false;
+    }
+    if (f.lookingForClub && row.is_looking_for_club !== true) {
+      return false;
     }
 
     return true;

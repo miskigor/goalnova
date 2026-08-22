@@ -176,6 +176,8 @@ export type PublicPlayerProfileSearchFilters = {
   ageMax?: number | null;
   preferredFoot?: string;
   club?: string;
+  availableForTrials?: boolean;
+  lookingForClub?: boolean;
 };
 
 export function normalizePlayerProfileSlug(raw: string): string {
@@ -318,6 +320,8 @@ export function filterPublicPlayerProfileRows(
     ageMax?: number | null;
     preferredFoot?: string;
     club?: string;
+    availableForTrials?: boolean;
+    lookingForClub?: boolean;
   },
 ): PlayerProfileRow[] {
   const q = (filters.q ?? "").trim().toLowerCase();
@@ -338,6 +342,12 @@ export function filterPublicPlayerProfileRows(
     }
     if (filters.ageMax != null && Number.isFinite(filters.ageMax)) {
       if (row.age == null || row.age > filters.ageMax) return false;
+    }
+    if (filters.availableForTrials && row.is_available_for_trials !== true) {
+      return false;
+    }
+    if (filters.lookingForClub && row.is_looking_for_club !== true) {
+      return false;
     }
     return true;
   });

@@ -12,10 +12,12 @@ import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import {
   EMPTY_PLAYER_PROFILE_EXTRA,
+  hasPlayerProfileExtraFilters,
   parseAgeInput,
   type PlayerProfileExtraFilters,
 } from "@/lib/playerProfileSearchFilters";
 import { PlayerProfileFiltersModal } from "@/components/search/PlayerProfileFiltersModal";
+import { PlayerProfileScoutSignals } from "@/components/search/PlayerProfileScoutSignals";
 
 const DEBOUNCE_MS = 300;
 
@@ -42,14 +44,7 @@ export function PlayerSearchView() {
 
   useEffect(() => {
     const q = debouncedName.trim();
-    const hasExtra =
-      extraFilters.position.trim() ||
-      extraFilters.country.trim() ||
-      extraFilters.city.trim() ||
-      extraFilters.ageMinStr.trim() ||
-      extraFilters.ageMaxStr.trim() ||
-      extraFilters.preferredFoot.trim() ||
-      extraFilters.club.trim();
+    const hasExtra = hasPlayerProfileExtraFilters(extraFilters);
 
     if (!q && !hasExtra) {
       setRows([]);
@@ -76,6 +71,8 @@ export function PlayerSearchView() {
         ageMax,
         preferredFoot: extraFilters.preferredFoot,
         club: extraFilters.club,
+        availableForTrials: extraFilters.availableForTrials,
+        lookingForClub: extraFilters.lookingForClub,
       });
       if (cancelled || rid !== requestId.current) return;
       if (err) {
@@ -95,14 +92,14 @@ export function PlayerSearchView() {
   }, [debouncedName, extraFilters]);
 
   const showEmptyNoResults =
-    (debouncedName.length > 0 || Object.values(extraFilters).some((v) => v.trim())) &&
+    (debouncedName.length > 0 || hasPlayerProfileExtraFilters(extraFilters)) &&
     !loading &&
     !error &&
     rows.length === 0;
 
   const showHint =
     debouncedName.length === 0 &&
-    !Object.values(extraFilters).some((v) => v.trim()) &&
+    !hasPlayerProfileExtraFilters(extraFilters) &&
     !loading;
 
   return (
@@ -202,6 +199,16 @@ export function PlayerSearchView() {
             const name = row.full_name?.trim() || row.username?.trim() || t("unknownName");
             const user = row.username?.trim() ? `@${row.username.trim()}` : t("noUsername");
             const avatar = row.userAvatarUrl?.trim() || undefined;
+            const position = row.position?.trim() || "";
+            const club = row.club?.trim() || "";
+            const age =
+              typeof row.age === "number" && Number.isFinite(row.age)
+                ? String(row.age)
+                : "";
+            const place = [row.city?.trim(), row.country?.trim()]
+              .filter(Boolean)
+              .join(", ");
+            const meta = [position, age, place, club].filter(Boolean).join(" · ");
             return (
               <li key={row.id}>
                 <Link
@@ -218,11 +225,12 @@ export function PlayerSearchView() {
                       {name}
                     </span>
                     <span className="mt-0.5 block text-sm text-gn-accent">{user}</span>
-                    {row.position?.trim() ? (
+                    {meta ? (
                       <span className="mt-1 block text-xs text-gn-text-tertiary">
-                        {row.position.trim()}
+                        {meta}
                       </span>
                     ) : null}
+                    <PlayerProfileScoutSignals row={row} />
                   </div>
                 </Link>
               </li>

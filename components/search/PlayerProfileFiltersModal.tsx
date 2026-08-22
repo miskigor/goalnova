@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import {
   EMPTY_PLAYER_PROFILE_EXTRA,
   type PlayerProfileExtraFilters,
+  type PlayerProfileTextFilterKey,
 } from "@/lib/playerProfileSearchFilters";
 import { GN_PRIMARY_BUTTON_CLASS } from "@/components/ui/gnButtonClasses";
 import type { ExploreSort } from "@/lib/supabase/exploreFeed";
@@ -28,6 +29,7 @@ export function PlayerProfileFiltersModal({
   exploreSortDisabled?: boolean;
 }) {
   const t = useTranslations("search");
+  const tFields = useTranslations("profileEditor");
   const te = useTranslations("explore");
   const titleId = useId();
   const [draft, setDraft] = useState<PlayerProfileExtraFilters>(initial);
@@ -48,7 +50,7 @@ export function PlayerProfileFiltersModal({
   if (!open || typeof document === "undefined") return null;
 
   const field = (
-    key: keyof PlayerProfileExtraFilters,
+    key: PlayerProfileTextFilterKey,
     labelKey: string,
     placeholderKey: string,
   ) => (
@@ -127,6 +129,28 @@ export function PlayerProfileFiltersModal({
               className="mt-1.5 w-full rounded-xl border border-gn-border bg-gn-bg px-3 py-2.5 text-sm text-gn-text outline-none focus:border-gn-accent/50 focus:ring-2 focus:ring-gn-accent/20"
               autoComplete="off"
             />
+          </label>
+          <label className="flex min-w-0 items-center gap-2 sm:col-span-2">
+            <input
+              type="checkbox"
+              checked={draft.availableForTrials}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, availableForTrials: e.target.checked }))
+              }
+              className="size-4 accent-gn-accent"
+            />
+            <span className="text-sm text-gn-text">{tFields("availableForTrials")}</span>
+          </label>
+          <label className="flex min-w-0 items-center gap-2 sm:col-span-2">
+            <input
+              type="checkbox"
+              checked={draft.lookingForClub}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, lookingForClub: e.target.checked }))
+              }
+              className="size-4 accent-gn-accent"
+            />
+            <span className="text-sm text-gn-text">{tFields("lookingForClub")}</span>
           </label>
         </div>
 

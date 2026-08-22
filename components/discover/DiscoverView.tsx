@@ -52,6 +52,7 @@ function parseAgeInput(raw: string): number | null {
 
 export function DiscoverView() {
   const t = useTranslations("discover");
+  const tFields = useTranslations("profileEditor");
   const tSv = useTranslations("scoutVerification");
   const scoutGate = useScoutVerification();
   const discoverLockedForUnverifiedScout =
@@ -70,6 +71,9 @@ export function DiscoverView() {
   const [ageMax, setAgeMax] = useState("");
   const [position, setPosition] = useState("");
   const [preferredFoot, setPreferredFoot] = useState("");
+  const [club, setClub] = useState("");
+  const [availableForTrials, setAvailableForTrials] = useState(false);
+  const [lookingForClub, setLookingForClub] = useState(false);
 
   useEffect(() => {
     const id = window.setTimeout(() => {
@@ -81,7 +85,7 @@ export function DiscoverView() {
   const ageMinN = useMemo(() => parseAgeInput(ageMin), [ageMin]);
   const ageMaxN = useMemo(() => parseAgeInput(ageMax), [ageMax]);
 
-  const hasActiveFilters = useMemo(
+  const hasServerFilters = useMemo(
     () =>
       Boolean(
         debouncedSearch ||
@@ -89,28 +93,39 @@ export function DiscoverView() {
           city.trim() ||
           position.trim() ||
           preferredFoot.trim() ||
+          club.trim() ||
           ageMinN !== null ||
           ageMaxN !== null,
       ),
-    [debouncedSearch, country, city, position, preferredFoot, ageMinN, ageMaxN],
+    [
+      debouncedSearch,
+      country,
+      city,
+      position,
+      preferredFoot,
+      club,
+      ageMinN,
+      ageMaxN,
+    ],
   );
 
   const filteredRows = useMemo(
     () =>
-      hasActiveFilters
-        ? allRows
-        : filterPlayerProfiles(allRows, {
-            search: debouncedSearch,
-            country,
-            city,
-            ageMin: ageMinN,
-            ageMax: ageMaxN,
-            position,
-            preferredFoot,
-          }),
+      filterPlayerProfiles(allRows, {
+        search: hasServerFilters ? "" : debouncedSearch,
+        country: hasServerFilters ? "" : country,
+        city: hasServerFilters ? "" : city,
+        ageMin: hasServerFilters ? null : ageMinN,
+        ageMax: hasServerFilters ? null : ageMaxN,
+        position: hasServerFilters ? "" : position,
+        preferredFoot: hasServerFilters ? "" : preferredFoot,
+        club: hasServerFilters ? "" : club,
+        availableForTrials,
+        lookingForClub,
+      }),
     [
       allRows,
-      hasActiveFilters,
+      hasServerFilters,
       debouncedSearch,
       country,
       city,
@@ -118,6 +133,9 @@ export function DiscoverView() {
       ageMaxN,
       position,
       preferredFoot,
+      club,
+      availableForTrials,
+      lookingForClub,
     ],
   );
 
@@ -130,7 +148,7 @@ export function DiscoverView() {
     }
     setErrorMessage(null);
 
-    const { rows: next, errorMessage: err } = hasActiveFilters
+    const { rows: next, errorMessage: err } = hasServerFilters
       ? await fetchPlayerProfilesForDiscoverSearch({
           q: debouncedSearch,
           country,
@@ -139,6 +157,7 @@ export function DiscoverView() {
           ageMax: ageMaxN,
           position,
           preferredFoot,
+          club,
         })
       : await fetchAllPlayerProfilesForDiscover();
 
@@ -171,7 +190,8 @@ export function DiscoverView() {
     ageMaxN,
     position,
     preferredFoot,
-    hasActiveFilters,
+    club,
+    hasServerFilters,
   ]);
 
   const showInitialSpinner = loading && allRows.length === 0 && !errorMessage;
@@ -279,6 +299,20 @@ export function DiscoverView() {
               autoComplete="off"
             />
           </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-gn-text-secondary">
+              {t("club")}
+            </span>
+            <input
+              suppressHydrationWarning
+              type="text"
+              value={club}
+              onChange={(e) => setClub(e.target.value)}
+              placeholder={t("clubPlaceholder")}
+              className="w-full rounded-lg border border-gn-border-subtle bg-gn-bg px-3 py-2 text-sm text-gn-text-primary outline-none ring-gn-accent focus:ring-2"
+              autoComplete="off"
+            />
+          </label>
           <div className="grid grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
             <label className="block text-sm">
               <span className="mb-1 block text-gn-text-secondary">
@@ -313,6 +347,24 @@ export function DiscoverView() {
               />
             </label>
           </div>
+          <label className="flex items-center gap-2 text-sm text-gn-text-primary sm:col-span-2">
+            <input
+              type="checkbox"
+              checked={availableForTrials}
+              onChange={(e) => setAvailableForTrials(e.target.checked)}
+              className="size-4 accent-gn-accent"
+            />
+            {tFields("availableForTrials")}
+          </label>
+          <label className="flex items-center gap-2 text-sm text-gn-text-primary sm:col-span-2">
+            <input
+              type="checkbox"
+              checked={lookingForClub}
+              onChange={(e) => setLookingForClub(e.target.checked)}
+              className="size-4 accent-gn-accent"
+            />
+            {tFields("lookingForClub")}
+          </label>
         </div>
         <button
           type="button"

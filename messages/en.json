@@ -509,7 +509,7 @@
     "tabContacts": "Contacts",
     "tabSearch": "Search",
     "detailedSearchTitle": "Detailed search",
-    "detailedSearchBody": "Filter players by position, age, country, and club.",
+    "detailedSearchBody": "Filter players by position, age, country, club, trials, and who is looking for a club.",
     "detailedSearchCta": "Discover players",
     "savedPlayersNav": "Saved",
     "suggestedVideosTitle": "Recommended video clips",
@@ -1081,7 +1081,7 @@
     "namePlaceholder": "Name or username",
     "openDetailedSearch": "Detailed search",
     "detailedTitle": "Detailed search",
-    "detailedSubtitle": "Narrow results by position, country, city, club, age, and preferred foot.",
+    "detailedSubtitle": "Narrow results by position, country, city, club, age, preferred foot, trials, and players looking for a club.",
     "fieldPosition": "Position",
     "fieldCountry": "Country",
     "fieldCity": "City",
@@ -1141,7 +1141,11 @@
     "cardAge": "Age",
     "cardPosition": "Position",
     "cardLocation": "Location",
-    "cardClub": "Club"
+    "cardClub": "Club",
+    "club": "Club",
+    "clubPlaceholder": "Club name",
+    "cardHeight": "Height",
+    "cardFoot": "Foot"
   },
   "authLogin": {
     "title": "Welcome back",

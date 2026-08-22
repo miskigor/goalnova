@@ -427,6 +427,8 @@ function exploreCacheKey(params: {
     extra.ageMaxStr.trim(),
     extra.preferredFoot.trim(),
     extra.club.trim(),
+    extra.availableForTrials ? "trials" : "",
+    extra.lookingForClub ? "looking" : "",
     recentOnly ? "recent" : "all",
     sort,
   ].join("|");
@@ -532,11 +534,20 @@ export function ExploreView({ frameHeader }: { frameHeader?: ReactNode }) {
         setPlayerMatches([]);
       }
     } else {
+      const matchedPlayers = nextPlayers.filter((row) => {
+        if (extraFilters.availableForTrials && row.is_available_for_trials !== true) {
+          return false;
+        }
+        if (extraFilters.lookingForClub && row.is_looking_for_club !== true) {
+          return false;
+        }
+        return true;
+      });
       setItems(next);
-      setPlayerMatches(nextPlayers);
+      setPlayerMatches(matchedPlayers);
       writeViewCache<ExploreCache>(cacheKey, {
         items: next,
-        playerMatches: nextPlayers,
+        playerMatches: matchedPlayers,
       });
       setLoadFailed(false);
     }

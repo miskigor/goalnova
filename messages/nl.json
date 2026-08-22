@@ -509,7 +509,7 @@
     "tabContacts": "Contacts",
     "tabSearch": "Search",
     "detailedSearchTitle": "Detailed search",
-    "detailedSearchBody": "Filter players by position, age, country, and club.",
+    "detailedSearchBody": "Filter spelers op positie, leeftijd, land, club, stages en wie een club zoekt.",
     "detailedSearchCta": "Discover players",
     "savedPlayersNav": "Saved",
     "suggestedVideosTitle": "Recommended video clips",
@@ -1081,7 +1081,7 @@
     "namePlaceholder": "Name or username",
     "openDetailedSearch": "Detailed search",
     "detailedTitle": "Detailed search",
-    "detailedSubtitle": "Narrow results by position, country, city, club, age, and preferred foot.",
+    "detailedSubtitle": "Filter op positie, land, stad, club, leeftijd, voorkeursvoet, stages en spelers die een club zoeken.",
     "fieldPosition": "Position",
     "fieldCountry": "Country",
     "fieldCity": "City",
@@ -1141,7 +1141,11 @@
     "cardAge": "Age",
     "cardPosition": "Position",
     "cardLocation": "Location",
-    "cardClub": "Club"
+    "cardClub": "Club",
+    "club": "Club",
+    "clubPlaceholder": "Clubnaam",
+    "cardHeight": "Lengte",
+    "cardFoot": "Voet"
   },
   "authLogin": {
     "title": "Welkom terug",

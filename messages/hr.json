@@ -509,7 +509,7 @@
     "tabContacts": "Kontakti",
     "tabSearch": "Pretraga",
     "detailedSearchTitle": "Detaljna pretraga",
-    "detailedSearchBody": "Filtriraj igrače po poziciji, dobi, državi i klubu.",
+    "detailedSearchBody": "Filtriraj igrače po poziciji, dobi, državi, klubu, probama i tko traži klub.",
     "detailedSearchCta": "Otkrij igrače",
     "savedPlayersNav": "Spremljeni",
     "suggestedVideosTitle": "Preporučeni video klipovi",
@@ -1081,7 +1081,7 @@
     "namePlaceholder": "Ime ili korisničko ime",
     "openDetailedSearch": "Detaljna pretraga",
     "detailedTitle": "Detaljna pretraga",
-    "detailedSubtitle": "Suzi rezultate po poziciji, državi, gradu, klubu, dobi i jačoj nozi.",
+    "detailedSubtitle": "Suzi rezultate po poziciji, državi, gradu, klubu, dobi, jačoj nozi, probama i igračima koji traže klub.",
     "fieldPosition": "Pozicija",
     "fieldCountry": "Država",
     "fieldCity": "Grad",
@@ -1141,7 +1141,11 @@
     "cardAge": "Dob",
     "cardPosition": "Pozicija",
     "cardLocation": "Lokacija",
-    "cardClub": "Klub"
+    "cardClub": "Klub",
+    "club": "Klub",
+    "clubPlaceholder": "Naziv kluba",
+    "cardHeight": "Visina",
+    "cardFoot": "Noga"
   },
   "authLogin": {
     "title": "Dobrodošli natrag",

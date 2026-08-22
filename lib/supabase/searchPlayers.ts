@@ -3,6 +3,8 @@ import { sortPlayersForScouts } from "@/lib/premium/playerPremium";
 import { supabase } from "@/lib/supabase/client";
 import { logFullSupabaseError, supabaseErrorToUserMessage } from "@/lib/supabase/logError";
 import {
+  filterPublicPlayerProfileRows,
+  rpcFetchPublicPlayerProfilesDiscover,
   rpcFetchPublicPlayerProfilesSearch,
   type PlayerProfileRow,
 } from "@/lib/supabase/publicPlayerProfiles";
@@ -26,6 +28,8 @@ export type PlayerSearchFilters = {
   ageMax?: number | null;
   preferredFoot?: string;
   club?: string;
+  availableForTrials?: boolean;
+  lookingForClub?: boolean;
 };
 
 /**
@@ -41,9 +45,11 @@ export async function searchPlayersWithFilters(
   const city = filters.city?.trim() ?? "";
   const foot = filters.preferredFoot?.trim() ?? "";
   const club = filters.club?.trim() ?? "";
+  const availableForTrials = filters.availableForTrials === true;
+  const lookingForClub = filters.lookingForClub === true;
 
   const hasName = q.length > 0;
-  const hasExtra =
+  const hasTextExtra =
     position.length > 0 ||
     country.length > 0 ||
     city.length > 0 ||
@@ -51,30 +57,39 @@ export async function searchPlayersWithFilters(
     club.length > 0 ||
     (filters.ageMin != null && Number.isFinite(filters.ageMin)) ||
     (filters.ageMax != null && Number.isFinite(filters.ageMax));
+  const hasOpennessExtra = availableForTrials || lookingForClub;
 
-  if (!hasName && !hasExtra) {
+  if (!hasName && !hasTextExtra && !hasOpennessExtra) {
     return { rows: [], error: null };
   }
 
-  const { rows: filtered, errorMessage } = await rpcFetchPublicPlayerProfilesSearch(
-    supabase,
-    {
-      q,
-      position,
-      country,
-      city,
-      preferredFoot: foot,
-      club,
-      ageMin: filters.ageMin,
-      ageMax: filters.ageMax,
-    },
-    RESULT_LIMIT,
-  );
+  const fetched = hasName || hasTextExtra
+    ? await rpcFetchPublicPlayerProfilesSearch(
+        supabase,
+        {
+          q,
+          position,
+          country,
+          city,
+          preferredFoot: foot,
+          club,
+          ageMin: filters.ageMin,
+          ageMax: filters.ageMax,
+        },
+        RESULT_LIMIT,
+      )
+    : await rpcFetchPublicPlayerProfilesDiscover(supabase, 300);
+  const { rows: fetchedRows, errorMessage } = fetched;
+  const filtered = filterPublicPlayerProfileRows(fetchedRows, {
+    availableForTrials,
+    lookingForClub,
+  });
 
   if (errorMessage) {
     logFullSupabaseError("[search] searchPlayersWithFilters", new Error(errorMessage), {
       hasName,
-      hasExtra,
+      hasTextExtra,
+      hasOpennessExtra,
     });
     devError("[search] player profile search RPC failed", { message: errorMessage });
     return { rows: [], error: errorMessage };
