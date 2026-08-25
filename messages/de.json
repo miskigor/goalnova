@@ -1981,6 +1981,7 @@
     "uploadStatusValidating": "Validating…",
     "uploadStatusUploading": "Uploading…",
     "uploadStatusProcessingMerge": "Video wird verarbeitet und Musik wird zusammengeführt …",
+    "uploadStatusProcessingPlayback": "Bereite eine streamable HD-Kopie vor…",
     "uploadStatusSaving": "Saving metadata…",
     "uploadStatusSuccess": "Upload successful",
     "videoUploadedSuccess": "Video uploaded successfully",

@@ -1981,6 +1981,7 @@
     "uploadStatusValidating": "Validating…",
     "uploadStatusUploading": "Uploading…",
     "uploadStatusProcessingMerge": "Processing video and merging music...",
+    "uploadStatusProcessingPlayback": "Preparing a streamable HD copy…",
     "uploadStatusSaving": "Saving metadata…",
     "uploadStatusSuccess": "Upload successful",
     "videoUploadedSuccess": "Video uploaded successfully. Join a challenge from the Challenges page to earn XP.",

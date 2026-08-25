@@ -1981,6 +1981,7 @@
     "uploadStatusValidating": "Provjera…",
     "uploadStatusUploading": "Učitavanje…",
     "uploadStatusProcessingMerge": "Obrada videa i spajanje glazbe u tijeku...",
+    "uploadStatusProcessingPlayback": "Pripremam video za brže učitavanje…",
     "uploadStatusSaving": "Spremanje metapodataka…",
     "uploadStatusSuccess": "Učitavanje uspjelo",
     "videoUploadedSuccess": "Video je učitan. Za XP sudjeluj u izazovu s stranice Izazovi.",

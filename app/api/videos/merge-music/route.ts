@@ -399,6 +399,7 @@ export async function POST(req: Request) {
         .upload(mergedOutputStoragePath, buf, {
           contentType: "video/mp4",
           upsert: true,
+          cacheControl: "31536000",
         });
       if (upErr) {
         console.error("[merge-music] storage upload failed", upErr.message);

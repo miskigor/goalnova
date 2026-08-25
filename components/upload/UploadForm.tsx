@@ -94,6 +94,7 @@ type UploadPhase =
   | "validating"
   | "uploading"
   | "processing_merge"
+  | "processing_playback"
   | "saving_metadata"
   | "ai_analyzing"
   | "success"
@@ -326,6 +327,7 @@ export function UploadForm() {
     "validating",
     "uploading",
     "processing_merge",
+    "processing_playback",
     "saving_metadata",
     "ai_analyzing",
   ].includes(uploadPhase);
@@ -583,6 +585,8 @@ export function UploadForm() {
         return t("uploadStatusUploading");
       case "processing_merge":
         return t("uploadStatusProcessingMerge");
+      case "processing_playback":
+        return t("uploadStatusProcessingPlayback");
       case "saving_metadata":
         return t("uploadStatusSaving");
       case "ai_analyzing":
@@ -686,6 +690,7 @@ export function UploadForm() {
           const uploadPromise = supabase.storage.from(bucket).upload(objectPath, file, {
             upsert: true,
             contentType: file.type || "application/octet-stream",
+            cacheControl: "31536000",
           });
           const timeoutPromise = new Promise<never>((_, reject) => {
             window.setTimeout(() => {
@@ -997,16 +1002,19 @@ export function UploadForm() {
           }
         }
 
-        const hasProcessedMergedVideo =
-          typeof processedVideoUrl === "string" && processedVideoUrl.trim().length > 0;
-        if (musicId && (mergeFailed || !hasProcessedMergedVideo)) {
+        const musicMergeSucceeded =
+          Boolean(musicId) &&
+          !mergeFailed &&
+          typeof processedVideoUrl === "string" &&
+          processedVideoUrl.trim().length > 0;
+        if (musicId && !musicMergeSucceeded) {
           console.warn(
             "[PitchRusch upload] library music merge failed — publishing original video without added track",
             {
               musicId,
               storagePath: uploadData.path,
               mergeFailed,
-              hasProcessedMergedVideo,
+              musicMergeSucceeded,
             },
           );
           publishedWithoutLibraryMusic = true;
@@ -1015,7 +1023,66 @@ export function UploadForm() {
           processedVideoUrl = null;
         }
 
-        if (hasProcessedMergedVideo) {
+        if (!(typeof processedVideoUrl === "string" && processedVideoUrl.trim().length > 0)) {
+          setUploadPhase("processing_playback");
+          const { data: playbackSess } = await supabase.auth.getSession();
+          const playbackToken = playbackSess.session?.access_token;
+          if (playbackToken) {
+            const playbackEndpoint =
+              typeof window !== "undefined"
+                ? `${window.location.origin}/api/videos/prepare-playback`
+                : "/api/videos/prepare-playback";
+            try {
+              console.info("[PitchRusch upload] prepare-playback started", {
+                storagePath: uploadData.path,
+                storageBucket: activeBucket,
+                videoFileBytes: file.size,
+              });
+              const playbackRes = await fetch(playbackEndpoint, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${playbackToken}`,
+                },
+                body: JSON.stringify({
+                  storagePath: uploadData.path,
+                  storageBucket: activeBucket,
+                }),
+                signal: AbortSignal.timeout(120_000),
+              });
+              const playbackJson = (await playbackRes.json().catch(() => ({}))) as {
+                ok?: unknown;
+                processed_video_url?: unknown;
+              };
+              const playbackUrl =
+                typeof playbackJson.processed_video_url === "string"
+                  ? playbackJson.processed_video_url.trim()
+                  : "";
+              if (playbackRes.ok && playbackJson.ok === true && playbackUrl.length > 0) {
+                publishUrl = playbackUrl;
+                sourceUrl = videoUrl;
+                processedVideoUrl = playbackUrl;
+              } else {
+                console.warn(
+                  "[PitchRusch upload] prepare-playback rejected — publishing original file",
+                  {
+                    httpStatus: playbackRes.status,
+                    jsonOk: playbackJson.ok,
+                  },
+                );
+              }
+            } catch (playbackErr) {
+              console.warn(
+                "[PitchRusch upload] prepare-playback failed — publishing original file",
+                playbackErr,
+              );
+            }
+          }
+        }
+
+        const hasProcessedMergedVideo = musicMergeSucceeded;
+
+        if (hasProcessedMergedVideo || processedVideoUrl) {
           tempDebugMergeUpload("merge succeeded — will persist processed_video_url", {
             video_url: publishUrl,
             processed_video_url: processedVideoUrl,

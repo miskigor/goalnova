@@ -40,9 +40,9 @@ export async function extractVideoThumbnailJpeg(
     "-frames:v",
     "1",
     "-vf",
-    "scale=1280:-2",
+    "scale=1600:-2",
     "-q:v",
-    "3",
+    "2",
     outputPath,
   ]);
 }

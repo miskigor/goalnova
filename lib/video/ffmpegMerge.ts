@@ -73,8 +73,15 @@ export function ffprobeDurationSeconds(filePath: string): number {
   return Number.isFinite(n) && n > 0 ? n : 0;
 }
 
-function ffprobeVideoCodec(filePath: string): string {
-  const out = execFileSync(
+type ProbedVideoStream = {
+  codec: string;
+  width: number;
+  height: number;
+  audioCodec: string | null;
+};
+
+function ffprobeVideoStream(filePath: string): ProbedVideoStream {
+  const videoOut = execFileSync(
     ffprobe.path,
     [
       "-v",
@@ -82,14 +89,72 @@ function ffprobeVideoCodec(filePath: string): string {
       "-select_streams",
       "v:0",
       "-show_entries",
-      "stream=codec_name",
+      "stream=codec_name,width,height",
       "-of",
-      "default=noprint_wrappers=1:nokey=1",
+      "csv=p=0",
       filePath,
     ],
     { encoding: "utf8", maxBuffer: 10 * 1024 * 1024 },
   );
-  return out.trim().toLowerCase();
+  const [codecRaw, widthRaw, heightRaw] = videoOut.trim().split(",");
+  let audioCodec: string | null = null;
+  try {
+    const audioOut = execFileSync(
+      ffprobe.path,
+      [
+        "-v",
+        "error",
+        "-select_streams",
+        "a:0",
+        "-show_entries",
+        "stream=codec_name",
+        "-of",
+        "csv=p=0",
+        filePath,
+      ],
+      { encoding: "utf8", maxBuffer: 10 * 1024 * 1024 },
+    );
+    const name = audioOut.trim().split(",")[0]?.trim().toLowerCase() ?? "";
+    audioCodec = name.length > 0 ? name : null;
+  } catch {
+    audioCodec = null;
+  }
+  return {
+    codec: (codecRaw ?? "").trim().toLowerCase(),
+    width: Number.parseInt(widthRaw ?? "0", 10) || 0,
+    height: Number.parseInt(heightRaw ?? "0", 10) || 0,
+    audioCodec,
+  };
+}
+
+/**
+ * Cap at 1080p (1920 on the long landscape side) so phones download a sharp,
+ * streamable file instead of 4K HEVC. Even dimensions required by libx264.
+ */
+export const PLAYBACK_SCALE_FILTER =
+  "scale='if(gte(iw,ih),trunc(min(1920,iw)/2)*2,trunc(min(1080,iw)/2)*2)':-2";
+
+const PLAYBACK_X264_ARGS = [
+  "-c:v",
+  "libx264",
+  "-profile:v",
+  "high",
+  "-level",
+  "4.1",
+  "-preset",
+  "veryfast",
+  "-crf",
+  "20",
+  "-pix_fmt",
+  "yuv420p",
+  "-threads",
+  "0",
+] as const;
+
+function videoCanStreamCopy(stream: ProbedVideoStream): boolean {
+  if (stream.codec !== "h264") return false;
+  if (stream.width > 1920 || stream.height > 1920) return false;
+  return true;
 }
 
 export type MergeParams = {
@@ -131,20 +196,10 @@ export function mergeVideoWithMusicAudio(params: MergeParams): Promise<void> {
   const trim = `atrim=start=${musicStartSec}:end=${musicEndSec},asetpts=PTS-STARTPTS,volume=${vol}`;
   const pad =
     padDur > 0.02 ? `${trim},apad=pad_dur=${padDur.toFixed(3)}` : trim;
-  const filter = `[1:a]${pad}[aout]`;
+  const audioFilter = `[1:a]${pad}[aout]`;
+  const reencodeFilter = `[0:v]${PLAYBACK_SCALE_FILTER}[vout];${audioFilter}`;
 
-  const base = [
-    "-y",
-    "-i",
-    params.videoPath,
-    "-i",
-    params.audioPath,
-    "-filter_complex",
-    filter,
-    "-map",
-    "0:v:0",
-    "-map",
-    "[aout]",
+  const audioAndContainer = [
     "-c:a",
     "aac",
     "-b:a",
@@ -153,36 +208,116 @@ export function mergeVideoWithMusicAudio(params: MergeParams): Promise<void> {
     "+faststart",
   ];
 
-  const codec = ffprobeVideoCodec(params.videoPath);
-  // iOS Safari-safe fast path: keep stream copy only for H.264.
-  const canCopyVideo = codec === "h264";
-  const copyArgs = [...base, "-c:v", "copy", params.outputPath];
-
-  // Re-encode when stream copy is unavailable (e.g. iPhone HEVC). Use a fast preset so merge
-  // finishes within Netlify's ~60s synchronous limit (gateway may cut off earlier on slow runs).
-  const reencodeArgs = [
-    ...base,
+  const copyArgs = [
+    "-y",
+    "-i",
+    params.videoPath,
+    "-i",
+    params.audioPath,
+    "-filter_complex",
+    audioFilter,
+    "-map",
+    "0:v:0",
+    "-map",
+    "[aout]",
+    ...audioAndContainer,
     "-c:v",
-    "libx264",
-    "-profile:v",
-    "high",
-    "-level",
-    "4.1",
-    "-preset",
-    "ultrafast",
-    "-crf",
-    "23",
-    "-pix_fmt",
-    "yuv420p",
-    "-threads",
-    "0",
+    "copy",
     params.outputPath,
   ];
 
-  if (canCopyVideo) {
+  const reencodeArgs = [
+    "-y",
+    "-i",
+    params.videoPath,
+    "-i",
+    params.audioPath,
+    "-filter_complex",
+    reencodeFilter,
+    "-map",
+    "[vout]",
+    "-map",
+    "[aout]",
+    ...audioAndContainer,
+    ...PLAYBACK_X264_ARGS,
+    params.outputPath,
+  ];
+
+  const stream = ffprobeVideoStream(params.videoPath);
+  // iOS Safari-safe fast path: stream-copy H.264 that is already phone-sized.
+  if (videoCanStreamCopy(stream)) {
     return runFfmpeg(ffmpeg, copyArgs).catch(() => runFfmpeg(ffmpeg, reencodeArgs));
   }
   return runFfmpeg(ffmpeg, reencodeArgs);
+}
+
+/**
+ * Remux or transcode a clip into a fast-start H.264 MP4 for feed playback.
+ * Copies H.264 when it is already ≤1080p; otherwise scales and encodes.
+ */
+export function encodeToStreamableMp4(
+  inputPath: string,
+  outputPath: string,
+): Promise<void> {
+  const ffmpeg = assertFfmpeg();
+  const stream = ffprobeVideoStream(inputPath);
+  const hasAudio = Boolean(stream.audioCodec);
+
+  if (videoCanStreamCopy(stream)) {
+    const copyArgs = [
+      "-y",
+      "-i",
+      inputPath,
+      "-map",
+      "0:v:0",
+      "-c:v",
+      "copy",
+      "-movflags",
+      "+faststart",
+    ];
+    if (hasAudio) {
+      copyArgs.push("-map", "0:a:0");
+      if (stream.audioCodec === "aac") {
+        copyArgs.push("-c:a", "copy");
+      } else {
+        copyArgs.push("-c:a", "aac", "-b:a", "160k");
+      }
+    } else {
+      copyArgs.push("-an");
+    }
+    copyArgs.push(outputPath);
+    return runFfmpeg(ffmpeg, copyArgs).catch(() =>
+      runFfmpeg(ffmpeg, buildPlaybackReencodeArgs(inputPath, outputPath, hasAudio)),
+    );
+  }
+
+  return runFfmpeg(ffmpeg, buildPlaybackReencodeArgs(inputPath, outputPath, hasAudio));
+}
+
+function buildPlaybackReencodeArgs(
+  inputPath: string,
+  outputPath: string,
+  hasAudio: boolean,
+): string[] {
+  const reencodeArgs = [
+    "-y",
+    "-i",
+    inputPath,
+    "-map",
+    "0:v:0",
+    "-vf",
+    PLAYBACK_SCALE_FILTER,
+    ...PLAYBACK_X264_ARGS,
+    "-movflags",
+    "+faststart",
+  ];
+  if (hasAudio) {
+    reencodeArgs.push("-map", "0:a:0", "-c:a", "aac", "-b:a", "160k");
+  } else {
+    reencodeArgs.push("-an");
+  }
+  reencodeArgs.push(outputPath);
+  return reencodeArgs;
 }
 
 export async function withTempDir<T>(fn: (dir: string) => Promise<T>): Promise<T> {

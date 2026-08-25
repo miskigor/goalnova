@@ -67,7 +67,7 @@ html[data-mobile-layout-v3] [data-mlv3-home-mock-card] [data-mlv3-home-feed-vide
   max-height: 100% !important;
   min-width: 0 !important;
   min-height: 0 !important;
-  object-fit: cover !important;
+  object-fit: contain !important;
   object-position: center !important;
 }
 

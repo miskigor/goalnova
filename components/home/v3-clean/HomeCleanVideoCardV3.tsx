@@ -95,7 +95,7 @@ export function HomeCleanVideoCardV3({
             preload={preload}
             fetchPriority={fetchPriority}
             loadWatchdogMs={15_000}
-            mediaFit="cover"
+            mediaFit="contain"
             visibilityObserveRef={slideRef}
             debugMeta={{
               videoRowId: video.id ?? null,
@@ -103,7 +103,7 @@ export function HomeCleanVideoCardV3({
               processed_video_url: video.processed_video_url,
               video_url: video.video_url,
             }}
-            className="absolute inset-0 h-full w-full max-h-full max-w-full object-cover object-center [color-scheme:dark]"
+            className="absolute inset-0 h-full w-full max-h-full max-w-full object-contain object-center [color-scheme:dark]"
           />
         ) : posterUrl ? (
           <img
@@ -111,7 +111,7 @@ export function HomeCleanVideoCardV3({
             alt=""
             decoding="async"
             fetchPriority="low"
-            className="pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover object-center"
+            className="pointer-events-none absolute inset-0 z-[2] h-full w-full object-contain object-center"
           />
         ) : (
           <div

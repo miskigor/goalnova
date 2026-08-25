@@ -1,4 +1,4 @@
-const DEFAULT_MAX_WIDTH = 1280;
+const DEFAULT_MAX_WIDTH = 1600;
 const SEEK_TIMEOUT_MS = 4000;
 
 /**
@@ -42,7 +42,7 @@ export async function captureVideoThumbnailJpeg(
     ctx.drawImage(video, 0, 0, width, height);
 
     return await new Promise<Blob | null>((resolve) => {
-      canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.86);
+      canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.92);
     });
   } catch {
     return null;

@@ -3,7 +3,7 @@ import { devWarn } from "@/lib/devLog";
 export type VideoPlaybackFields = {
   video_url: string | null;
   processed_video_url?: string | null;
-  /** Pre-merge / original upload when a processed (e.g. music) file exists separately. */
+  /** Original upload when a processed (music merge or playback encode) file exists separately. */
   source_video_url?: string | null;
 };
 
@@ -48,22 +48,16 @@ export function rankingsPreviewVideoCandidates(video: VideoPlaybackFields): stri
 
 /**
  * Home / snap feed candidates:
- * Prefer **`video_url` first** (often starts decoding faster on mobile), then merged `processed`,
- * then `source` — keeps fallbacks so broken links do not black the slide.
- * (See `videoPlaybackUrl` for single-URL “canonical” choice elsewhere.)
+ * Prefer the processed fast-start MP4, then the published URL, then the original upload.
+ * `preferStreamableVideoUrls` still puts `.mp4` / `.webm` ahead of iPhone `.mov`.
  */
 export function homeFeedPlaybackCandidates(video: VideoPlaybackFields): string[] {
-  const processed = (video.processed_video_url ?? "").trim();
-  const source = (video.source_video_url ?? "").trim();
-  const primary = (video.video_url ?? "").trim();
-  return preferStreamableVideoUrls(
-    Array.from(new Set([primary, processed, source].filter(Boolean))),
-  );
+  return videoPlaybackCandidates(video);
 }
 
 /**
  * Playback resolution order:
- * 1. `processed_video_url` — merged asset (e.g. with music); always preferred when set
+ * 1. `processed_video_url` — streamable H.264 MP4 (music merge or playback encode)
  * 2. `source_video_url` — original upload when processed is absent
  * 3. `video_url` — canonical published file (legacy / single-URL rows)
  */

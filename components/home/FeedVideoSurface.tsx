@@ -516,7 +516,7 @@ export function FeedVideoSurface({
           alt=""
           decoding="async"
           fetchPriority={fetchPriority === "high" ? "high" : "low"}
-          className="pointer-events-none absolute inset-0 z-[2] h-full w-full object-cover object-center"
+          className={`pointer-events-none absolute inset-0 z-[2] h-full w-full ${containMedia ? "object-contain" : "object-cover"} object-center`}
         />
       ) : null}
       <div ref={wrapRef} className={mediaStageClass}>

@@ -1981,6 +1981,7 @@
     "uploadStatusValidating": "Validating…",
     "uploadStatusUploading": "Uploading…",
     "uploadStatusProcessingMerge": "جارٍ معالجة الفيديو ودمج الموسيقى…",
+    "uploadStatusProcessingPlayback": "جارٍ تجهيز نسخة عالية الدقة للتشغيل…",
     "uploadStatusSaving": "Saving metadata…",
     "uploadStatusSuccess": "Upload successful",
     "videoUploadedSuccess": "Video uploaded successfully",

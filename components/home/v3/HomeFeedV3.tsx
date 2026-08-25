@@ -394,7 +394,7 @@ function HomeFeedV3CardVideo({
           logVideoElementError("all_sources_failed");
           onLoadError();
         }}
-        className="block h-full w-full object-cover object-center [color-scheme:dark]"
+        className="block h-full w-full object-contain object-center [color-scheme:dark]"
       />
     </div>
   );
