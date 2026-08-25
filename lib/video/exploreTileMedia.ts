@@ -1,4 +1,7 @@
-import type { VideoPlaybackFields } from "@/lib/video/videoPlaybackUrl";
+import {
+  preferStreamableVideoUrls,
+  type VideoPlaybackFields,
+} from "@/lib/video/videoPlaybackUrl";
 
 /** DB / API fields used on explore tiles (some columns may exist before database.types is regenerated). */
 export type VideoWithOptionalThumbnail = VideoPlaybackFields & {
@@ -118,7 +121,7 @@ export function exploreTileVideoSrcCandidates(
   const poster = trimMediaUrl(video.poster_url);
   if (poster && exploreThumbPosterUrlKind(poster) === "video") push(poster);
 
-  return out;
+  return preferStreamableVideoUrls(out);
 }
 
 /** True if the tile can show either an `<img>` (thumb/poster) or a `<video>`. */

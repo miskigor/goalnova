@@ -193,10 +193,7 @@ async function fetchHomeFeedV3Initial(
 }
 
 function buildV3PlaybackSources(video: AugmentedHomeFeedItem["video"]): string[] {
-  const processed = (video.processed_video_url ?? "").trim();
-  const primary = (video.video_url ?? "").trim();
-  const source = (video.source_video_url ?? "").trim();
-  return Array.from(new Set([processed, primary, source].filter(Boolean)));
+  return homeFeedPlaybackCandidates(video);
 }
 
 type HomeV3VideoErrorPayload = {
@@ -433,9 +430,7 @@ function HomeFeedV3Card({
   const videoPreload: "none" | "metadata" | "auto" =
     slideOffset === 0
       ? "auto"
-      : slideOffset === -1 || slideOffset === 1
-        ? "metadata"
-        : "none";
+      : "none";
   const videoFetchPriority: "high" | "low" | "auto" =
     slideOffset === 0 ? "high" : "low";
 

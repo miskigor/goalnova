@@ -96,9 +96,7 @@ export function FeedItemCard({
       ? "metadata"
       : slideOffset === 0
         ? "auto"
-        : slideOffset === -1 || slideOffset === -2
-          ? "metadata"
-          : "none";
+        : "none";
 
   const videoFetchPriority: "high" | "low" | "auto" =
     slideOffset === null

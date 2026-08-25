@@ -101,9 +101,9 @@ function ExploreTileMedia({
   const activeVideoSrc = videoCandidates[videoIdx] ?? "";
   const hasVideoCandidates = videoCandidates.length > 0;
   const stillFrameSrc = primaryImage || videoPosterUrl || null;
-  const preferStillOnMobile = isMobileLike && Boolean(stillFrameSrc);
+  const preferStill = Boolean(stillFrameSrc);
   const showVideo =
-    !preferStillOnMobile &&
+    !preferStill &&
     hasVideoCandidates &&
     !videoExhausted &&
     Boolean(activeVideoSrc);
@@ -298,7 +298,6 @@ function ExploreTileMedia({
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
           className={`z-0 [transform:translateZ(0)] ${GN_VIDEO_MEDIA_POSTER_ABSOLUTE_CLASS}`}
-          priority={isMobileLike}
           unoptimized
           onError={onImgError}
         />

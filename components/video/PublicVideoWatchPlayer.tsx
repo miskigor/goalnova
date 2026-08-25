@@ -52,7 +52,7 @@ export function PublicVideoWatchPlayer({
           preload="auto"
           fetchPriority="high"
           poster={posterUrl?.trim() || undefined}
-          loadWatchdogMs={2800}
+          loadWatchdogMs={15_000}
           autoPlay
         />
         <div

@@ -7,12 +7,29 @@ export type VideoPlaybackFields = {
   source_video_url?: string | null;
 };
 
+/**
+ * Put MP4/WebM ahead of iPhone `.mov` so the first download is streamable.
+ */
+export function preferStreamableVideoUrls(urls: string[]): string[] {
+  const streamable: string[] = [];
+  const other: string[] = [];
+  for (const url of urls) {
+    const base = url.split(/[?#]/)[0]?.toLowerCase() ?? "";
+    if (base.endsWith(".mp4") || base.endsWith(".m4v") || base.endsWith(".webm")) {
+      streamable.push(url);
+    } else {
+      other.push(url);
+    }
+  }
+  return [...streamable, ...other];
+}
+
 export function videoPlaybackCandidates(video: VideoPlaybackFields): string[] {
   const processed = (video.processed_video_url ?? "").trim();
   const source = (video.source_video_url ?? "").trim();
   const primary = (video.video_url ?? "").trim();
   const list = [processed, primary, source].filter(Boolean);
-  return Array.from(new Set(list));
+  return preferStreamableVideoUrls(Array.from(new Set(list)));
 }
 
 /**
@@ -24,7 +41,9 @@ export function rankingsPreviewVideoCandidates(video: VideoPlaybackFields): stri
   const processed = (video.processed_video_url ?? "").trim();
   const source = (video.source_video_url ?? "").trim();
   const primary = (video.video_url ?? "").trim();
-  return Array.from(new Set([primary, source, processed].filter(Boolean)));
+  return preferStreamableVideoUrls(
+    Array.from(new Set([primary, source, processed].filter(Boolean))),
+  );
 }
 
 /**
@@ -37,7 +56,9 @@ export function homeFeedPlaybackCandidates(video: VideoPlaybackFields): string[]
   const processed = (video.processed_video_url ?? "").trim();
   const source = (video.source_video_url ?? "").trim();
   const primary = (video.video_url ?? "").trim();
-  return Array.from(new Set([primary, processed, source].filter(Boolean)));
+  return preferStreamableVideoUrls(
+    Array.from(new Set([primary, processed, source].filter(Boolean))),
+  );
 }
 
 /**

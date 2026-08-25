@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Bebas_Neue, Geist, Noto_Sans_Arabic } from "next/font/google";
-import { documentHtmlLocale } from "@/lib/i18n/documentHtmlLocale";
 import { PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS } from "@/lib/loading/criticalFirstPaint";
 import { LOCALE_HTML_SYNC_SCRIPT } from "@/lib/loading/bootSplash";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
@@ -53,13 +52,11 @@ type Props = {
 };
 
 /** Root shell — black first paint via inlined CSS only (no scripts, no boot splash DOM). */
-export default async function RootLayout({ children }: Props) {
-  const { lang, dir } = await documentHtmlLocale();
-
+export default function RootLayout({ children }: Props) {
   return (
     <html
-      lang={lang}
-      dir={dir}
+      lang="en"
+      dir="ltr"
       translate="no"
       suppressHydrationWarning
       style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}

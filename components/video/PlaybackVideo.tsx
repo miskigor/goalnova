@@ -70,7 +70,7 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
       onPlaying,
       fetchPriority,
       poster,
-      loadWatchdogMs = 2_800,
+      loadWatchdogMs = 15_000,
     },
     ref,
   ) {
@@ -142,11 +142,6 @@ export const PlaybackVideo = forwardRef<PlaybackVideoHandle | null, PlaybackVide
       if (!v || !currentSrc) return;
       v.setAttribute("webkit-playsinline", "");
       v.setAttribute("playsinline", "");
-      try {
-        v.load();
-      } catch {
-        /* ignore */
-      }
     }, [currentSrc]);
 
     useImperativeHandle(

@@ -84,7 +84,7 @@ export function FeedVideoSurface({
   debugMeta,
   visibilityObserveRef,
   poster,
-  loadWatchdogMs = 2_800,
+  loadWatchdogMs = 15_000,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<PlaybackVideoHandle | null>(null);
