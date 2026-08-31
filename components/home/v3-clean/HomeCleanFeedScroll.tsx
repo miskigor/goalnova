@@ -47,6 +47,13 @@ export function HomeCleanFeedScroll({
     return href?.trim() || null;
   }, [activeFeedIndex, items]);
 
+  const nextPosterPreloadHref = useMemo(() => {
+    const item = items[activeFeedIndex + 1];
+    if (!item) return null;
+    const href = exploreTileVideoPosterAttribute(item.video, item.userAvatarUrl);
+    return href?.trim() || null;
+  }, [activeFeedIndex, items]);
+
   useLayoutEffect(() => {
     const el = scrollRef.current;
     if (!el || items.length === 0) return;
@@ -256,6 +263,28 @@ export function HomeCleanFeedScroll({
       document.querySelector(`link[${attr}]`)?.remove();
     };
   }, [activePosterPreloadHref]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const attr = "data-pitchrusch-feed-poster-preload-next";
+    if (!nextPosterPreloadHref) {
+      document.querySelector(`link[${attr}]`)?.remove();
+      return;
+    }
+    let link = document.querySelector<HTMLLinkElement>(`link[${attr}]`);
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.setAttribute(attr, "");
+      document.head.appendChild(link);
+    }
+    if (link.href !== nextPosterPreloadHref) link.href = nextPosterPreloadHref;
+    link.setAttribute("fetchpriority", "low");
+    return () => {
+      document.querySelector(`link[${attr}]`)?.remove();
+    };
+  }, [nextPosterPreloadHref]);
 
   return (
     <>

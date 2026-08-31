@@ -67,8 +67,9 @@ export function HomeCleanVideoCardV3({
     ) : null;
 
   const slideOffset = feedIndex - scrollActiveIndex;
-  // Keep the current clip and the next/previous one mounted so swipe is not a cold start.
-  const shouldMountVideo = Math.abs(slideOffset) <= 1;
+  // Only the focused slide downloads a clip. Neighbors keep a still so 40MB
+  // originals cannot starve the video that is actually on screen.
+  const shouldMountVideo = slideOffset === 0;
   const posterUrl = exploreTileVideoPosterAttribute(video, userAvatarUrl);
   const preload: "none" | "metadata" | "auto" =
     slideOffset === 0 ? "auto" : "none";

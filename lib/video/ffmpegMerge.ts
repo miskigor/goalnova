@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { execFileSync } from "node:child_process";
-import { promises as fs } from "node:fs";
+import { promises as fs, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -144,16 +144,29 @@ const PLAYBACK_X264_ARGS = [
   "-preset",
   "veryfast",
   "-crf",
-  "20",
+  "22",
+  "-maxrate",
+  "2500k",
+  "-bufsize",
+  "5000k",
   "-pix_fmt",
   "yuv420p",
   "-threads",
   "0",
 ] as const;
 
-function videoCanStreamCopy(stream: ProbedVideoStream): boolean {
+/** Keep a stream-copy only when the file is already a small, phone-sized H.264. */
+export const PLAYBACK_COPY_MAX_BYTES = 6 * 1024 * 1024;
+
+function videoCanStreamCopy(stream: ProbedVideoStream, filePath: string): boolean {
   if (stream.codec !== "h264") return false;
+  if (stream.width <= 0 || stream.height <= 0) return false;
   if (stream.width > 1920 || stream.height > 1920) return false;
+  try {
+    if (statSync(filePath).size > PLAYBACK_COPY_MAX_BYTES) return false;
+  } catch {
+    return false;
+  }
   return true;
 }
 
@@ -245,7 +258,7 @@ export function mergeVideoWithMusicAudio(params: MergeParams): Promise<void> {
 
   const stream = ffprobeVideoStream(params.videoPath);
   // iOS Safari-safe fast path: stream-copy H.264 that is already phone-sized.
-  if (videoCanStreamCopy(stream)) {
+  if (videoCanStreamCopy(stream, params.videoPath)) {
     return runFfmpeg(ffmpeg, copyArgs).catch(() => runFfmpeg(ffmpeg, reencodeArgs));
   }
   return runFfmpeg(ffmpeg, reencodeArgs);
@@ -263,7 +276,7 @@ export function encodeToStreamableMp4(
   const stream = ffprobeVideoStream(inputPath);
   const hasAudio = Boolean(stream.audioCodec);
 
-  if (videoCanStreamCopy(stream)) {
+  if (videoCanStreamCopy(stream, inputPath)) {
     const copyArgs = [
       "-y",
       "-i",
