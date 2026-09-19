@@ -17,6 +17,9 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
+/** Marketing HTML is identical for all visitors — ISR so launch is not a cold function. */
+export const revalidate = 3600;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });

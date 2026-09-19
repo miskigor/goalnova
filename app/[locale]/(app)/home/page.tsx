@@ -8,6 +8,9 @@ import { HomePageWithCampaign } from "@/components/home/HomePageWithCampaign";
 
 type Props = { params: Promise<{ locale: string }> };
 
+/** Keep the feed HTML warm so cold Netlify boots are not on the launch path. */
+export const revalidate = 3600;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });

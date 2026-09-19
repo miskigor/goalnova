@@ -36,5 +36,5 @@ export const BOOT_SPLASH_CSS = `
 /** @deprecated Boot splash is SSR markup in root layout — do not inject via script (hydration mismatch). */
 export const BOOT_SPLASH_BODY_SCRIPT = `(function(){var b=document.body;if(!b)return;if(document.getElementById('pitchrusch-boot-splash'))return;var s=document.createElement('div');s.id='pitchrusch-boot-splash';s.setAttribute('aria-hidden','true');s.innerHTML='<img src="/brand/pitchrusch-logo.svg" alt="" width="80" height="80" decoding="async" fetchpriority="high"/><div class="pitchrusch-boot-spinner"></div>';b.insertBefore(s,b.firstChild);})();`;
 
-/** Sets html lang/dir from URL before React hydrates (locale layout no longer owns <html>). */
-export const LOCALE_HTML_SYNC_SCRIPT = `(function(){var p=location.pathname,re=/^\\/(hr|de|bs|es|pt|sr|fr|it|nl|tr|ar)(?:\\/|$)/,m=p.match(re),lang=m?m[1]:"en";document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";})();`;
+/** Sets html lang/dir + black canvas from URL before React hydrates (locale layout no longer owns <html>). */
+export const LOCALE_HTML_SYNC_SCRIPT = `(function(){var d=document.documentElement,p=location.pathname,re=/^\\/(hr|de|bs|es|pt|sr|fr|it|nl|tr|ar)(?:\\/|$)/,m=p.match(re),lang=m?m[1]:"en";d.lang=lang;d.dir=lang==="ar"?"rtl":"ltr";d.style.backgroundColor="#000";d.style.colorScheme="dark";})();`;

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Bebas_Neue, Geist, Noto_Sans_Arabic } from "next/font/google";
+import { FirstPaintCover } from "@/components/loading/FirstPaintCover";
 import { PITCHRUSCH_CRITICAL_FIRST_PAINT_CSS } from "@/lib/loading/criticalFirstPaint";
 import { LOCALE_HTML_SYNC_SCRIPT } from "@/lib/loading/bootSplash";
 import { getServerSiteOrigin, siteMetadataBase } from "@/lib/site/serverSiteOrigin";
@@ -10,6 +11,7 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const bebasNeue = Bebas_Neue({
@@ -38,6 +40,11 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
   },
   manifest: "/site.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "PitchRusch",
+  },
 };
 
 export const viewport: Viewport = {
@@ -51,7 +58,7 @@ type Props = {
   children: ReactNode;
 };
 
-/** Root shell — black first paint via inlined CSS only (no scripts, no boot splash DOM). */
+/** Root shell — black first paint via head script + CSS + cover until hydrate. */
 export default function RootLayout({ children }: Props) {
   return (
     <html
@@ -76,6 +83,7 @@ export default function RootLayout({ children }: Props) {
         style={{ margin: 0, backgroundColor: "#000", colorScheme: "dark" }}
         className="notranslate flex min-h-dvh min-w-0 max-w-full flex-col overflow-x-hidden bg-gn-bg text-gn-text"
       >
+        <FirstPaintCover />
         {children}
       </body>
     </html>

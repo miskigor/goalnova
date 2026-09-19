@@ -129,3 +129,139 @@
   for = "/*/challenges/*"
   [headers.values]
     Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+
+# App launch HTML is the same for every visitor (auth is client-side). Without a CDN TTL,
+# a cold Netlify handler (ffmpeg-static ~3GB) can take ~7s before the first HTML byte —
+# the browser stays on its default white screen until then.
+# Browser still revalidates (max-age=0); Netlify Edge + Durable Cache serve the document.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/home"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/*/home"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/login"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/*/login"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/signup"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/*/signup"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/explore"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/*/explore"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/rankings"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/*/rankings"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/hr"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/de"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/bs"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/es"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/pt"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/sr"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/fr"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/it"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/nl"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/tr"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/ar"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, durable, s-maxage=3600, stale-while-revalidate=86400"

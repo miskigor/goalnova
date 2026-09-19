@@ -5,6 +5,8 @@ import { PRIVATE_PAGE_ROBOTS } from "@/lib/seo/privateRobots";
 
 type Props = { params: Promise<{ locale: string }> };
 
+export const revalidate = 3600;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
