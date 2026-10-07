@@ -90,13 +90,19 @@ export function AuthGate({ mode, redirectTo, children }: AuthGateProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [session, setSession] = useState<Session | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [emailConfirmed, setEmailConfirmed] = useState<boolean | null>(null);
-  const [checking, setChecking] = useState(true);
+  // Seed from localStorage sync snapshot so cold open skips splash when possible.
+  const [boot] = useState(() => readInitialAuthState());
+  const [session, setSession] = useState<Session | null>(() => boot.session);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(
+    () => boot.isAuthenticated,
+  );
+  const [emailConfirmed, setEmailConfirmed] = useState<boolean | null>(
+    () => boot.emailConfirmed,
+  );
+  const [checking, setChecking] = useState(() => boot.checking);
 
   const didRedirectRef = useRef(false);
-  const settledRef = useRef(false);
+  const settledRef = useRef(!boot.checking);
   const pathnameRef = useRef(pathname);
   pathnameRef.current = pathname;
 

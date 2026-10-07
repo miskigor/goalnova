@@ -24,6 +24,29 @@ import { pauseHomeFeedMedia } from "@/lib/video/pauseHomeFeedMedia";
 import "@/components/home/v3-clean/homeCleanV3.css";
 import { HOME_CLEAN_V3_CARD_LOCK_STYLE } from "@/components/home/v3-clean/homeCleanV3LayoutLock";
 
+const FEED_FETCH_TIMEOUT_MS = 12_000;
+
+function raceWithTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  timeoutError: string,
+): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = window.setTimeout(() => {
+      reject(new Error(timeoutError));
+    }, timeoutMs);
+    promise
+      .then((value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      })
+      .catch((err) => {
+        window.clearTimeout(timer);
+        reject(err);
+      });
+  });
+}
+
 function mergeFeedItems(
   prev: AugmentedHomeFeedItem[],
   batch: AugmentedHomeFeedItem[],
@@ -60,11 +83,15 @@ export function HomeCleanV3() {
   );
 
   const loadFeed = useCallback(async () => {
-    const { items: next, error } = await fetchHomeFeedData(supabase, {
-      limit: HOME_FEED_INITIAL_SIZE,
-      offset: 0,
-      skipMusic: true,
-    });
+    const { items: next, error } = await raceWithTimeout(
+      fetchHomeFeedData(supabase, {
+        limit: HOME_FEED_INITIAL_SIZE,
+        offset: 0,
+        skipMusic: true,
+      }),
+      FEED_FETCH_TIMEOUT_MS,
+      "feed_timeout",
+    );
     if (error) {
       logFullSupabaseError(
         "[Home clean V3] feed load failed",
@@ -135,7 +162,14 @@ export function HomeCleanV3() {
     }
     void loadFeed()
       .catch((err) => {
-        logFullSupabaseError("[Home clean V3] feed unexpected error", err);
+        const timedOut =
+          err instanceof Error && err.message === "feed_timeout";
+        logFullSupabaseError(
+          timedOut
+            ? "[Home clean V3] feed load timed out"
+            : "[Home clean V3] feed unexpected error",
+          err,
+        );
         if (!cancelled) {
           setFeedLoadFailed(true);
           setItems((prev) => (prev.length > 0 ? prev : []));

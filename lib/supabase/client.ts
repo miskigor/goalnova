@@ -45,20 +45,43 @@ async function inProcessAuthLock<R>(
   return fn();
 }
 
+/** Hard cap so hung auth refresh / PostgREST cannot freeze the app for ~30s+. */
+const SUPABASE_FETCH_TIMEOUT_MS = 12_000;
+
 /**
  * Browser network errors can reject fetch with `TypeError: Failed to fetch`.
  * Converting them to a synthetic HTTP response prevents noisy unhandled promise
  * rejections and lets callers handle the failure through normal Supabase error paths.
+ * Every request is also aborted after {@link SUPABASE_FETCH_TIMEOUT_MS}.
  */
 async function supabaseSafeFetch(
   input: RequestInfo | URL,
   init?: RequestInit,
 ): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, SUPABASE_FETCH_TIMEOUT_MS);
+
+  const upstream = init?.signal;
+  const onUpstreamAbort = () => controller.abort();
+  if (upstream) {
+    if (upstream.aborted) {
+      controller.abort();
+    } else {
+      upstream.addEventListener("abort", onUpstreamAbort, { once: true });
+    }
+  }
+
   try {
-    return await fetch(input, init);
+    return await fetch(input, { ...init, signal: controller.signal });
   } catch (error) {
-    const message =
-      error instanceof Error && error.message.trim().length > 0
+    const aborted =
+      (error instanceof DOMException && error.name === "AbortError") ||
+      (error instanceof Error && error.name === "AbortError");
+    const message = aborted
+      ? `Request timed out after ${SUPABASE_FETCH_TIMEOUT_MS}ms`
+      : error instanceof Error && error.message.trim().length > 0
         ? error.message
         : "Failed to fetch";
     return new Response(
@@ -66,11 +89,14 @@ async function supabaseSafeFetch(
         message: `TypeError: ${message}`,
       }),
       {
-        status: 503,
-        statusText: "Service Unavailable",
+        status: aborted ? 408 : 503,
+        statusText: aborted ? "Request Timeout" : "Service Unavailable",
         headers: { "Content-Type": "application/json" },
       },
     );
+  } finally {
+    clearTimeout(timeoutId);
+    upstream?.removeEventListener("abort", onUpstreamAbort);
   }
 }
 

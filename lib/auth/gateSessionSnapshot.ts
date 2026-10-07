@@ -205,10 +205,34 @@ export async function readGateSessionSnapshot(
       return writeCache(snapshotFromSession(session));
     }
 
+    // Prefer any sync/localStorage snapshot over an unbounded getUser() hang
+    // (getUser awaits the same auth initializePromise as getSession).
+    const syncFallback = readSyncGateSessionSnapshot();
+    if (syncFallback.session || syncFallback.user?.id) {
+      devWarn(
+        `${gateLabel}: getSession timed out after ${GATE_SESSION_TIMEOUT_MS}ms; using sync snapshot`,
+      );
+      return writeCache(syncFallback);
+    }
+
     devWarn(
-      `${gateLabel}: getSession did not resolve within ${GATE_SESSION_TIMEOUT_MS}ms; falling back to getUser`,
+      `${gateLabel}: getSession did not resolve within ${GATE_SESSION_TIMEOUT_MS}ms; falling back to getUser with timeout`,
     );
-    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    const userResult = await Promise.race([
+      supabase.auth.getUser(),
+      new Promise<"timeout">((resolve) => {
+        window.setTimeout(() => resolve("timeout"), GATE_SESSION_TIMEOUT_MS);
+      }),
+    ]);
+
+    if (userResult === "timeout") {
+      devWarn(
+        `${gateLabel}: getUser also timed out after ${GATE_SESSION_TIMEOUT_MS}ms; treating as guest`,
+      );
+      return writeCache({ session: null, user: null });
+    }
+
+    const { data: userData, error: userErr } = userResult;
     if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
       return writeCache({ session: null, user: null });
     }

@@ -39,6 +39,25 @@ function isAuthed(session: Session | null, user: User | null): boolean {
   return Boolean(session ?? user?.id);
 }
 
+async function getUserWithTimeout(): Promise<{
+  user: User | null;
+  timedOut: boolean;
+}> {
+  const result = await Promise.race([
+    supabase.auth.getUser(),
+    new Promise<"timeout">((resolve) => {
+      window.setTimeout(() => resolve("timeout"), NAV_SESSION_GET_SESSION_MS);
+    }),
+  ]);
+  if (result === "timeout") {
+    return { user: null, timedOut: true };
+  }
+  if (result.error && (await recoverIfInvalidRefreshToken(result.error))) {
+    return { user: null, timedOut: false };
+  }
+  return { user: result.data.user ?? null, timedOut: false };
+}
+
 async function resolveNavAuth(): Promise<{
   session: Session | null;
   user: User | null;
@@ -58,19 +77,12 @@ async function resolveNavAuth(): Promise<{
     if (session) {
       return { session, user: session.user };
     }
-    const { data: userData, error: userErr } = await supabase.auth.getUser();
-    if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
-      return { session: null, user: null };
-    }
-    const user = userData.user ?? null;
+    const { user } = await getUserWithTimeout();
     return { session: null, user };
   }
 
-  const { data: userData, error: userErr } = await supabase.auth.getUser();
-  if (userErr && (await recoverIfInvalidRefreshToken(userErr))) {
-    return { session: null, user: null };
-  }
-  return { session: null, user: userData.user ?? null };
+  const { user } = await getUserWithTimeout();
+  return { session: null, user };
 }
 
 function resolveNavAuthOnce() {
